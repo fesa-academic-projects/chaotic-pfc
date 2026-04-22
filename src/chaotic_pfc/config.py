@@ -88,7 +88,7 @@ class SweepConfig:
     default_filter_type: str = "lowpass"
     data_dir:    str = "data/sweeps"
     figures_dir: str = "figures/sweeps"
-    fig_fmt:     str = "png"
+    fig_fmts: tuple[str, ...] = ("png", "svg")
 
 
 @dataclass

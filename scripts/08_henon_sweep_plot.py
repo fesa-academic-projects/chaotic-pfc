@@ -5,15 +5,22 @@
 Generate the four standard classification figures for one or more sweeps
 previously produced by ``07_henon_sweep_compute.py``.
 
+By default, both PNG and SVG versions are generated side-by-side: PNG for
+quick browsing and GitHub preview, SVG for the paper.
+
 Examples
 --------
-Plot a single configuration::
+Plot a single configuration in both formats (default)::
 
     python scripts/08_henon_sweep_plot.py --window hamming --filter lowpass
 
 Plot every sweep found under the data directory::
 
     python scripts/08_henon_sweep_plot.py --all
+
+Restrict to a single format::
+
+    python scripts/08_henon_sweep_plot.py --all --fmt svg
 
 Custom input/output roots::
 
@@ -44,8 +51,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--figures-dir", default="figures/sweeps",
                    help="Root directory for output figures "
                         "(default: figures/sweeps)")
-    p.add_argument("--fmt", default="png", choices=("png", "svg", "pdf"),
-                   help="Output format (default: png)")
+    p.add_argument("--fmt", nargs="+", default=["png", "svg"],
+                   choices=("png", "svg", "pdf"),
+                   help="Output format(s). Pass multiple values to generate "
+                        "several at once, e.g. '--fmt png svg'. "
+                        "Default: png svg")
     # Compatibility flags — kept consistent with the other scripts.
     p.add_argument("--save", action="store_true",
                    help="(accepted for CLI consistency; figures are always saved)")
@@ -109,8 +119,9 @@ def main() -> None:
             sys.exit(1)
         npz_paths = [candidate]
 
+    fmts_str = ", ".join(f".{f}" for f in args.fmt)
     print(f"[08] Plotting {len(npz_paths)} sweep(s) "
-          f"(format: .{args.fmt})")
+          f"(formats: {fmts_str})")
 
     for npz_path in npz_paths:
         result = load_sweep(npz_path)
@@ -118,9 +129,10 @@ def main() -> None:
         print(f"\n     {result.display_name}")
         print(f"     ← {npz_path}")
         print(f"     → {out_dir}")
-        paths = plot_all(result, out_dir, fmt=args.fmt)
-        for p in paths:
-            print(f"       {p.name}")
+        for fmt in args.fmt:
+            paths = plot_all(result, out_dir, fmt=fmt)
+            for p in paths:
+                print(f"       {p.name}")
 
     print(f"\n[08] done")
 
