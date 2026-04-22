@@ -36,9 +36,9 @@ is the price we pay to keep the hot loop branch-free.
 from __future__ import annotations
 
 import warnings
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 from numba import njit, prange
@@ -65,13 +65,13 @@ WINDOWS: tuple[str, ...] = (
 FILTER_TYPES: tuple[str, ...] = ("lowpass", "highpass")
 
 WINDOW_DISPLAY_NAMES: dict[str, str] = {
-    "hamming":        "Hamming",
-    "hann":           "Hann",
-    "blackman":       "Blackman",
-    "kaiser":         "Kaiser",
+    "hamming": "Hamming",
+    "hann": "Hann",
+    "blackman": "Blackman",
+    "kaiser": "Kaiser",
     "blackmanharris": "Blackman-Harris",
-    "boxcar":         "Rectangular",
-    "bartlett":       "Bartlett",
+    "boxcar": "Rectangular",
+    "bartlett": "Bartlett",
 }
 
 # Kaiser window needs a β parameter (attenuation trade-off).
@@ -83,33 +83,40 @@ _KAISER_BETA: float = 5.0
 # Hénon map variants — compiled with @njit for speed
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 @njit(cache=True)
 def _henon_n1(x: NDArray, alpha: float, beta: float, c: NDArray) -> NDArray:
     """1-tap filtered Hénon map iterate."""
-    return np.array([
-        alpha - (c[0] * x[0]) ** 2 + beta * x[1],
-        x[0],
-    ])
+    return np.array(
+        [
+            alpha - (c[0] * x[0]) ** 2 + beta * x[1],
+            x[0],
+        ]
+    )
 
 
 @njit(cache=True)
 def _henon_n2(x: NDArray, alpha: float, beta: float, c: NDArray) -> NDArray:
     """2-tap filtered Hénon map iterate."""
-    return np.array([
-        alpha - (c[0] * x[0] + c[1] * x[1]) ** 2 + beta * x[1],
-        x[0],
-    ])
+    return np.array(
+        [
+            alpha - (c[0] * x[0] + c[1] * x[1]) ** 2 + beta * x[1],
+            x[0],
+        ]
+    )
 
 
 @njit(cache=True)
 def _henon_n3(x: NDArray, alpha: float, beta: float, c: NDArray) -> NDArray:
     """3-tap filtered Hénon map iterate."""
     x1_new = alpha - x[2] ** 2 + beta * x[1]
-    return np.array([
-        x1_new,
-        x[0],
-        c[0] * x1_new + c[1] * x[0] + c[2] * x[1],
-    ])
+    return np.array(
+        [
+            x1_new,
+            x[0],
+            c[0] * x1_new + c[1] * x[0] + c[2] * x[1],
+        ]
+    )
 
 
 @njit(cache=True)
@@ -134,30 +141,39 @@ def _henon_n4(x: NDArray, alpha: float, beta: float, c: NDArray) -> NDArray:
 # Jacobians — compiled with @njit
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 @njit(cache=True)
 def _dhenon_n1(x: NDArray, beta: float, c: NDArray) -> NDArray:
-    return np.array([
-        [-2.0 * c[0] ** 2 * x[0], beta],
-        [1.0,                     0.0 ],
-    ])
+    return np.array(
+        [
+            [-2.0 * c[0] ** 2 * x[0], beta],
+            [1.0, 0.0],
+        ]
+    )
 
 
 @njit(cache=True)
 def _dhenon_n2(x: NDArray, beta: float, c: NDArray) -> NDArray:
-    return np.array([
-        [-2.0 * c[0] ** 2 * x[0] - 2.0 * c[0] * c[1] * x[1],
-         -2.0 * c[0] * c[1] * x[0] - 2.0 * c[1] ** 2 * x[1] + beta],
-        [1.0, 0.0],
-    ])
+    return np.array(
+        [
+            [
+                -2.0 * c[0] ** 2 * x[0] - 2.0 * c[0] * c[1] * x[1],
+                -2.0 * c[0] * c[1] * x[0] - 2.0 * c[1] ** 2 * x[1] + beta,
+            ],
+            [1.0, 0.0],
+        ]
+    )
 
 
 @njit(cache=True)
 def _dhenon_n3(x: NDArray, beta: float, c: NDArray) -> NDArray:
-    return np.array([
-        [0.0,  beta,                     -2.0 * x[2]          ],
-        [1.0,  0.0,                      0.0                  ],
-        [c[1], c[0] * beta + c[2],       -2.0 * c[0] * x[2]   ],
-    ])
+    return np.array(
+        [
+            [0.0, beta, -2.0 * x[2]],
+            [1.0, 0.0, 0.0],
+            [c[1], c[0] * beta + c[2], -2.0 * c[0] * x[2]],
+        ]
+    )
 
 
 @njit(cache=True)
@@ -185,6 +201,7 @@ def _dhenon_n4(x: NDArray, beta: float, d: int, c: NDArray) -> NDArray:
 # task. Storing only the running sum of log-norms avoids allocating an
 # (Ns × Nitera) matrix per task.
 
+
 @njit(cache=True)
 def _lyap_online_n1(x, Nitera, Ns, c, alpha, beta):
     w = np.eye(Ns)
@@ -201,7 +218,7 @@ def _lyap_online_n1(x, Nitera, Ns, c, alpha, beta):
             nrm = 0.0
             for row in range(Ns):
                 nrm += z[row, k] * z[row, k]
-            nrm = nrm ** 0.5
+            nrm = nrm**0.5
             if nrm > 0.0:
                 lyap_sum[k] += np.log(nrm)
                 inv = 1.0 / nrm
@@ -233,7 +250,7 @@ def _lyap_online_n2(x, Nitera, Ns, c, alpha, beta):
             nrm = 0.0
             for row in range(Ns):
                 nrm += z[row, k] * z[row, k]
-            nrm = nrm ** 0.5
+            nrm = nrm**0.5
             if nrm > 0.0:
                 lyap_sum[k] += np.log(nrm)
                 inv = 1.0 / nrm
@@ -265,7 +282,7 @@ def _lyap_online_n3(x, Nitera, Ns, c, alpha, beta):
             nrm = 0.0
             for row in range(Ns):
                 nrm += z[row, k] * z[row, k]
-            nrm = nrm ** 0.5
+            nrm = nrm**0.5
             if nrm > 0.0:
                 lyap_sum[k] += np.log(nrm)
                 inv = 1.0 / nrm
@@ -297,7 +314,7 @@ def _lyap_online_n4(x, Nitera, Ns, c, alpha, beta):
             nrm = 0.0
             for row in range(Ns):
                 nrm += z[row, k] * z[row, k]
-            nrm = nrm ** 0.5
+            nrm = nrm**0.5
             if nrm > 0.0:
                 lyap_sum[k] += np.log(nrm)
                 inv = 1.0 / nrm
@@ -317,6 +334,7 @@ def _lyap_online_n4(x, Nitera, Ns, c, alpha, beta):
 # Flattened 2-D sweep kernel — one prange covers every (order, cutoff)
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 @njit(parallel=True, cache=True)
 def _sweep_kernel(
     orders: NDArray,
@@ -331,18 +349,18 @@ def _sweep_kernel(
 ) -> tuple[NDArray, NDArray]:
     """Parallel inner sweep. Returns (h, h_std), both (Ncoef, Ncut)."""
     Ncoef = len(orders)
-    Ncut  = len(cutoffs)
-    Ntot  = Ncoef * Ncut
+    Ncut = len(cutoffs)
+    Ntot = Ncoef * Ncut
 
-    h     = np.full((Ncoef, Ncut), np.nan)
+    h = np.full((Ncoef, Ncut), np.nan)
     h_std = np.full((Ncoef, Ncut), np.nan)
 
     for flat in prange(Ntot):
         i = flat // Ncut
         j = flat % Ncut
 
-        Ns   = int(orders[i])
-        c    = fir_bank[i, j, :Ns]
+        Ns = int(orders[i])
+        c = fir_bank[i, j, :Ns]
         gain = gains[i, j]
 
         # Analytic fixed point (used to seed random ICs around it)
@@ -350,13 +368,13 @@ def _sweep_kernel(
         p2 = 0.0
         p3 = 0.0
         if Ns >= 2 and gain != 0.0:
-            disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain ** 2)
-            p1 = (-(1.0 - beta) + disc ** 0.5) / (2.0 * gain ** 2)
+            disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
+            p1 = (-(1.0 - beta) + disc**0.5) / (2.0 * gain**2)
             p2 = p1
             p3 = gain * p1
 
         h_samples = np.empty(n_initial)
-        diverged  = False
+        diverged = False
 
         for ci in range(n_initial):
             h_samples[ci] = np.nan
@@ -389,7 +407,7 @@ def _sweep_kernel(
                 h_samples[ci] = _lyap_online_n3(x, Nmap, Ns, c, alpha, beta)
 
             else:
-                fp    = np.empty(Ns)
+                fp = np.empty(Ns)
                 fp[0] = p1
                 fp[1] = p2
                 fp[2] = p3
@@ -426,6 +444,7 @@ def _sweep_kernel(
 # Public API
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 @dataclass
 class SweepResult:
     """Result of a single (window, filter) sweep.
@@ -449,13 +468,13 @@ class SweepResult:
         Free-form metadata (simulation parameters, timing, etc.).
     """
 
-    h:           NDArray
-    h_std:       NDArray
-    orders:      NDArray
-    cutoffs:     NDArray
-    window:      str
+    h: NDArray
+    h_std: NDArray
+    orders: NDArray
+    cutoffs: NDArray
+    window: str
     filter_type: str
-    metadata:    dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     @property
     def display_name(self) -> str:
@@ -466,8 +485,9 @@ class SweepResult:
 
 # ───────────────────────────────────────────────────────────────────────────
 
+
 def precompute_fir_bank(
-    orders: Sequence[int],
+    orders: Sequence[int] | NDArray,
     cutoffs: NDArray,
     filter_type: str,
     window: str,
@@ -505,21 +525,17 @@ def precompute_fir_bank(
     MATLAB code should pass ``numtaps = Nss`` (not ``Nss - 1``).
     """
     if filter_type not in FILTER_TYPES:
-        raise ValueError(
-            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
-        )
+        raise ValueError(f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}")
     if window not in WINDOWS:
-        raise ValueError(
-            f"window must be one of {WINDOWS}, got {window!r}"
-        )
+        raise ValueError(f"window must be one of {WINDOWS}, got {window!r}")
 
     orders_arr = np.asarray(orders, dtype=np.int64)
-    Ncoef      = len(orders_arr)
-    Ncut       = len(cutoffs)
-    max_taps   = int(orders_arr.max()) + 1  # +1 to accommodate highpass padding
+    Ncoef = len(orders_arr)
+    Ncut = len(cutoffs)
+    max_taps = int(orders_arr.max()) + 1  # +1 to accommodate highpass padding
 
     fir_bank = np.zeros((Ncoef, Ncut, max_taps))
-    gains    = np.zeros((Ncoef, Ncut))
+    gains = np.zeros((Ncoef, Ncut))
 
     win_arg = ("kaiser", _KAISER_BETA) if window == "kaiser" else window
 
@@ -527,19 +543,20 @@ def precompute_fir_bank(
         for j, wc in enumerate(cutoffs):
             numtaps = (int(Nss) | 1) if filter_type == "highpass" else int(Nss)
             c = firwin(numtaps, wc, pass_zero=filter_type, window=win_arg)
-            fir_bank[i, j, :len(c)] = c.astype(np.float64)
-            gains[i, j]             = float(np.sum(c))
+            fir_bank[i, j, : len(c)] = c.astype(np.float64)
+            gains[i, j] = float(np.sum(c))
 
     return fir_bank, gains
 
 
 # ───────────────────────────────────────────────────────────────────────────
 
+
 def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
     *,
-    orders: Sequence[int] | None = None,
+    orders: Sequence[int] | NDArray | None = None,
     cutoffs: NDArray | None = None,
     Nitera: int = 500,
     Nmap: int = 3000,
@@ -588,14 +605,17 @@ def run_sweep(
     if cutoffs is None:
         cutoffs = np.linspace(1e-5, 1.0 - 1e-5, 100)
 
-    orders_arr  = np.asarray(orders,  dtype=np.int64)
+    orders_arr = np.asarray(orders, dtype=np.int64)
     cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
 
     if seed is not None:
         np.random.seed(seed)
 
     fir_bank, gains = precompute_fir_bank(
-        orders_arr, cutoffs_arr, filter_type, window,
+        orders_arr,
+        cutoffs_arr,
+        filter_type,
+        window,
     )
 
     if warmup:
@@ -605,31 +625,45 @@ def run_sweep(
             cutoffs_arr[:3],
             fir_bank[:2, :3, :],
             gains[:2, :3],
-            10, 50, 2, alpha, beta,
+            10,
+            50,
+            2,
+            alpha,
+            beta,
         )
 
     h, h_std = _sweep_kernel(
-        orders_arr.astype(np.float64), cutoffs_arr,
-        fir_bank, gains,
-        Nitera, Nmap, n_initial, alpha, beta,
+        orders_arr.astype(np.float64),
+        cutoffs_arr,
+        fir_bank,
+        gains,
+        Nitera,
+        Nmap,
+        n_initial,
+        alpha,
+        beta,
     )
 
     return SweepResult(
-        h=h, h_std=h_std,
-        orders=orders_arr, cutoffs=cutoffs_arr,
-        window=window, filter_type=filter_type,
+        h=h,
+        h_std=h_std,
+        orders=orders_arr,
+        cutoffs=cutoffs_arr,
+        window=window,
+        filter_type=filter_type,
         metadata={
-            "Nitera":    Nitera,
-            "Nmap":      Nmap,
+            "Nitera": Nitera,
+            "Nmap": Nmap,
             "n_initial": n_initial,
-            "alpha":     alpha,
-            "beta":      beta,
-            "seed":      seed,
+            "alpha": alpha,
+            "beta": beta,
+            "seed": seed,
         },
     )
 
 
 # ───────────────────────────────────────────────────────────────────────────
+
 
 def save_sweep(result: SweepResult, path: str | Path) -> Path:
     """Save a :class:`SweepResult` to a compressed ``.npz``.
@@ -666,7 +700,7 @@ def load_sweep(path: str | Path) -> SweepResult:
     data = np.load(path, allow_pickle=True)
 
     if "window" in data.files and "filter_type" in data.files:
-        window      = str(data["window"])
+        window = str(data["window"])
         filter_type = str(data["filter_type"])
     else:
         window, filter_type = _infer_config_from_path(path)

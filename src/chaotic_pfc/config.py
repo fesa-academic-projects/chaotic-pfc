@@ -5,7 +5,9 @@ Centralised configuration for all experiments.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass, field
+
 import numpy as np
 
 
@@ -37,9 +39,13 @@ class InternalFIRConfig:
 
     def fir_coeffs(self) -> np.ndarray:
         from scipy.signal import firwin
+
         return firwin(
-            numtaps=self.num_taps, cutoff=self.cutoff,
-            window="hamming", pass_zero=True, fs=2.0,
+            numtaps=self.num_taps,
+            cutoff=self.cutoff,
+            window="hamming",
+            pass_zero=True,
+            fs=2.0,
         )
 
 
@@ -53,6 +59,7 @@ class SpectralConfig:
 @dataclass
 class LyapunovConfig:
     """Parameters for Lyapunov exponent computation."""
+
     Nitera: int = 2000
     Ndiscard: int = 1000
     perturbation: float = 0.1
@@ -78,15 +85,16 @@ class SweepConfig:
     Used by :mod:`chaotic_pfc.sweep`. The full grid is
     ``len(orders) × n_cutoffs`` points; at the defaults this is 4 000.
     """
-    Nitera:    int = 500     # burn-in iterations
-    Nmap:      int = 3000    # iterations used for the Lyapunov estimate
-    n_initial: int = 25      # ICs averaged per grid point
-    order_lo:  int = 2
-    order_hi:  int = 42      # exclusive
+
+    Nitera: int = 500  # burn-in iterations
+    Nmap: int = 3000  # iterations used for the Lyapunov estimate
+    n_initial: int = 25  # ICs averaged per grid point
+    order_lo: int = 2
+    order_hi: int = 42  # exclusive
     n_cutoffs: int = 100
-    default_window:      str = "hamming"
+    default_window: str = "hamming"
     default_filter_type: str = "lowpass"
-    data_dir:    str = "data/sweeps"
+    data_dir: str = "data/sweeps"
     figures_dir: str = "figures/sweeps"
     fig_fmts: tuple[str, ...] = ("png", "svg")
 

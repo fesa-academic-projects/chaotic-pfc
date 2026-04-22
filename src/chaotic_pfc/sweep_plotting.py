@@ -24,8 +24,8 @@ rest of the pipeline.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
@@ -35,7 +35,7 @@ from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
-from .plotting import setup_rc  # noqa: F401 — side-effect import
+from .plotting import setup_rc
 from .sweep import SweepResult
 
 setup_rc()
@@ -45,26 +45,35 @@ setup_rc()
 # Palette and discrete classification
 # ═══════════════════════════════════════════════════════════════════════════
 
-COLOR_PERIODIC:  str = "#4DBEEE"
-COLOR_CHAOTIC:   str = "red"
+COLOR_PERIODIC: str = "#4DBEEE"
+COLOR_CHAOTIC: str = "red"
 COLOR_UNBOUNDED: str = "#E0E0E0"
-COLOR_GAP:       str = "white"
+COLOR_GAP: str = "white"
 
-_cmap_disc = mcolors.ListedColormap([
-    COLOR_PERIODIC, COLOR_CHAOTIC, COLOR_UNBOUNDED, COLOR_GAP,
-])
+_cmap_disc = mcolors.ListedColormap(
+    [
+        COLOR_PERIODIC,
+        COLOR_CHAOTIC,
+        COLOR_UNBOUNDED,
+        COLOR_GAP,
+    ]
+)
 _bounds_disc = [-1.5, -0.5, 0.5, 2.5, 3.5]
-_norm_disc   = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
+_norm_disc = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
 
-_cmap_3 = mcolors.ListedColormap([
-    COLOR_PERIODIC, COLOR_CHAOTIC, COLOR_UNBOUNDED,
-])
+_cmap_3 = mcolors.ListedColormap(
+    [
+        COLOR_PERIODIC,
+        COLOR_CHAOTIC,
+        COLOR_UNBOUNDED,
+    ]
+)
 _bounds_3 = [-1.5, -0.5, 0.5, 2.5]
-_norm_3   = mcolors.BoundaryNorm(_bounds_3, _cmap_3.N)
+_norm_3 = mcolors.BoundaryNorm(_bounds_3, _cmap_3.N)
 
 _LEGEND_HANDLES = [
-    Patch(facecolor=COLOR_PERIODIC,  edgecolor="gray", label="Periodic orbits"),
-    Patch(facecolor=COLOR_CHAOTIC,   edgecolor="gray", label="Chaotic orbits"),
+    Patch(facecolor=COLOR_PERIODIC, edgecolor="gray", label="Periodic orbits"),
+    Patch(facecolor=COLOR_CHAOTIC, edgecolor="gray", label="Chaotic orbits"),
     Patch(facecolor=COLOR_UNBOUNDED, edgecolor="gray", label="Unbounded orbits"),
 ]
 
@@ -74,6 +83,7 @@ _YTICKS = np.arange(0.0, 1.01, 0.1)
 # ═══════════════════════════════════════════════════════════════════════════
 # Helpers
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 def classify(h: NDArray) -> NDArray:
     """Map raw λ_max values to discrete classes.
@@ -90,11 +100,11 @@ def classify(h: NDArray) -> NDArray:
     out = np.full_like(h, np.nan, dtype=np.float64)
     mask_diverged = np.isnan(h)
     mask_periodic = (~mask_diverged) & (h < 0.0)
-    mask_chaotic  = (~mask_diverged) & (h > 0.0)
+    mask_chaotic = (~mask_diverged) & (h > 0.0)
 
     out[mask_diverged] = 2
     out[mask_periodic] = -1
-    out[mask_chaotic]  = 0
+    out[mask_chaotic] = 0
     return out
 
 
@@ -117,6 +127,7 @@ def _save(fig: Figure, path: str | Path | None) -> None:
 # ═══════════════════════════════════════════════════════════════════════════
 # 1. Continuous heatmap
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 def plot_heatmap_continuous(
     result: SweepResult | None = None,
@@ -144,6 +155,7 @@ def plot_heatmap_continuous(
 # 2. Simple discrete classification
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 def plot_classification_simple(
     result: SweepResult | None = None,
     *,
@@ -158,14 +170,21 @@ def plot_classification_simple(
 
     fig, ax = plt.subplots(figsize=(8, 6))
     ax.pcolormesh(
-        Nz, cutoffs, h_color.T,
-        cmap=_cmap_3, norm=_norm_3, shading="nearest",
+        Nz,
+        cutoffs,
+        h_color.T,
+        cmap=_cmap_3,
+        norm=_norm_3,
+        shading="nearest",
     )
     _axis_cosmetics(ax)
     ax.grid(True, axis="x", color="gray", linewidth=0.3)
     ax.legend(
-        handles=_LEGEND_HANDLES, fontsize=12, loc="upper right",
-        framealpha=0.9, edgecolor="gray",
+        handles=_LEGEND_HANDLES,
+        fontsize=12,
+        loc="upper right",
+        framealpha=0.9,
+        edgecolor="gray",
     )
     ax.tick_params(labelsize=18)
     fig.tight_layout()
@@ -176,6 +195,7 @@ def plot_classification_simple(
 # ═══════════════════════════════════════════════════════════════════════════
 # 3. Classification with vertical separators per order
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 def plot_classification_separated(
     result: SweepResult | None = None,
@@ -191,14 +211,21 @@ def plot_classification_separated(
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.pcolormesh(
-        Nz, cutoffs, h_color.T,
-        cmap=_cmap_3, norm=_norm_3, shading="nearest",
+        Nz,
+        cutoffs,
+        h_color.T,
+        cmap=_cmap_3,
+        norm=_norm_3,
+        shading="nearest",
     )
     _axis_cosmetics(ax)
     ax.grid(False)
     ax.legend(
-        handles=_LEGEND_HANDLES, fontsize=12, loc="upper right",
-        framealpha=0.9, edgecolor="gray",
+        handles=_LEGEND_HANDLES,
+        fontsize=12,
+        loc="upper right",
+        framealpha=0.9,
+        edgecolor="gray",
     )
     for xval in Nz:
         ax.axvline(x=xval - 0.5, color="black", linewidth=0.5)
@@ -215,6 +242,7 @@ def plot_classification_separated(
 # 4. Paper-style interleaved bars (3 data slots + 1 gap per order)
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 def plot_classification_interleaved(
     result: SweepResult | None = None,
     *,
@@ -223,7 +251,7 @@ def plot_classification_interleaved(
     cutoffs: NDArray | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
-    gap_slots:  int = 1,
+    gap_slots: int = 1,
 ) -> Figure:
     """Publication-style layout with gaps between adjacent orders.
 
@@ -234,11 +262,11 @@ def plot_classification_interleaved(
     h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
     h_color = classify(h)
 
-    slot_total   = data_slots + gap_slots
-    Ncoef        = len(Nz)
-    Ncut         = len(cutoffs)
-    total_slots  = Ncoef * slot_total
-    h_color_exp  = np.full((total_slots, Ncut), 3.0)
+    slot_total = data_slots + gap_slots
+    Ncoef = len(Nz)
+    Ncut = len(cutoffs)
+    total_slots = Ncoef * slot_total
+    h_color_exp = np.full((total_slots, Ncut), 3.0)
 
     for i in range(Ncoef):
         start = i * slot_total
@@ -252,8 +280,12 @@ def plot_classification_interleaved(
     ax.set_facecolor("white")
 
     ax.pcolormesh(
-        x_exp, cutoffs, h_color_exp.T,
-        cmap=_cmap_disc, norm=_norm_disc, shading="nearest",
+        x_exp,
+        cutoffs,
+        h_color_exp.T,
+        cmap=_cmap_disc,
+        norm=_norm_disc,
+        shading="nearest",
     )
 
     ax.set_xlabel(r"$N_z$", fontsize=16)
@@ -267,9 +299,9 @@ def plot_classification_interleaved(
     for i in range(Ncoef + 1):
         ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
 
-    tick_vals: Iterable[int] = [1] + list(range(5, int(Nz[-1]) + 1, 5))
+    tick_vals: Iterable[int] = [1, *list(range(5, int(Nz[-1]) + 1, 5))]
     tick_positions: list[float] = []
-    tick_labels:    list[str]   = []
+    tick_labels: list[str] = []
     for nz_val in tick_vals:
         idx = np.where(Nz == nz_val)[0]
         if len(idx) > 0:
@@ -283,9 +315,15 @@ def plot_classification_interleaved(
     ax.set_xlim(-0.5, total_slots - 0.5)
 
     ax.legend(
-        handles=_LEGEND_HANDLES, fontsize=9, loc="upper right",
-        framealpha=0.95, edgecolor="gray", fancybox=False,
-        handlelength=1.2, handleheight=0.8, borderpad=0.4,
+        handles=_LEGEND_HANDLES,
+        fontsize=9,
+        loc="upper right",
+        framealpha=0.95,
+        edgecolor="gray",
+        fancybox=False,
+        handlelength=1.2,
+        handleheight=0.8,
+        borderpad=0.4,
     )
 
     fig.tight_layout()
@@ -328,9 +366,9 @@ def plot_all(
     )
 
     paths: list[Path] = []
-    for fname, plotter in zip(FIGURE_FILENAMES, plotters):
+    for fname, plotter in zip(FIGURE_FILENAMES, plotters, strict=False):
         path = out_dir / f"{fname}.{fmt}"
-        fig  = plotter(result, save_path=path)
+        fig = plotter(result, save_path=path)
         if close_figures:
             plt.close(fig)
         paths.append(path)
@@ -341,20 +379,19 @@ def plot_all(
 # Private: argument unpacking
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 def _unpack(
-    result:  SweepResult | None,
-    h:       NDArray | None,
-    orders:  NDArray | None,
+    result: SweepResult | None,
+    h: NDArray | None,
+    orders: NDArray | None,
     cutoffs: NDArray | None,
 ) -> tuple[NDArray, NDArray, NDArray]:
     """Resolve the two accepted calling conventions into (h, Nz, cutoffs)."""
     if result is not None:
-        h       = result.h
-        orders  = result.orders
+        h = result.h
+        orders = result.orders
         cutoffs = result.cutoffs
     if h is None or orders is None or cutoffs is None:
-        raise ValueError(
-            "Provide either a SweepResult or the (h, orders, cutoffs) triple."
-        )
+        raise ValueError("Provide either a SweepResult or the (h, orders, cutoffs) triple.")
     Nz = np.asarray(orders) - 1
     return np.asarray(h), Nz, np.asarray(cutoffs)

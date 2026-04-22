@@ -31,16 +31,16 @@ from pathlib import Path
 import numpy as np
 from numpy.typing import NDArray
 
-
 # ── Fixed-point computation ─────────────────────────────────────────────────
+
 
 def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
     """Compute the stable fixed point of the 4-D pole-filtered Hénon map."""
-    H = np.sum(a[1:])   # sum of a coeffs (excluding a[0])
-    G = np.sum(b)        # sum of b coeffs
+    H = np.sum(a[1:])  # sum of a coeffs (excluding a[0])
+    G = np.sum(b)  # sum of b coeffs
 
     ratio = G / (1.0 - H)
-    denom = ratio ** 2
+    denom = ratio**2
 
     disc = (1.0 - beta) ** 2 + 4.0 * alpha * denom
     xf = ((beta - 1.0) + np.sqrt(disc)) / (2.0 * denom)
@@ -51,20 +51,23 @@ def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
 
 # ── Jacobian ────────────────────────────────────────────────────────────────
 
+
 def _jacobian(beta: float, b: NDArray, a: NDArray, x: NDArray) -> NDArray:
     """Jacobian of the 4-D pole-filtered Hénon map at state x."""
-    return np.array([
-        [0.0,        beta,                -2.0 * x[2],              0.0   ],
-        [1.0,        0.0,                  0.0,                     0.0   ],
-        [0.0,        b[0] * beta,         -2.0 * b[0] * x[2] + a[1], a[2]],
-        [0.0,        0.0,                  1.0,                     0.0   ],
-    ])
+    return np.array(
+        [
+            [0.0, beta, -2.0 * x[2], 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, b[0] * beta, -2.0 * b[0] * x[2] + a[1], a[2]],
+            [0.0, 0.0, 1.0, 0.0],
+        ]
+    )
 
 
 # ── Map iteration ──────────────────────────────────────────────────────────
 
-def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray,
-             x: NDArray) -> NDArray:
+
+def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray, x: NDArray) -> NDArray:
     """Single iteration of the 4-D pole-filtered Hénon map."""
     x1 = alpha - x[2] ** 2 + beta * x[1]
     x2 = x[0]
@@ -75,9 +78,10 @@ def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray,
 
 # ── Gram-Schmidt orthogonalisation ─────────────────────────────────────────
 
+
 def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
     """Modified Gram-Schmidt. Returns (Q, norms)."""
-    d, n = Z.shape
+    _d, n = Z.shape
     Q = np.zeros_like(Z)
     norms = np.zeros(n)
 
@@ -93,11 +97,17 @@ def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
 
 # ── Lyapunov exponent ──────────────────────────────────────────────────────
 
+
 def lyapunov_max(
-    alpha: float = 1.4, beta: float = 0.3,
-    Gz: float = 1.0, pole_radius: float = 0.975, w0: float = 0.0,
-    Nitera: int = 2000, Ndiscard: int = 1000,
-    perturbation: float = 0.1, seed: int = 42,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    Gz: float = 1.0,
+    pole_radius: float = 0.975,
+    w0: float = 0.0,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+    perturbation: float = 0.1,
+    seed: int = 42,
 ) -> dict:
     """
     Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map.
@@ -111,7 +121,7 @@ def lyapunov_max(
     """
     dim = 4
     b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius ** 2])
+    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
 
     # Fixed point
     xf = _fixed_point(alpha, beta, b, a)
@@ -151,12 +161,15 @@ def lyapunov_max(
 
 
 def fixed_point_stability(
-    alpha: float = 1.4, beta: float = 0.3,
-    Gz: float = 1.0, pole_radius: float = 0.975, w0: float = 0.0,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    Gz: float = 1.0,
+    pole_radius: float = 0.975,
+    w0: float = 0.0,
 ) -> dict:
     """Quick check: fixed point, eigenvalues, stability (4-D filtered)."""
     b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius ** 2])
+    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
     eigs = np.linalg.eigvals(J_fp)
@@ -187,24 +200,31 @@ def _henon2d_fixed_points(alpha: float, beta: float):
 
 def _henon2d_jacobian(beta: float, x: NDArray) -> NDArray:
     """Jacobian of the 2-D Hénon map at state x."""
-    return np.array([
-        [-2.0 * x[0], beta],
-        [1.0,          0.0 ],
-    ])
+    return np.array(
+        [
+            [-2.0 * x[0], beta],
+            [1.0, 0.0],
+        ]
+    )
 
 
 def _henon2d_iterate(alpha: float, beta: float, x: NDArray) -> NDArray:
     """Single iteration of the 2-D Hénon map."""
-    return np.array([
-        alpha - x[0] ** 2 + beta * x[1],
-        x[0],
-    ])
+    return np.array(
+        [
+            alpha - x[0] ** 2 + beta * x[1],
+            x[0],
+        ]
+    )
 
 
 def lyapunov_henon2d(
-    alpha: float = 1.4, beta: float = 0.3,
-    Nitera: int = 2000, Ndiscard: int = 1000,
-    perturbation: float = 0.1, seed: int = 42,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+    perturbation: float = 0.1,
+    seed: int = 42,
 ) -> dict:
     """Compute Lyapunov exponents for the standard 2-D Hénon map.
 
@@ -309,18 +329,18 @@ class EnsembleResult:
         Free-form metadata (parameters used for the run).
     """
 
-    fixed_point:        NDArray
-    eigenvalues:        NDArray
-    stable:             bool
+    fixed_point: NDArray
+    eigenvalues: NDArray
+    stable: bool
     initial_conditions: NDArray
-    exponents_per_ci:   NDArray
-    lmax_per_ci:        NDArray
-    mean_exponents:     NDArray
-    mean_lmax:          float
-    max_lmax:           float
-    n_chaotic:          int
-    n_stable:           int
-    metadata:           dict = field(default_factory=dict)
+    exponents_per_ci: NDArray
+    lmax_per_ci: NDArray
+    mean_exponents: NDArray
+    mean_lmax: float
+    max_lmax: float
+    n_chaotic: int
+    n_stable: int
+    metadata: dict = field(default_factory=dict)
 
     # ── CSV export ─────────────────────────────────────────────────────
 
@@ -358,13 +378,14 @@ class EnsembleResult:
             w.writerow([])
             w.writerow(["# mean_exponents"] + [f"{v:.10g}" for v in self.mean_exponents])
             w.writerow(["# mean_lmax", f"{self.mean_lmax:.10g}"])
-            w.writerow(["# max_lmax",  f"{self.max_lmax:.10g}"])
+            w.writerow(["# max_lmax", f"{self.max_lmax:.10g}"])
             w.writerow(["# n_chaotic", self.n_chaotic])
-            w.writerow(["# n_stable",  self.n_stable])
+            w.writerow(["# n_stable", self.n_stable])
         return path
 
 
 # ── Sampling helper (shared between 2-D and 4-D variants) ──────────────────
+
 
 def _sample_ics(
     fixed_point: NDArray,
@@ -382,19 +403,24 @@ def _sample_ics(
     """
     if seed is not None:
         np.random.seed(seed)
-    low  = fixed_point * (1.0 - perturbation)
+    low = fixed_point * (1.0 - perturbation)
     high = fixed_point * (1.0 + perturbation)
-    return np.random.uniform(low=low, high=high,
-                             size=(n_initial, len(fixed_point)))
+    return np.random.uniform(low=low, high=high, size=(n_initial, len(fixed_point)))
 
 
 # ── 4-D pole-filtered ensemble ─────────────────────────────────────────────
 
+
 def lyapunov_max_ensemble(
-    alpha: float = 1.4, beta: float = 0.3,
-    Gz: float = 1.0, pole_radius: float = 0.975, w0: float = 0.0,
-    Nitera: int = 2000, Ndiscard: int = 1000,
-    perturbation: float = 0.1, n_initial: int = 20,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    Gz: float = 1.0,
+    pole_radius: float = 0.975,
+    w0: float = 0.0,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+    perturbation: float = 0.1,
+    n_initial: int = 20,
     seed: int | None = 42,
 ) -> EnsembleResult:
     """Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map.
@@ -406,7 +432,7 @@ def lyapunov_max_ensemble(
     """
     dim = 4
     b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius ** 2])
+    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
 
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
@@ -416,7 +442,7 @@ def lyapunov_max_ensemble(
     ics = _sample_ics(xf, perturbation, n_initial, seed)
 
     exponents_per_ci = np.empty((n_initial, dim))
-    lmax_per_ci      = np.empty(n_initial)
+    lmax_per_ci = np.empty(n_initial)
 
     for i in range(n_initial):
         x = ics[i].copy()
@@ -435,7 +461,7 @@ def lyapunov_max_ensemble(
 
         exps = np.array([np.mean(log_r[d, :]) for d in range(dim)])
         exponents_per_ci[i] = exps
-        lmax_per_ci[i]      = float(np.max(exps))
+        lmax_per_ci[i] = float(np.max(exps))
 
     return EnsembleResult(
         fixed_point=xf,
@@ -450,27 +476,31 @@ def lyapunov_max_ensemble(
         n_chaotic=int(np.sum(lmax_per_ci > 0)),
         n_stable=int(np.sum(lmax_per_ci <= 0)),
         metadata={
-            "system":       "henon4d_pole_filtered",
-            "alpha":        alpha,
-            "beta":         beta,
-            "Gz":           Gz,
-            "pole_radius":  pole_radius,
-            "w0":           w0,
-            "Nitera":       Nitera,
-            "Ndiscard":     Ndiscard,
+            "system": "henon4d_pole_filtered",
+            "alpha": alpha,
+            "beta": beta,
+            "Gz": Gz,
+            "pole_radius": pole_radius,
+            "w0": w0,
+            "Nitera": Nitera,
+            "Ndiscard": Ndiscard,
             "perturbation": perturbation,
-            "n_initial":    n_initial,
-            "seed":         seed,
+            "n_initial": n_initial,
+            "seed": seed,
         },
     )
 
 
 # ── 2-D ensemble (positive fixed point, matching the TCC script) ──────────
 
+
 def lyapunov_henon2d_ensemble(
-    alpha: float = 1.4, beta: float = 0.3,
-    Nitera: int = 2000, Ndiscard: int = 1000,
-    perturbation: float = 0.1, n_initial: int = 20,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+    perturbation: float = 0.1,
+    n_initial: int = 20,
     seed: int | None = 42,
 ) -> EnsembleResult:
     """Ensemble Lyapunov protocol for the standard 2-D Hénon map.
@@ -489,7 +519,7 @@ def lyapunov_henon2d_ensemble(
     ics = _sample_ics(xf_p, perturbation, n_initial, seed)
 
     exponents_per_ci = np.empty((n_initial, dim))
-    lmax_per_ci      = np.empty(n_initial)
+    lmax_per_ci = np.empty(n_initial)
 
     for i in range(n_initial):
         x = ics[i].copy()
@@ -508,7 +538,7 @@ def lyapunov_henon2d_ensemble(
 
         exps = np.array([np.mean(log_r[d, :]) for d in range(dim)])
         exponents_per_ci[i] = exps
-        lmax_per_ci[i]      = float(np.max(exps))
+        lmax_per_ci[i] = float(np.max(exps))
 
     return EnsembleResult(
         fixed_point=xf_p,
@@ -523,14 +553,14 @@ def lyapunov_henon2d_ensemble(
         n_chaotic=int(np.sum(lmax_per_ci > 0)),
         n_stable=int(np.sum(lmax_per_ci <= 0)),
         metadata={
-            "system":       "henon2d_standard",
-            "alpha":        alpha,
-            "beta":         beta,
-            "Nitera":       Nitera,
-            "Ndiscard":     Ndiscard,
+            "system": "henon2d_standard",
+            "alpha": alpha,
+            "beta": beta,
+            "Nitera": Nitera,
+            "Ndiscard": Ndiscard,
             "perturbation": perturbation,
-            "n_initial":    n_initial,
-            "seed":         seed,
+            "n_initial": n_initial,
+            "seed": seed,
             "fixed_point_n": xf_n.tolist(),  # negative fp, for reference
         },
     )

@@ -14,13 +14,17 @@ N-th order:
 
 import numpy as np
 from numpy.typing import NDArray
+
 from .maps import _henon_n4_step
 
 
 def transmit(
-    message: NDArray, mu: float = 0.01,
-    a: float = 1.4, b: float = 0.3,
-    x0: float = 0.0, y0: float = 0.0,
+    message: NDArray,
+    mu: float = 0.01,
+    a: float = 1.4,
+    b: float = 0.3,
+    x0: float = 0.0,
+    y0: float = 0.0,
 ) -> NDArray:
     N = len(message)
     x1 = np.empty(N + 1)
@@ -36,9 +40,13 @@ def transmit(
 
 
 def transmit_order_n(
-    message: NDArray, fir_coeffs: NDArray,
-    mu: float = 0.01, a: float = 1.4, b: float = 0.3,
-    x0: NDArray | None = None, seed: int | None = None,
+    message: NDArray,
+    fir_coeffs: NDArray,
+    mu: float = 0.01,
+    a: float = 1.4,
+    b: float = 0.3,
+    x0: NDArray | None = None,
+    seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)

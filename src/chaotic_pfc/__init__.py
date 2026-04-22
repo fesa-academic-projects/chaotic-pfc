@@ -18,39 +18,61 @@ Modules
 - config          : centralised configuration
 """
 
-from .maps        import henon_standard, henon_generalised, henon_filtered, henon_order_n
-from .signals     import binary_message
-from .transmitter import transmit, transmit_order_n
-from .channel     import ideal_channel, fir_channel
-from .receiver    import receive, receive_order_n
-from .spectral    import psd_normalised
-from .lyapunov    import (
-    lyapunov_max, fixed_point_stability, lyapunov_henon2d,
-    lyapunov_max_ensemble, lyapunov_henon2d_ensemble,
+from .channel import fir_channel, ideal_channel
+from .lyapunov import (
     EnsembleResult,
+    fixed_point_stability,
+    lyapunov_henon2d,
+    lyapunov_henon2d_ensemble,
+    lyapunov_max,
+    lyapunov_max_ensemble,
 )
-from .sweep       import (
+from .maps import henon_filtered, henon_generalised, henon_order_n, henon_standard
+from .receiver import receive, receive_order_n
+from .signals import binary_message
+from .spectral import psd_normalised
+from .sweep import (
+    FILTER_TYPES,
+    WINDOW_DISPLAY_NAMES,
+    WINDOWS,
     SweepResult,
-    run_sweep, save_sweep, load_sweep, precompute_fir_bank,
-    WINDOWS, FILTER_TYPES, WINDOW_DISPLAY_NAMES,
+    load_sweep,
+    precompute_fir_bank,
+    run_sweep,
+    save_sweep,
 )
+from .transmitter import transmit, transmit_order_n
 
 __all__ = [
-    # Maps
-    "henon_standard", "henon_generalised", "henon_filtered", "henon_order_n",
-    # Communication
-    "binary_message",
-    "transmit", "transmit_order_n",
-    "ideal_channel", "fir_channel",
-    "receive", "receive_order_n",
-    "psd_normalised",
-    # Lyapunov (single config)
-    "lyapunov_max", "fixed_point_stability", "lyapunov_henon2d",
-    # Lyapunov (ensemble protocol — 20 CIs ± perturbation)
-    "lyapunov_max_ensemble", "lyapunov_henon2d_ensemble",
+    "FILTER_TYPES",
+    "WINDOWS",
+    "WINDOW_DISPLAY_NAMES",
     "EnsembleResult",
     # Sweep
     "SweepResult",
-    "run_sweep", "save_sweep", "load_sweep", "precompute_fir_bank",
-    "WINDOWS", "FILTER_TYPES", "WINDOW_DISPLAY_NAMES",
+    # Communication
+    "binary_message",
+    "fir_channel",
+    "fixed_point_stability",
+    "henon_filtered",
+    "henon_generalised",
+    "henon_order_n",
+    # Maps
+    "henon_standard",
+    "ideal_channel",
+    "load_sweep",
+    "lyapunov_henon2d",
+    "lyapunov_henon2d_ensemble",
+    # Lyapunov (single config)
+    "lyapunov_max",
+    # Lyapunov (ensemble protocol — 20 CIs ± perturbation)
+    "lyapunov_max_ensemble",
+    "precompute_fir_bank",
+    "psd_normalised",
+    "receive",
+    "receive_order_n",
+    "run_sweep",
+    "save_sweep",
+    "transmit",
+    "transmit_order_n",
 ]

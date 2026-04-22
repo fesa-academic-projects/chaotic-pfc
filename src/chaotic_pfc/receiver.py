@@ -13,13 +13,17 @@ N-th order: carrier from filtered state index 2.
 
 import numpy as np
 from numpy.typing import NDArray
+
 from .maps import _henon_n4_step
 
 
 def receive(
-    r: NDArray, mu: float = 0.01,
-    a: float = 1.4, b: float = 0.3,
-    y0: float = 0.0, z0: float = 0.0,
+    r: NDArray,
+    mu: float = 0.01,
+    a: float = 1.4,
+    b: float = 0.3,
+    y0: float = 0.0,
+    z0: float = 0.0,
 ) -> NDArray:
     N = len(r)
     y1 = np.empty(N + 1)
@@ -35,9 +39,13 @@ def receive(
 
 
 def receive_order_n(
-    r: NDArray, fir_coeffs: NDArray,
-    mu: float = 0.01, a: float = 1.4, b: float = 0.3,
-    y0: NDArray | None = None, seed: int | None = None,
+    r: NDArray,
+    fir_coeffs: NDArray,
+    mu: float = 0.01,
+    a: float = 1.4,
+    b: float = 0.3,
+    y0: NDArray | None = None,
+    seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
     N = len(r)
     Nc = len(fir_coeffs)

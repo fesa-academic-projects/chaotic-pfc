@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """02_sensitivity.py — Sensitive Dependence on Initial Conditions (SDIC)."""
-import argparse, os, sys
+
+import argparse
+import os
+import sys
 from pathlib import Path
+
 import numpy as np
+
 
 def parse_args():
     p = argparse.ArgumentParser()
@@ -12,22 +17,30 @@ def parse_args():
     p.add_argument("--no-display", dest="no_display", action="store_true")
     return p.parse_args()
 
+
 def _backend(nd):
     hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl: import matplotlib; matplotlib.use("Agg")
+    if hl:
+        import matplotlib
+
+        matplotlib.use("Agg")
     return hl
 
+
 def main():
-    args = parse_args(); headless = _backend(args.no_display)
+    args = parse_args()
+    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
+
+    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
     from chaotic_pfc.maps import henon_standard
     from chaotic_pfc.plotting import plot_sensitivity
-    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     fmt = cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
-    if args.save: fdir.mkdir(parents=True, exist_ok=True)
+    if args.save:
+        fdir.mkdir(parents=True, exist_ok=True)
 
     print(f"[02] SDIC  |  steps={args.steps}  ε={args.epsilon:.0e}")
 
@@ -40,7 +53,11 @@ def main():
 
     if headless:
         plt.close(fig)
-        if args.save: print(f"    Saved -> {sp}")
-    else: plt.show()
+        if args.save:
+            print(f"    Saved -> {sp}")
+    else:
+        plt.show()
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()

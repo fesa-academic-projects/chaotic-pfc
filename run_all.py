@@ -44,20 +44,25 @@ COMM_SCRIPTS = [
     "scripts/06_lyapunov.py",
 ]
 SWEEP_COMPUTE_SCRIPT = "scripts/07_henon_sweep_compute.py"
-SWEEP_PLOT_SCRIPT    = "scripts/08_henon_sweep_plot.py"
+SWEEP_PLOT_SCRIPT = "scripts/08_henon_sweep_plot.py"
 
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("--save", action="store_true",
-                   help="Save figures produced by each script")
-    p.add_argument("--no-display", dest="no_display", action="store_true",
-                   help="Run headless (implies --save)")
-    p.add_argument("--skip-sweep", action="store_true",
-                   help="Skip script 07 (long sweep); run 08 from existing .npz")
-    p.add_argument("--quick-sweep", action="store_true",
-                   help="Run script 07 with a tiny grid (~seconds) instead of "
-                        "the full ~5 h sweep")
+    p.add_argument("--save", action="store_true", help="Save figures produced by each script")
+    p.add_argument(
+        "--no-display", dest="no_display", action="store_true", help="Run headless (implies --save)"
+    )
+    p.add_argument(
+        "--skip-sweep",
+        action="store_true",
+        help="Skip script 07 (long sweep); run 08 from existing .npz",
+    )
+    p.add_argument(
+        "--quick-sweep",
+        action="store_true",
+        help="Run script 07 with a tiny grid (~seconds) instead of the full ~5 h sweep",
+    )
     return p.parse_args()
 
 
@@ -65,7 +70,7 @@ def _run(script: str, extra: list[str]) -> None:
     root = Path(__file__).resolve().parent
     path = root / script
     print(f"\n{'=' * 60}\nRunning: {script}\n{'=' * 60}")
-    result = subprocess.run([sys.executable, str(path)] + extra)
+    result = subprocess.run([sys.executable, str(path), *extra])
     if result.returncode != 0:
         print(f"[ERROR] {script} exited with code {result.returncode}")
         sys.exit(result.returncode)

@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """03_comm_ideal_channel.py — Full pipeline over ideal (noiseless) channel."""
-import argparse, os, sys
+
+import argparse
+import os
+import sys
 from pathlib import Path
+
 import numpy as np
+
 
 def parse_args():
     from chaotic_pfc.config import DEFAULT_CONFIG as d
+
     p = argparse.ArgumentParser()
     p.add_argument("--N", type=int, default=d.comm.N)
     p.add_argument("--mu", type=float, default=d.comm.mu)
@@ -14,28 +20,36 @@ def parse_args():
     p.add_argument("--no-display", dest="no_display", action="store_true")
     return p.parse_args()
 
+
 def _backend(nd):
     hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl: import matplotlib; matplotlib.use("Agg")
+    if hl:
+        import matplotlib
+
+        matplotlib.use("Agg")
     return hl
 
+
 def main():
-    args = parse_args(); headless = _backend(args.no_display)
+    args = parse_args()
+    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
-    from chaotic_pfc.signals import binary_message
-    from chaotic_pfc.transmitter import transmit
+
     from chaotic_pfc.channel import ideal_channel
-    from chaotic_pfc.receiver import receive
-    from chaotic_pfc.spectral import psd_normalised
-    from chaotic_pfc.plotting import plot_comm_grid
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
+    from chaotic_pfc.plotting import plot_comm_grid
+    from chaotic_pfc.receiver import receive
+    from chaotic_pfc.signals import binary_message
+    from chaotic_pfc.spectral import psd_normalised
+    from chaotic_pfc.transmitter import transmit
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     tr = cfg.comm.transient
     sp_cfg = cfg.spectral
     fmt = cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
-    if args.save: fdir.mkdir(parents=True, exist_ok=True)
+    if args.save:
+        fdir.mkdir(parents=True, exist_ok=True)
 
     print(f"[03] Ideal channel  |  N={args.N:,}  μ={args.mu}  T={args.period}")
 
@@ -50,26 +64,40 @@ def main():
     print(f"    MSE (n > {tr}): {mse:.4e}")
 
     n = np.arange(args.N)
-    omega, psd_m    = psd_normalised(m,     sp_cfg.nfft, sp_cfg.window_length)
-    _,     psd_s    = psd_normalised(s,     sp_cfg.nfft, sp_cfg.window_length)
-    _,     psd_r    = psd_normalised(r,     sp_cfg.nfft, sp_cfg.window_length)
-    _,     psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length)
+    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length)
+    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length)
+    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length)
+    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length)
 
     win = slice(cfg.plot.time_window_start, cfg.plot.time_window_end)
     save_path = str(fdir / f"comm_ideal.{fmt}") if args.save else None
 
     fig = plot_comm_grid(
-        n, m, s, r, m_hat,
-        omega, psd_m, psd_s, psd_r, psd_mhat,
+        n,
+        m,
+        s,
+        r,
+        m_hat,
+        omega,
+        psd_m,
+        psd_s,
+        psd_r,
+        psd_mhat,
         time_window=win,
-        suptitle=(r"Comunicação Caótica — Canal Ideal"
-                  r"  ($\mu=" + str(args.mu) + r"$)"),
+        suptitle=(
+            r"Comunicação Caótica — Canal Ideal"
+            r"  ($\mu=" + str(args.mu) + r"$)"
+        ),
         save_path=save_path,
     )
 
     if headless:
         plt.close(fig)
-        if args.save: print(f"    Saved -> {save_path}")
-    else: plt.show()
+        if args.save:
+            print(f"    Saved -> {save_path}")
+    else:
+        plt.show()
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()

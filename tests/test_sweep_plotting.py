@@ -1,9 +1,11 @@
 """tests/test_sweep_plotting.py — Tests for the sweep plotting module."""
+
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import matplotlib
+
 matplotlib.use("Agg")  # must come before pyplot is imported anywhere
 
 import numpy as np
@@ -32,7 +34,8 @@ def _dummy_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:
         h_std=np.abs(h) * 0.1,
         orders=np.arange(2, 2 + ncoef),
         cutoffs=np.linspace(0.1, 0.9, ncut),
-        window="hamming", filter_type="lowpass",
+        window="hamming",
+        filter_type="lowpass",
         metadata={"Nitera": 10, "Nmap": 50, "n_initial": 2},
     )
 
