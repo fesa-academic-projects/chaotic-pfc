@@ -122,6 +122,22 @@ pytest
 The first run compiles the Numba kernels and takes about two minutes;
 subsequent runs use the cache and finish in under 30 seconds.
 
+## Development
+
+Enable the pre-commit hooks so Ruff runs automatically on every
+`git commit`:
+
+```bash
+pre-commit install
+```
+
+Run the full suite of hooks against every file (useful after
+`pre-commit autoupdate` or before pushing):
+
+```bash
+pre-commit run --all-files
+```
+
 ## License
 
 Distributed under the terms of the BSD 3-Clause License. See

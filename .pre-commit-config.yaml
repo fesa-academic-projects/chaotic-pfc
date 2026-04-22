@@ -1,0 +1,36 @@
+# Pre-commit hooks for chaotic-pfc
+#
+# Install once:   pre-commit install
+# Run manually:   pre-commit run --all-files
+# Update hooks:   pre-commit autoupdate
+#
+# These hooks run on every `git commit` and reject the commit if any
+# check fails. The same checks run on the CI, so this is mostly a
+# convenience for catching problems locally without waiting for a
+# push round-trip.
+#
+# Design note: mypy is intentionally NOT in the commit-time hooks.
+# It has a noticeable cold-start cost (loads the whole type graph)
+# and the CI catches type errors anyway. Developers who want mypy
+# on every commit can add a pre-push hook locally.
+
+repos:
+  # ── Basic file hygiene (fast, bundled with pre-commit) ────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=5000"]   # allow versioned .npz (~3 MB) through
+
+  # ── Ruff — lint and format (fast, runs in milliseconds) ───────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.11
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
