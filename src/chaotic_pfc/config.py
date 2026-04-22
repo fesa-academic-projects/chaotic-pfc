@@ -72,6 +72,26 @@ class PlotConfig:
 
 
 @dataclass
+class SweepConfig:
+    """Parameters for the 2-D (order, cutoff) Lyapunov sweep.
+
+    Used by :mod:`chaotic_pfc.sweep`. The full grid is
+    ``len(orders) × n_cutoffs`` points; at the defaults this is 4 000.
+    """
+    Nitera:    int = 500     # burn-in iterations
+    Nmap:      int = 3000    # iterations used for the Lyapunov estimate
+    n_initial: int = 25      # ICs averaged per grid point
+    order_lo:  int = 2
+    order_hi:  int = 42      # exclusive
+    n_cutoffs: int = 100
+    default_window:      str = "hamming"
+    default_filter_type: str = "lowpass"
+    data_dir:    str = "data/sweeps"
+    figures_dir: str = "figures/sweeps"
+    fig_fmt:     str = "png"
+
+
+@dataclass
 class ExperimentConfig:
     comm: CommConfig = field(default_factory=CommConfig)
     channel: ChannelConfig = field(default_factory=ChannelConfig)
@@ -79,6 +99,7 @@ class ExperimentConfig:
     spectral: SpectralConfig = field(default_factory=SpectralConfig)
     lyapunov: LyapunovConfig = field(default_factory=LyapunovConfig)
     plot: PlotConfig = field(default_factory=PlotConfig)
+    sweep: SweepConfig = field(default_factory=SweepConfig)
     seed: int = 42
 
 
