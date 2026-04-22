@@ -1,0 +1,2 @@
+[console_scripts]
+chaotic-pfc = chaotic_pfc.__main__:main
