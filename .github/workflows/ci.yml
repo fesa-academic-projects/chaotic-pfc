@@ -12,6 +12,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Opt into Node.js 24 now to silence the Node.js 20 deprecation warning.
+# Actions will be forced to Node.js 24 by default from June 2nd, 2026.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   # ───────────────────────────────────────────────────────────────────────
   # Lint: Ruff check + format check
