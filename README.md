@@ -34,6 +34,13 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
+For a byte-exact reproduction of the environment tested in CI (useful
+when bisecting a regression), install from the lock file instead:
+
+```bash
+pip install -r requirements-lock.txt
+```
+
 ## Usage
 
 Run the full pipeline, saving every figure headlessly:
