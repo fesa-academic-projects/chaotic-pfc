@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "chaotic-pfc"
 version = "0.3.0"
 description = "Chaotic communication system based on the Hénon map"
-license = { text = "MIT" }
+license = { text = "BSD-3-Clause" }
 requires-python = ">=3.10"
 dependencies = [
     "numpy>=1.26",

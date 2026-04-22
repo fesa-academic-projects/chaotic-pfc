@@ -103,6 +103,8 @@ desktop.ini
 # ─── Project-specific ─────────────────────────────────────────────────────
 # NOTE: data/sweeps/**/*.npz are intentionally versioned — the full
 # henon_sweep_compute pipeline takes ~5 h to regenerate.
+# NOTE: data/lyapunov/*.csv are intentionally versioned — the ensemble
+# tables are the canonical reference used in the TCC paper.
 # NOTE: figures/ is intentionally versioned — it contains the final TCC
 # artifacts and is the canonical output location after the old figuras/
 # directory was migrated in.
