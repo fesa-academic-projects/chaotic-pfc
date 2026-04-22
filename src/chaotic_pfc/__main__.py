@@ -1,5 +1,25 @@
 """
-Allow: python -m chaotic_pfc [experiment] [--save]
+__main__.py
+===========
+Dispatcher for ``python -m chaotic_pfc``.
+
+Lets the package be invoked directly, either to run a single experiment
+by name or every experiment at once. This is a thin wrapper that
+``subprocess``-runs the numbered scripts — the scripts remain the
+canonical entry points for local development, while this module
+provides a short, installable alias (``chaotic-pfc``, declared in
+``pyproject.toml`` under ``[project.scripts]``).
+
+Usage
+-----
+Run every experiment::
+
+    python -m chaotic_pfc --save --no-display
+
+Run a single experiment by its short name::
+
+    python -m chaotic_pfc lyapunov --save
+    python -m chaotic_pfc sweep_compute
 """
 
 import argparse
@@ -20,6 +40,11 @@ SCRIPTS = {
 
 
 def main() -> None:
+    """Parse CLI args and run the selected experiment(s) as subprocesses.
+
+    Exits with the first non-zero return code it encounters, which lets
+    CI detect failures in any of the numbered scripts.
+    """
     parser = argparse.ArgumentParser(prog="chaotic_pfc")
     parser.add_argument("experiment", nargs="?", choices=[*list(SCRIPTS), "all"], default="all")
     parser.add_argument("--save", action="store_true")

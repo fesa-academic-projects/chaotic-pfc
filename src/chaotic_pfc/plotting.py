@@ -68,6 +68,7 @@ C = {
 
 
 def _style(ax: Axes, ts: int = 12) -> None:
+    """Apply uniform grid/tick/spine styling to ``ax``."""
     ax.grid(True, alpha=0.25, linewidth=0.5)
     ax.tick_params(labelsize=ts, width=1.2, direction="in")
     for sp in ax.spines.values():
@@ -75,6 +76,7 @@ def _style(ax: Axes, ts: int = 12) -> None:
 
 
 def _save(fig: Figure, path: str | None) -> None:
+    """Write ``fig`` to ``path`` if ``path`` is not ``None``; otherwise no-op."""
     if path:
         fig.savefig(path)
 
@@ -90,6 +92,27 @@ def plot_attractor(
     ylabel: str = r"$x_2[n]$",
     save_path: str | None = None,
 ) -> Figure:
+    """Plot a phase-space portrait of a 2-D trajectory.
+
+    Parameters
+    ----------
+    X, Y
+        State-variable trajectories, same length.
+    title
+        Optional figure title. If empty, no title is drawn.
+    xlabel, ylabel
+        Axis labels. Defaults use LaTeX-style math for ``x_1`` and
+        ``x_2``.
+    save_path
+        If given, the figure is written to this path. The extension
+        selects the format (``.svg``, ``.png``, etc.).
+
+    Returns
+    -------
+    Figure
+        The matplotlib ``Figure`` object. Returned so callers can
+        inspect or further annotate it before showing / closing.
+    """
     fig, ax = plt.subplots(figsize=(6, 5))
     ax.plot(X, Y, ",", color=C["traj"], alpha=0.8, markersize=0.3)
     if title:
@@ -111,6 +134,27 @@ def plot_sensitivity(
     X2: NDArray,
     save_path: str | None = None,
 ) -> Figure:
+    """Overlay two Hénon trajectories to illustrate sensitivity to ICs.
+
+    Plots two state trajectories that start from infinitesimally
+    different initial conditions, making visually obvious how they
+    diverge exponentially — the classic demonstration of chaos.
+
+    Parameters
+    ----------
+    n
+        Sample index axis, shape ``(N,)``.
+    X1, X2
+        Two state trajectories evaluated on ``n``. Typically differing
+        only by ``x0_2 = x0_1 + 1e-4``.
+    save_path
+        If given, the figure is written to this path.
+
+    Returns
+    -------
+    Figure
+        The matplotlib ``Figure`` object.
+    """
     fig, ax = plt.subplots(figsize=(9, 4))
     ax.plot(n, X1, label=r"$x^{(1)}[n],\; x_0=0$", color="steelblue", linewidth=1.2)
     ax.plot(n, X2, label=r"$x^{(2)}[n],\; x_0=10^{-4}$", color="tomato", linewidth=1.2, alpha=0.85)
