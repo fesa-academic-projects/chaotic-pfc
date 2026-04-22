@@ -130,5 +130,106 @@ class TestLyapunov(unittest.TestCase):
         self.assertFalse(res["stable_p"])
 
 
+class TestLyapunovEnsemble(unittest.TestCase):
+    """Protocol: sample N_ci ICs ±perturbation around the fixed point."""
+
+    def test_2d_shapes(self):
+        from chaotic_pfc.lyapunov import (
+            EnsembleResult, lyapunov_henon2d_ensemble,
+        )
+        r = lyapunov_henon2d_ensemble(
+            Nitera=200, Ndiscard=100, n_initial=5, seed=0,
+        )
+        self.assertIsInstance(r, EnsembleResult)
+        self.assertEqual(r.initial_conditions.shape, (5, 2))
+        self.assertEqual(r.exponents_per_ci.shape,  (5, 2))
+        self.assertEqual(r.lmax_per_ci.shape,       (5,))
+        self.assertEqual(r.mean_exponents.shape,    (2,))
+
+    def test_4d_shapes(self):
+        from chaotic_pfc.lyapunov import lyapunov_max_ensemble
+        r = lyapunov_max_ensemble(
+            Nitera=200, Ndiscard=100, n_initial=5, seed=0,
+        )
+        self.assertEqual(r.initial_conditions.shape, (5, 4))
+        self.assertEqual(r.exponents_per_ci.shape,  (5, 4))
+        self.assertEqual(r.lmax_per_ci.shape,       (5,))
+        self.assertEqual(r.mean_exponents.shape,    (4,))
+
+    def test_ics_within_perturbation_box(self):
+        """Every sampled IC must lie within [fp*(1-p), fp*(1+p)]."""
+        from chaotic_pfc.lyapunov import lyapunov_henon2d_ensemble
+        p = 0.1
+        r = lyapunov_henon2d_ensemble(
+            Nitera=100, Ndiscard=50, n_initial=10, perturbation=p, seed=1,
+        )
+        fp = r.fixed_point
+        low  = np.minimum(fp * (1 - p), fp * (1 + p))
+        high = np.maximum(fp * (1 - p), fp * (1 + p))
+        self.assertTrue(np.all(r.initial_conditions >= low))
+        self.assertTrue(np.all(r.initial_conditions <= high))
+
+    def test_aggregates_match_arrays(self):
+        """mean_lmax/max_lmax should match np.mean/np.max of lmax_per_ci."""
+        from chaotic_pfc.lyapunov import lyapunov_henon2d_ensemble
+        r = lyapunov_henon2d_ensemble(
+            Nitera=100, Ndiscard=50, n_initial=8, seed=7,
+        )
+        np.testing.assert_allclose(r.mean_lmax, r.lmax_per_ci.mean())
+        np.testing.assert_allclose(r.max_lmax,  r.lmax_per_ci.max())
+        np.testing.assert_allclose(
+            r.mean_exponents, r.exponents_per_ci.mean(axis=0),
+        )
+        self.assertEqual(r.n_chaotic + r.n_stable, len(r.lmax_per_ci))
+
+    def test_determinism_with_seed(self):
+        """Same seed → byte-identical arrays (no Numba prange here)."""
+        from chaotic_pfc.lyapunov import lyapunov_henon2d_ensemble
+        kw = dict(Nitera=100, Ndiscard=50, n_initial=5, seed=123)
+        r1 = lyapunov_henon2d_ensemble(**kw)
+        r2 = lyapunov_henon2d_ensemble(**kw)
+        np.testing.assert_array_equal(r1.initial_conditions,
+                                      r2.initial_conditions)
+        np.testing.assert_array_equal(r1.exponents_per_ci,
+                                      r2.exponents_per_ci)
+        np.testing.assert_array_equal(r1.lmax_per_ci, r2.lmax_per_ci)
+
+    def test_2d_henon_is_chaotic_on_average(self):
+        """Standard 2-D Hénon (α=1.4, β=0.3) should yield mean λ_max > 0."""
+        from chaotic_pfc.lyapunov import lyapunov_henon2d_ensemble
+        r = lyapunov_henon2d_ensemble(
+            Nitera=1000, Ndiscard=500, n_initial=10, seed=42,
+        )
+        self.assertGreater(r.mean_lmax, 0.3,
+                           "Ensemble mean λ_max should be near 0.42")
+
+    def test_csv_roundtrip(self):
+        """to_csv writes a readable file with expected columns."""
+        import csv
+        from tempfile import TemporaryDirectory
+
+        from chaotic_pfc.lyapunov import lyapunov_henon2d_ensemble
+
+        r = lyapunov_henon2d_ensemble(
+            Nitera=100, Ndiscard=50, n_initial=4, seed=0,
+        )
+        with TemporaryDirectory() as td:
+            from pathlib import Path
+            path = Path(td) / "out.csv"
+            returned = r.to_csv(path)
+            self.assertEqual(returned, path)
+            self.assertTrue(path.exists())
+
+            with path.open() as f:
+                reader = csv.reader(f)
+                header = next(reader)
+                self.assertEqual(header[0], "ci")
+                self.assertIn("lmax",   header)
+                self.assertIn("status", header)
+                # Read 4 data rows
+                rows = [next(reader) for _ in range(4)]
+                self.assertEqual([row[0] for row in rows], ["1", "2", "3", "4"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -24,7 +24,11 @@ from .transmitter import transmit, transmit_order_n
 from .channel     import ideal_channel, fir_channel
 from .receiver    import receive, receive_order_n
 from .spectral    import psd_normalised
-from .lyapunov    import lyapunov_max, fixed_point_stability, lyapunov_henon2d
+from .lyapunov    import (
+    lyapunov_max, fixed_point_stability, lyapunov_henon2d,
+    lyapunov_max_ensemble, lyapunov_henon2d_ensemble,
+    EnsembleResult,
+)
 from .sweep       import (
     SweepResult,
     run_sweep, save_sweep, load_sweep, precompute_fir_bank,
@@ -42,6 +46,9 @@ __all__ = [
     "psd_normalised",
     # Lyapunov (single config)
     "lyapunov_max", "fixed_point_stability", "lyapunov_henon2d",
+    # Lyapunov (ensemble protocol — 20 CIs ± perturbation)
+    "lyapunov_max_ensemble", "lyapunov_henon2d_ensemble",
+    "EnsembleResult",
     # Sweep
     "SweepResult",
     "run_sweep", "save_sweep", "load_sweep", "precompute_fir_bank",
