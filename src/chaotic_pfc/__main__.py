@@ -7,12 +7,14 @@ import argparse
 from pathlib import Path
 
 SCRIPTS = {
-    "attractors":  "scripts/01_henon_attractors.py",
-    "sensitivity": "scripts/02_sensitivity.py",
-    "ideal":       "scripts/03_comm_ideal_channel.py",
-    "fir":         "scripts/04_comm_fir_channel.py",
-    "order_n":     "scripts/05_comm_order_n.py",
-    "lyapunov":    "scripts/06_lyapunov.py",
+    "attractors":    "scripts/01_henon_attractors.py",
+    "sensitivity":   "scripts/02_sensitivity.py",
+    "ideal":         "scripts/03_comm_ideal_channel.py",
+    "fir":           "scripts/04_comm_fir_channel.py",
+    "order_n":       "scripts/05_comm_order_n.py",
+    "lyapunov":      "scripts/06_lyapunov.py",
+    "sweep_compute": "scripts/07_henon_sweep_compute.py",
+    "sweep_plot":    "scripts/08_henon_sweep_plot.py",
 }
 
 def main() -> None:

@@ -101,14 +101,13 @@ Thumbs.db
 desktop.ini
 
 # ─── Project-specific ─────────────────────────────────────────────────────
-# NOTE: *.npz and *.npy are intentionally NOT ignored — the henon_processar
-# pipeline takes ~5h to regenerate, so checkpoints are versioned.
-# NOTE: figures/ and figuras/ are intentionally NOT ignored — they will be
-# unified into a single output directory in the future.
+# NOTE: data/sweeps/**/*.npz are intentionally versioned — the full
+# henon_sweep_compute pipeline takes ~5 h to regenerate.
+# NOTE: figures/ is intentionally versioned — it contains the final TCC
+# artifacts and is the canonical output location after the old figuras/
+# directory was migrated in.
 
-# Scratch / experimental scripts kept locally
-henon_plotar.py
-henon_processar.py
+# Scratch / experimental scripts and temporary dirs
 scratch/
 tmp/
 *.tmp
