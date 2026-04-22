@@ -341,13 +341,22 @@ def _sweep_kernel(
     cutoffs: NDArray,
     fir_bank: NDArray,
     gains: NDArray,
+    perturbations: NDArray,
     Nitera: int,
     Nmap: int,
     n_initial: int,
     alpha: float,
     beta: float,
 ) -> tuple[NDArray, NDArray]:
-    """Parallel inner sweep. Returns (h, h_std), both (Ncoef, Ncut)."""
+    """Parallel inner sweep. Returns (h, h_std), both (Ncoef, Ncut).
+
+    ``perturbations`` has shape ``(Ncoef, Ncut, n_initial, max_Ns)`` and
+    provides the stochastic seed values for every grid point. Generating
+    them outside the kernel keeps the sweep deterministic under
+    ``np.random.seed``: inside the ``prange`` loop, Numba uses a separate
+    per-thread RNG state that does not honour the global seed, so calling
+    ``np.random.rand`` here would make repeat runs byte-different.
+    """
     Ncoef = len(orders)
     Ncut = len(cutoffs)
     Ntot = Ncoef * Ncut
@@ -378,9 +387,11 @@ def _sweep_kernel(
 
         for ci in range(n_initial):
             h_samples[ci] = np.nan
+            # Pre-generated noise for this (i, j, ci); slice to Ns components.
+            noise = perturbations[i, j, ci, :Ns]
 
             if Ns == 1:
-                x = np.random.rand(Ns) * 0.1
+                x = noise * 0.1
                 for _ in range(Nitera):
                     x = _henon_n1(x, alpha, beta, c)
                 if np.isnan(x[0]) or np.isinf(x[0]):
@@ -389,7 +400,7 @@ def _sweep_kernel(
                 h_samples[ci] = _lyap_online_n1(x, Nmap, Ns, c, alpha, beta)
 
             elif Ns == 2:
-                x = 0.1 * np.random.rand(Ns) + np.array([p1, p2])
+                x = 0.1 * noise + np.array([p1, p2])
                 for _ in range(Nitera):
                     x = _henon_n2(x, alpha, beta, c)
                 if np.isnan(x[0]) or np.isinf(x[0]):
@@ -398,7 +409,7 @@ def _sweep_kernel(
                 h_samples[ci] = _lyap_online_n2(x, Nmap, Ns, c, alpha, beta)
 
             elif Ns == 3:
-                x = 0.1 * np.random.rand(Ns) + np.array([p1, p2, p3])
+                x = 0.1 * noise + np.array([p1, p2, p3])
                 for _ in range(Nitera):
                     x = _henon_n3(x, alpha, beta, c)
                 if np.isnan(x[0]) or np.isinf(x[0]):
@@ -413,7 +424,7 @@ def _sweep_kernel(
                 fp[2] = p3
                 for k in range(3, Ns):
                     fp[k] = p1
-                x = 0.1 * np.random.rand(Ns) + fp
+                x = 0.1 * noise + fp
                 for _ in range(Nitera):
                     x = _henon_n4(x, alpha, beta, c)
                 if np.isnan(x[0]) or np.isinf(x[0]):
@@ -481,6 +492,37 @@ class SweepResult:
         """Human-readable name used for output directories."""
         pretty = WINDOW_DISPLAY_NAMES.get(self.window, self.window.capitalize())
         return f"{pretty} ({self.filter_type})"
+
+
+# ───────────────────────────────────────────────────────────────────────────
+
+
+def _precompute_perturbations(
+    orders: NDArray,
+    n_cutoffs: int,
+    n_initial: int,
+    seed: int | None,
+) -> NDArray:
+    """Build the deterministic perturbation tensor consumed by the kernel.
+
+    Returns an array of shape ``(Ncoef, n_cutoffs, n_initial, max_Ns)``
+    filled with uniform ``[0, 1)`` samples, where ``max_Ns = orders.max()``.
+    Only the first ``Ns_i`` components along the last axis are actually
+    used for each row ``i`` of ``orders``; the remainder is padding that
+    the kernel never reads.
+
+    Using :func:`np.random.seed` with an integer seed guarantees
+    byte-identical output across runs, which propagates determinism to
+    the whole sweep. Passing ``seed=None`` leaves the RNG state
+    untouched (useful for warm-up runs whose output is discarded).
+    """
+    Ncoef = len(orders)
+    max_Ns = int(orders.max()) if Ncoef > 0 else 0
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    return np.random.rand(Ncoef, n_cutoffs, n_initial, max_Ns)
 
 
 # ───────────────────────────────────────────────────────────────────────────
@@ -608,9 +650,6 @@ def run_sweep(
     orders_arr = np.asarray(orders, dtype=np.int64)
     cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
 
-    if seed is not None:
-        np.random.seed(seed)
-
     fir_bank, gains = precompute_fir_bank(
         orders_arr,
         cutoffs_arr,
@@ -618,13 +657,33 @@ def run_sweep(
         window,
     )
 
+    # Pre-generate every perturbation array on the Python side so the
+    # kernel is deterministic. The Numba prange uses per-thread RNG
+    # states that do not honour np.random.seed, so drawing inside the
+    # kernel would make repeat runs byte-different.
+    perturbations = _precompute_perturbations(
+        orders_arr,
+        len(cutoffs_arr),
+        n_initial,
+        seed,
+    )
+
     if warmup:
         # Trigger Numba compilation on a tiny slice. Output discarded.
+        # Use a fresh perturbation slice so the warmup does not consume
+        # the deterministic noise used by the real run.
+        _warmup_perturbations = _precompute_perturbations(
+            orders_arr[:2],
+            3,
+            2,
+            seed=None,
+        )
         _sweep_kernel(
             orders_arr[:2].astype(np.float64),
             cutoffs_arr[:3],
             fir_bank[:2, :3, :],
             gains[:2, :3],
+            _warmup_perturbations,
             10,
             50,
             2,
@@ -637,6 +696,7 @@ def run_sweep(
         cutoffs_arr,
         fir_bank,
         gains,
+        perturbations,
         Nitera,
         Nmap,
         n_initial,

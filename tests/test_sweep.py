@@ -125,15 +125,13 @@ class TestRunSweep(unittest.TestCase):
         """At least some grid points should yield a finite λ_max."""
         self.assertTrue(np.any(np.isfinite(self.result.h)))
 
-    def test_seed_produces_similar_statistics(self):
-        """Two runs with the same seed produce statistically similar results.
+    def test_determinism_with_seed(self):
+        """Two runs with the same seed produce byte-identical arrays.
 
-        Note: exact bit-for-bit determinism is not guaranteed because the
-        inner kernel runs under Numba's ``prange``, which has its own
-        per-thread RNG state that is not controlled by ``np.random.seed``.
-        What we can check is that the averaged λ_max over ``n_initial``
-        ICs stays in the same ball-park between runs — the usual
-        stability criterion for a stochastic Lyapunov estimate.
+        This is stronger than just "similar" — because every stochastic
+        sample used by the kernel is now generated on the Python side via
+        ``np.random.seed``, ``_precompute_perturbations`` yields the same
+        array twice, and the kernel turns that into the same outputs.
         """
         r2 = run_sweep(
             window="hamming",
@@ -146,18 +144,48 @@ class TestRunSweep(unittest.TestCase):
             seed=42,
             warmup=False,
         )
-        # Compare only entries that are finite in both runs
-        both_finite = np.isfinite(self.result.h) & np.isfinite(r2.h)
-        self.assertTrue(
-            np.any(both_finite),
-            "expected at least one grid point finite in both runs",
+        # NaN-aware exact equality: identical NaN mask AND identical
+        # values on every finite cell.
+        nan_mask_1 = np.isnan(self.result.h)
+        nan_mask_2 = np.isnan(r2.h)
+        np.testing.assert_array_equal(nan_mask_1, nan_mask_2)
+        np.testing.assert_array_equal(
+            self.result.h[~nan_mask_1],
+            r2.h[~nan_mask_2],
         )
-        diff = np.abs(self.result.h[both_finite] - r2.h[both_finite])
-        # For a tiny sweep (n_initial=3, Nmap=150) we allow generous slack.
-        self.assertLess(
-            float(np.max(diff)),
-            0.5,
-            "per-point λ_max difference should be small between runs",
+        # Same thing for the standard deviation array.
+        np.testing.assert_array_equal(
+            np.isnan(self.result.h_std),
+            np.isnan(r2.h_std),
+        )
+        np.testing.assert_array_equal(
+            self.result.h_std[~np.isnan(self.result.h_std)],
+            r2.h_std[~np.isnan(r2.h_std)],
+        )
+
+    def test_different_seeds_produce_different_results(self):
+        """Sanity check that the seed actually does anything — without
+        this, we can't tell apart 'deterministic kernel' from 'kernel
+        always outputting the same thing regardless of seed'."""
+        r_other = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.2, 0.8, 4),
+            Nitera=30,
+            Nmap=150,
+            n_initial=3,
+            seed=99,  # different from self.result's seed=42
+            warmup=False,
+        )
+        finite_both = np.isfinite(self.result.h) & np.isfinite(r_other.h)
+        self.assertTrue(
+            np.any(finite_both),
+            "at least one grid point should be finite in both runs",
+        )
+        self.assertFalse(
+            np.array_equal(self.result.h[finite_both], r_other.h[finite_both]),
+            "different seeds should produce different λ_max values",
         )
 
 
