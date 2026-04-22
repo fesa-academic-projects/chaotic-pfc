@@ -6,9 +6,9 @@ import numpy as np
 
 from chaotic_pfc.channel import fir_channel, ideal_channel
 from chaotic_pfc.lyapunov import fixed_point_stability, lyapunov_henon2d, lyapunov_max
-from chaotic_pfc.maps import henon_filtered, henon_generalised, henon_standard
+from chaotic_pfc.maps import henon_filtered, henon_generalised, henon_order_n, henon_standard
 from chaotic_pfc.receiver import receive
-from chaotic_pfc.signals import binary_message
+from chaotic_pfc.signals import binary_message, sinusoidal_message
 from chaotic_pfc.spectral import psd_normalised
 from chaotic_pfc.transmitter import transmit
 
@@ -47,6 +47,48 @@ class TestHenonFiltered(unittest.TestCase):
         np.testing.assert_allclose(Y_f, Y_g, atol=1e-12)
 
 
+class TestHenonOrderN(unittest.TestCase):
+    def _simple_coeffs(self, Nc: int = 5) -> np.ndarray:
+        """A tiny valid FIR bank — any values would do for shape tests."""
+        c = np.zeros(Nc)
+        c[0] = 0.6
+        c[1] = 0.3
+        c[2] = 0.1
+        return c
+
+    def test_output_shapes(self):
+        c = self._simple_coeffs(5)
+        state, output = henon_order_n(steps=100, fir_coeffs=c)
+        self.assertEqual(state.shape, (5, 101))
+        self.assertEqual(output.shape, (100,))
+
+    def test_explicit_x0_is_preserved(self):
+        c = self._simple_coeffs(4)
+        x0 = np.array([0.1, 0.2, 0.3, 0.4])
+        state, _ = henon_order_n(steps=10, fir_coeffs=c, x0=x0)
+        np.testing.assert_array_equal(state[:, 0], x0)
+
+    def test_seed_is_deterministic(self):
+        c = self._simple_coeffs(5)
+        state1, out1 = henon_order_n(steps=50, fir_coeffs=c, seed=42)
+        state2, out2 = henon_order_n(steps=50, fir_coeffs=c, seed=42)
+        np.testing.assert_array_equal(state1, state2)
+        np.testing.assert_array_equal(out1, out2)
+
+    def test_driving_signal_overrides_carrier(self):
+        """With driving != None the iterate should use driving[i], not state[2].
+
+        Using a zero driving signal makes the update law drop the s² term,
+        so the trajectory differs from the autonomous case.
+        """
+        c = self._simple_coeffs(5)
+        x0 = np.array([0.1, 0.1, 0.1, 0.1, 0.1])
+        N = 20
+        _, out_auto = henon_order_n(steps=N, fir_coeffs=c, x0=x0)
+        _, out_zero = henon_order_n(steps=N, fir_coeffs=c, x0=x0, driving=np.zeros(N))
+        self.assertFalse(np.allclose(out_auto, out_zero))
+
+
 class TestBinaryMessage(unittest.TestCase):
     def test_length(self):
         m = binary_message(1000, period=20)
@@ -63,6 +105,28 @@ class TestBinaryMessage(unittest.TestCase):
     def test_invalid(self):
         with self.assertRaises(ValueError):
             binary_message(100, period=7)
+
+
+class TestSinusoidalMessage(unittest.TestCase):
+    def test_length(self):
+        for N in (100, 500, 10_000):
+            m = sinusoidal_message(N)
+            self.assertEqual(len(m), N)
+
+    def test_amplitude_bounds(self):
+        """A pure sine wave stays within [-1, 1]."""
+        m = sinusoidal_message(1000, normalised_freq=0.05)
+        self.assertTrue(np.all(np.abs(m) <= 1.0 + 1e-12))
+
+    def test_frequency_matches_requested(self):
+        """FFT peak should land at the requested normalised frequency."""
+        N = 4096
+        f = 0.125
+        m = sinusoidal_message(N, normalised_freq=f)
+        spectrum = np.abs(np.fft.rfft(m))
+        peak_idx = int(np.argmax(spectrum))
+        expected_bin = round(f * N)
+        self.assertEqual(peak_idx, expected_bin)
 
 
 class TestPipeline(unittest.TestCase):
