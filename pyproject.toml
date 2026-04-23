@@ -23,6 +23,12 @@ dev = [
     "mypy>=1.11",
     "pre-commit>=3.7",
 ]
+docs = [
+    "sphinx>=7.0",
+    "furo>=2024.0",
+    "sphinx-copybutton>=0.5",
+    "myst-parser>=3.0",
+]
 
 [project.scripts]
 chaotic-pfc = "chaotic_pfc.__main__:main"

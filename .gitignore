@@ -100,6 +100,10 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
+# ─── Sphinx documentation ────────────────────────────────────────────────
+docs/_build/
+docs/api/generated/
+
 # ─── Project-specific ─────────────────────────────────────────────────────
 # NOTE: data/sweeps/**/*.npz are intentionally versioned — the full
 # henon_sweep_compute pipeline takes ~5 h to regenerate.

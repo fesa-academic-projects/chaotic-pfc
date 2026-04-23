@@ -2,11 +2,11 @@
 
 Originally ``scripts/06_lyapunov.py``. Computes:
 
-  Part A: Pure 2-D Hénon — single perturbed IC, both fixed points
-  Part B: 4-D Pole-filtered Hénon — single perturbed IC
-  Part C: 2-D Hénon ensemble — ``n_ci`` ICs drawn uniformly in
-          ``±perturbation`` around ``x_f⁺``
-  Part D: 4-D Pole-filtered ensemble — same protocol, 4-D system
+* **Part A** — pure 2-D Hénon, single perturbed IC, both fixed points.
+* **Part B** — 4-D Pole-filtered Hénon, single perturbed IC.
+* **Part C** — 2-D Hénon ensemble, ``n_ci`` ICs drawn uniformly in
+  ``±perturbation`` around the fixed point.
+* **Part D** — 4-D Pole-filtered ensemble, same protocol, 4-D system.
 
 Parts A/B are quick sanity checks; parts C/D implement the full
 experimental protocol used in the TCC. With ``--save`` the per-IC

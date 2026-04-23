@@ -4,10 +4,10 @@ sweep.py
 Parameter-sweep computation of Lyapunov exponents for the Hénon map with
 an internal FIR filter.
 
-This module sweeps the 2-D grid
-    (filter order  N_s ∈ {2, …, 41}) × (normalised cutoff  ω_c ∈ (0, 1))
-and, for each grid point, estimates the largest Lyapunov exponent
-λ_max of the corresponding filtered Hénon system.
+This module sweeps the 2-D grid of filter orders ``N_s ∈ {2, …, 41}``
+against normalised cutoffs ``ω_c ∈ (0, 1)`` and, for each grid point,
+estimates the largest Lyapunov exponent ``λ_max`` of the corresponding
+filtered Hénon system.
 
 All hot paths are JIT-compiled with Numba. The outer 2-D loop is
 flattened into a single ``prange`` so that every grid point is a task

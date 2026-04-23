@@ -1,6 +1,7 @@
 # chaotic-pfc
 
 [![CI](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml)
+[![Documentation Status](https://readthedocs.org/projects/chaotic-pfc/badge/?version=latest)](https://chaotic-pfc.readthedocs.io/)
 [![codecov](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc/branch/main/graph/badge.svg)](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
@@ -104,16 +105,17 @@ chaotic-pfc/
 
 ## Experiments
 
-| Script | Description |
-|--------|-------------|
-| `01_henon_attractors.py`    | Phase-space portraits of the three Hénon variants. |
-| `02_sensitivity.py`         | Sensitivity to initial conditions (SDIC). |
-| `03_comm_ideal_channel.py`  | Transmitter and receiver over an ideal channel. |
-| `04_comm_fir_channel.py`    | End-to-end system with FIR channel. |
-| `05_comm_order_n.py`        | Order-N filtered map communication. |
-| `06_lyapunov.py`            | Lyapunov spectra: single IC and N-IC ensemble for 2-D and 4-D systems. |
-| `07_henon_sweep_compute.py` | Parallel Lyapunov sweep over `(filter order × cutoff)`. |
-| `08_henon_sweep_plot.py`    | Classification maps from the saved sweep data. |
+| Subcommand | Description |
+|------------|-------------|
+| `chaotic-pfc run attractors`         | Phase-space portraits of the three Hénon variants. |
+| `chaotic-pfc run sensitivity`        | Sensitivity to initial conditions (SDIC). |
+| `chaotic-pfc run comm-ideal`         | Transmitter and receiver over an ideal channel. |
+| `chaotic-pfc run comm-fir`           | End-to-end system with FIR channel. |
+| `chaotic-pfc run comm-order-n`       | Order-N filtered map communication. |
+| `chaotic-pfc run lyapunov`           | Lyapunov spectra: single IC and N-IC ensemble for 2-D and 4-D systems. |
+| `chaotic-pfc run sweep compute`      | Parallel Lyapunov sweep over `(filter order × cutoff)`. |
+| `chaotic-pfc run sweep plot`         | Classification maps from saved sweep data. |
+| `chaotic-pfc run all`                | Full pipeline, in order. |
 
 ## Tests
 
@@ -123,6 +125,19 @@ pytest
 
 The first run compiles the Numba kernels and takes about two minutes;
 subsequent runs use the cache and finish in under 30 seconds.
+
+## Documentation
+
+Build the HTML documentation locally:
+
+```bash
+pip install -e ".[docs]"
+cd docs
+make html
+```
+
+Then open `docs/_build/html/index.html` in a browser. Each module
+auto-generates an API reference page from its NumPy-style docstrings.
 
 ## Development
 
