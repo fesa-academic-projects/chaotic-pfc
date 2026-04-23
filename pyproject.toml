@@ -41,6 +41,29 @@ testpaths = ["tests"]
 addopts = "-v"
 
 # ───────────────────────────────────────────────────────────────────────────
+# Coverage — measurement config for pytest-cov
+# ───────────────────────────────────────────────────────────────────────────
+
+[tool.coverage.run]
+source = ["chaotic_pfc"]
+branch = true
+omit = [
+    "*/__main__.py",
+    "*/plotting.py",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+show_missing = true
+skip_covered = false
+
+# ───────────────────────────────────────────────────────────────────────────
 # Ruff — linter + formatter
 # ───────────────────────────────────────────────────────────────────────────
 
