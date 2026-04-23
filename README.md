@@ -96,7 +96,7 @@ chaotic-pfc/
 │   ├── plotting.py                Publication-quality figures
 │   ├── sweep_plotting.py          Classification maps for the Lyapunov sweep
 │   └── config.py                  Centralised configuration
-├── tests/                         Unit tests (100 tests)
+├── tests/                         Unit tests (110 tests)
 ├── data/
 │   ├── lyapunov/                  CSV tables from the ensemble protocol
 │   └── sweeps/                    Versioned .npz checkpoints from long sweeps
