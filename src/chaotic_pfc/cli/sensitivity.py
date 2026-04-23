@@ -1,36 +1,39 @@
-#!/usr/bin/env python3
-"""02_sensitivity.py — Sensitive Dependence on Initial Conditions (SDIC)."""
+"""Sensitive Dependence on Initial Conditions (SDIC).
+
+Originally ``scripts/02_sensitivity.py``.
+"""
+
+from __future__ import annotations
 
 import argparse
-import os
-import sys
 from pathlib import Path
 
-import numpy as np
+from ._common import pick_backend
 
 
-def parse_args():
-    p = argparse.ArgumentParser()
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run sensitivity`` subcommand."""
+    p = subparsers.add_parser(
+        "sensitivity",
+        help="Sensitive Dependence on Initial Conditions (SDIC).",
+        description=(
+            "Overlay two Hénon trajectories with infinitesimally different "
+            "initial conditions to visualise exponential divergence."
+        ),
+    )
     p.add_argument("--steps", type=int, default=50)
     p.add_argument("--epsilon", type=float, default=1e-4)
     p.add_argument("--save", action="store_true")
     p.add_argument("--no-display", dest="no_display", action="store_true")
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _backend(nd):
-    hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl:
-        import matplotlib
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``sensitivity`` experiment."""
+    headless = pick_backend(args.no_display)
 
-        matplotlib.use("Agg")
-    return hl
-
-
-def main():
-    args = parse_args()
-    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
+    import numpy as np
 
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
     from chaotic_pfc.maps import henon_standard
@@ -57,7 +60,4 @@ def main():
             print(f"    Saved -> {sp}")
     else:
         plt.show()
-
-
-if __name__ == "__main__":
-    main()
+    return 0

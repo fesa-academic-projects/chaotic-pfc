@@ -1,32 +1,33 @@
-#!/usr/bin/env python3
-"""01_henon_attractors.py — Phase-space attractors for three Hénon variants."""
+"""Phase-space attractors for three Hénon variants.
+
+Originally ``scripts/01_henon_attractors.py``.
+"""
+
+from __future__ import annotations
 
 import argparse
-import os
-import sys
 from pathlib import Path
 
+from ._common import pick_backend
 
-def parse_args():
-    p = argparse.ArgumentParser()
+
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run attractors`` subcommand."""
+    p = subparsers.add_parser(
+        "attractors",
+        help="Phase-space attractors for three Hénon variants.",
+        description="Phase-space attractors for three Hénon variants.",
+    )
     p.add_argument("--steps", type=int, default=50_000)
     p.add_argument("--save", action="store_true")
     p.add_argument("--no-display", dest="no_display", action="store_true")
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _backend(nd):
-    hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl:
-        import matplotlib
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``attractors`` experiment."""
+    headless = pick_backend(args.no_display)
 
-        matplotlib.use("Agg")
-    return hl
-
-
-def main():
-    args = parse_args()
-    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
 
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
@@ -39,7 +40,7 @@ def main():
     if args.save:
         fdir.mkdir(parents=True, exist_ok=True)
 
-    def sp(name):
+    def sp(name: str) -> str | None:
         return str(fdir / name) if args.save else None
 
     print(f"[01] Hénon attractors  |  steps={steps:,}")
@@ -81,7 +82,4 @@ def main():
             print(f"    Saved -> {fdir}/attractor_*.{fmt}")
     else:
         plt.show()
-
-
-if __name__ == "__main__":
-    main()
+    return 0

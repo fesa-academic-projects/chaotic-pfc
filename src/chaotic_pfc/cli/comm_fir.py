@@ -1,18 +1,25 @@
-#!/usr/bin/env python3
-"""04_comm_fir_channel.py — Chaotic communication through FIR low-pass channel."""
+"""Chaotic communication through FIR low-pass channel.
+
+Originally ``scripts/04_comm_fir_channel.py``.
+"""
+
+from __future__ import annotations
 
 import argparse
-import os
-import sys
 from pathlib import Path
 
-import numpy as np
+from ._common import pick_backend
 
 
-def parse_args():
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run comm-fir`` subcommand."""
     from chaotic_pfc.config import DEFAULT_CONFIG as d
 
-    p = argparse.ArgumentParser()
+    p = subparsers.add_parser(
+        "comm-fir",
+        help="Transmitter/receiver over a band-limited FIR channel.",
+        description="Chaotic communication through an FIR low-pass channel.",
+    )
     p.add_argument("--N", type=int, default=d.comm.N)
     p.add_argument("--mu", type=float, default=d.comm.mu)
     p.add_argument("--period", type=int, default=d.comm.message_period)
@@ -20,22 +27,15 @@ def parse_args():
     p.add_argument("--taps", type=int, default=d.channel.num_taps)
     p.add_argument("--save", action="store_true")
     p.add_argument("--no-display", dest="no_display", action="store_true")
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _backend(nd):
-    hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl:
-        import matplotlib
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``comm-fir`` experiment."""
+    headless = pick_backend(args.no_display)
 
-        matplotlib.use("Agg")
-    return hl
-
-
-def main():
-    args = parse_args()
-    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
+    import numpy as np
 
     from chaotic_pfc.channel import fir_channel
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
@@ -74,7 +74,6 @@ def main():
     win = slice(cfg.plot.time_window_start, cfg.plot.time_window_end)
     save_path = str(fdir / f"comm_fir_channel.{fmt}") if args.save else None
 
-    # Decide y-limits for m_hat based on signal range
     mhat_max = np.max(np.abs(m_hat[tr:]))
     if mhat_max > 5:
         y_lim_mhat = (-min(mhat_max * 1.1, 300), min(mhat_max * 1.1, 300))
@@ -108,7 +107,4 @@ def main():
             print(f"    Saved -> {save_path}")
     else:
         plt.show()
-
-
-if __name__ == "__main__":
-    main()
+    return 0

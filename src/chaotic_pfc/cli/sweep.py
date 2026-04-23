@@ -1,0 +1,289 @@
+"""Sweep Lyapunov exponents across (order, cutoff) grid.
+
+Nested under ``chaotic-pfc run sweep ...`` with two sub-subcommands:
+
+* ``compute`` — run the actual numerical sweep for one or more
+  ``(window, filter)`` combinations and save ``.npz`` checkpoints.
+  Originally ``scripts/07_henon_sweep_compute.py``.
+* ``plot`` — turn previously saved ``.npz`` checkpoints into the four
+  standard classification figures. Originally
+  ``scripts/08_henon_sweep_plot.py``.
+
+The two steps are kept separate so plotting iterations (label sizes,
+colour maps, format changes) do not require rerunning the multi-hour
+sweep.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+import time
+from pathlib import Path
+
+from ._common import pick_backend
+
+# ════════════════════════════════════════════════════════════════════════════
+# Parser registration — two levels: sweep → {compute, plot}
+# ════════════════════════════════════════════════════════════════════════════
+
+
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run sweep`` group with its own sub-subcommands."""
+    sweep_parser = subparsers.add_parser(
+        "sweep",
+        help="(Run or plot) a 2-D (filter order, cutoff) Lyapunov sweep.",
+        description="Run a 2-D (filter order, cutoff) Lyapunov sweep or plot a saved one.",
+    )
+    sweep_subparsers = sweep_parser.add_subparsers(
+        dest="sweep_action",
+        title="actions",
+        metavar="<action>",
+        required=True,
+    )
+    _add_compute_parser(sweep_subparsers)
+    _add_plot_parser(sweep_subparsers)
+
+
+def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``run sweep compute``."""
+    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+
+    p = subparsers.add_parser(
+        "compute",
+        help="Run the numerical sweep and save .npz checkpoints.",
+        description="Compute λ_max across the (order, cutoff) grid for one or more configs.",
+    )
+    p.add_argument(
+        "--window",
+        choices=WINDOWS,
+        default="hamming",
+        help="FIR window (default: hamming)",
+    )
+    p.add_argument(
+        "--filter",
+        choices=FILTER_TYPES,
+        default="lowpass",
+        dest="filter_type",
+        help="Filter pass-zero configuration (default: lowpass)",
+    )
+    p.add_argument("--all", action="store_true", help="Run every (window, filter) combination")
+    p.add_argument(
+        "--quick",
+        action="store_true",
+        help="Run a tiny sweep for smoke-testing (~seconds)",
+    )
+    p.add_argument(
+        "--data-dir",
+        default="data/sweeps",
+        help="Root directory for .npz output (default: data/sweeps)",
+    )
+    p.add_argument(
+        "--save",
+        action="store_true",
+        help="(accepted for CLI consistency; output is always saved)",
+    )
+    p.add_argument(
+        "--no-display",
+        dest="no_display",
+        action="store_true",
+        help="(accepted for CLI consistency; this command has no UI)",
+    )
+    p.set_defaults(_run=run_compute)
+
+
+def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``run sweep plot``."""
+    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+
+    p = subparsers.add_parser(
+        "plot",
+        help="Plot the four standard classification figures from a saved sweep.",
+        description="Generate classification figures from previously saved sweep .npz files.",
+    )
+    p.add_argument(
+        "--window",
+        choices=WINDOWS,
+        default="hamming",
+        help="FIR window (default: hamming)",
+    )
+    p.add_argument(
+        "--filter",
+        choices=FILTER_TYPES,
+        default="lowpass",
+        dest="filter_type",
+        help="Filter pass-zero configuration (default: lowpass)",
+    )
+    p.add_argument("--all", action="store_true", help="Plot every .npz found under --data-dir")
+    p.add_argument(
+        "--data-dir",
+        default="data/sweeps",
+        help="Root directory with .npz files (default: data/sweeps)",
+    )
+    p.add_argument(
+        "--figures-dir",
+        default="figures/sweeps",
+        help="Root directory for output figures (default: figures/sweeps)",
+    )
+    p.add_argument(
+        "--fmt",
+        nargs="+",
+        default=["png", "svg"],
+        choices=("png", "svg", "pdf"),
+        help="Output format(s). Multiple values allowed, e.g. '--fmt png svg'.",
+    )
+    p.add_argument(
+        "--save",
+        action="store_true",
+        help="(accepted for CLI consistency; figures are always saved)",
+    )
+    p.add_argument(
+        "--no-display",
+        dest="no_display",
+        action="store_true",
+        help="(accepted for CLI consistency; matplotlib runs headless)",
+    )
+    p.set_defaults(_run=run_plot)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# run sweep compute
+# ════════════════════════════════════════════════════════════════════════════
+
+
+def _build_combinations(args: argparse.Namespace) -> list[tuple[str, str]]:
+    """Flatten ``--all`` or ``--window``/``--filter`` into a list of pairs."""
+    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+
+    if args.all:
+        return [(w, f) for w in WINDOWS for f in FILTER_TYPES]
+    return [(args.window, args.filter_type)]
+
+
+def run_compute(args: argparse.Namespace) -> int:
+    """Execute ``run sweep compute``."""
+    import numpy as np
+
+    from chaotic_pfc.sweep import run_sweep, save_sweep
+
+    combos = _build_combinations(args)
+    data_dir = Path(args.data_dir)
+
+    if args.quick:
+        orders = np.arange(2, 8)
+        cutoffs = np.linspace(0.1, 0.9, 10)
+        params = dict(Nitera=50, Nmap=200, n_initial=3)
+    else:
+        orders = None  # → module default: 2..41
+        cutoffs = None  # → module default: 100 points
+        params = dict(Nitera=500, Nmap=3000, n_initial=25)
+
+    total_start = time.perf_counter()
+    warmup_needed = True
+
+    for idx, (window, filter_type) in enumerate(combos, start=1):
+        print(f"\n[07] {idx}/{len(combos)}  {window} / {filter_type}")
+        t0 = time.perf_counter()
+        result = run_sweep(
+            window=window,
+            filter_type=filter_type,
+            orders=orders,
+            cutoffs=cutoffs,
+            warmup=warmup_needed,
+            **params,
+        )
+        elapsed = time.perf_counter() - t0
+        warmup_needed = False  # only needed on the first call
+
+        valid = int(np.count_nonzero(~np.isnan(result.h)))
+        total = result.h.size
+        print(f"     Elapsed: {elapsed:6.1f} s ({elapsed / 60:.1f} min)")
+        print(f"     Valid points: {valid}/{total} ({100 * valid / total:.1f} %)")
+        print(f"     Throughput:   {total / elapsed:.1f} pts/s")
+
+        out_path = data_dir / result.display_name / "variables_lyapunov.npz"
+        save_sweep(result, out_path)
+        print(f"     Saved -> {out_path}")
+
+    total_elapsed = time.perf_counter() - total_start
+    print(f"\n[07] done in {total_elapsed:.1f} s ({total_elapsed / 60:.1f} min)")
+    return 0
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# run sweep plot
+# ════════════════════════════════════════════════════════════════════════════
+
+
+def _discover_sweeps(data_dir: Path) -> list[Path]:
+    """Find every ``variables_lyapunov.npz`` under ``data_dir``, sorted."""
+    return sorted(data_dir.rglob("variables_lyapunov.npz"))
+
+
+def _target_dir(figures_dir: Path, npz_path: Path, data_dir: Path) -> Path:
+    """Mirror the data-dir subpath into figures-dir.
+
+    ``data/sweeps/Hamming (lowpass)/variables_lyapunov.npz`` →
+    ``figures/sweeps/Hamming (lowpass)/``.
+    """
+    try:
+        rel = npz_path.parent.relative_to(data_dir)
+    except ValueError:
+        rel = Path(npz_path.parent.name)
+    return figures_dir / rel
+
+
+def run_plot(args: argparse.Namespace) -> int:
+    """Execute ``run sweep plot``."""
+    pick_backend(args.no_display)
+
+    from chaotic_pfc.sweep import WINDOW_DISPLAY_NAMES, load_sweep
+    from chaotic_pfc.sweep_plotting import plot_all
+
+    data_dir = Path(args.data_dir)
+    figures_dir = Path(args.figures_dir)
+
+    if args.all:
+        npz_paths = _discover_sweeps(data_dir)
+        if not npz_paths:
+            print(
+                f"[08] No .npz files found under {data_dir}/. "
+                "Run 'chaotic-pfc run sweep compute' first."
+            )
+            return 0
+    else:
+        pretty = WINDOW_DISPLAY_NAMES.get(args.window, args.window.capitalize())
+        subdir = f"{pretty} ({args.filter_type})"
+        candidate = data_dir / subdir / "variables_lyapunov.npz"
+        if not candidate.exists():
+            print(f"[08] Not found: {candidate}")
+            print(
+                f"     Run: chaotic-pfc run sweep compute "
+                f"--window {args.window} --filter {args.filter_type}"
+            )
+            return 1
+        npz_paths = [candidate]
+
+    fmts_str = ", ".join(f".{f}" for f in args.fmt)
+    print(f"[08] Plotting {len(npz_paths)} sweep(s) (formats: {fmts_str})")
+
+    for npz_path in npz_paths:
+        result = load_sweep(npz_path)
+        out_dir = _target_dir(figures_dir, npz_path, data_dir)
+        print(f"\n     {result.display_name}")
+        print(f"     ← {npz_path}")
+        print(f"     → {out_dir}")
+        for fmt in args.fmt:
+            paths = plot_all(result, out_dir, fmt=fmt)
+            for p in paths:
+                print(f"       {p.name}")
+
+    print("\n[08] done")
+    return 0
+
+
+# Allow `python -m chaotic_pfc.cli.sweep <args>` for local dev convenience.
+if __name__ == "__main__":
+    from . import main as _main
+
+    sys.exit(_main(["run", "sweep", *sys.argv[1:]]))

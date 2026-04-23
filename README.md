@@ -46,14 +46,14 @@ pip install -r requirements-lock.txt
 Run the full pipeline, saving every figure headlessly:
 
 ```bash
-python run_all.py --no-display
+chaotic-pfc run all --no-display
 ```
 
 Run a single experiment:
 
 ```bash
-python scripts/01_henon_attractors.py --save
-python scripts/06_lyapunov.py --save
+chaotic-pfc run attractors --save
+chaotic-pfc run lyapunov --save --n-ci 20
 ```
 
 Run the Lyapunov sweep. The full sweep is expensive (typically tens of
@@ -62,38 +62,40 @@ quick mode runs a reduced grid in seconds to smoke-test the pipeline:
 
 ```bash
 # Full sweep for one (window, filter) combination
-python scripts/07_henon_sweep_compute.py --window hamming --filter lowpass
+chaotic-pfc run sweep compute --window hamming --filter lowpass
 
 # Quick smoke test (~seconds)
-python scripts/07_henon_sweep_compute.py --window hamming --filter lowpass --quick
+chaotic-pfc run sweep compute --window hamming --filter lowpass --quick
 
 # Generate the 4 classification figures (PNG + SVG) from the saved .npz
-python scripts/08_henon_sweep_plot.py --window hamming --filter lowpass
+chaotic-pfc run sweep plot --window hamming --filter lowpass
 ```
 
 The sweep checkpoints in `data/sweeps/*.npz` are versioned in the repository,
 so plots can be regenerated at any time without rerunning the compute step.
+
+Browse all available commands with `chaotic-pfc run --help` and each
+subcommand's flags with `chaotic-pfc run <name> --help`.
 
 ## Project structure
 
 ```
 chaotic-pfc/
 ├── pyproject.toml                 Package metadata and dependencies
-├── run_all.py                     Batch runner for all experiment scripts
 ├── src/chaotic_pfc/               Installable library
+│   ├── cli/                       CLI subcommand modules
 │   ├── maps.py                    Hénon map variants (2-D, generalised, filtered, N-th order)
-│   ├── signals.py                 Binary message generator
+│   ├── signals.py                 Message generators
 │   ├── transmitter.py             Chaos-based modulator
 │   ├── channel.py                 Ideal and FIR channel models
 │   ├── receiver.py                Chaos-synchronisation demodulator
 │   ├── spectral.py                Welch PSD estimation
 │   ├── lyapunov.py                Lyapunov exponents (single IC and ensemble)
 │   ├── sweep.py                   Parallel (order × cutoff) Lyapunov sweep
-│   ├── plotting.py                Publication-quality figures for experiments 01–05
+│   ├── plotting.py                Publication-quality figures
 │   ├── sweep_plotting.py          Classification maps for the Lyapunov sweep
 │   └── config.py                  Centralised configuration
-├── scripts/                       Thin CLI wrappers around the library
-├── tests/                         Unit tests (52 tests)
+├── tests/                         Unit tests (100 tests)
 ├── data/
 │   ├── lyapunov/                  CSV tables from the ensemble protocol
 │   └── sweeps/                    Versioned .npz checkpoints from long sweeps

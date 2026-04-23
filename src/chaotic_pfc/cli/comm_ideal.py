@@ -1,39 +1,39 @@
-#!/usr/bin/env python3
-"""03_comm_ideal_channel.py — Full pipeline over ideal (noiseless) channel."""
+"""Full communication pipeline over an ideal (noiseless) channel.
+
+Originally ``scripts/03_comm_ideal_channel.py``.
+"""
+
+from __future__ import annotations
 
 import argparse
-import os
-import sys
 from pathlib import Path
 
-import numpy as np
+from ._common import pick_backend
 
 
-def parse_args():
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run comm-ideal`` subcommand."""
     from chaotic_pfc.config import DEFAULT_CONFIG as d
 
-    p = argparse.ArgumentParser()
+    p = subparsers.add_parser(
+        "comm-ideal",
+        help="Transmitter/receiver over an ideal (noiseless) channel.",
+        description="Full communication pipeline over an ideal (noiseless) channel.",
+    )
     p.add_argument("--N", type=int, default=d.comm.N)
     p.add_argument("--mu", type=float, default=d.comm.mu)
     p.add_argument("--period", type=int, default=d.comm.message_period)
     p.add_argument("--save", action="store_true")
     p.add_argument("--no-display", dest="no_display", action="store_true")
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _backend(nd):
-    hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl:
-        import matplotlib
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``comm-ideal`` experiment."""
+    headless = pick_backend(args.no_display)
 
-        matplotlib.use("Agg")
-    return hl
-
-
-def main():
-    args = parse_args()
-    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
+    import numpy as np
 
     from chaotic_pfc.channel import ideal_channel
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
@@ -84,10 +84,7 @@ def main():
         psd_r,
         psd_mhat,
         time_window=win,
-        suptitle=(
-            r"Comunicação Caótica — Canal Ideal"
-            r"  ($\mu=" + str(args.mu) + r"$)"
-        ),
+        suptitle=(r"Comunicação Caótica — Canal Ideal  ($\mu=" + str(args.mu) + r"$)"),
         save_path=save_path,
     )
 
@@ -97,7 +94,4 @@ def main():
             print(f"    Saved -> {save_path}")
     else:
         plt.show()
-
-
-if __name__ == "__main__":
-    main()
+    return 0

@@ -1,39 +1,39 @@
-#!/usr/bin/env python3
-"""05_comm_order_n.py — Communication using N-th order Hénon with internal FIR."""
+"""Communication using N-th order Hénon with internal FIR filter.
+
+Originally ``scripts/05_comm_order_n.py``.
+"""
+
+from __future__ import annotations
 
 import argparse
-import os
-import sys
 from pathlib import Path
 
-import numpy as np
+from ._common import pick_backend
 
 
-def parse_args():
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run comm-order-n`` subcommand."""
     from chaotic_pfc.config import DEFAULT_CONFIG as d
 
-    p = argparse.ArgumentParser()
+    p = subparsers.add_parser(
+        "comm-order-n",
+        help="Transmitter/receiver using an N-th order Hénon with internal FIR.",
+        description="Communication using N-th order Hénon with internal FIR filter.",
+    )
     p.add_argument("--N", type=int, default=d.comm.N)
     p.add_argument("--mu", type=float, default=d.comm.mu)
     p.add_argument("--period", type=int, default=d.comm.message_period)
     p.add_argument("--save", action="store_true")
     p.add_argument("--no-display", dest="no_display", action="store_true")
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _backend(nd):
-    hl = nd or (sys.platform.startswith("linux") and not os.environ.get("DISPLAY"))
-    if hl:
-        import matplotlib
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``comm-order-n`` experiment."""
+    headless = pick_backend(args.no_display)
 
-        matplotlib.use("Agg")
-    return hl
-
-
-def main():
-    args = parse_args()
-    headless = _backend(args.no_display)
     import matplotlib.pyplot as plt
+    import numpy as np
 
     from chaotic_pfc.channel import fir_channel
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
@@ -78,7 +78,6 @@ def main():
     win = slice(cfg.plot.time_window_start, min(cfg.plot.time_window_end, 1000))
     save_path = str(fdir / f"comm_order_n.{fmt}") if args.save else None
 
-    # Adaptive y-limits for m_hat
     mhat_ss = m_hat[tr:]
     mhat_max = np.percentile(np.abs(mhat_ss), 99)
     if mhat_max > 5:
@@ -113,7 +112,4 @@ def main():
             print(f"    Saved -> {save_path}")
     else:
         plt.show()
-
-
-if __name__ == "__main__":
-    main()
+    return 0

@@ -1,38 +1,44 @@
-#!/usr/bin/env python3
-"""
-06_lyapunov.py — Lyapunov exponent computation (text output + optional CSV).
+"""Lyapunov exponent computation (text output + optional CSV).
 
-Computes:
-  Part A: Pure 2-D Hénon — single perturbed IC, both fixed points analysed
+Originally ``scripts/06_lyapunov.py``. Computes:
+
+  Part A: Pure 2-D Hénon — single perturbed IC, both fixed points
   Part B: 4-D Pole-filtered Hénon — single perturbed IC
-  Part C: 2-D Hénon ensemble — 20 ICs drawn uniformly in ±10% around x_f⁺
+  Part C: 2-D Hénon ensemble — ``n_ci`` ICs drawn uniformly in
+          ``±perturbation`` around ``x_f⁺``
   Part D: 4-D Pole-filtered ensemble — same protocol, 4-D system
 
-Parts A/B are quick sanity checks (single estimator call). Parts C/D
-implement the full experimental protocol used in the TCC: multiple ICs
-are sampled around the fixed point, the Lyapunov spectrum is estimated
-for each, and aggregated statistics (mean spectrum, mean/max λ_max,
-chaotic count) are reported.
-
-With ``--save`` the per-IC tables are also written to
-``data/lyapunov/henon2d_ensemble.csv`` and
+Parts A/B are quick sanity checks; parts C/D implement the full
+experimental protocol used in the TCC. With ``--save`` the per-IC
+tables are written to ``data/lyapunov/henon2d_ensemble.csv`` and
 ``data/lyapunov/henon4d_ensemble.csv``.
 """
+
+from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-import numpy as np
 
-
-def parse_args():
-    p = argparse.ArgumentParser()
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the ``run lyapunov`` subcommand."""
+    p = subparsers.add_parser(
+        "lyapunov",
+        help="Lyapunov spectra for single IC and N-IC ensemble (2-D and 4-D).",
+        description=(
+            "Lyapunov exponent computation: single perturbed IC (parts A, B) "
+            "plus the N-IC ensemble protocol (parts C, D)."
+        ),
+    )
     p.add_argument("--Nitera", type=int, default=2000)
     p.add_argument("--Ndiscard", type=int, default=1000)
     p.add_argument("--pole-radius", type=float, default=0.975)
     p.add_argument("--w0", type=float, default=0.0)
     p.add_argument(
-        "--n-ci", type=int, default=20, help="Number of ICs for parts C and D (default: 20)"
+        "--n-ci",
+        type=int,
+        default=20,
+        help="Number of ICs for parts C and D (default: 20)",
     )
     p.add_argument(
         "--perturbation",
@@ -46,18 +52,22 @@ def parse_args():
         help="Directory for CSV output (default: data/lyapunov)",
     )
     p.add_argument(
-        "--save", action="store_true", help="Write per-IC tables to CSV under --data-dir"
+        "--save",
+        action="store_true",
+        help="Write per-IC tables to CSV under --data-dir",
     )
     p.add_argument(
         "--no-display",
         action="store_true",
-        help="(accepted for CLI consistency; this script has no UI)",
+        help="(accepted for CLI consistency; this command has no UI)",
     )
-    return p.parse_args()
+    p.set_defaults(_run=run)
 
 
-def _print_ensemble_summary(label: str, result, dim: int) -> None:
+def _print_ensemble_summary(result, dim: int) -> None:
     """Compact summary of an EnsembleResult."""
+    import numpy as np
+
     print(f"     Ponto fixo (centro da amostragem): {result.fixed_point}")
     print(f"     Autovalores: {result.eigenvalues}")
     print(f"     |λ|:         {np.abs(result.eigenvalues)}")
@@ -77,8 +87,10 @@ def _print_ensemble_summary(label: str, result, dim: int) -> None:
     print(f"     Diagnóstico: {verdict} (baseado na média de λ_max)")
 
 
-def main():
-    args = parse_args()
+def run(args: argparse.Namespace) -> int:
+    """Execute the ``lyapunov`` experiment."""
+    import numpy as np
+
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
     from chaotic_pfc.lyapunov import (
         lyapunov_henon2d,
@@ -161,7 +173,7 @@ def main():
         n_initial=args.n_ci,
         seed=cfg.seed,
     )
-    _print_ensemble_summary("2-D", ens2d, dim=2)
+    _print_ensemble_summary(ens2d, dim=2)
 
     if args.save:
         out = ens2d.to_csv(data_dir / "henon2d_ensemble.csv")
@@ -186,9 +198,8 @@ def main():
         n_initial=args.n_ci,
         seed=cfg.seed,
     )
-    _print_ensemble_summary("4-D", ens4d, dim=4)
+    _print_ensemble_summary(ens4d, dim=4)
 
-    # Dissipativity check (4-D): sum of exponents should approach ln|β|·(dim/2)
     expected_sum = np.log(abs(beta)) * 2.0  # 2 of the 4 exponents "feel" β
     actual_sum = float(ens4d.mean_exponents.sum())
     print(f"     Soma dos expoentes (média): {actual_sum:+.6f}")
@@ -197,7 +208,4 @@ def main():
     if args.save:
         out = ens4d.to_csv(data_dir / "henon4d_ensemble.csv")
         print(f"     Tabela por CI salva em: {out}")
-
-
-if __name__ == "__main__":
-    main()
+    return 0

@@ -68,8 +68,6 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Tests can use longer lines, unused imports (fixtures), and magic constants
 "tests/**" = ["E501", "F401", "B011"]
-# Scripts are CLI entry points — top-level imports after argparse are fine
-"scripts/**" = ["E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["chaotic_pfc"]
