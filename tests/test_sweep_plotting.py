@@ -55,6 +55,11 @@ class TestClassify(unittest.TestCase):
         out = classify(np.array([[0.01, 1.0]]))
         self.assertTrue(np.all(out == 0))
 
+    def test_exact_zero_maps_to_minus_one(self):
+        # λ_max == 0 is the boundary case and is classified as periodic.
+        out = classify(np.array([[0.0, -0.0]]))
+        self.assertTrue(np.all(out == -1))
+
 
 class TestIndividualPlotters(unittest.TestCase):
     @classmethod

@@ -90,7 +90,7 @@ def classify(h: NDArray) -> NDArray:
 
     Returns an array with the same shape as ``h`` where each entry is:
 
-    * ``-1`` — periodic orbit (λ_max < 0)
+    * ``-1`` — periodic orbit (λ_max ≤ 0)
     * ``0``  — chaotic orbit (λ_max > 0)
     * ``2``  — unbounded / divergent (NaN in ``h``)
 
@@ -99,7 +99,7 @@ def classify(h: NDArray) -> NDArray:
     """
     out = np.full_like(h, np.nan, dtype=np.float64)
     mask_diverged = np.isnan(h)
-    mask_periodic = (~mask_diverged) & (h < 0.0)
+    mask_periodic = (~mask_diverged) & (h <= 0.0)
     mask_chaotic = (~mask_diverged) & (h > 0.0)
 
     out[mask_diverged] = 2
