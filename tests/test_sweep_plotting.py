@@ -12,12 +12,12 @@ import numpy as np
 
 from chaotic_pfc.sweep import SweepResult
 from chaotic_pfc.sweep_plotting import (
+    DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
     classify,
     plot_all,
     plot_classification_interleaved,
-    plot_classification_separated,
-    plot_classification_simple,
+    plot_difficulty_map,
     plot_heatmap_continuous,
 )
 
@@ -37,6 +37,37 @@ def _dummy_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:
         window="hamming",
         filter_type="lowpass",
         metadata={"Nitera": 10, "Nmap": 50, "n_initial": 2},
+    )
+
+
+def _adaptive_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:
+    """Like ``_dummy_result`` but with non-trivial ``n_iters_used``.
+
+    Used by tests that exercise the adaptive-only difficulty map and
+    by tests that verify ``plot_all`` emits an extra figure when the
+    sweep was run with ``adaptive=True``.
+    """
+    rng = np.random.default_rng(0)
+    h = rng.uniform(-0.3, 0.3, size=(ncoef, ncut))
+    h[0, 0] = np.nan  # one diverged point
+    n_iters = rng.uniform(700, 3000, size=(ncoef, ncut))
+    n_iters[0, 0] = np.nan  # NaN in the same cell as h
+    return SweepResult(
+        h=h,
+        h_std=np.abs(h) * 0.1,
+        orders=np.arange(2, 2 + ncoef),
+        cutoffs=np.linspace(0.1, 0.9, ncut),
+        window="hamming",
+        filter_type="lowpass",
+        n_iters_used=n_iters,
+        metadata={
+            "Nitera": 500,
+            "Nmap": 3000,
+            "n_initial": 25,
+            "adaptive": True,
+            "Nmap_min": 700,
+            "tol": 1e-3,
+        },
     )
 
 
@@ -74,20 +105,6 @@ class TestIndividualPlotters(unittest.TestCase):
             self.assertGreater(path.stat().st_size, 0)
             fig.clear()
 
-    def test_classification_simple_saves_file(self):
-        with TemporaryDirectory() as td:
-            path = Path(td) / "class.png"
-            fig = plot_classification_simple(self.result, save_path=path)
-            self.assertTrue(path.exists())
-            fig.clear()
-
-    def test_classification_separated_saves_file(self):
-        with TemporaryDirectory() as td:
-            path = Path(td) / "class_sep.png"
-            fig = plot_classification_separated(self.result, save_path=path)
-            self.assertTrue(path.exists())
-            fig.clear()
-
     def test_classification_interleaved_saves_file(self):
         with TemporaryDirectory() as td:
             path = Path(td) / "class_inter.png"
@@ -97,18 +114,44 @@ class TestIndividualPlotters(unittest.TestCase):
 
 
 class TestPlotAll(unittest.TestCase):
-    def test_plot_all_creates_four_files(self):
+    def test_plot_all_non_adaptive_creates_two_files(self):
+        """Non-adaptive sweep: only the two always-present figures."""
         result = _dummy_result()
         with TemporaryDirectory() as td:
             paths = plot_all(result, Path(td), fmt="png")
-            self.assertEqual(len(paths), 4)
+            self.assertEqual(len(paths), 2)
             self.assertEqual(len(paths), len(FIGURE_FILENAMES))
             for p in paths:
                 self.assertTrue(p.exists())
                 self.assertGreater(p.stat().st_size, 0)
+            # Difficulty map must NOT be present for non-adaptive sweeps.
+            diff_path = Path(td) / f"{DIFFICULTY_FIGURE_FILENAME}.png"
+            self.assertFalse(diff_path.exists())
+
+    def test_plot_all_adaptive_creates_three_files(self):
+        """Adaptive sweep: classification figs + difficulty map."""
+        result = _adaptive_result()
+        with TemporaryDirectory() as td:
+            paths = plot_all(result, Path(td), fmt="png")
+            self.assertEqual(len(paths), 3)
+            for p in paths:
+                self.assertTrue(p.exists())
+                self.assertGreater(p.stat().st_size, 0)
+            # Difficulty map must be the last one and exist on disk.
+            diff_path = Path(td) / f"{DIFFICULTY_FIGURE_FILENAME}.png"
+            self.assertTrue(diff_path.exists())
+            self.assertEqual(paths[-1], diff_path)
 
     def test_plot_all_respects_fmt(self):
         result = _dummy_result()
+        with TemporaryDirectory() as td:
+            paths = plot_all(result, Path(td), fmt="svg")
+            for p in paths:
+                self.assertEqual(p.suffix, ".svg")
+
+    def test_plot_all_respects_fmt_for_difficulty(self):
+        """SVG fmt must apply to the optional difficulty map too."""
+        result = _adaptive_result()
         with TemporaryDirectory() as td:
             paths = plot_all(result, Path(td), fmt="svg")
             for p in paths:
@@ -120,7 +163,55 @@ class TestPlotAll(unittest.TestCase):
             out_dir = Path(td) / "nested" / "deep"
             paths = plot_all(result, out_dir, fmt="png")
             self.assertTrue(out_dir.is_dir())
-            self.assertEqual(len(paths), 4)
+            self.assertEqual(len(paths), 2)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Difficulty map (adaptive-only figure)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestDifficultyMap(unittest.TestCase):
+    def test_saves_file(self):
+        result = _adaptive_result()
+        with TemporaryDirectory() as td:
+            path = Path(td) / "diff.png"
+            fig = plot_difficulty_map(result, save_path=path)
+            self.assertTrue(path.exists())
+            self.assertGreater(path.stat().st_size, 0)
+            fig.clear()
+
+    def test_rejects_non_adaptive_result(self):
+        """Plotting a non-adaptive result is misleading (single-colour map);
+        the function must raise rather than silently produce a useless figure."""
+        result = _dummy_result()  # no n_iters_used, adaptive flag absent
+        with self.assertRaises(ValueError):
+            plot_difficulty_map(result)
+
+    def test_rejects_when_adaptive_flag_false(self):
+        """A SweepResult with n_iters_used set but adaptive=False (e.g. from
+        the in-kernel non-adaptive path) must still be rejected."""
+        rng = np.random.default_rng(0)
+        result = SweepResult(
+            h=rng.uniform(-0.3, 0.3, size=(3, 4)),
+            h_std=np.zeros((3, 4)),
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.1, 0.9, 4),
+            window="hamming",
+            filter_type="lowpass",
+            n_iters_used=np.full((3, 4), 3000.0),
+            metadata={"adaptive": False},
+        )
+        with self.assertRaises(ValueError):
+            plot_difficulty_map(result)
+
+    def test_returns_figure(self):
+        result = _adaptive_result()
+        fig = plot_difficulty_map(result)
+        # Sanity: the figure has exactly one axes (heatmap) plus the
+        # colorbar axes — i.e. >= 2 in total.
+        self.assertGreaterEqual(len(fig.axes), 2)
+        fig.clear()
 
 
 if __name__ == "__main__":

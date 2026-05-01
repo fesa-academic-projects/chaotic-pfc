@@ -108,11 +108,28 @@ class InternalFIRConfig:
 
 @dataclass
 class SpectralConfig:
-    """Defaults for :func:`~chaotic_pfc.spectral.psd_normalised`."""
+    """Defaults for :func:`~chaotic_pfc.spectral.psd_normalised`.
+
+    Attributes
+    ----------
+    nfft, window_length, fs
+        Standard Welch parameters.
+    window
+        FIR window applied to each Welch segment. Currently
+        ``"hamming"`` (the historical default) and ``"kaiser"`` are
+        supported.
+    kaiser_beta
+        Shape parameter of the Kaiser window. Ignored unless
+        ``window == "kaiser"``. Larger values give higher stop-band
+        attenuation at the cost of a wider main lobe; β ≈ 5 is a
+        common ~50 dB compromise.
+    """
 
     nfft: int = 4096
     window_length: int = 1024
     fs: float = 1.0
+    window: str = "hamming"
+    kaiser_beta: float = 5.0
 
 
 @dataclass

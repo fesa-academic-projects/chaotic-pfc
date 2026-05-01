@@ -188,5 +188,130 @@ class TestRunAllSmoke(_IsolatedCwdMixin, unittest.TestCase):
         self.assertEqual(code, 0)
 
 
+# ───────────────────────────────────────────────────────────────────────
+# Adaptive flag — argument validation
+# ───────────────────────────────────────────────────────────────────────
+#
+# The full happy-path of ``--adaptive`` (an actual sweep with early-stop)
+# is exercised by the unit tests in test_sweep.py — wiring is the only
+# CLI-specific surface here, so we limit smoke coverage to the rejection
+# paths (mutually-exclusive flag combinations).
+
+
+class TestAdaptiveCliRejection(_IsolatedCwdMixin, unittest.TestCase):
+    """Verify that incompatible flag combinations are rejected with exit 2."""
+
+    def test_run_sweep_compute_quick_with_adaptive_rejected(self):
+        """--quick already shrinks Nmap; --adaptive on top is redundant."""
+        code = main(["run", "sweep", "compute", "--quick", "--adaptive", "--no-display"])
+        self.assertEqual(code, 2)
+
+    def test_run_all_skip_sweep_with_adaptive_rejected(self):
+        """--adaptive only affects the sweep step; --skip-sweep nullifies it."""
+        code = main(["run", "all", "--no-display", "--skip-sweep", "--adaptive"])
+        self.assertEqual(code, 2)
+
+    def test_run_all_quick_with_adaptive_rejected(self):
+        code = main(["run", "all", "--no-display", "--quick-sweep", "--adaptive"])
+        self.assertEqual(code, 2)
+
+
+# ───────────────────────────────────────────────────────────────────────
+# Adaptive flag — happy-path on the run_compute wiring
+# ───────────────────────────────────────────────────────────────────────
+
+
+class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
+    """Verify --adaptive propagates from CLI args to run_sweep().
+
+    Avoids invoking the full sweep (40×100 grid would take several
+    minutes). Instead, calls run_compute() directly with a Namespace
+    that mimics what argparse would build, after monkey-patching
+    run_sweep to (1) record the kwargs it received and (2) return a
+    minimal result. Exercises the actual wiring code without the
+    numerical cost.
+    """
+
+    def test_adaptive_args_forwarded_to_run_sweep(self):
+        """``run_compute`` must forward ``adaptive``/``Nmap_min``/``tol``
+        to :func:`chaotic_pfc.sweep.run_sweep`. We monkey-patch the
+        symbol on the source module (``chaotic_pfc.sweep``); the CLI
+        does ``from chaotic_pfc.sweep import run_sweep`` *inside*
+        ``run_compute`` so the patch must precede that local import."""
+        import argparse
+        from unittest.mock import patch
+
+        import numpy as np
+
+        import chaotic_pfc.sweep as sweep_mod
+        from chaotic_pfc.cli import sweep as cli_sweep
+        from chaotic_pfc.sweep import SweepResult
+
+        captured: dict = {}
+
+        def fake_run_sweep(**kwargs):
+            captured.update(kwargs)
+            # ``orders`` / ``cutoffs`` may be None (run_sweep default
+            # path) or an ndarray — avoid ``a or default`` because that
+            # triggers an ambiguous-truth-value error on arrays.
+            orders = kwargs.get("orders")
+            if orders is None:
+                orders = np.array([2, 3])
+            cutoffs = kwargs.get("cutoffs")
+            if cutoffs is None:
+                cutoffs = np.array([0.5])
+            n = len(orders)
+            m = len(cutoffs)
+            h = np.full((n, m), 0.1)
+            return SweepResult(
+                h=h,
+                h_std=np.zeros_like(h),
+                orders=np.asarray(orders),
+                cutoffs=np.asarray(cutoffs),
+                window=kwargs.get("window", "hamming"),
+                filter_type=kwargs.get("filter_type", "lowpass"),
+                n_iters_used=np.full((n, m), 700.0),
+                metadata={"Nmap": kwargs.get("Nmap", 3000)},
+            )
+
+        ns = argparse.Namespace(
+            window="hamming",
+            filter_type="lowpass",
+            all=False,
+            quick=True,  # cheapest path; explicit (orders/cutoffs) used
+            kaiser_beta=5.0,
+            data_dir=str(self.workdir / "data"),
+            adaptive=False,
+            Nmap_min=500,
+            tol=1e-3,
+            no_display=True,
+            save=False,
+        )
+        with (
+            patch.object(sweep_mod, "run_sweep", fake_run_sweep),
+            patch.object(sweep_mod, "save_sweep", lambda *a, **k: None),
+        ):
+            code = cli_sweep.run_compute(ns)
+        self.assertEqual(code, 0)
+        self.assertFalse(captured["adaptive"])
+        self.assertNotIn("Nmap_min", captured)  # not forwarded when adaptive=False
+
+        # Now exercise the adaptive=True path with a non-quick grid.
+        captured.clear()
+        ns.quick = False
+        ns.adaptive = True
+        ns.Nmap_min = 300
+        ns.tol = 5e-4
+        with (
+            patch.object(sweep_mod, "run_sweep", fake_run_sweep),
+            patch.object(sweep_mod, "save_sweep", lambda *a, **k: None),
+        ):
+            code = cli_sweep.run_compute(ns)
+        self.assertEqual(code, 0)
+        self.assertTrue(captured["adaptive"])
+        self.assertEqual(captured["Nmap_min"], 300)
+        self.assertEqual(captured["tol"], 5e-4)
+
+
 if __name__ == "__main__":
     unittest.main()

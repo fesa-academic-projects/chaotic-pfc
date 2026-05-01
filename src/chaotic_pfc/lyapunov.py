@@ -1,15 +1,20 @@
 """
 lyapunov.py
 ===========
-Lyapunov exponent computation for the Hénon map with pole filter.
+Lyapunov exponent computation for the Hénon map (2-D) and the Hénon
+map with a pole filter (4-D).
 
-System (dimension 4):
+4-D system:
     x₁[n+1] = α − x₃[n]² + β·x₂[n]
     x₂[n+1] = x₁[n]
     x₃[n+1] = b₀·(α − x₃[n]² + β·x₂[n]) + a₁·x₃[n] + a₂·x₄[n]
     x₄[n+1] = x₃[n]
 
 where b = [b₀, 0, 0] and a = −[1, −2r·cos(w₀), r²]  (pole-filter coeffs).
+
+2-D system:
+    x₁[n+1] = α − x₁[n]² + β·x₂[n]
+    x₂[n+1] = x₁[n]
 
 Two flavours of computation are provided:
 
@@ -18,13 +23,21 @@ Two flavours of computation are provided:
 * ``lyapunov_max_ensemble`` / ``lyapunov_henon2d_ensemble`` — full
   experimental protocol: sample N_ci initial conditions uniformly
   around the fixed point (±``perturbation``), compute the spectrum for
-  each, and aggregate statistics (mean, max, chaotic/stable count).
-  Results can be exported to CSV via :meth:`EnsembleResult.to_csv`.
+  each, and aggregate statistics. Results can be exported to CSV via
+  :meth:`EnsembleResult.to_csv`.
+
+Implementation note
+-------------------
+The 2-D and 4-D variants share the same QR/Gram-Schmidt loop; the only
+differences are the iterate function, the Jacobian, and the dimension.
+Both single-IC and ensemble entry points delegate to the generic
+helpers ``_lyapunov_spectrum`` and ``_run_ensemble``.
 """
 
 from __future__ import annotations
 
 import csv
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -95,7 +108,67 @@ def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
     return Q, norms
 
 
-# ── Lyapunov exponent ──────────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════
+# Generic spectrum loop — shared by 2-D and 4-D variants
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Both variants run the same algorithm:
+#   1. Discard ``Ndiscard`` transient iterations from the IC ``x``.
+#   2. For ``Nitera`` steps: J = jacobian(x); Z = J @ W; (W, norms) =
+#      Gram-Schmidt(Z); accumulate log(max(norms_k, 1e-300)); advance x.
+#   3. The k-th Lyapunov exponent is the time-average of ``log_r[k, :]``.
+#
+# Pulling this into a helper means the 2-D and 4-D entry points contain
+# only the parameter-handling boilerplate (computing fp, eigenvalues,
+# building the IC), plus the three callbacks.
+
+
+def _lyapunov_spectrum(
+    x: NDArray,
+    iterate: Callable[[NDArray], NDArray],
+    jacobian: Callable[[NDArray], NDArray],
+    Nitera: int,
+    Ndiscard: int,
+) -> NDArray:
+    """Run the QR/Gram-Schmidt Lyapunov estimator from a single IC.
+
+    Parameters
+    ----------
+    x
+        Initial condition, shape ``(dim,)``. Modified by reference is
+        avoided — the function makes its own working copy.
+    iterate
+        ``x_next = iterate(x)``.
+    jacobian
+        ``J = jacobian(x)`` of shape ``(dim, dim)``.
+    Nitera, Ndiscard
+        Number of QR iterations (post-transient) and burn-in steps.
+
+    Returns
+    -------
+    exponents : ndarray, shape (dim,)
+        Estimated Lyapunov spectrum.
+    """
+    dim = x.size
+    x = x.copy()
+
+    for _ in range(Ndiscard):
+        x = iterate(x)
+
+    W = np.eye(dim)
+    log_r = np.zeros((dim, Nitera))
+
+    for i in range(Nitera):
+        Z = jacobian(x) @ W
+        W, norms = _gram_schmidt(Z)
+        for k in range(dim):
+            log_r[k, i] = np.log(max(norms[k], 1e-300))
+        x = iterate(x)
+
+    return np.array([np.mean(log_r[k, :]) for k in range(dim)])
+
+
+# ── Lyapunov exponent (single IC) ──────────────────────────────────────────
 
 
 def lyapunov_max(
@@ -123,7 +196,6 @@ def lyapunov_max(
     b = Gz * np.array([1.0, 0.0, 0.0])
     a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
 
-    # Fixed point
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
     eigs = np.linalg.eigvals(J_fp)
@@ -133,23 +205,13 @@ def lyapunov_max(
     rng = np.random.default_rng(seed)
     x = xf * (1.0 + perturbation * (2.0 * rng.random(dim) - 1.0))
 
-    # Discard transient
-    for _ in range(Ndiscard):
-        x = _iterate(alpha, beta, b, a, x)
-
-    # Lyapunov computation via QR / Gram-Schmidt
-    W = np.eye(dim)
-    log_r = np.zeros((dim, Nitera))
-
-    for i in range(Nitera):
-        J = _jacobian(beta, b, a, x)
-        Z = J @ W
-        W, norms = _gram_schmidt(Z)
-        for k in range(dim):
-            log_r[k, i] = np.log(max(norms[k], 1e-300))
-        x = _iterate(alpha, beta, b, a, x)
-
-    exponents = np.array([np.mean(log_r[k, :]) for k in range(dim)])
+    exponents = _lyapunov_spectrum(
+        x,
+        iterate=lambda y: _iterate(alpha, beta, b, a, y),
+        jacobian=lambda y: _jacobian(beta, b, a, y),
+        Nitera=Nitera,
+        Ndiscard=Ndiscard,
+    )
 
     return {
         "lyapunov_max": float(np.max(exponents)),
@@ -240,7 +302,6 @@ def lyapunov_henon2d(
     """
     dim = 2
 
-    # ── Fixed points & stability ──
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
     J_p = _henon2d_jacobian(beta, xf_p)
@@ -251,27 +312,17 @@ def lyapunov_henon2d(
     eigs_n = np.linalg.eigvals(J_n)
     stable_n = bool(np.all(np.abs(eigs_n) < 1.0))
 
-    # ── IC perturbada em torno do ponto fixo (+) ──
+    # IC perturbed around the positive fixed point
     rng = np.random.default_rng(seed)
     x = xf_p * (1.0 + perturbation * (2.0 * rng.random(dim) - 1.0))
 
-    # ── Descarte transiente ──
-    for _ in range(Ndiscard):
-        x = _henon2d_iterate(alpha, beta, x)
-
-    # ── Lyapunov via Gram-Schmidt ──
-    W = np.eye(dim)
-    log_r = np.zeros((dim, Nitera))
-
-    for i in range(Nitera):
-        J = _henon2d_jacobian(beta, x)
-        Z = J @ W
-        W, norms = _gram_schmidt(Z)
-        for k in range(dim):
-            log_r[k, i] = np.log(max(norms[k], 1e-300))
-        x = _henon2d_iterate(alpha, beta, x)
-
-    exponents = np.array([np.mean(log_r[k, :]) for k in range(dim)])
+    exponents = _lyapunov_spectrum(
+        x,
+        iterate=lambda y: _henon2d_iterate(alpha, beta, y),
+        jacobian=lambda y: _henon2d_jacobian(beta, y),
+        Nitera=Nitera,
+        Ndiscard=Ndiscard,
+    )
 
     return {
         "lyapunov_max": float(np.max(exponents)),
@@ -289,7 +340,7 @@ def lyapunov_henon2d(
 # Ensemble protocol: multiple ICs sampled around the fixed point
 # ═══════════════════════════════════════════════════════════════════════════
 #
-# For the 4-D pole-filtered system the experimental protocol is:
+# Experimental protocol:
 #   1. Compute the analytic fixed point x_f.
 #   2. Draw N_ci initial conditions uniformly in [x_f·(1−p), x_f·(1+p)],
 #      independently per component.
@@ -408,6 +459,56 @@ def _sample_ics(
     return np.random.uniform(low=low, high=high, size=(n_initial, len(fixed_point)))
 
 
+# ── Generic ensemble runner ────────────────────────────────────────────────
+
+
+def _run_ensemble(
+    fixed_point: NDArray,
+    eigenvalues: NDArray,
+    stable: bool,
+    iterate: Callable[[NDArray], NDArray],
+    jacobian: Callable[[NDArray], NDArray],
+    Nitera: int,
+    Ndiscard: int,
+    perturbation: float,
+    n_initial: int,
+    seed: int | None,
+    metadata: dict,
+) -> EnsembleResult:
+    """Run the ensemble Lyapunov protocol around ``fixed_point``.
+
+    Generic implementation shared by the 2-D and 4-D entry points. The
+    caller supplies the fixed point, Jacobian eigenvalues at that point
+    (for the metadata), and the iterate/jacobian callbacks. Sampling and
+    aggregation are handled here.
+    """
+    dim = fixed_point.size
+    ics = _sample_ics(fixed_point, perturbation, n_initial, seed)
+
+    exponents_per_ci = np.empty((n_initial, dim))
+    lmax_per_ci = np.empty(n_initial)
+
+    for i in range(n_initial):
+        exps = _lyapunov_spectrum(ics[i], iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+        exponents_per_ci[i] = exps
+        lmax_per_ci[i] = float(np.max(exps))
+
+    return EnsembleResult(
+        fixed_point=fixed_point,
+        eigenvalues=eigenvalues,
+        stable=stable,
+        initial_conditions=ics,
+        exponents_per_ci=exponents_per_ci,
+        lmax_per_ci=lmax_per_ci,
+        mean_exponents=exponents_per_ci.mean(axis=0),
+        mean_lmax=float(lmax_per_ci.mean()),
+        max_lmax=float(lmax_per_ci.max()),
+        n_chaotic=int(np.sum(lmax_per_ci > 0)),
+        n_stable=int(np.sum(lmax_per_ci <= 0)),
+        metadata=metadata,
+    )
+
+
 # ── 4-D pole-filtered ensemble ─────────────────────────────────────────────
 
 
@@ -430,7 +531,6 @@ def lyapunov_max_ensemble(
     ``perturbation`` around the fixed point, then runs the single-IC
     Gram-Schmidt Lyapunov estimator on each.
     """
-    dim = 4
     b = Gz * np.array([1.0, 0.0, 0.0])
     a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
 
@@ -439,42 +539,17 @@ def lyapunov_max_ensemble(
     eigs = np.linalg.eigvals(J_fp)
     stable = bool(np.all(np.abs(eigs) < 1.0))
 
-    ics = _sample_ics(xf, perturbation, n_initial, seed)
-
-    exponents_per_ci = np.empty((n_initial, dim))
-    lmax_per_ci = np.empty(n_initial)
-
-    for i in range(n_initial):
-        x = ics[i].copy()
-        for _ in range(Ndiscard):
-            x = _iterate(alpha, beta, b, a, x)
-
-        W = np.eye(dim)
-        log_r = np.zeros((dim, Nitera))
-        for k in range(Nitera):
-            J = _jacobian(beta, b, a, x)
-            Z = J @ W
-            W, norms = _gram_schmidt(Z)
-            for d in range(dim):
-                log_r[d, k] = np.log(max(norms[d], 1e-300))
-            x = _iterate(alpha, beta, b, a, x)
-
-        exps = np.array([np.mean(log_r[d, :]) for d in range(dim)])
-        exponents_per_ci[i] = exps
-        lmax_per_ci[i] = float(np.max(exps))
-
-    return EnsembleResult(
+    return _run_ensemble(
         fixed_point=xf,
         eigenvalues=eigs,
         stable=stable,
-        initial_conditions=ics,
-        exponents_per_ci=exponents_per_ci,
-        lmax_per_ci=lmax_per_ci,
-        mean_exponents=exponents_per_ci.mean(axis=0),
-        mean_lmax=float(lmax_per_ci.mean()),
-        max_lmax=float(lmax_per_ci.max()),
-        n_chaotic=int(np.sum(lmax_per_ci > 0)),
-        n_stable=int(np.sum(lmax_per_ci <= 0)),
+        iterate=lambda y: _iterate(alpha, beta, b, a, y),
+        jacobian=lambda y: _jacobian(beta, b, a, y),
+        Nitera=Nitera,
+        Ndiscard=Ndiscard,
+        perturbation=perturbation,
+        n_initial=n_initial,
+        seed=seed,
         metadata={
             "system": "henon4d_pole_filtered",
             "alpha": alpha,
@@ -509,49 +584,23 @@ def lyapunov_henon2d_ensemble(
     the strange attractor basin for α = 1.4, β = 0.3). See
     :class:`EnsembleResult` for the output schema.
     """
-    dim = 2
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
     J_p = _henon2d_jacobian(beta, xf_p)
     eigs_p = np.linalg.eigvals(J_p)
     stable_p = bool(np.all(np.abs(eigs_p) < 1.0))
 
-    ics = _sample_ics(xf_p, perturbation, n_initial, seed)
-
-    exponents_per_ci = np.empty((n_initial, dim))
-    lmax_per_ci = np.empty(n_initial)
-
-    for i in range(n_initial):
-        x = ics[i].copy()
-        for _ in range(Ndiscard):
-            x = _henon2d_iterate(alpha, beta, x)
-
-        W = np.eye(dim)
-        log_r = np.zeros((dim, Nitera))
-        for k in range(Nitera):
-            J = _henon2d_jacobian(beta, x)
-            Z = J @ W
-            W, norms = _gram_schmidt(Z)
-            for d in range(dim):
-                log_r[d, k] = np.log(max(norms[d], 1e-300))
-            x = _henon2d_iterate(alpha, beta, x)
-
-        exps = np.array([np.mean(log_r[d, :]) for d in range(dim)])
-        exponents_per_ci[i] = exps
-        lmax_per_ci[i] = float(np.max(exps))
-
-    return EnsembleResult(
+    return _run_ensemble(
         fixed_point=xf_p,
         eigenvalues=eigs_p,
         stable=stable_p,
-        initial_conditions=ics,
-        exponents_per_ci=exponents_per_ci,
-        lmax_per_ci=lmax_per_ci,
-        mean_exponents=exponents_per_ci.mean(axis=0),
-        mean_lmax=float(lmax_per_ci.mean()),
-        max_lmax=float(lmax_per_ci.max()),
-        n_chaotic=int(np.sum(lmax_per_ci > 0)),
-        n_stable=int(np.sum(lmax_per_ci <= 0)),
+        iterate=lambda y: _henon2d_iterate(alpha, beta, y),
+        jacobian=lambda y: _henon2d_jacobian(beta, y),
+        Nitera=Nitera,
+        Ndiscard=Ndiscard,
+        perturbation=perturbation,
+        n_initial=n_initial,
+        seed=seed,
         metadata={
             "system": "henon2d_standard",
             "alpha": alpha,

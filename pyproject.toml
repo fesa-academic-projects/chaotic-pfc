@@ -29,6 +29,9 @@ docs = [
     "sphinx-copybutton>=0.5",
     "myst-parser>=3.0",
 ]
+viz3d = [
+    "plotly>=5.18",
+]
 
 [project.scripts]
 chaotic-pfc = "chaotic_pfc.__main__:main"

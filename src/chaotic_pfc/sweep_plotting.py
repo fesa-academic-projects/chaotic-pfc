@@ -4,20 +4,22 @@ sweep_plotting.py
 Figures for Lyapunov classification maps produced by
 :mod:`chaotic_pfc.sweep`.
 
-Four plot types are provided:
+Three plot types are provided:
 
 1. :func:`plot_heatmap_continuous` — raw λ_max heatmap.
-2. :func:`plot_classification_simple` — discrete periodic / chaotic /
-   unbounded classification.
-3. :func:`plot_classification_separated` — same classification with
-   per-order vertical separators.
-4. :func:`plot_classification_interleaved` — paper-style layout with
-   gaps between orders.
+2. :func:`plot_classification_interleaved` — publication-style discrete
+   classification (periodic / chaotic / unbounded) with gaps between
+   orders.
+3. :func:`plot_difficulty_map` — heatmap of the number of Lyapunov
+   iterations actually used at each grid point. Only meaningful when
+   the sweep was run with ``adaptive=True``; shows where the spectrum
+   converges quickly (light) vs. where it needs the full budget
+   (dark) — a "difficulty map" of the parameter space.
 
-All four accept a :class:`~chaotic_pfc.sweep.SweepResult` (or its
-individual arrays) and optionally a ``save_path``. They return the
-:class:`matplotlib.figure.Figure` so callers can compose or display
-them. The module also re-uses the RC params from
+All three accept a :class:`~chaotic_pfc.sweep.SweepResult` (or its
+individual arrays for the first two) and optionally a ``save_path``.
+They return the :class:`matplotlib.figure.Figure` so callers can
+compose or display them. The module also re-uses the RC params from
 :mod:`chaotic_pfc.plotting`, so sweep figures look consistent with the
 rest of the pipeline.
 """
@@ -60,16 +62,6 @@ _cmap_disc = mcolors.ListedColormap(
 )
 _bounds_disc = [-1.5, -0.5, 0.5, 2.5, 3.5]
 _norm_disc = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
-
-_cmap_3 = mcolors.ListedColormap(
-    [
-        COLOR_PERIODIC,
-        COLOR_CHAOTIC,
-        COLOR_UNBOUNDED,
-    ]
-)
-_bounds_3 = [-1.5, -0.5, 0.5, 2.5]
-_norm_3 = mcolors.BoundaryNorm(_bounds_3, _cmap_3.N)
 
 _LEGEND_HANDLES = [
     Patch(facecolor=COLOR_PERIODIC, edgecolor="gray", label="Periodic orbits"),
@@ -152,94 +144,7 @@ def plot_heatmap_continuous(
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 2. Simple discrete classification
-# ═══════════════════════════════════════════════════════════════════════════
-
-
-def plot_classification_simple(
-    result: SweepResult | None = None,
-    *,
-    h: NDArray | None = None,
-    orders: NDArray | None = None,
-    cutoffs: NDArray | None = None,
-    save_path: str | Path | None = None,
-) -> Figure:
-    """Discrete classification map (periodic / chaotic / unbounded)."""
-    h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
-    h_color = classify(h)
-
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.pcolormesh(
-        Nz,
-        cutoffs,
-        h_color.T,
-        cmap=_cmap_3,
-        norm=_norm_3,
-        shading="nearest",
-    )
-    _axis_cosmetics(ax)
-    ax.grid(True, axis="x", color="gray", linewidth=0.3)
-    ax.legend(
-        handles=_LEGEND_HANDLES,
-        fontsize=12,
-        loc="upper right",
-        framealpha=0.9,
-        edgecolor="gray",
-    )
-    ax.tick_params(labelsize=18)
-    fig.tight_layout()
-    _save(fig, save_path)
-    return fig
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# 3. Classification with vertical separators per order
-# ═══════════════════════════════════════════════════════════════════════════
-
-
-def plot_classification_separated(
-    result: SweepResult | None = None,
-    *,
-    h: NDArray | None = None,
-    orders: NDArray | None = None,
-    cutoffs: NDArray | None = None,
-    save_path: str | Path | None = None,
-) -> Figure:
-    """Classification map with a black line between consecutive orders."""
-    h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
-    h_color = classify(h)
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.pcolormesh(
-        Nz,
-        cutoffs,
-        h_color.T,
-        cmap=_cmap_3,
-        norm=_norm_3,
-        shading="nearest",
-    )
-    _axis_cosmetics(ax)
-    ax.grid(False)
-    ax.legend(
-        handles=_LEGEND_HANDLES,
-        fontsize=12,
-        loc="upper right",
-        framealpha=0.9,
-        edgecolor="gray",
-    )
-    for xval in Nz:
-        ax.axvline(x=xval - 0.5, color="black", linewidth=0.5)
-    ax.axvline(x=Nz[-1] + 0.5, color="black", linewidth=0.5)
-    ax.set_xticks(Nz[::2])
-    ax.set_xticklabels(Nz[::2], fontsize=12)
-    ax.tick_params(labelsize=14)
-    fig.tight_layout()
-    _save(fig, save_path)
-    return fig
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# 4. Paper-style interleaved bars (3 data slots + 1 gap per order)
+# 2. Paper-style interleaved bars (3 data slots + 1 gap per order)
 # ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -332,15 +237,149 @@ def plot_classification_interleaved(
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Convenience: produce the full four-figure set
+# 3. Difficulty map: how many iterations each grid point needed
 # ═══════════════════════════════════════════════════════════════════════════
+#
+# This figure only carries information for sweeps run with adaptive=True.
+# When adaptive=False every finite cell equals Nmap, so the heatmap would
+# be a single colour and we'd be misleading the reader. We require
+# ``n_iters_used`` to be present and to actually vary across cells; the
+# helper raises if the input is non-adaptive.
+
+
+def plot_difficulty_map(
+    result: SweepResult,
+    *,
+    save_path: str | Path | None = None,
+    cmap: str = "viridis",
+) -> Figure:
+    """Heatmap of Lyapunov iterations actually used at each grid point.
+
+    A "difficulty map" of the parameter space: low values mean the
+    spectrum estimate converged quickly (strongly chaotic or strongly
+    stable points), high values mean the running estimate stayed within
+    the convergence tolerance only after many iterations (typically
+    fronteira points where |λ_max| ≈ 0). Diverged grid points are shown
+    in the same light grey used for unbounded orbits in the
+    classification figures, so the two layers can be visually overlaid.
+
+    Parameters
+    ----------
+    result
+        A :class:`~chaotic_pfc.sweep.SweepResult` produced with
+        ``adaptive=True``. The function relies on
+        ``result.n_iters_used`` and on ``result.metadata['Nmap_min']``
+        / ``result.metadata['Nmap']`` for the colour-bar limits.
+    save_path
+        Optional path to write the figure to.
+    cmap
+        Sequential matplotlib colormap name. ``viridis`` is
+        perceptually uniform and prints well in greyscale.
+
+    Raises
+    ------
+    ValueError
+        If ``result`` was produced with ``adaptive=False`` (the heatmap
+        would be a single colour, which is misleading rather than
+        informative). The error message points the user to the
+        ``adaptive=True`` flag in :func:`run_sweep`.
+    """
+    if result.n_iters_used is None:
+        raise ValueError(
+            "result.n_iters_used is None: the sweep was loaded from a "
+            "legacy .npz that did not record the iteration count, or "
+            "the in-memory result predates the adaptive feature. "
+            "Re-run with run_sweep(..., adaptive=True) to produce one."
+        )
+    if not result.metadata.get("adaptive", False):
+        raise ValueError(
+            "Difficulty map is only meaningful for sweeps with "
+            "adaptive=True. The provided SweepResult was run with "
+            "adaptive=False, so every finite cell trivially equals "
+            "Nmap and the figure would carry no information. "
+            "Pass adaptive=True to run_sweep() to enable early-stop "
+            "and produce a non-trivial iteration map."
+        )
+
+    Nz = np.asarray(result.orders) - 1
+    cutoffs = np.asarray(result.cutoffs)
+    n_iters = np.asarray(result.n_iters_used, dtype=np.float64)
+
+    # Colour-bar bounds: anchor to the (Nmap_min, Nmap) range used at
+    # sweep time so different sweeps with the same parameters share a
+    # comparable scale. Fall back to the data range if the metadata
+    # is incomplete (e.g. legacy result).
+    Nmap_min = result.metadata.get("Nmap_min")
+    Nmap = result.metadata.get("Nmap")
+    if Nmap_min is None or Nmap is None:
+        finite = n_iters[np.isfinite(n_iters)]
+        vmin = float(finite.min()) if finite.size else 0.0
+        vmax = float(finite.max()) if finite.size else 1.0
+    else:
+        vmin = float(Nmap_min)
+        vmax = float(Nmap)
+
+    # Render diverged cells (NaN) in the same light grey used by the
+    # classification plots for unbounded orbits, so the two figures
+    # stay visually consistent.
+    cmap_obj = plt.get_cmap(cmap).copy()
+    cmap_obj.set_bad(COLOR_UNBOUNDED)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    pcm = ax.pcolormesh(
+        Nz,
+        cutoffs,
+        n_iters.T,
+        cmap=cmap_obj,
+        vmin=vmin,
+        vmax=vmax,
+        shading="nearest",
+    )
+    cbar = fig.colorbar(pcm, ax=ax, label="Lyapunov iterations used")
+    cbar.ax.tick_params(labelsize=12)
+
+    _axis_cosmetics(ax)
+    ax.grid(True, axis="x", color="gray", linewidth=0.3)
+    ax.tick_params(labelsize=18)
+    fig.tight_layout()
+    _save(fig, save_path)
+    return fig
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Convenience: produce the full figure set
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# ``plot_all`` always emits the two classification figures (1, 2) and
+# *additionally* emits the difficulty map (3) when the sweep was run
+# with ``adaptive=True``. The non-adaptive case is detected by
+# inspecting ``result.metadata['adaptive']`` (and falling back to a
+# ``None`` n_iters_used check, for legacy results loaded from disk).
+#
+# ``FIGURE_FILENAMES`` lists the names that are *always* produced;
+# difficulty-map filename is appended at runtime when applicable. This
+# keeps the constant useful as a stable contract for callers that want
+# to predict the always-present outputs while still allowing the third
+# file to appear when it carries information.
 
 FIGURE_FILENAMES: tuple[str, ...] = (
     "fig1_heatmap_continuous",
-    "fig2_classification",
-    "fig3_classification_separated",
-    "fig4_classification_interleaved",
+    "fig2_classification_interleaved",
 )
+
+DIFFICULTY_FIGURE_FILENAME: str = "fig3_difficulty_map"
+
+
+def _has_difficulty_data(result: SweepResult) -> bool:
+    """Return True iff a difficulty map can be plotted from ``result``.
+
+    A difficulty map is informative only when the sweep was run with
+    ``adaptive=True``. Otherwise every finite cell trivially equals
+    ``Nmap`` and the figure would carry no information.
+    """
+    if result.n_iters_used is None:
+        return False
+    return bool(result.metadata.get("adaptive", False))
 
 
 def plot_all(
@@ -350,28 +389,41 @@ def plot_all(
     fmt: str = "png",
     close_figures: bool = True,
 ) -> list[Path]:
-    """Generate the four standard figures for a sweep and save them to
+    """Generate the standard figures for a sweep and save them to
     ``out_dir/<fig>.{fmt}``. Returns the list of written paths.
+
+    Always produces the two classification figures listed in
+    :data:`FIGURE_FILENAMES`. Additionally produces
+    ``fig3_difficulty_map.{fmt}`` (see :data:`DIFFICULTY_FIGURE_FILENAME`)
+    when ``result`` was generated with ``adaptive=True`` — the figure is
+    silently skipped for non-adaptive sweeps because it would be
+    monochromatic and therefore uninformative.
 
     The output directory is created if it does not exist.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    plotters = (
+    plotters: tuple = (
         plot_heatmap_continuous,
-        plot_classification_simple,
-        plot_classification_separated,
         plot_classification_interleaved,
     )
 
     paths: list[Path] = []
-    for fname, plotter in zip(FIGURE_FILENAMES, plotters, strict=False):
+    for fname, plotter in zip(FIGURE_FILENAMES, plotters, strict=True):
         path = out_dir / f"{fname}.{fmt}"
         fig = plotter(result, save_path=path)
         if close_figures:
             plt.close(fig)
         paths.append(path)
+
+    if _has_difficulty_data(result):
+        path = out_dir / f"{DIFFICULTY_FIGURE_FILENAME}.{fmt}"
+        fig = plot_difficulty_map(result, save_path=path)
+        if close_figures:
+            plt.close(fig)
+        paths.append(path)
+
     return paths
 
 

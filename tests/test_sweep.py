@@ -44,7 +44,7 @@ class TestFirBank(unittest.TestCase):
         orders = np.array([2, 3, 5])
         cutoffs = np.linspace(0.1, 0.9, 4)
         bank, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
-        self.assertEqual(bank.shape, (3, 4, 6))  # max_taps = max(orders) + 1
+        self.assertEqual(bank.shape, (3, 4, 5))  # max_taps = max(orders)
         self.assertEqual(gains.shape, (3, 4))
 
     def test_lowpass_dc_gain_approx_one(self):
@@ -54,17 +54,29 @@ class TestFirBank(unittest.TestCase):
         _, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
         np.testing.assert_allclose(gains, 1.0, atol=1e-6)
 
-    def test_highpass_forces_odd_taps(self):
-        """With pass_zero='highpass', scipy's firwin requires odd numtaps."""
-        orders = np.array([4, 6, 8])  # all even → must be bumped to 5, 7, 9
+    def test_highpass_requires_odd_orders(self):
+        """Highpass needs odd numtaps; even orders must be rejected.
+
+        Allowing Nss|1 padding (the previous behaviour) silently truncated
+        the filter at read time in the sweep kernel, which suppressed
+        divergence-based early-exits and caused a ~10× slowdown.
+        """
+        cutoffs = np.array([0.3])
+        with self.assertRaises(ValueError):
+            precompute_fir_bank(np.array([4, 6, 8]), cutoffs, "highpass", "hamming")
+        # Mixed odd/even — even values must still be reported.
+        with self.assertRaises(ValueError):
+            precompute_fir_bank(np.array([3, 4, 5]), cutoffs, "highpass", "hamming")
+
+    def test_highpass_odd_orders_ok(self):
+        """Highpass with odd orders builds a filter of size == order."""
+        orders = np.array([3, 5, 7])
         cutoffs = np.array([0.3])
         bank, _ = precompute_fir_bank(orders, cutoffs, "highpass", "hamming")
-        # Odd-tap filters should have a non-zero coefficient at the bumped
-        # position (index = Nss) — proof that Nss | 1 was applied.
+        self.assertEqual(bank.shape, (3, 1, 7))
+        # Last tap of each odd-order filter must be non-zero (filter not truncated).
         for i, Nss in enumerate(orders):
-            self.assertNotEqual(
-                bank[i, 0, int(Nss)], 0.0, f"expected coefficient at index {Nss} for order {Nss}"
-            )
+            self.assertNotEqual(bank[i, 0, int(Nss) - 1], 0.0)
 
     def test_kaiser_window_accepted(self):
         orders = np.array([5])
@@ -199,7 +211,7 @@ class TestIO(unittest.TestCase):
         result = run_sweep(
             window="hann",
             filter_type="highpass",
-            orders=np.arange(2, 4),
+            orders=np.array([3, 5]),  # highpass requires odd orders
             cutoffs=np.linspace(0.2, 0.8, 3),
             Nitera=20,
             Nmap=100,
@@ -244,6 +256,177 @@ class TestIO(unittest.TestCase):
             loaded = load_sweep(path)
             self.assertEqual(loaded.window, "blackman")
             self.assertEqual(loaded.filter_type, "lowpass")
+            self.assertIsNone(loaded.n_iters_used)
+
+    def test_n_iters_used_round_trip(self):
+        """``n_iters_used`` must survive a save/load round-trip."""
+        result = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.2, 0.8, 4),
+            Nitera=30,
+            Nmap=200,
+            n_initial=3,
+            seed=42,
+            warmup=False,
+            adaptive=True,
+            Nmap_min=50,
+            tol=1e-2,
+        )
+        self.assertIsNotNone(result.n_iters_used)
+        with TemporaryDirectory() as td:
+            path = Path(td) / "adaptive.npz"
+            save_sweep(result, path)
+            loaded = load_sweep(path)
+            self.assertIsNotNone(loaded.n_iters_used)
+            np.testing.assert_array_equal(
+                np.isnan(loaded.n_iters_used),
+                np.isnan(result.n_iters_used),
+            )
+            finite = ~np.isnan(loaded.n_iters_used)
+            np.testing.assert_array_equal(
+                loaded.n_iters_used[finite],
+                result.n_iters_used[finite],
+            )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Adaptive Lyapunov early-stop
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestAdaptive(unittest.TestCase):
+    """Validate the adaptive (early-stop) path of run_sweep.
+
+    The default (adaptive=False) is already covered by TestRunSweep; here
+    we focus on (a) correct behaviour of the adaptive criterion, (b)
+    bit-identical results when adaptive=False so the new code path does
+    not regress the production case, (c) the n_iters_used array, and
+    (d) parameter validation.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        # Non-adaptive baseline (reference)
+        cls.ref = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=np.arange(2, 8),
+            cutoffs=np.linspace(0.1, 0.9, 6),
+            Nitera=100,
+            Nmap=500,
+            n_initial=4,
+            seed=42,
+            warmup=True,
+            adaptive=False,
+        )
+
+        # Adaptive run with the same seed and grid
+        cls.ada = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=np.arange(2, 8),
+            cutoffs=np.linspace(0.1, 0.9, 6),
+            Nitera=100,
+            Nmap=500,
+            n_initial=4,
+            seed=42,
+            warmup=False,
+            adaptive=True,
+            Nmap_min=100,
+            tol=1e-2,
+        )
+
+    def test_n_iters_used_filled(self):
+        """In non-adaptive mode every finite cell uses exactly Nmap iters."""
+        ni = self.ref.n_iters_used
+        self.assertIsNotNone(ni)
+        self.assertEqual(ni.shape, self.ref.h.shape)
+        finite = np.isfinite(self.ref.h)
+        np.testing.assert_array_equal(ni[finite], 500.0)
+
+    def test_adaptive_uses_fewer_iters(self):
+        """Adaptive mode should average fewer than Nmap iterations."""
+        ni = self.ada.n_iters_used
+        self.assertIsNotNone(ni)
+        finite = np.isfinite(ni)
+        self.assertTrue(np.any(finite), "expected at least one finite point")
+        # All used counts must lie in [Nmap_min, Nmap]
+        self.assertTrue(np.all(ni[finite] >= 100))
+        self.assertTrue(np.all(ni[finite] <= 500))
+        # And the mean should be strictly less than Nmap (otherwise
+        # adaptive is pointless)
+        self.assertLess(ni[finite].mean(), 500.0)
+
+    def test_adaptive_close_to_reference(self):
+        """Adaptive λ_max must be close to the non-adaptive estimate.
+
+        The threshold (0.05) is loose because with these tiny test
+        parameters (Nmap=500, n_initial=4) the reference itself is
+        noisy. Production sweeps with Nmap=3000, n_initial=25 see
+        |Δλ| < 0.01 in the worst case.
+        """
+        both = np.isfinite(self.ref.h) & np.isfinite(self.ada.h)
+        self.assertTrue(np.any(both))
+        diff = np.abs(self.ref.h - self.ada.h)[both]
+        self.assertLess(
+            diff.max(),
+            0.05,
+            f"adaptive diverges from reference: max|Δλ|={diff.max():.4f}",
+        )
+
+    def test_adaptive_metadata(self):
+        """Adaptive metadata must record Nmap_min and tol."""
+        self.assertTrue(self.ada.metadata["adaptive"])
+        self.assertEqual(self.ada.metadata["Nmap_min"], 100)
+        self.assertEqual(self.ada.metadata["tol"], 1e-2)
+        # Non-adaptive must record None for adaptive-only fields
+        self.assertFalse(self.ref.metadata["adaptive"])
+        self.assertIsNone(self.ref.metadata["Nmap_min"])
+
+    def test_adaptive_determinism(self):
+        """Same seed must give identical results in adaptive mode too."""
+        ada2 = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=np.arange(2, 8),
+            cutoffs=np.linspace(0.1, 0.9, 6),
+            Nitera=100,
+            Nmap=500,
+            n_initial=4,
+            seed=42,
+            warmup=False,
+            adaptive=True,
+            Nmap_min=100,
+            tol=1e-2,
+        )
+        np.testing.assert_array_equal(np.isnan(self.ada.h), np.isnan(ada2.h))
+        finite = ~np.isnan(self.ada.h)
+        np.testing.assert_array_equal(self.ada.h[finite], ada2.h[finite])
+        np.testing.assert_array_equal(self.ada.n_iters_used[finite], ada2.n_iters_used[finite])
+
+    def test_invalid_Nmap_min(self):
+        kw = dict(
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.2, 0.8, 3),
+            Nitera=20,
+            Nmap=200,
+            n_initial=2,
+            warmup=False,
+        )
+        # Nmap_min > Nmap is invalid
+        with self.assertRaises(ValueError):
+            run_sweep(adaptive=True, Nmap_min=300, tol=1e-2, **kw)
+        # Nmap_min == Nmap is a no-op; raise rather than silently disable
+        with self.assertRaises(ValueError):
+            run_sweep(adaptive=True, Nmap_min=200, tol=1e-2, **kw)
+        # Nmap_min < 1 is invalid
+        with self.assertRaises(ValueError):
+            run_sweep(adaptive=True, Nmap_min=0, tol=1e-2, **kw)
+        # tol <= 0 is invalid
+        with self.assertRaises(ValueError):
+            run_sweep(adaptive=True, Nmap_min=50, tol=0.0, **kw)
 
 
 if __name__ == "__main__":

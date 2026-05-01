@@ -28,14 +28,29 @@ are already present, so plotting still works::
 Run the sweep in quick mode (tiny grid, seconds) — useful for CI::
 
     chaotic-pfc run all --no-display --quick-sweep
+
+Run the sweep with adaptive Lyapunov early-stop (≈3-4× speedup, mean
+|Δλ| < 0.001 vs. the fixed-Nmap reference)::
+
+    chaotic-pfc run all --no-display --adaptive
+
+Tighten the adaptive tolerance for closer-to-reference accuracy::
+
+    chaotic-pfc run all --no-display --adaptive --tol 1e-4
 """
 
 from __future__ import annotations
 
 import argparse
+import time
+from pathlib import Path
+
+import numpy as np
 
 from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
 from . import sweep as sweep_mod
+from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS, run_sweep, save_sweep
+from chaotic_pfc.cli.sweep import _beta_values
 
 # Experiments run before the sweep, in order. Each module exposes
 # a run(args) function whose signature is documented in its own module.
@@ -73,6 +88,35 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Run the sweep compute step in quick mode (seconds instead of hours).",
     )
+    # Adaptive Lyapunov early-stop. Defaults to off to preserve
+    # bit-exactness with previous releases. See cli/sweep.py for the
+    # full justification of the default Nmap_min / tol values.
+    p.add_argument(
+        "--adaptive",
+        action="store_true",
+        help=(
+            "Enable adaptive Lyapunov early-stop in the sweep step. "
+            "Typical speedup: 3-4× on the full sweep. Mean |Δλ| vs the "
+            "fixed-Nmap reference is < 0.001. Mutually exclusive with "
+            "--quick-sweep."
+        ),
+    )
+    p.add_argument(
+        "--Nmap-min",
+        type=int,
+        default=500,
+        dest="Nmap_min",
+        help=(
+            "Minimum Lyapunov iterations before --adaptive may fire "
+            "(default: 500). Ignored without --adaptive."
+        ),
+    )
+    p.add_argument(
+        "--tol",
+        type=float,
+        default=1e-3,
+        help=("Adaptive convergence tolerance (default: 1e-3). Ignored without --adaptive."),
+    )
     p.set_defaults(_run=run)
 
 
@@ -88,10 +132,123 @@ def _common_args(no_display: bool, save: bool) -> dict[str, bool]:
     return {"no_display": False, "save": bool(save)}
 
 
+def _run_all_sweeps(
+    shared: dict,
+    quick: bool,
+    adaptive: bool,
+    Nmap_min: int,
+    tol: float,
+) -> None:
+    """Run every (window, filter) combination.
+
+    Non-Kaiser windows produce one ``.npz`` per filter type (12 total).
+    Kaiser expands into a β-sweep (β ∈ [2, 14] step 0.5) per filter type
+    (50 total).
+
+    When ``adaptive`` is True, every sweep enables the Lyapunov
+    early-stop with the supplied ``Nmap_min`` and ``tol`` parameters.
+    """
+    if quick:
+        orders_lp = np.arange(2, 8)
+        orders_hp = np.arange(3, 9, 2)  # highpass: odd orders only
+        cutoffs = np.linspace(0.1, 0.9, 10)
+        params = dict(Nitera=50, Nmap=200, n_initial=3)
+    else:
+        orders_lp = None  # → run_sweep default (np.arange(2, 42))
+        orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
+        cutoffs = None
+        params = dict(Nitera=500, Nmap=3000, n_initial=25)
+
+    # Adaptive parameters propagated only when the user opted in.
+    adaptive_kwargs: dict = {"adaptive": adaptive}
+    if adaptive:
+        adaptive_kwargs["Nmap_min"] = Nmap_min
+        adaptive_kwargs["tol"] = tol
+        print(f"[07] adaptive enabled: Nmap_min={Nmap_min}, tol={tol}")
+
+    warmup_needed = True
+    total_start = time.perf_counter()
+
+    # Build the full sweep list: (window, filter_type, beta_or_None)
+    betas = _beta_values(2.0, 14.0, 0.5)
+    beta_dir = Path("data/sweeps/beta")
+    sweeps: list[tuple[str, str, float | None]] = []
+    for window in WINDOWS:
+        if window == "kaiser":
+            for ft in FILTER_TYPES:
+                for b in betas:
+                    sweeps.append((window, ft, b))
+        else:
+            for ft in FILTER_TYPES:
+                sweeps.append((window, ft, None))
+
+    total = len(sweeps)
+    for idx, (window, filter_type, beta) in enumerate(sweeps, start=1):
+        label = (
+            f"Kaiser β={beta:.1f} / {filter_type}"
+            if beta is not None
+            else f"{window} / {filter_type}"
+        )
+        print(f"\n[07] {idx}/{total}  {label}")
+        t0 = time.perf_counter()
+        result = run_sweep(
+            window=window,
+            filter_type=filter_type,
+            orders=orders_hp if filter_type == "highpass" else orders_lp,
+            cutoffs=cutoffs,
+            warmup=warmup_needed,
+            kaiser_beta=beta if beta is not None else 5.0,
+            **params,
+            **adaptive_kwargs,
+        )
+        elapsed = time.perf_counter() - t0
+        warmup_needed = False
+
+        if beta is not None:
+            out_path = (
+                beta_dir / f"kaiser_beta_{beta:.2f}_({filter_type})" / "variables_lyapunov.npz"
+            )
+        else:
+            out_path = Path("data/sweeps") / result.display_name / "variables_lyapunov.npz"
+
+        valid = int(np.count_nonzero(~np.isnan(result.h)))
+        n_total = result.h.size
+        print(f"     Elapsed: {elapsed:6.1f} s ({elapsed / 60:.1f} min)")
+        print(f"     Valid points: {valid}/{n_total} ({100 * valid / n_total:.1f} %)")
+        print(f"     Throughput:   {n_total / elapsed:.1f} pts/s")
+        if adaptive and result.n_iters_used is not None:
+            ni = result.n_iters_used[~np.isnan(result.n_iters_used)]
+            if ni.size:
+                print(
+                    f"     Iters used:   mean={ni.mean():.0f} / "
+                    f"max={int(ni.max())} (budget {result.metadata['Nmap']})"
+                )
+        save_sweep(result, out_path)
+        print(f"     Saved -> {out_path}")
+
+    total_elapsed = time.perf_counter() - total_start
+    print(f"\n[07] done — {total} sweep(s) in {total_elapsed:.0f} s ({total_elapsed / 60:.0f} min)")
+
+
 def run(args: argparse.Namespace) -> int:
     """Execute ``run all``."""
     if args.skip_sweep and args.quick_sweep:
         print("run all: --skip-sweep and --quick-sweep are mutually exclusive")
+        return 2
+
+    # --adaptive applies inside the Lyapunov loop, so it makes no sense
+    # without an actual sweep run; reject early with a clear message
+    # rather than silently ignoring the flag.
+    adaptive = bool(getattr(args, "adaptive", False))
+    if adaptive and args.skip_sweep:
+        print("run all: --adaptive has no effect with --skip-sweep")
+        return 2
+    if adaptive and args.quick_sweep:
+        print(
+            "run all: --adaptive and --quick-sweep are redundant "
+            "(quick mode already uses Nmap=200; adaptive early-stop has "
+            "no meaningful budget left to save). Pass at most one."
+        )
         return 2
 
     shared = _common_args(args.no_display, args.save)
@@ -123,6 +280,11 @@ def run(args: argparse.Namespace) -> int:
             perturbation=0.1,
             data_dir="data/lyapunov",
         )
+        # Sensitivity keeps the original default of 50 steps — 50_000
+        # makes the point-overlay unreadable.
+        if tag == "02":
+            step_args.steps = 50
+
         # Fill defaults from DEFAULT_CONFIG when experiment-specific flags
         # are left as None (so each run() sees the same values as it would
         # in a direct invocation).
@@ -134,15 +296,13 @@ def run(args: argparse.Namespace) -> int:
         _banner("07  (skipped)")
     else:
         _banner("07")
-        compute_args = argparse.Namespace(
-            **shared,
-            window="hamming",
-            filter_type="lowpass",
-            all=False,
+        _run_all_sweeps(
+            shared=shared,
             quick=bool(args.quick_sweep),
-            data_dir="data/sweeps",
+            adaptive=adaptive,
+            Nmap_min=args.Nmap_min,
+            tol=args.tol,
         )
-        sweep_mod.run_compute(compute_args)
 
     # ── 3) Sweep plot (08) ────────────────────────────────────────────────
     _banner("08")
@@ -156,6 +316,18 @@ def run(args: argparse.Namespace) -> int:
         fmt=["png", "svg"],
     )
     sweep_mod.run_plot(plot_args)
+
+    # ── 4) Plot 3-D (09) ──────────────────────────────────────────────────
+    if args.skip_sweep or args.quick_sweep:
+        _banner("09  (skipped — use normal run for 3-D plot)")
+    else:
+        _banner("09")
+        plot_3d_args = argparse.Namespace(
+            **shared,
+            data_dir="data/sweeps/beta",
+            figures_dir="figures/sweeps",
+        )
+        sweep_mod.run_plot_3d(plot_3d_args)
 
     print("\nAll experiments completed successfully.")
     return 0
