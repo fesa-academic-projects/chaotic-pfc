@@ -24,7 +24,6 @@ from chaotic_pfc.config import DEFAULT_CONFIG
 from chaotic_pfc.spectral import _WINDOWS, psd_normalised
 from chaotic_pfc.sweep import precompute_fir_bank, run_sweep, save_sweep
 
-
 # ════════════════════════════════════════════════════════════════════════════
 # psd_normalised — all windows, normalisation, edge cases
 # ════════════════════════════════════════════════════════════════════════════
@@ -212,6 +211,12 @@ class TestSweepPlotting3D(unittest.TestCase):
             self.assertEqual(len(fig.data), 3)
             self.assertTrue(html.exists())
             self.assertGreater(html.stat().st_size, 0)
+
+    def test_aggregate_empty_dir_raises(self):
+        from chaotic_pfc.sweep_plotting_3d import aggregate_beta_sweeps
+
+        with TemporaryDirectory() as td, self.assertRaises(FileNotFoundError):
+            aggregate_beta_sweeps(td)
 
 
 if __name__ == "__main__":

@@ -205,11 +205,11 @@ class SweepConfig:
         useful to have in parallel.
     """
 
-    Nitera: int = 500  # burn-in iterations
-    Nmap: int = 3000  # iterations used for the Lyapunov estimate
-    n_initial: int = 25  # ICs averaged per grid point
+    Nitera: int = 500
+    Nmap: int = 3000
+    n_initial: int = 25
     order_lo: int = 2
-    order_hi: int = 42  # exclusive
+    order_hi: int = 42
     n_cutoffs: int = 100
     default_window: str = "hamming"
     default_filter_type: str = "lowpass"

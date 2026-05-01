@@ -208,7 +208,7 @@ def run_compute(args: argparse.Namespace) -> int:
     """Execute ``run sweep compute``."""
     import numpy as np
 
-    from chaotic_pfc.sweep import run_sweep, save_sweep
+    from chaotic_pfc.sweep import quick_sweep_params, run_sweep, save_sweep
 
     # ── Argument validation ──────────────────────────────────────────────
     # --adaptive applies inside the Lyapunov loop. --quick already runs a
@@ -228,11 +228,9 @@ def run_compute(args: argparse.Namespace) -> int:
     combos = _build_combinations(args)
     data_dir = Path(args.data_dir)
 
+    params: dict[str, int]
     if args.quick:
-        orders_lp = np.arange(2, 8)
-        orders_hp = np.arange(3, 9, 2)  # highpass requires odd taps
-        cutoffs = np.linspace(0.1, 0.9, 10)
-        params = dict(Nitera=50, Nmap=200, n_initial=3)
+        orders_lp, orders_hp, cutoffs, params = quick_sweep_params()
     else:
         orders_lp = None  # → run_sweep default: np.arange(2, 42)
         orders_hp = None  # → run_sweep default: np.arange(3, 43, 2)
@@ -261,7 +259,7 @@ def run_compute(args: argparse.Namespace) -> int:
             cutoffs=cutoffs,
             warmup=warmup_needed,
             kaiser_beta=args.kaiser_beta,
-            **params,
+            **params,  # type: ignore[arg-type]
             **adaptive_kwargs,
         )
         elapsed = time.perf_counter() - t0
@@ -486,7 +484,7 @@ def run_plot_3d(args: argparse.Namespace) -> int:
     return 0
 
 
-def _beta_values(beta_min: float, beta_max: float, beta_step: float) -> "list[float]":
+def _beta_values(beta_min: float, beta_max: float, beta_step: float) -> list[float]:
     """Build the inclusive β grid, validating the range."""
     import numpy as np
 
@@ -496,7 +494,7 @@ def _beta_values(beta_min: float, beta_max: float, beta_step: float) -> "list[fl
         raise ValueError(f"--beta-max ({beta_max}) must be >= --beta-min ({beta_min})")
     if beta_min < 0:
         raise ValueError(f"--beta-min must be >= 0, got {beta_min!r}")
-    n = int(round((beta_max - beta_min) / beta_step)) + 1
+    n = round((beta_max - beta_min) / beta_step) + 1
     grid = np.linspace(beta_min, beta_max, n)
     return [float(round(b, 6)) for b in grid]
 
@@ -505,16 +503,13 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
     """Execute ``run sweep beta-sweep``."""
     import numpy as np
 
-    from chaotic_pfc.sweep import run_sweep, save_sweep
+    from chaotic_pfc.sweep import quick_sweep_params, run_sweep, save_sweep
 
     betas = _beta_values(args.beta_min, args.beta_max, args.beta_step)
     data_dir = Path(args.data_dir)
 
     if args.quick:
-        orders_lp = np.arange(2, 8)
-        orders_hp = np.arange(3, 9, 2)  # highpass requires odd taps
-        cutoffs = np.linspace(0.1, 0.9, 10)
-        params = dict(Nitera=50, Nmap=200, n_initial=3)
+        orders_lp, orders_hp, cutoffs, params = quick_sweep_params()
     else:
         orders_lp = None
         orders_hp = None
@@ -536,7 +531,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
             cutoffs=cutoffs,
             warmup=warmup_needed,
             kaiser_beta=beta,
-            **params,
+            **params,  # type: ignore[arg-type]
         )
         elapsed = time.perf_counter() - t0
         warmup_needed = False

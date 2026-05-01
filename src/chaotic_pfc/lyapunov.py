@@ -47,6 +47,13 @@ from numpy.typing import NDArray
 # ── Fixed-point computation ─────────────────────────────────────────────────
 
 
+def _pole_filter_coeffs(Gz: float, pole_radius: float, w0: float) -> tuple[NDArray, NDArray]:
+    """Build the (b, a) vectors for the 4-D pole-filtered Hénon map."""
+    b = Gz * np.array([1.0, 0.0, 0.0])
+    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
+    return b, a
+
+
 def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
     """Compute the stable fixed point of the 4-D pole-filtered Hénon map."""
     H = np.sum(a[1:])  # sum of a coeffs (excluding a[0])
@@ -193,8 +200,7 @@ def lyapunov_max(
         'stable'        : bool
     """
     dim = 4
-    b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
+    b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
@@ -230,8 +236,7 @@ def fixed_point_stability(
     w0: float = 0.0,
 ) -> dict:
     """Quick check: fixed point, eigenvalues, stability (4-D filtered)."""
-    b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
+    b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
     eigs = np.linalg.eigvals(J_fp)
@@ -531,8 +536,7 @@ def lyapunov_max_ensemble(
     ``perturbation`` around the fixed point, then runs the single-IC
     Gram-Schmidt Lyapunov estimator on each.
     """
-    b = Gz * np.array([1.0, 0.0, 0.0])
-    a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
+    b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)

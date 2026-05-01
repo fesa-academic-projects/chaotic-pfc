@@ -8,23 +8,22 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import pick_backend
+from ._common import add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the ``run comm-ideal`` subcommand."""
-    from chaotic_pfc.config import DEFAULT_CONFIG as d
+    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
     p = subparsers.add_parser(
         "comm-ideal",
         help="Transmitter/receiver over an ideal (noiseless) channel.",
         description="Full communication pipeline over an ideal (noiseless) channel.",
     )
-    p.add_argument("--N", type=int, default=d.comm.N)
-    p.add_argument("--mu", type=float, default=d.comm.mu)
-    p.add_argument("--period", type=int, default=d.comm.message_period)
-    p.add_argument("--save", action="store_true")
-    p.add_argument("--no-display", dest="no_display", action="store_true")
+    p.add_argument("--N", type=int, default=cfg.comm.N)
+    p.add_argument("--mu", type=float, default=cfg.comm.mu)
+    p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    add_save_display_flags(p)
     p.set_defaults(_run=run)
 
 

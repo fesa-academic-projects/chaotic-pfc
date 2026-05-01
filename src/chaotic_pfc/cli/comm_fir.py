@@ -8,25 +8,24 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import pick_backend
+from ._common import add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the ``run comm-fir`` subcommand."""
-    from chaotic_pfc.config import DEFAULT_CONFIG as d
+    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
     p = subparsers.add_parser(
         "comm-fir",
         help="Transmitter/receiver over a band-limited FIR channel.",
         description="Chaotic communication through an FIR low-pass channel.",
     )
-    p.add_argument("--N", type=int, default=d.comm.N)
-    p.add_argument("--mu", type=float, default=d.comm.mu)
-    p.add_argument("--period", type=int, default=d.comm.message_period)
-    p.add_argument("--cutoff", type=float, default=d.channel.cutoff)
-    p.add_argument("--taps", type=int, default=d.channel.num_taps)
-    p.add_argument("--save", action="store_true")
-    p.add_argument("--no-display", dest="no_display", action="store_true")
+    p.add_argument("--N", type=int, default=cfg.comm.N)
+    p.add_argument("--mu", type=float, default=cfg.comm.mu)
+    p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument("--cutoff", type=float, default=cfg.channel.cutoff)
+    p.add_argument("--taps", type=int, default=cfg.channel.num_taps)
+    add_save_display_flags(p)
     p.set_defaults(_run=run)
 
 

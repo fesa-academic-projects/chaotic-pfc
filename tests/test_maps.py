@@ -4,12 +4,11 @@ import unittest
 
 import numpy as np
 
-from chaotic_pfc.channel import fir_channel, ideal_channel
+from chaotic_pfc.channel import ideal_channel
 from chaotic_pfc.lyapunov import fixed_point_stability, lyapunov_henon2d, lyapunov_max
 from chaotic_pfc.maps import henon_filtered, henon_generalised, henon_order_n, henon_standard
 from chaotic_pfc.receiver import receive
 from chaotic_pfc.signals import binary_message, sinusoidal_message
-from chaotic_pfc.spectral import psd_normalised
 from chaotic_pfc.transmitter import transmit
 
 
@@ -37,6 +36,17 @@ class TestHenonGeneralised(unittest.TestCase):
     def test_shape(self):
         X, _Y = henon_generalised(50)
         self.assertEqual(X.shape, (51,))
+
+    def test_custom_params(self):
+        Xa, _Ya = henon_generalised(100, alpha=1.2, beta=0.2)
+        Xb, _Yb = henon_generalised(100, alpha=1.2, beta=0.2)
+        np.testing.assert_array_equal(Xa, Xb)
+
+    def test_different_params_diverge(self):
+        """alpha=2.0 pushes x far from alpha=1.4, producing different orbits."""
+        Xa, _Ya = henon_generalised(200, alpha=1.4, beta=0.3)
+        Xb, _Yb = henon_generalised(200, alpha=2.0, beta=0.3)
+        self.assertFalse(np.allclose(Xa, Xb))
 
 
 class TestHenonFiltered(unittest.TestCase):
@@ -128,6 +138,17 @@ class TestSinusoidalMessage(unittest.TestCase):
         expected_bin = round(f * N)
         self.assertEqual(peak_idx, expected_bin)
 
+    def test_dc_frequency(self):
+        """normalised_freq=0 produces an all-zeros signal."""
+        m = sinusoidal_message(100, normalised_freq=0.0)
+        np.testing.assert_array_equal(m, np.zeros(100))
+
+    def test_nyquist_frequency(self):
+        """normalised_freq=0.5 alternates sign correctly."""
+        m = sinusoidal_message(6, normalised_freq=0.5)
+        expected = np.sin(np.pi * np.arange(6))
+        np.testing.assert_allclose(m, expected, atol=1e-15)
+
 
 class TestPipeline(unittest.TestCase):
     def test_ideal_roundtrip(self):
@@ -141,28 +162,9 @@ class TestPipeline(unittest.TestCase):
         mse = np.mean((m[500:] - m_hat[500:]) ** 2)
         self.assertLess(mse, 0.01)
 
-    def test_fir_channel_shape(self):
-        m = binary_message(500)
-        s = transmit(m)
-        r, h = fir_channel(s, cutoff=0.99, num_taps=21)
-        self.assertEqual(r.shape, (500,))
-        self.assertEqual(h.shape, (21,))
-
-
-class TestSpectral(unittest.TestCase):
-    def test_psd_shape(self):
-        x = np.random.randn(10_000)
-        omega, psd = psd_normalised(x)
-        self.assertEqual(omega.shape, psd.shape)
-
-    def test_peak_normalised(self):
-        x = np.random.randn(10_000)
-        _, psd = psd_normalised(x)
-        self.assertAlmostEqual(float(psd.max()), 1.0, places=9)
-
 
 class TestLyapunov(unittest.TestCase):
-    def test_returns_dict(self):
+    def test_lyapunov_max_returns_expected_keys(self):
         result = lyapunov_max(Nitera=200, Ndiscard=100)
         self.assertIn("lyapunov_max", result)
         self.assertIn("all_exponents", result)

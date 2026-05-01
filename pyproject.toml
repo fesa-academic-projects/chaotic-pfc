@@ -6,14 +6,26 @@ build-backend = "setuptools.build_meta"
 name = "chaotic-pfc"
 version = "0.3.0"
 description = "Chaotic communication system based on the Hénon map"
+readme = "README.md"
 license = { text = "BSD-3-Clause" }
 requires-python = ">=3.10"
+authors = [
+    { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
+    { name = "Kauê de Souza Silva", email = "kaue.moelas.com@gmail.com" },
+    { name = "Marcos Felipe Correa Soares", email = "marcosfelipe.soares2014@gmail.com" },
+    { name = "Roger Freitas Pereira", email = "roger_freitas@live.com" },
+]
 dependencies = [
     "numpy>=1.26",
     "scipy>=1.12",
     "matplotlib>=3.8",
     "numba>=0.59",
 ]
+
+[project.urls]
+Homepage = "https://github.com/fesa-academic-projects/chaotic-pfc"
+Repository = "https://github.com/fesa-academic-projects/chaotic-pfc"
+Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
 
 [project.optional-dependencies]
 dev = [

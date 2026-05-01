@@ -427,11 +427,6 @@ def plot_all(
     return paths
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# Private: argument unpacking
-# ═══════════════════════════════════════════════════════════════════════════
-
-
 def _unpack(
     result: SweepResult | None,
     h: NDArray | None,

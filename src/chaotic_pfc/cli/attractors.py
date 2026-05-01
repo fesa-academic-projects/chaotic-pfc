@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import pick_backend
+from ._common import add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -19,8 +19,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         description="Phase-space attractors for three Hénon variants.",
     )
     p.add_argument("--steps", type=int, default=50_000)
-    p.add_argument("--save", action="store_true")
-    p.add_argument("--no-display", dest="no_display", action="store_true")
+    add_save_display_flags(p)
     p.set_defaults(_run=run)
 
 
@@ -40,7 +39,7 @@ def run(args: argparse.Namespace) -> int:
     if args.save:
         fdir.mkdir(parents=True, exist_ok=True)
 
-    def sp(name: str) -> str | None:
+    def _build_path(name: str) -> str | None:
         return str(fdir / name) if args.save else None
 
     print(f"[01] Hénon attractors  |  steps={steps:,}")
@@ -52,7 +51,7 @@ def run(args: argparse.Namespace) -> int:
         title=r"Atrator de Hénon Padrão ($a=1.4,\; b=0.3$)",
         xlabel=r"$x[n]$",
         ylabel=r"$y[n]$",
-        save_path=sp(f"attractor_standard.{fmt}"),
+        save_path=_build_path(f"attractor_standard.{fmt}"),
     )
 
     X, Y = henon_generalised(steps, alpha=a, beta=b)
@@ -62,7 +61,7 @@ def run(args: argparse.Namespace) -> int:
         title=r"Atrator de Hénon Generalizado ($\alpha=1.4,\; \beta=0.3$)",
         xlabel=r"$x_1[n]$",
         ylabel=r"$x_2[n]$",
-        save_path=sp(f"attractor_generalised.{fmt}"),
+        save_path=_build_path(f"attractor_generalised.{fmt}"),
     )
 
     X, Y = henon_filtered(steps, alpha=a, beta=b, c0=1.0, c1=0.0)
@@ -72,7 +71,7 @@ def run(args: argparse.Namespace) -> int:
         title=r"Atrator de Hénon Filtrado ($c_0=1,\; c_1=0$)",
         xlabel=r"$x_1[n]$",
         ylabel=r"$x_2[n]$",
-        save_path=sp(f"attractor_filtered.{fmt}"),
+        save_path=_build_path(f"attractor_filtered.{fmt}"),
     )
 
     if headless:

@@ -47,10 +47,11 @@ from pathlib import Path
 
 import numpy as np
 
+from chaotic_pfc.cli.sweep import _beta_values
+from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS, quick_sweep_params, run_sweep, save_sweep
+
 from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
 from . import sweep as sweep_mod
-from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS, run_sweep, save_sweep
-from chaotic_pfc.cli.sweep import _beta_values
 
 # Experiments run before the sweep, in order. Each module exposes
 # a run(args) function whose signature is documented in its own module.
@@ -149,10 +150,7 @@ def _run_all_sweeps(
     early-stop with the supplied ``Nmap_min`` and ``tol`` parameters.
     """
     if quick:
-        orders_lp = np.arange(2, 8)
-        orders_hp = np.arange(3, 9, 2)  # highpass: odd orders only
-        cutoffs = np.linspace(0.1, 0.9, 10)
-        params = dict(Nitera=50, Nmap=200, n_initial=3)
+        orders_lp, orders_hp, cutoffs, params = quick_sweep_params()
     else:
         orders_lp = None  # → run_sweep default (np.arange(2, 42))
         orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
@@ -198,7 +196,7 @@ def _run_all_sweeps(
             cutoffs=cutoffs,
             warmup=warmup_needed,
             kaiser_beta=beta if beta is not None else 5.0,
-            **params,
+            **params,  # type: ignore[arg-type]
             **adaptive_kwargs,
         )
         elapsed = time.perf_counter() - t0

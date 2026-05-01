@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import pick_backend
+from ._common import add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -23,8 +23,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument("--steps", type=int, default=50)
     p.add_argument("--epsilon", type=float, default=1e-4)
-    p.add_argument("--save", action="store_true")
-    p.add_argument("--no-display", dest="no_display", action="store_true")
+    add_save_display_flags(p)
     p.set_defaults(_run=run)
 
 
@@ -51,13 +50,13 @@ def run(args: argparse.Namespace) -> int:
     X2, _ = henon_standard(args.steps, x0=args.epsilon, y0=args.epsilon, a=a, b=b)
     n = np.arange(args.steps + 1)
 
-    sp = str(fdir / f"sensitivity.{fmt}") if args.save else None
-    fig = plot_sensitivity(n, X1, X2, save_path=sp)
+    save_path = str(fdir / f"sensitivity.{fmt}") if args.save else None
+    fig = plot_sensitivity(n, X1, X2, save_path=save_path)
 
     if headless:
         plt.close(fig)
         if args.save:
-            print(f"    Saved -> {sp}")
+            print(f"    Saved -> {save_path}")
     else:
         plt.show()
     return 0

@@ -36,15 +36,18 @@ class TestReceiveStandard(unittest.TestCase):
     def test_recovers_message_with_matched_state(self):
         """If transmitter and receiver start from the same (x0, y0) and
         the channel is ideal, the recovered message should match the
-        original for every sample (up to machine precision at n=0)."""
+        original for every sample up to machine precision."""
         mu = 0.01
         m = binary_message(1000, period=20)
         x0, y0 = 0.1, 0.2
         s = transmit(m, mu=mu, x0=x0, y0=y0)
         r = ideal_channel(s)
         m_hat = receive(r, mu=mu, y0=x0, z0=y0)
-        # With synchronised initial conditions, recovery is exact at n=0.
-        self.assertAlmostEqual(float(m_hat[0]), float(m[0]), places=10)
+        np.testing.assert_allclose(m_hat, m, rtol=1e-10, atol=1e-12)
+
+    def test_empty_input(self):
+        m_hat = receive(np.array([]), mu=0.01, y0=0.1, z0=0.2)
+        self.assertEqual(m_hat.shape, (0,))
 
     def test_mismatched_state_still_converges(self):
         """Chaos synchronisation: mismatched ICs should produce wrong

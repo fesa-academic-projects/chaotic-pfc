@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 
@@ -35,3 +36,9 @@ def pick_backend(no_display: bool) -> bool:
 
         matplotlib.use("Agg")
     return headless
+
+
+def add_save_display_flags(parser: argparse.ArgumentParser) -> None:
+    """Register ``--save`` and ``--no-display`` flags on *parser*."""
+    parser.add_argument("--save", action="store_true")
+    parser.add_argument("--no-display", dest="no_display", action="store_true")

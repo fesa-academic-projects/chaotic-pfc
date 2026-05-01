@@ -56,7 +56,7 @@ def aggregate_beta_sweeps(
     if not npz_paths:
         raise FileNotFoundError(f"No variables_lyapunov.npz files under {data_dir}")
 
-    by_beta: dict[float, "NDArray"] = {}
+    by_beta: dict[float, NDArray] = {}
     orders_ref: NDArray | None = None
     cutoffs_ref: NDArray | None = None
 
@@ -67,14 +67,17 @@ def aggregate_beta_sweeps(
             # Skip non-Kaiser sweeps that happen to live under the dir.
             continue
         if orders_ref is None:
+            assert result.orders is not None
             orders_ref = result.orders
             cutoffs_ref = result.cutoffs
-        elif not np.array_equal(orders_ref, result.orders) or not np.array_equal(
-            cutoffs_ref, result.cutoffs
-        ):
-            raise ValueError(
-                f"Inconsistent grid in {path}: every β-sweep must share the same (orders, cutoffs)."
-            )
+        else:
+            assert cutoffs_ref is not None
+            if not np.array_equal(orders_ref, result.orders) or not np.array_equal(
+                cutoffs_ref, result.cutoffs
+            ):
+                raise ValueError(
+                    f"Inconsistent grid in {path}: every β-sweep must share the same (orders, cutoffs)."
+                )
         by_beta[beta] = result.h
 
     if not by_beta:
@@ -91,7 +94,7 @@ def plot_3d_beta_volume(
     orders: NDArray,
     cutoffs: NDArray,
     save_path: str | Path | None = None,
-) -> "go.Figure":
+) -> go.Figure:
     """Render a stack of λ_max surfaces, one per β.
 
     Each β contributes a 2-D heat-coloured surface placed at altitude

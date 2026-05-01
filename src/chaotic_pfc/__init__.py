@@ -38,6 +38,7 @@ from .sweep import (
     SweepResult,
     load_sweep,
     precompute_fir_bank,
+    quick_sweep_params,
     run_sweep,
     save_sweep,
 )
@@ -48,27 +49,23 @@ __all__ = [
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
     "EnsembleResult",
-    # Sweep
     "SweepResult",
-    # Communication
     "binary_message",
     "fir_channel",
     "fixed_point_stability",
     "henon_filtered",
     "henon_generalised",
     "henon_order_n",
-    # Maps
     "henon_standard",
     "ideal_channel",
     "load_sweep",
     "lyapunov_henon2d",
     "lyapunov_henon2d_ensemble",
-    # Lyapunov (single config)
     "lyapunov_max",
-    # Lyapunov (ensemble protocol — 20 CIs ± perturbation)
     "lyapunov_max_ensemble",
     "precompute_fir_bank",
     "psd_normalised",
+    "quick_sweep_params",
     "receive",
     "receive_order_n",
     "run_sweep",

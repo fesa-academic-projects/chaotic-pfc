@@ -818,6 +818,21 @@ def precompute_fir_bank(
 # ───────────────────────────────────────────────────────────────────────────
 
 
+def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, int]]:
+    """Return the (orders_lp, orders_hp, cutoffs, params) for quick-sweep mode.
+
+    These are small grids suitable for testing and CI smoke runs.
+    """
+    import numpy as np
+
+    return (
+        np.arange(2, 8),
+        np.arange(3, 9, 2),
+        np.linspace(0.1, 0.9, 10),
+        dict(Nitera=50, Nmap=200, n_initial=3),
+    )
+
+
 def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
@@ -1042,7 +1057,7 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     }
     if result.n_iters_used is not None:
         payload["n_iters_used"] = result.n_iters_used
-    np.savez(path, **payload)
+    np.savez(path, **payload)  # type: ignore[arg-type]
     return path
 
 

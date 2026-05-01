@@ -14,6 +14,7 @@ from chaotic_pfc.sweep import SweepResult
 from chaotic_pfc.sweep_plotting import (
     DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
+    _unpack,
     classify,
     plot_all,
     plot_classification_interleaved,
@@ -87,9 +88,23 @@ class TestClassify(unittest.TestCase):
         self.assertTrue(np.all(out == 0))
 
     def test_exact_zero_maps_to_minus_one(self):
-        # λ_max == 0 is the boundary case and is classified as periodic.
         out = classify(np.array([[0.0, -0.0]]))
         self.assertTrue(np.all(out == -1))
+
+    def test_all_periodic(self):
+        out = classify(np.full((3, 2), -0.5))
+        self.assertTrue(np.all(out == -1))
+        self.assertEqual(out.shape, (3, 2))
+
+    def test_all_chaotic(self):
+        out = classify(np.full((3, 2), 0.3))
+        self.assertTrue(np.all(out == 0))
+        self.assertEqual(out.shape, (3, 2))
+
+    def test_all_unbounded(self):
+        out = classify(np.full((2, 3), np.nan))
+        self.assertTrue(np.all(out == 2))
+        self.assertEqual(out.shape, (2, 3))
 
 
 class TestIndividualPlotters(unittest.TestCase):
@@ -165,6 +180,22 @@ class TestPlotAll(unittest.TestCase):
             self.assertTrue(out_dir.is_dir())
             self.assertEqual(len(paths), 2)
 
+    def test_plot_all_close_figures_false(self):
+        result = _dummy_result()
+        with TemporaryDirectory() as td:
+            paths = plot_all(result, Path(td), fmt="png", close_figures=False)
+            self.assertEqual(len(paths), 2)
+            for p in paths:
+                self.assertTrue(p.exists())
+
+    def test_plot_all_close_figures_false_adaptive(self):
+        result = _adaptive_result()
+        with TemporaryDirectory() as td:
+            paths = plot_all(result, Path(td), fmt="png", close_figures=False)
+            self.assertEqual(len(paths), 3)
+            for p in paths:
+                self.assertTrue(p.exists())
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Difficulty map (adaptive-only figure)
@@ -180,6 +211,80 @@ class TestDifficultyMap(unittest.TestCase):
             self.assertTrue(path.exists())
             self.assertGreater(path.stat().st_size, 0)
             fig.clear()
+
+    def test_rejects_non_adaptive_result(self):
+        """Plotting a non-adaptive result is misleading (single-colour map);
+        the function must raise rather than silently produce a useless figure."""
+        result = _dummy_result()  # no n_iters_used, adaptive flag absent
+        with self.assertRaises(ValueError):
+            plot_difficulty_map(result)
+
+    def test_rejects_when_adaptive_flag_false(self):
+        """A SweepResult with n_iters_used set but adaptive=False (e.g. from
+        the in-kernel non-adaptive path) must still be rejected."""
+        rng = np.random.default_rng(0)
+        result = SweepResult(
+            h=rng.uniform(-0.3, 0.3, size=(3, 4)),
+            h_std=np.zeros((3, 4)),
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.1, 0.9, 4),
+            window="hamming",
+            filter_type="lowpass",
+            n_iters_used=np.full((3, 4), 3000.0),
+            metadata={"adaptive": False},
+        )
+        with self.assertRaises(ValueError):
+            plot_difficulty_map(result)
+
+    def test_returns_figure(self):
+        result = _adaptive_result()
+        fig = plot_difficulty_map(result)
+        self.assertGreaterEqual(len(fig.axes), 2)
+        fig.clear()
+
+    def test_legacy_metadata_no_Nmap_bounds(self):
+        """Difficulty map with legacy result missing Nmap_min/Nmap falls back
+        to data range so it still produces a readable colour scale."""
+        rng = np.random.default_rng(0)
+        result = SweepResult(
+            h=rng.uniform(-0.3, 0.3, size=(3, 4)),
+            h_std=np.zeros((3, 4)),
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.1, 0.9, 4),
+            window="hamming",
+            filter_type="lowpass",
+            n_iters_used=np.full((3, 4), 2000.0, dtype=np.float64),
+            metadata={"adaptive": True},
+        )
+        with TemporaryDirectory() as td:
+            path = Path(td) / "diff_legacy.png"
+            fig = plot_difficulty_map(result, save_path=path)
+            self.assertTrue(path.exists())
+            self.assertGreater(path.stat().st_size, 0)
+            fig.clear()
+
+
+class TestUnpack(unittest.TestCase):
+    def test_none_result_and_none_arrays_raises(self):
+        with self.assertRaises(ValueError) as ctx:
+            _unpack(None, None, None, None)
+        self.assertIn("SweepResult", str(ctx.exception))
+
+    def test_result_takes_priority(self):
+        h_in = np.array([[0.1, 0.2], [0.3, 0.4]])
+        r = SweepResult(
+            h=h_in,
+            h_std=np.zeros((2, 2)),
+            orders=np.array([2, 3]),
+            cutoffs=np.array([0.1, 0.9]),
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+        h_out, Nz, cutoffs = _unpack(r, None, None, None)
+        np.testing.assert_array_equal(h_out, h_in)
+        np.testing.assert_array_equal(Nz, np.array([1, 2]))
+        np.testing.assert_array_equal(cutoffs, np.array([0.1, 0.9]))
 
     def test_rejects_non_adaptive_result(self):
         """Plotting a non-adaptive result is misleading (single-colour map);
