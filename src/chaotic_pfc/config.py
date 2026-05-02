@@ -213,6 +213,7 @@ class SweepConfig:
     n_cutoffs: int = 100
     default_window: str = "hamming"
     default_filter_type: str = "lowpass"
+    bandwidth: float = 0.2  # bandpass/bandstop width (×π)
     data_dir: str = "data/sweeps"
     figures_dir: str = "figures/sweeps"
     fig_fmts: tuple[str, ...] = ("png", "svg")

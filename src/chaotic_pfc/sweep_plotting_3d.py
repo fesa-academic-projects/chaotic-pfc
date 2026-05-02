@@ -50,42 +50,59 @@ def aggregate_beta_sweeps(
         β values, sorted ascending.
     orders : ndarray
     cutoffs : ndarray
+
+    Notes
+    -----
+    Sweeps with incompatible grids (e.g. bandstop vs lowpass, which use
+    different order ranges) are grouped separately. The function returns
+    the largest group and logs a warning when sweeps are skipped.
     """
+    import warnings
+
     data_dir = Path(data_dir)
     npz_paths = sorted(data_dir.rglob("variables_lyapunov.npz"))
     if not npz_paths:
         raise FileNotFoundError(f"No variables_lyapunov.npz files under {data_dir}")
 
-    by_beta: dict[float, NDArray] = {}
-    orders_ref: NDArray | None = None
-    cutoffs_ref: NDArray | None = None
+    groups: dict[str, dict[float, NDArray]] = {}
+    grid_meta: dict[str, tuple[NDArray, NDArray]] = {}
+    ft_labels: dict[str, str] = {}
 
     for path in npz_paths:
         result = load_sweep(path)
         beta = float(result.metadata.get("kaiser_beta", float("nan")))
         if np.isnan(beta):
-            # Skip non-Kaiser sweeps that happen to live under the dir.
             continue
-        if orders_ref is None:
-            assert result.orders is not None
-            orders_ref = result.orders
-            cutoffs_ref = result.cutoffs
-        else:
-            assert cutoffs_ref is not None
-            if not np.array_equal(orders_ref, result.orders) or not np.array_equal(
-                cutoffs_ref, result.cutoffs
-            ):
-                raise ValueError(
-                    f"Inconsistent grid in {path}: every β-sweep must share the same (orders, cutoffs)."
-                )
-        by_beta[beta] = result.h
 
-    if not by_beta:
+        key = f"{result.filter_type}_{len(result.orders)}"
+        if key not in groups:
+            groups[key] = {}
+            grid_meta[key] = (result.orders, result.cutoffs)
+            ft_labels[key] = result.filter_type
+        groups[key][beta] = result.h
+
+    if not groups:
         raise ValueError(f"No Kaiser sweeps with kaiser_beta in metadata under {data_dir}")
+
+    # Pick the largest group (most β values)
+    best_key = max(groups, key=lambda k: len(groups[k]))
+    by_beta = groups[best_key]
+    orders_ref, cutoffs_ref = grid_meta[best_key]
+
+    skipped = sum(len(g) for k, g in groups.items() if k != best_key)
+    if skipped:
+        others = sorted({ft_labels[k] for k in groups if k != best_key})
+        warnings.warn(
+            f"Skipped {skipped} β-sweep(s) with incompatible grids "
+            f"(filter types: {others}). "
+            f"Keeping {len(by_beta)} sweeps of type '{ft_labels[best_key]}' "
+            f"({len(orders_ref)} orders × {len(cutoffs_ref)} cutoffs).",
+            stacklevel=2,
+        )
 
     betas = np.array(sorted(by_beta), dtype=np.float64)
     h_volume = np.stack([by_beta[b] for b in betas], axis=0)
-    return h_volume, betas, orders_ref, cutoffs_ref  # type: ignore[return-value]
+    return h_volume, betas, orders_ref, cutoffs_ref
 
 
 def plot_3d_beta_volume(

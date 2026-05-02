@@ -71,6 +71,12 @@ def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument("--all", action="store_true", help="Run every (window, filter) combination")
     p.add_argument(
+        "--bandwidth",
+        type=float,
+        default=0.2,
+        help="Band width for bandpass/bandstop filters, as fraction of Nyquist (default: 0.2)",
+    )
+    p.add_argument(
         "--quick",
         action="store_true",
         help="Run a tiny sweep for smoke-testing (~seconds)",
@@ -228,7 +234,7 @@ def run_compute(args: argparse.Namespace) -> int:
     combos = _build_combinations(args)
     data_dir = Path(args.data_dir)
 
-    params: dict[str, int]
+    params: dict[str, float | int]
     if args.quick:
         orders_lp, orders_hp, cutoffs, params = quick_sweep_params()
     else:
@@ -236,6 +242,7 @@ def run_compute(args: argparse.Namespace) -> int:
         orders_hp = None  # → run_sweep default: np.arange(3, 43, 2)
         cutoffs = None  # → module default: 100 points
         params = dict(Nitera=500, Nmap=3000, n_initial=25)
+    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.2))
 
     # Adaptive parameters propagated only when the user opted in. Passing
     # adaptive=False here makes Nmap_min/tol irrelevant in run_sweep
@@ -255,7 +262,7 @@ def run_compute(args: argparse.Namespace) -> int:
         result = run_sweep(
             window=window,
             filter_type=filter_type,
-            orders=orders_hp if filter_type == "highpass" else orders_lp,
+            orders=orders_hp if filter_type in ("highpass", "bandstop") else orders_lp,
             cutoffs=cutoffs,
             warmup=warmup_needed,
             kaiser_beta=args.kaiser_beta,
@@ -439,13 +446,24 @@ def _add_plot_3d_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument(
         "--data-dir",
-        default="data/sweeps/beta",
-        help="Root directory with per-β .npz files (default: data/sweeps/beta)",
+        default="data/sweeps/kaiser",
+        help="Root directory with per-β .npz files (default: data/sweeps/kaiser)",
     )
     p.add_argument(
         "--figures-dir",
         default="figures/sweeps",
         help="Root directory for the output HTML (default: figures/sweeps)",
+    )
+    p.add_argument(
+        "--filter-type",
+        default="lowpass",
+        dest="filter_type",
+        help="Filter type subdirectory under --data-dir (default: lowpass)",
+    )
+    p.add_argument(
+        "--all",
+        action="store_true",
+        help="Generate 3-D plots for every filter type found under --data-dir",
     )
     p.add_argument(
         "--save",
@@ -468,18 +486,33 @@ def run_plot_3d(args: argparse.Namespace) -> int:
         plot_3d_beta_volume,
     )
 
-    data_dir = Path(args.data_dir)
+    base_dir = Path(args.data_dir)
     figures_dir = Path(args.figures_dir)
     figures_dir.mkdir(parents=True, exist_ok=True)
-    out_html = figures_dir / "beta_sweep_3d.html"
 
-    print(f"[plot-3d] Aggregating sweeps from {data_dir}")
-    h_volume, betas, orders, cutoffs = aggregate_beta_sweeps(data_dir)
-    print(f"[plot-3d] Loaded {len(betas)} β values: {betas[0]:.1f}..{betas[-1]:.1f}")
-    print(f"[plot-3d] Volume shape: {h_volume.shape}")
+    if args.all:
+        filter_types = [d.name for d in sorted(base_dir.iterdir()) if d.is_dir()]
+        if not filter_types:
+            print(f"[plot-3d] No filter type directories found under {base_dir}")
+            return 1
+    else:
+        filter_types = [args.filter_type]
 
-    plot_3d_beta_volume(h_volume, betas, orders, cutoffs, save_path=out_html)
-    print(f"[plot-3d] Saved → {out_html}")
+    for ft in filter_types:
+        data_dir = base_dir / ft
+        if not data_dir.is_dir():
+            print(f"[plot-3d] Skipping {ft}: directory not found")
+            continue
+
+        out_html = figures_dir / f"beta_sweep_3d_{ft}.html"
+        print(f"[plot-3d] Aggregating {ft} sweeps from {data_dir}")
+        h_volume, betas, orders, cutoffs = aggregate_beta_sweeps(data_dir)
+        print(f"[plot-3d] Loaded {len(betas)} β values: {betas[0]:.1f}..{betas[-1]:.1f}")
+        print(f"[plot-3d] Volume shape: {h_volume.shape}")
+
+        plot_3d_beta_volume(h_volume, betas, orders, cutoffs, save_path=out_html)
+        print(f"[plot-3d] Saved → {out_html}")
+
     print("[plot-3d] done")
     return 0
 
@@ -515,7 +548,8 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
         orders_hp = None
         cutoffs = None
         params = dict(Nitera=500, Nmap=3000, n_initial=25)
-    orders = orders_hp if args.filter_type == "highpass" else orders_lp
+    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.2))
+    orders = orders_hp if args.filter_type in ("highpass", "bandstop") else orders_lp
 
     total_start = time.perf_counter()
     warmup_needed = True
@@ -542,9 +576,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
         print(f"     Valid points: {valid}/{total} ({100 * valid / total:.1f} %)")
 
         # One sub-directory per β so plotting / loading can iterate easily.
-        out_path = (
-            data_dir / f"kaiser_beta_{beta:.2f}_({args.filter_type})" / "variables_lyapunov.npz"
-        )
+        out_path = data_dir / args.filter_type / f"beta_{beta:.2f}" / "variables_lyapunov.npz"
         save_sweep(result, out_path)
         print(f"     Saved -> {out_path}")
 

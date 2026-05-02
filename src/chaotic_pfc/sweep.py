@@ -69,7 +69,7 @@ WINDOWS: tuple[str, ...] = (
     "bartlett",
 )
 
-FILTER_TYPES: tuple[str, ...] = ("lowpass", "highpass")
+FILTER_TYPES: tuple[str, ...] = ("lowpass", "highpass", "bandpass", "bandstop")
 
 WINDOW_DISPLAY_NAMES: dict[str, str] = {
     "hamming": "Hamming",
@@ -670,7 +670,7 @@ class SweepResult:
         Normalised cutoff frequencies ω_c ∈ (0, 1) swept.
     window : str
         FIR window used (lower-case, e.g. ``"hamming"``).
-    filter_type : {"lowpass", "highpass"}
+    filter_type : {"lowpass", "highpass", "bandpass", "bandstop"}
         Filter pass-zero configuration.
     n_iters_used : ndarray, shape (Ncoef, Ncut), optional
         Average number of Lyapunov iterations actually used per grid
@@ -740,6 +740,7 @@ def precompute_fir_bank(
     window: str,
     *,
     kaiser_beta: float = _KAISER_BETA,
+    bandwidth: float = 0.2,
 ) -> tuple[NDArray, NDArray]:
     """Build the FIR coefficient tensor and gain matrix for a sweep.
 
@@ -748,14 +749,22 @@ def precompute_fir_bank(
     orders
         Filter orders to sweep. Values will be cast to ``int``.
     cutoffs
-        Normalised cutoff frequencies in (0, 1).
+        Normalised cutoff frequencies in (0, 1). For bandpass and
+        bandstop filters, each scalar is treated as the *centre*
+        frequency and expanded to ``[c - bw/2, c + bw/2]`` where
+        ``bw`` is *bandwidth*.
     filter_type
-        ``"lowpass"`` or ``"highpass"``.
+        ``"lowpass"``, ``"highpass"``, ``"bandpass"``, or
+        ``"bandstop"``.
     window
         Window name in :data:`WINDOWS`.
     kaiser_beta
         Shape parameter of the Kaiser window. Ignored unless
         ``window == "kaiser"``. Must be ``>= 0``.
+    bandwidth
+        Width of the pass/stop band when *filter_type* is
+        ``"bandpass"`` or ``"bandstop"``. Ignored for lowpass and
+        highpass. Clamped so edges stay inside ``(0, 1)``.
 
     Returns
     -------
@@ -788,11 +797,11 @@ def precompute_fir_bank(
         raise ValueError(f"kaiser_beta must be >= 0, got {kaiser_beta!r}")
 
     orders_arr = np.asarray(orders, dtype=np.int64)
-    if filter_type == "highpass":
+    if filter_type in ("highpass", "bandstop"):
         even = orders_arr[orders_arr % 2 == 0]
         if even.size:
             raise ValueError(
-                "highpass requires odd orders; got even values "
+                f"{filter_type} requires odd orders; got even values "
                 f"{even.tolist()}. Use np.arange(start|1, stop, 2) or "
                 "filter your orders to odd integers."
             )
@@ -805,10 +814,18 @@ def precompute_fir_bank(
 
     win_arg = ("kaiser", float(kaiser_beta)) if window == "kaiser" else window
 
+    use_band = filter_type in ("bandpass", "bandstop")
+    bw_half = bandwidth / 2.0 if use_band else 0.0
+
     for i, Nss in enumerate(orders_arr):
         numtaps = int(Nss)
         for j, wc in enumerate(cutoffs):
-            c = firwin(numtaps, wc, pass_zero=filter_type, window=win_arg)
+            if use_band:
+                low = max(1e-5, float(wc) - bw_half)
+                high = min(1.0 - 1e-5, float(wc) + bw_half)
+                c = firwin(numtaps, [low, high], pass_zero=filter_type, window=win_arg)
+            else:
+                c = firwin(numtaps, wc, pass_zero=filter_type, window=win_arg)
             fir_bank[i, j, :numtaps] = c.astype(np.float64)
             gains[i, j] = float(np.sum(c))
 
@@ -818,7 +835,7 @@ def precompute_fir_bank(
 # ───────────────────────────────────────────────────────────────────────────
 
 
-def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, int]]:
+def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | int]]:
     """Return the (orders_lp, orders_hp, cutoffs, params) for quick-sweep mode.
 
     These are small grids suitable for testing and CI smoke runs.
@@ -829,7 +846,7 @@ def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, int]]:
         np.arange(2, 8),
         np.arange(3, 9, 2),
         np.linspace(0.1, 0.9, 10),
-        dict(Nitera=50, Nmap=200, n_initial=3),
+        dict(Nitera=50, Nmap=200, n_initial=3, bandwidth=0.15),
     )
 
 
@@ -847,6 +864,7 @@ def run_sweep(
     seed: int | None = 42,
     warmup: bool = True,
     kaiser_beta: float = _KAISER_BETA,
+    bandwidth: float = 0.2,
     adaptive: bool = False,
     Nmap_min: int = 500,
     tol: float = 1e-3,
@@ -860,7 +878,8 @@ def run_sweep(
     orders
         Filter orders to sweep. Defaults to ``np.arange(2, 42)`` for
         lowpass and ``np.arange(3, 43, 2)`` for highpass (which requires
-        odd tap counts).
+        odd tap counts). Bandpass and bandstop use the same default as
+        lowpass.
     cutoffs
         Cutoff frequencies. Defaults to 100 points linearly spaced in
         ``(0, 1)``, with the endpoints nudged away from 0 and 1 to avoid
@@ -871,6 +890,10 @@ def run_sweep(
     Nmap
         Maximum number of iterations used to estimate each Lyapunov
         exponent. Also the exact iteration count when ``adaptive=False``.
+    bandwidth
+        Width of the pass/stop band when *filter_type* is ``"bandpass"``
+        or ``"bandstop"``, as a fraction of the Nyquist frequency.
+        Default 0.2. Ignored for lowpass/highpass.
     n_initial
         Number of random initial conditions averaged per grid point.
     alpha, beta
@@ -935,10 +958,11 @@ def run_sweep(
         kernel_Nmap_min = Nmap
         kernel_tol = 0.0
     if orders is None:
-        # Highpass requires odd taps; use 20 odd orders to match the
-        # cardinality of the lowpass default (np.arange(2, 42) → 40 pts,
-        # but highpass cannot use even orders — see precompute_fir_bank).
-        orders = np.arange(3, 43, 2) if filter_type == "highpass" else np.arange(2, 42)
+        # Bandstop and highpass require odd taps; use 20 odd orders to
+        # match the cardinality of the lowpass default.
+        orders = (
+            np.arange(3, 43, 2) if filter_type in ("highpass", "bandstop") else np.arange(2, 42)
+        )
     if cutoffs is None:
         cutoffs = np.linspace(1e-5, 1.0 - 1e-5, 100)
 
@@ -951,6 +975,7 @@ def run_sweep(
         filter_type,
         window,
         kaiser_beta=kaiser_beta,
+        bandwidth=bandwidth,
     )
 
     # Pre-generate every perturbation array on the Python side so the

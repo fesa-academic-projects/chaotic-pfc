@@ -155,7 +155,7 @@ def _run_all_sweeps(
         orders_lp = None  # → run_sweep default (np.arange(2, 42))
         orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
         cutoffs = None
-        params = dict(Nitera=500, Nmap=3000, n_initial=25)
+        params = dict(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.2)
 
     # Adaptive parameters propagated only when the user opted in.
     adaptive_kwargs: dict = {"adaptive": adaptive}
@@ -169,7 +169,7 @@ def _run_all_sweeps(
 
     # Build the full sweep list: (window, filter_type, beta_or_None)
     betas = _beta_values(2.0, 14.0, 0.5)
-    beta_dir = Path("data/sweeps/beta")
+    kaiser_dir = Path("data/sweeps/kaiser")
     sweeps: list[tuple[str, str, float | None]] = []
     for window in WINDOWS:
         if window == "kaiser":
@@ -192,7 +192,7 @@ def _run_all_sweeps(
         result = run_sweep(
             window=window,
             filter_type=filter_type,
-            orders=orders_hp if filter_type == "highpass" else orders_lp,
+            orders=orders_hp if filter_type in ("highpass", "bandstop") else orders_lp,
             cutoffs=cutoffs,
             warmup=warmup_needed,
             kaiser_beta=beta if beta is not None else 5.0,
@@ -203,9 +203,7 @@ def _run_all_sweeps(
         warmup_needed = False
 
         if beta is not None:
-            out_path = (
-                beta_dir / f"kaiser_beta_{beta:.2f}_({filter_type})" / "variables_lyapunov.npz"
-            )
+            out_path = kaiser_dir / filter_type / f"beta_{beta:.2f}" / "variables_lyapunov.npz"
         else:
             out_path = Path("data/sweeps") / result.display_name / "variables_lyapunov.npz"
 
@@ -322,8 +320,9 @@ def run(args: argparse.Namespace) -> int:
         _banner("09")
         plot_3d_args = argparse.Namespace(
             **shared,
-            data_dir="data/sweeps/beta",
+            data_dir="data/sweeps/kaiser",
             figures_dir="figures/sweeps",
+            all=True,
         )
         sweep_mod.run_plot_3d(plot_3d_args)
 
