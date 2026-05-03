@@ -390,7 +390,9 @@ def bootstrap_confidence(
         if len(arr) == 0:
             out[ft] = {}
             continue
-        means = np.array([np.mean(rng.choice(arr, size=len(arr), replace=True)) for _ in range(n_bootstrap)])
+        means = np.array(
+            [np.mean(rng.choice(arr, size=len(arr), replace=True)) for _ in range(n_bootstrap)]
+        )
         out[ft] = {
             "mean": round(float(np.mean(arr)), 4),
             "ci_low": round(float(np.percentile(means, 2.5)), 4),

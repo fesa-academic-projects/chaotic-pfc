@@ -51,7 +51,9 @@ class TestAnalysis(unittest.TestCase):
             self.assertIn("pct_chaotic", row)
             self.assertIn("pct_periodic", row)
             self.assertIn("pct_divergent", row)
-            self.assertAlmostEqual(row["pct_chaotic"] + row["pct_periodic"] + row["pct_divergent"], 100.0, delta=0.15)
+            self.assertAlmostEqual(
+                row["pct_chaotic"] + row["pct_periodic"] + row["pct_divergent"], 100.0, delta=0.15
+            )
 
     def test_best_chaos_preserving(self):
         top = best_chaos_preserving(self.root, top_n=2)
