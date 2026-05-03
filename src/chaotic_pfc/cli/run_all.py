@@ -304,9 +304,7 @@ def run(args: argparse.Namespace) -> int:
     _banner("08")
     plot_args = argparse.Namespace(
         **shared,
-        window="hamming",
-        filter_type="lowpass",
-        all=False,
+        all=True,
         data_dir="data/sweeps",
         figures_dir="figures/sweeps",
         fmt=["png", "svg"],
