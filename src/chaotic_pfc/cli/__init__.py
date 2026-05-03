@@ -32,6 +32,7 @@ from . import (
     comm_fir,
     comm_ideal,
     comm_order_n,
+    dcsk,
     lyapunov,
     run_all,
     sensitivity,
@@ -47,6 +48,7 @@ EXPERIMENTS = (
     comm_order_n,
     lyapunov,
     sweep,
+    dcsk,
     run_all,
 )
 
