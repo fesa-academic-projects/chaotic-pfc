@@ -28,6 +28,7 @@ import argparse
 import sys
 
 from . import (
+    analysis,
     attractors,
     comm_fir,
     comm_ideal,
@@ -49,6 +50,7 @@ EXPERIMENTS = (
     lyapunov,
     sweep,
     dcsk,
+    analysis,
     run_all,
 )
 
