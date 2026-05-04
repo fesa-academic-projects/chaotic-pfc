@@ -137,12 +137,42 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 
 ## Tests
 
+Run the full suite:
+
 ```bash
 pytest
 ```
 
-The first run compiles the Numba kernels and takes about two minutes;
-subsequent runs use the cache and finish in under 30 seconds.
+Exclude slow tests (sweep compute) during development:
+
+```bash
+pytest -m "not slow"
+```
+
+Or use the Makefile:
+
+```bash
+make test          # full suite
+make test-fast     # exclude slow tests
+make check-all     # lint + format + typecheck + fast tests
+```
+
+## Makefile targets
+
+| Target | Action |
+|--------|--------|
+| `make test` | Run full test suite |
+| `make test-fast` | Run tests excluding `@pytest.mark.slow` |
+| `make lint` | Ruff linter |
+| `make format` | Ruff auto-format |
+| `make format-check` | Check formatting without changing files |
+| `make typecheck` | mypy static type checker |
+| `make check-all` | lint + format-check + typecheck + test-fast |
+| `make docs` | Build Sphinx HTML |
+| `make benchmark` | Performance benchmarks |
+| `make pre-commit` | Run all pre-commit hooks |
+| `make clean` | Remove cache and build artifacts |
+| `make help` | Show all targets |
 
 ## Documentation
 
