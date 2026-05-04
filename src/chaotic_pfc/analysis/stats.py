@@ -232,7 +232,7 @@ def optimal_parameters(
 
 def export_summary_json(
     data_dir: str | Path = "data/sweeps",
-    output: str | Path = "analysis_summary.json",
+    output: str | Path = "data/analysis_summary.json",
 ) -> Path:
     """Write the full summary table to a JSON file."""
     output = Path(output)

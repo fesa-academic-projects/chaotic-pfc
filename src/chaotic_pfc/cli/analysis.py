@@ -23,8 +23,8 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument(
         "--json",
-        default="analysis_summary.json",
-        help="Output JSON path (default: analysis_summary.json)",
+        default="data/analysis_summary.json",
+        help="Output JSON path (default: data/analysis_summary.json)",
     )
     p.set_defaults(_run=run)
 
