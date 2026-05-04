@@ -4,7 +4,7 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
-## [0.4.0] — 2026-05
+## [0.4.0] — 2026-05-04
 - Sources reorganised into 4 subpackages: `dynamics/`, `comms/`, `analysis/`, `plotting/`.
 - `analysis.py` renamed to `stats.py`; `plotting.py` renamed to `figures.py`.
 - `sweep.py` (1139 lines) split into `_types`, `_kernel`, `_orchestration`, `_io` submodules.
@@ -14,6 +14,9 @@ All notable changes to chaotic-pfc are documented in this file.
 - `py.typed` marker (PEP 561) for downstream type-checker support.
 - `chaotic_pfc.__version__` (`_version.py`, reads from single source of truth).
 - `CHANGELOG.md` following Keep a Changelog conventions.
+- `CONTRIBUTING.md` with development workflow, commit conventions, and tooling guide.
+- `Makefile` with 13 targets: `test`, `test-fast`, `lint`, `format`, `typecheck`, `check-all`, `docs`, `benchmark`, `clean`, `pre-commit`, `install`, `help`.
+- `strict_markers = true` in pytest config to catch mistyped marker decorators.
 - `scripts/benchmark.py` — performance benchmarks for Henon maps, FIR bank, and Lyapunov exponents.
 - `PlotGridOptions` dataclass as a typed alternative to `plot_comm_grid` keyword arguments.
 - `ExperimentConfig.to_namespace()` — generates `argparse.Namespace` from config defaults, eliminates `_fill_config_defaults`.
@@ -36,6 +39,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - CI test job now uses a Python version matrix `["3.10", "3.12"]`.
 - Pre-commit config expanded with `check-ast`, `check-json`, `check-case-conflict`, `debug-statements`, `mixed-line-ending`, `detect-private-key`, and `mypy`.
 - README updated with new package structure and a "Public API" section.
+- `analysis_summary.json` output path moved from project root to `data/` and added to `.gitignore`.
 
 ### Fixed
 - Duplicate test method names in `test_sweep_plotting.py` (3 methods copy-pasted into the wrong class).
