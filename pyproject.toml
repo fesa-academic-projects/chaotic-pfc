@@ -19,7 +19,6 @@ dependencies = [
     "numpy>=1.26",
     "scipy>=1.12",
     "matplotlib>=3.8",
-    "numba>=0.59",
 ]
 
 [project.urls]
@@ -28,6 +27,9 @@ Repository = "https://github.com/fesa-academic-projects/chaotic-pfc"
 Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
 
 [project.optional-dependencies]
+fast = [
+    "numba>=0.59",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",

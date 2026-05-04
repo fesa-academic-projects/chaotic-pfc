@@ -32,6 +32,12 @@ Requires Python 3.10 or later.
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+pip install -e ".[dev,fast]"   # dev tools + Numba JIT acceleration
+```
+
+To install without Numba (slower but no binary dependencies):
+
+```bash
 pip install -e ".[dev]"
 ```
 

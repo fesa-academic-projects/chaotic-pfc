@@ -8,8 +8,9 @@ performance when called tens of millions of times.
 from __future__ import annotations
 
 import numpy as np
-from numba import njit, prange
 from numpy.typing import NDArray
+
+from chaotic_pfc._compat import njit, prange
 
 from ._types import _ADAPTIVE_CHECKPOINT_EVERY, _ADAPTIVE_STREAK
 
@@ -250,7 +251,7 @@ def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
     and light tasks across the static blocks so every thread gets a
     similar total cost.
     """
-    from numba import get_num_threads
+    from chaotic_pfc._compat import get_num_threads
 
     Ncoef = len(orders_arr)
     Ntot = Ncoef * Ncut
