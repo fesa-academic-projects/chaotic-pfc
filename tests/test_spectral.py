@@ -19,10 +19,10 @@ matplotlib.use("Agg")
 
 import numpy as np
 
+from chaotic_pfc.analysis.sweep import precompute_fir_bank, run_sweep, save_sweep
 from chaotic_pfc.cli.sweep import _beta_values
 from chaotic_pfc.config import DEFAULT_CONFIG
-from chaotic_pfc.spectral import _WINDOWS, psd_normalised
-from chaotic_pfc.sweep import precompute_fir_bank, run_sweep, save_sweep
+from chaotic_pfc.dynamics.spectral import _WINDOWS, psd_normalised
 
 # ════════════════════════════════════════════════════════════════════════════
 # psd_normalised — all windows, normalisation, edge cases
@@ -193,7 +193,7 @@ class TestSweepPlotting3D(unittest.TestCase):
             save_sweep(result, root / f"beta_{beta:.2f}" / "variables_lyapunov.npz")
 
     def test_aggregate_and_plot(self):
-        from chaotic_pfc.sweep_plotting_3d import (
+        from chaotic_pfc.analysis.sweep_plotting_3d import (
             aggregate_beta_sweeps,
             plot_3d_beta_volume,
         )
@@ -213,7 +213,7 @@ class TestSweepPlotting3D(unittest.TestCase):
             self.assertGreater(html.stat().st_size, 0)
 
     def test_aggregate_empty_dir_raises(self):
-        from chaotic_pfc.sweep_plotting_3d import aggregate_beta_sweeps
+        from chaotic_pfc.analysis.sweep_plotting_3d import aggregate_beta_sweeps
 
         with TemporaryDirectory() as td, self.assertRaises(FileNotFoundError):
             aggregate_beta_sweeps(td)

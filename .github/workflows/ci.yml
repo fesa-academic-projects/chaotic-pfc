@@ -78,18 +78,21 @@ jobs:
   # Unit tests: pytest with coverage, upload to Codecov
   # ───────────────────────────────────────────────────────────────────────
   test:
-    name: Unit tests (pytest)
+    name: Unit tests (pytest ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4.2.2
 
-      - name: Set up Python 3.12
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5.6.0
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: pyproject.toml
 

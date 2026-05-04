@@ -3,10 +3,10 @@
 import unittest
 
 import numpy as np
-from scipy.signal import firwin
 
-from chaotic_pfc.signals import binary_message
-from chaotic_pfc.transmitter import transmit, transmit_order_n
+from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
+from chaotic_pfc.dynamics.signals import binary_message
+from tests._test_helpers import make_fir_coeffs
 
 
 class TestTransmitStandard(unittest.TestCase):
@@ -69,12 +69,9 @@ class TestTransmitStandard(unittest.TestCase):
 
 
 class TestTransmitOrderN(unittest.TestCase):
-    def _coeffs(self, Nc: int = 5) -> np.ndarray:
-        return firwin(numtaps=Nc, cutoff=0.5, window="hamming")
-
     def test_output_shapes(self):
         m = np.zeros(200)
-        c = self._coeffs(7)
+        c = make_fir_coeffs(7)
         s, state = transmit_order_n(m, c)
         self.assertEqual(s.shape, (200,))
         self.assertEqual(state.shape, (7, 201))
@@ -82,7 +79,7 @@ class TestTransmitOrderN(unittest.TestCase):
     def test_seed_is_deterministic(self):
         """Same seed with default x0 must give byte-identical output."""
         m = binary_message(300, period=20)
-        c = self._coeffs(5)
+        c = make_fir_coeffs(5)
         s1, st1 = transmit_order_n(m, c, seed=42)
         s2, st2 = transmit_order_n(m, c, seed=42)
         np.testing.assert_array_equal(s1, s2)
@@ -91,7 +88,7 @@ class TestTransmitOrderN(unittest.TestCase):
     def test_different_seeds_diverge(self):
         """Different random x0 → different trajectories."""
         m = np.zeros(100)
-        c = self._coeffs(5)
+        c = make_fir_coeffs(5)
         s1, _ = transmit_order_n(m, c, seed=0)
         s2, _ = transmit_order_n(m, c, seed=1)
         self.assertFalse(np.allclose(s1, s2))
@@ -99,7 +96,7 @@ class TestTransmitOrderN(unittest.TestCase):
     def test_explicit_x0_overrides_seed(self):
         """Passing x0 must make seed irrelevant."""
         m = np.zeros(50)
-        c = self._coeffs(4)
+        c = make_fir_coeffs(4)
         x0 = np.array([0.1, 0.2, 0.3, 0.4])
         s1, _ = transmit_order_n(m, c, x0=x0, seed=0)
         s2, _ = transmit_order_n(m, c, x0=x0, seed=99)
@@ -107,10 +104,16 @@ class TestTransmitOrderN(unittest.TestCase):
 
     def test_initial_state_matches_x0(self):
         """The first column of the state array must equal x0."""
-        c = self._coeffs(6)
+        c = make_fir_coeffs(6)
         x0 = np.linspace(0.0, 0.5, 6)
         _, state = transmit_order_n(np.zeros(10), c, x0=x0)
         np.testing.assert_array_equal(state[:, 0], x0)
+
+    def test_order_n_seed_none_does_not_raise(self):
+        """seed=None should work without error (leaves RNG untouched)."""
+        c = make_fir_coeffs(4)
+        s, _ = transmit_order_n(np.ones(50), c, seed=None)
+        self.assertEqual(len(s), 50)
 
 
 if __name__ == "__main__":

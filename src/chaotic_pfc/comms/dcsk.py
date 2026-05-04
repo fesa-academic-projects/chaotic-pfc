@@ -72,6 +72,15 @@ def henon_fir_sequence(
     return seq
 
 
+def _chaos_sequence(
+    n_samples: int, transient: int, *, n_taps: int, wc: float, window: str
+) -> NDArray:
+    """Generate and normalise a chaotic FIR-Henon sequence."""
+    chaos = henon_fir_sequence(transient + n_samples, n_taps=n_taps, wc=wc, window=window)
+    chaos = chaos[transient:]
+    return chaos / (float(np.std(chaos)) + 1e-12)
+
+
 def dcsk_transmit(
     bits: NDArray,
     beta: int = 64,
@@ -80,7 +89,7 @@ def dcsk_transmit(
     window: str = "hamming",
     transient: int = 500,
 ) -> NDArray:
-    """Modulate a bit sequence using DCSK over FIR-filtered Hénon.
+    """Modulate a bit sequence using DCSK over FIR-filtered Henon.
 
     Each bit is encoded as two consecutive ``beta``-sample slots:
     a *reference* slot followed by a *data* slot. For bit 0 the
@@ -91,8 +100,7 @@ def dcsk_transmit(
     bits
         Binary array (0/1) of message bits.
     beta
-        Spreading factor — samples per slot. Larger values improve
-        noise robustness at the cost of data rate.
+        Spreading factor — samples per slot.
     n_taps, wc, window
         Passed to :func:`henon_fir_sequence`.
     transient
@@ -103,12 +111,8 @@ def dcsk_transmit(
     ndarray, shape (2 * beta * len(bits),)
         DCSK-modulated signal samples.
     """
-    total_samples = transient + len(bits) * beta
-    chaos = henon_fir_sequence(total_samples, n_taps=n_taps, wc=wc, window=window)
-    chaos = chaos[transient:]
-    chaos = chaos / (float(np.std(chaos)) + 1e-12)
-
     N = len(bits)
+    chaos = _chaos_sequence(N * beta, transient, n_taps=n_taps, wc=wc, window=window)
     sig = np.empty(N * 2 * beta)
     for i in range(N):
         ref = chaos[i * beta : (i + 1) * beta]
@@ -177,12 +181,8 @@ def efdcsk_transmit(
     ndarray, shape (beta * len(bits),)
         EF-DCSK signal, half the length of classical DCSK.
     """
-    total_samples = transient + len(bits) * beta
-    chaos = henon_fir_sequence(total_samples, n_taps=n_taps, wc=wc, window=window)
-    chaos = chaos[transient:]
-    chaos = chaos / (float(np.std(chaos)) + 1e-12)
-
     N = len(bits)
+    chaos = _chaos_sequence(N * beta, transient, n_taps=n_taps, wc=wc, window=window)
     sig = np.empty(N * beta)
     for i in range(N):
         ref = chaos[i * beta : (i + 1) * beta]

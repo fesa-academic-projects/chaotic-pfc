@@ -6,16 +6,21 @@ from tempfile import TemporaryDirectory
 
 import numpy as np
 
-from chaotic_pfc.analysis import (
+from chaotic_pfc.analysis.stats import (
     best_chaos_preserving,
     beta_curve,
     beta_summary,
+    bootstrap_confidence,
+    chaos_margin,
     compare_filter_types,
+    correlation_matrix,
     export_summary_json,
+    lmax_distribution,
     optimal_parameters,
     summary_table,
+    transition_boundary,
 )
-from chaotic_pfc.sweep import SweepResult, save_sweep
+from chaotic_pfc.analysis.sweep import FILTER_TYPES, SweepResult, save_sweep
 
 
 class TestAnalysis(unittest.TestCase):
@@ -84,6 +89,52 @@ class TestAnalysis(unittest.TestCase):
     def test_beta_curve_empty(self):
         betas, _pct = beta_curve(self.root, "lowpass")
         self.assertEqual(len(betas), 0)
+
+    def test_lmax_distribution(self):
+        dist = lmax_distribution(self.root)
+        self.assertIsInstance(dist, dict)
+        for ft in FILTER_TYPES:
+            self.assertIn(ft, dist)
+
+    def test_transition_boundary(self):
+        orders, cutoffs = transition_boundary(self.root, filter_type="lowpass")
+        self.assertGreaterEqual(len(orders), 0)
+        self.assertEqual(len(orders), len(cutoffs))
+
+    def test_transition_boundary_no_data(self):
+        orders, _cutoffs = transition_boundary(self.root, filter_type="bandstop")
+        self.assertEqual(len(orders), 0)
+
+    def test_chaos_margin(self):
+        orders, widths = chaos_margin(self.root, filter_type="lowpass")
+        self.assertGreaterEqual(len(orders), 0)
+        self.assertEqual(len(orders), len(widths))
+
+    def test_chaos_margin_no_data(self):
+        orders, _widths = chaos_margin(self.root, filter_type="bandstop")
+        self.assertEqual(len(orders), 0)
+
+    def test_correlation_matrix(self):
+        corr = correlation_matrix(self.root)
+        self.assertIn("n", corr)
+        self.assertIn("order_vs_lmax", corr)
+        self.assertIn("cutoff_vs_lmax", corr)
+        self.assertGreater(corr["n"], 0)
+
+    def test_bootstrap_confidence(self):
+        ci = bootstrap_confidence(self.root, n_bootstrap=100)
+        self.assertIsInstance(ci, dict)
+        for ft in FILTER_TYPES:
+            self.assertIn(ft, ci)
+
+    def test_bootstrap_confidence_empty(self):
+        with TemporaryDirectory() as td:
+            ci = bootstrap_confidence(Path(td), n_bootstrap=10)
+            self.assertIsInstance(ci, dict)
+            # All filter types present with empty entries
+            for ft in FILTER_TYPES:
+                self.assertIn(ft, ci)
+                self.assertEqual(ci[ft], {})
 
 
 if __name__ == "__main__":

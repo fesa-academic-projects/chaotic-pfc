@@ -49,7 +49,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register ``run sweep compute``."""
-    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+    from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS
 
     p = subparsers.add_parser(
         "compute",
@@ -144,7 +144,7 @@ def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register ``run sweep plot``."""
-    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+    from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS
 
     p = subparsers.add_parser(
         "plot",
@@ -203,7 +203,7 @@ def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def _build_combinations(args: argparse.Namespace) -> list[tuple[str, str]]:
     """Flatten ``--all`` or ``--window``/``--filter`` into a list of pairs."""
-    from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS
+    from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS
 
     if args.all:
         return [(w, f) for w in WINDOWS for f in FILTER_TYPES]
@@ -214,7 +214,7 @@ def run_compute(args: argparse.Namespace) -> int:
     """Execute ``run sweep compute``."""
     import numpy as np
 
-    from chaotic_pfc.sweep import quick_sweep_params, run_sweep, save_sweep
+    from chaotic_pfc.analysis.sweep import quick_sweep_params, run_sweep, save_sweep
 
     # ── Argument validation ──────────────────────────────────────────────
     # --adaptive applies inside the Lyapunov loop. --quick already runs a
@@ -324,8 +324,8 @@ def run_plot(args: argparse.Namespace) -> int:
     """Execute ``run sweep plot``."""
     pick_backend(args.no_display)
 
-    from chaotic_pfc.sweep import WINDOW_DISPLAY_NAMES, load_sweep
-    from chaotic_pfc.sweep_plotting import plot_all
+    from chaotic_pfc.analysis.sweep import WINDOW_DISPLAY_NAMES, load_sweep
+    from chaotic_pfc.analysis.sweep_plotting import plot_all
 
     data_dir = Path(args.data_dir)
     figures_dir = Path(args.figures_dir)
@@ -376,7 +376,7 @@ def run_plot(args: argparse.Namespace) -> int:
 
 def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register ``run sweep beta-sweep``."""
-    from chaotic_pfc.sweep import FILTER_TYPES
+    from chaotic_pfc.analysis.sweep import FILTER_TYPES
 
     p = subparsers.add_parser(
         "beta-sweep",
@@ -481,7 +481,7 @@ def _add_plot_3d_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def run_plot_3d(args: argparse.Namespace) -> int:
     """Execute ``run sweep plot-3d``."""
-    from chaotic_pfc.sweep_plotting_3d import (
+    from chaotic_pfc.analysis.sweep_plotting_3d import (
         aggregate_beta_sweeps,
         plot_3d_beta_volume,
     )
@@ -536,7 +536,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
     """Execute ``run sweep beta-sweep``."""
     import numpy as np
 
-    from chaotic_pfc.sweep import quick_sweep_params, run_sweep, save_sweep
+    from chaotic_pfc.analysis.sweep import quick_sweep_params, run_sweep, save_sweep
 
     betas = _beta_values(args.beta_min, args.beta_max, args.beta_step)
     data_dir = Path(args.data_dir)

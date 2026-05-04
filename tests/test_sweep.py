@@ -6,13 +6,16 @@ from tempfile import TemporaryDirectory
 
 import numpy as np
 
-from chaotic_pfc.sweep import (
+from chaotic_pfc.analysis.sweep import (
     FILTER_TYPES,
     WINDOW_DISPLAY_NAMES,
     WINDOWS,
     SweepResult,
+    _build_task_order,
+    _infer_config_from_path,
     load_sweep,
     precompute_fir_bank,
+    quick_sweep_params,
     run_sweep,
     save_sweep,
 )
@@ -476,6 +479,139 @@ class TestAdaptive(unittest.TestCase):
         # tol <= 0 is invalid
         with self.assertRaises(ValueError):
             run_sweep(adaptive=True, Nmap_min=50, tol=0.0, **kw)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Helpers and edge cases
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestHelpers(unittest.TestCase):
+    def test_quick_sweep_params_reduces_work(self):
+        orders_lp, _orders_hp, cutoffs, params = quick_sweep_params()
+        self.assertLess(len(orders_lp), 10)
+        self.assertLess(len(cutoffs), 20)
+        self.assertIsInstance(params, dict)
+        self.assertIn("Nitera", params)
+        self.assertLess(params["Nitera"], 500)
+
+    def test_build_task_order_covers_all_combos(self):
+        orders = np.arange(2, 5)
+        tasks = _build_task_order(orders, Ncut=4)
+        self.assertEqual(len(tasks), len(orders) * 4)
+        self.assertEqual(tasks.ndim, 1)
+
+    def test_build_task_order_empty(self):
+        tasks = _build_task_order(np.array([]), Ncut=0)
+        self.assertEqual(len(tasks), 0)
+
+    def test_infer_config_from_path_lowpass(self):
+        path = Path("data/sweeps/Hamming (lowpass)/variables_lyapunov.npz")
+        filt, cutoff = _infer_config_from_path(path)
+        self.assertEqual(filt, "hamming")
+        self.assertEqual(cutoff, "lowpass")
+
+    def test_infer_config_from_path_highpass(self):
+        path = Path("data/sweeps/Hamming (highpass)/variables_lyapunov.npz")
+        filt, cutoff = _infer_config_from_path(path)
+        self.assertEqual(filt, "hamming")
+        self.assertEqual(cutoff, "highpass")
+
+    def test_infer_config_from_path_unexpected_format(self):
+        path = Path("kaiser/bandpass/beta_5.00/variables_lyapunov.npz")
+        filt, cutoff = _infer_config_from_path(path)
+        self.assertEqual(filt, "unknown")
+        self.assertEqual(cutoff, "lowpass")
+
+    def test_display_name_all_filter_types(self):
+        for ft in FILTER_TYPES:
+            result = SweepResult(
+                h=np.zeros((2, 2)),
+                h_std=np.zeros((2, 2)),
+                orders=np.array([3, 4]),
+                cutoffs=np.array([0.2, 0.8]),
+                window="hamming",
+                filter_type=ft,
+            )
+            name = result.display_name
+            self.assertIsInstance(name, str)
+            self.assertGreater(len(name), 0)
+
+    def test_load_sweep_no_niters(self):
+        rng = np.random.default_rng(0)
+        result = SweepResult(
+            h=rng.uniform(-0.5, 0.5, size=(2, 2)),
+            h_std=np.zeros((2, 2)),
+            orders=np.array([3, 4]),
+            cutoffs=np.array([0.2, 0.8]),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        with TemporaryDirectory() as td:
+            path = Path(td) / "variables_lyapunov.npz"
+            save_sweep(result, path)
+            loaded = load_sweep(path)
+            np.testing.assert_array_equal(loaded.h, result.h)
+
+    def test_bandstop_odd_filter_raises(self):
+        with self.assertRaises(ValueError):
+            precompute_fir_bank(
+                window="hann",
+                filter_type="bandstop",
+                orders=np.arange(2, 5),
+                cutoffs=np.array([0.2, 0.8]),
+            )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Kernel function tests (Numba-JIT helpers)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestKernelFunctions(unittest.TestCase):
+    """Direct tests for the Numba-JIT kernel functions used by the sweep."""
+
+    @classmethod
+    def setUpClass(cls):
+        from chaotic_pfc.analysis.sweep._kernel import (
+            _henon_n12_inplace,
+            _henon_nN_inplace,
+            _mgs_accumulate,
+        )
+
+        cls._h12 = staticmethod(_henon_n12_inplace)
+        cls._hN = staticmethod(_henon_nN_inplace)
+        cls._mgs = staticmethod(_mgs_accumulate)
+
+    def test_henon_n12_inplace_shape(self):
+        c = np.array([0.6, 0.3])
+        x = np.array([0.0, 0.0])
+        x_new = np.empty(2)
+        self._h12(x, x_new, 1.4, 0.3, c)
+        self.assertEqual(x_new.shape, (2,))
+        self.assertTrue(np.all(np.isfinite(x_new)))
+
+    def test_henon_nN_inplace_shape(self):
+        c = np.array([0.5, 0.3, 0.15, 0.05])
+        x = np.array([0.0, 0.0, 0.0, 0.0])
+        x_new = np.empty(4)
+        self._hN(x, x_new, 1.4, 0.3, c)
+        self.assertEqual(x_new.shape, (4,))
+
+    def test_mgs_accumulate_maintains_orthogonality(self):
+        np.random.seed(0)
+        Ns = 4
+        z = np.random.randn(Ns, Ns) * 0.1
+        lyap_sum = np.zeros(Ns)
+        self._mgs(z, Ns, lyap_sum)
+        self.assertTrue(np.all(np.isfinite(z)))
+        self.assertTrue(np.all(np.isfinite(lyap_sum)))
+
+    def test_build_task_order_balanced(self):
+        orders = np.array([2, 3, 4, 5, 10, 20, 30, 41])
+        task = _build_task_order(orders, Ncut=5)
+        self.assertEqual(len(task), len(orders) * 5)
+        self.assertEqual(len(set(task)), len(task))  # all unique
 
 
 if __name__ == "__main__":

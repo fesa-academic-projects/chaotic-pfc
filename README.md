@@ -84,23 +84,41 @@ subcommand's flags with `chaotic-pfc run <name> --help`.
 chaotic-pfc/
 ├── pyproject.toml                 Package metadata and dependencies
 ├── src/chaotic_pfc/               Installable library
-│   ├── cli/                       CLI subcommand modules
-│   ├── maps.py                    Hénon map variants (2-D, generalised, filtered, N-th order)
-│   ├── signals.py                 Message generators
-│   ├── transmitter.py             Chaos-based modulator
-│   ├── channel.py                 Ideal and FIR channel models
-│   ├── receiver.py                Chaos-synchronisation demodulator
-│   ├── spectral.py                Welch PSD estimation
-│   ├── lyapunov.py                Lyapunov exponents (single IC and ensemble)
-│   ├── sweep.py                   Parallel (order × cutoff) Lyapunov sweep
-│   ├── plotting.py                Publication-quality figures
-│   ├── sweep_plotting.py          Classification maps for the Lyapunov sweep
+│   ├── dynamics/                  Henon maps, Lyapunov exponents, signals, spectral analysis
+│   ├── comms/                     Transmitter, channel models, receiver, DCSK schemes
+│   ├── analysis/                  Parameter sweeps, statistical post-processing, sweep plotting
+│   │   └── sweep/                 Numba-JIT kernel, FIR precomputation, I/O
+│   ├── plotting/                  Publication-quality figures (attractors, sensitivity, comms)
+│   ├── cli/                       Unified CLI subcommand modules
 │   └── config.py                  Centralised configuration
-├── tests/                         Unit tests (110 tests)
+├── tests/                         Unit tests
 ├── data/
 │   ├── lyapunov/                  CSV tables from the ensemble protocol
 │   └── sweeps/                    Versioned .npz checkpoints from long sweeps
-└── figures/                       Final figures (SVG for the paper, PNG for preview)
+├── figures/                       Final figures (SVG for the paper, PNG for preview)
+└── scripts/
+    └── benchmark.py               Performance benchmarks for core operations
+```
+
+### Public API
+
+The top-level `chaotic_pfc` namespace reexports ~60 symbols that form the
+stable public API. They are importable from `chaotic_pfc` directly:
+
+```python
+from chaotic_pfc import run_sweep, henon_standard, fir_channel, SweepResult
+```
+
+Internal implementation details (private modules with underscore prefix, e.g.
+`chaotic_pfc.analysis.sweep._kernel`) may change without notice and should
+only be imported in tests or advanced research scripts.
+
+Optional extras follow a separate import path. For example, 3-D visualisation
+requires the `viz3d` extra (`pip install -e '.[viz3d]'`) and is imported
+directly from its module:
+
+```python
+from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 ```
 
 ## Experiments

@@ -3,12 +3,12 @@
 import unittest
 
 import numpy as np
-from scipy.signal import firwin
 
-from chaotic_pfc.channel import ideal_channel
-from chaotic_pfc.receiver import receive, receive_order_n
-from chaotic_pfc.signals import binary_message
-from chaotic_pfc.transmitter import transmit, transmit_order_n
+from chaotic_pfc.comms.channel import ideal_channel
+from chaotic_pfc.comms.receiver import receive, receive_order_n
+from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
+from chaotic_pfc.dynamics.signals import binary_message
+from tests._test_helpers import make_fir_coeffs
 
 
 class TestReceiveStandard(unittest.TestCase):
@@ -66,12 +66,9 @@ class TestReceiveStandard(unittest.TestCase):
 
 
 class TestReceiveOrderN(unittest.TestCase):
-    def _coeffs(self, Nc: int = 5) -> np.ndarray:
-        return firwin(numtaps=Nc, cutoff=0.5, window="hamming")
-
     def test_output_shapes(self):
         r = np.zeros(200)
-        c = self._coeffs(6)
+        c = make_fir_coeffs(6)
         m_hat, state = receive_order_n(r, c)
         self.assertEqual(m_hat.shape, (200,))
         self.assertEqual(state.shape, (6, 201))
@@ -79,7 +76,7 @@ class TestReceiveOrderN(unittest.TestCase):
     def test_seed_is_deterministic(self):
         """Same seed for random y0 must give byte-identical output."""
         r = np.random.default_rng(7).standard_normal(300)
-        c = self._coeffs(5)
+        c = make_fir_coeffs(5)
         mh1, st1 = receive_order_n(r, c, seed=42)
         mh2, st2 = receive_order_n(r, c, seed=42)
         np.testing.assert_array_equal(mh1, mh2)
@@ -87,7 +84,7 @@ class TestReceiveOrderN(unittest.TestCase):
 
     def test_explicit_y0_overrides_seed(self):
         r = np.zeros(100)
-        c = self._coeffs(4)
+        c = make_fir_coeffs(4)
         y0 = np.array([0.1, 0.2, 0.3, 0.4])
         mh1, _ = receive_order_n(r, c, y0=y0, seed=0)
         mh2, _ = receive_order_n(r, c, y0=y0, seed=999)
@@ -95,7 +92,7 @@ class TestReceiveOrderN(unittest.TestCase):
 
     def test_initial_state_matches_y0(self):
         r = np.zeros(10)
-        c = self._coeffs(5)
+        c = make_fir_coeffs(5)
         y0 = np.linspace(-0.2, 0.2, 5)
         _, state = receive_order_n(r, c, y0=y0)
         np.testing.assert_array_equal(state[:, 0], y0)
@@ -106,7 +103,7 @@ class TestReceiveOrderN(unittest.TestCase):
         transient."""
         mu = 0.01
         N = 5000
-        c = self._coeffs(5)
+        c = make_fir_coeffs(5)
         m = binary_message(N, period=20)
 
         x0 = np.array([0.1, 0.2, 0.15, 0.05, 0.3])
@@ -117,6 +114,14 @@ class TestReceiveOrderN(unittest.TestCase):
         transient = 500
         mse = float(np.mean((m[transient:] - m_hat[transient:]) ** 2))
         self.assertLess(mse, 1e-3)
+
+    def test_order_n_seed_none_does_not_raise(self):
+        """seed=None should work without error (leaves RNG untouched)."""
+        c = make_fir_coeffs(4)
+        s, _ = transmit_order_n(np.ones(20), c)
+        r = ideal_channel(s)
+        m_hat, _ = receive_order_n(r, c, seed=None)
+        self.assertEqual(len(m_hat), len(r))
 
 
 if __name__ == "__main__":

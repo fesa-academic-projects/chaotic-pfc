@@ -1,22 +1,100 @@
 """
-analysis.py
-===========
 Statistical analysis of Lyapunov sweep results.
 
 Provides quick programmatic access to the full sweep dataset:
 summary tables, regime classification, parameter ranking, and
-comparisons across windows, filter types, and Kaiser β sweeps.
+comparisons across windows, filter types, and Kaiser beta sweeps.
+
+Return types
+------------
+All public functions that return ``dict`` have corresponding
+:class:`~typing.TypedDict` definitions in this module so that IDE
+autocompletion and mypy can statically verify the result shape:
+
+* :class:`SummaryRow` — one row of :func:`summary_table`
+* :class:`FilterTypeAggregate` — output of :func:`compare_filter_types`
+* :class:`OptimalParams` — one entry of :func:`optimal_parameters`
+* :class:`LmaxDistribution` — output of :func:`lmax_distribution`
+* :class:`CorrelationMatrix` — output of :func:`correlation_matrix`
+* :class:`BootstrapConfidence` — one entry of :func:`bootstrap_confidence`
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
 
 from .sweep import FILTER_TYPES, SweepResult, load_sweep
+
+
+class SummaryRow(TypedDict):
+    """One row of :func:`summary_table`."""
+
+    window: str
+    filter_type: str
+    n_orders: int
+    n_cutoffs: int
+    pct_chaotic: float
+    pct_periodic: float
+    pct_divergent: float
+    mean_lmax: float
+    max_lmax: float
+    beta: float | None
+
+
+class FilterTypeAggregate(TypedDict, total=False):
+    """Aggregate statistics for a single filter type."""
+
+    n_sweeps: int
+    mean_pct_chaotic: float
+    mean_pct_periodic: float
+    mean_pct_divergent: float
+    mean_lmax: float
+
+
+class OptimalParams(TypedDict):
+    """One optimal (order, cutoff) pair from :func:`optimal_parameters`."""
+
+    window: str
+    filter_type: str
+    order: int
+    cutoff: float
+    lmax: float
+
+
+class LmaxDistribution(TypedDict):
+    """Distribution statistics for lambda_max per filter type."""
+
+    n: int
+    mean: float
+    std: float
+    skewness: float
+    min: float
+    max: float
+    p25: float
+    p50: float
+    p75: float
+
+
+class CorrelationMatrix(TypedDict):
+    """Spearman correlation results from :func:`correlation_matrix`."""
+
+    order_vs_lmax: float
+    cutoff_vs_lmax: float
+    n: int
+
+
+class BootstrapConfidence(TypedDict, total=False):
+    """Bootstrap 95% CI entry for one filter type."""
+
+    mean: float
+    ci_low: float
+    ci_high: float
+    n: int
 
 
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
@@ -40,9 +118,12 @@ def summary_table(
 ) -> list[dict]:
     """Return one row per sweep with key statistics.
 
-    Each row contains: ``window``, ``filter_type``, ``n_orders``,
-    ``n_cutoffs``, ``pct_chaotic``, ``pct_periodic``, ``pct_divergent``,
-    ``mean_lmax``, ``max_lmax``, ``beta`` (Kaiser only).
+    Each row is a :class:`SummaryRow` with: ``window``, ``filter_type``,
+    ``n_orders``, ``n_cutoffs``, ``pct_chaotic``, ``pct_periodic``,
+    ``pct_divergent``, ``mean_lmax``, ``max_lmax``, ``beta`` (Kaiser only).
+
+    This is the foundation of all downstream analyses — every other
+    public function in this module either calls or derives from this table.
     """
     rows: list[dict] = []
     for result in _discover_all(data_dir):
@@ -88,7 +169,9 @@ def compare_filter_types(
 ) -> dict[str, dict]:
     """Aggregate statistics per filter type across all windows.
 
-    Returns a dict keyed by filter_type with mean values.
+    Returns a ``dict`` keyed by filter type (``"lowpass"``, ...) with
+    each value being a :class:`FilterTypeAggregate` containing mean
+    percentages and lambda_max across all windows that use that filter type.
     """
     rows = summary_table(data_dir)
     agg: dict[str, list[dict]] = {ft: [] for ft in FILTER_TYPES}

@@ -1,7 +1,4 @@
-"""Phase-space attractors for three Hénon variants.
-
-Originally ``scripts/01_henon_attractors.py``.
-"""
+"""Phase-space attractors for three Hénon variants."""
 
 from __future__ import annotations
 
@@ -30,8 +27,8 @@ def run(args: argparse.Namespace) -> int:
     import matplotlib.pyplot as plt
 
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.maps import henon_filtered, henon_generalised, henon_standard
-    from chaotic_pfc.plotting import plot_attractor
+    from chaotic_pfc.dynamics.maps import henon_filtered, henon_generalised, henon_standard
+    from chaotic_pfc.plotting.figures import plot_attractor
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     steps, fmt = args.steps, cfg.plot.fmt

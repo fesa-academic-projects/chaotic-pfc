@@ -1,0 +1,63 @@
+"""Sweep analysis and statistical post-processing."""
+
+from .stats import (
+    best_chaos_preserving,
+    beta_curve,
+    beta_summary,
+    bootstrap_confidence,
+    chaos_margin,
+    compare_filter_types,
+    correlation_matrix,
+    export_summary_json,
+    lmax_distribution,
+    optimal_parameters,
+    summary_table,
+    transition_boundary,
+)
+from .sweep import (
+    FILTER_TYPES,
+    WINDOW_DISPLAY_NAMES,
+    WINDOWS,
+    SweepResult,
+    load_sweep,
+    precompute_fir_bank,
+    quick_sweep_params,
+    run_sweep,
+    save_sweep,
+)
+from .sweep_plotting import (
+    classify,
+    plot_all,
+    plot_classification_interleaved,
+    plot_difficulty_map,
+    plot_heatmap_continuous,
+)
+
+__all__ = [
+    "FILTER_TYPES",
+    "WINDOWS",
+    "WINDOW_DISPLAY_NAMES",
+    "SweepResult",
+    "best_chaos_preserving",
+    "beta_curve",
+    "beta_summary",
+    "bootstrap_confidence",
+    "chaos_margin",
+    "classify",
+    "compare_filter_types",
+    "correlation_matrix",
+    "export_summary_json",
+    "lmax_distribution",
+    "load_sweep",
+    "optimal_parameters",
+    "plot_all",
+    "plot_classification_interleaved",
+    "plot_difficulty_map",
+    "plot_heatmap_continuous",
+    "precompute_fir_bank",
+    "quick_sweep_params",
+    "run_sweep",
+    "save_sweep",
+    "summary_table",
+    "transition_boundary",
+]

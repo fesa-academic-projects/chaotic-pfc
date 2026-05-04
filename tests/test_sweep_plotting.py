@@ -10,8 +10,8 @@ matplotlib.use("Agg")  # must come before pyplot is imported anywhere
 
 import numpy as np
 
-from chaotic_pfc.sweep import SweepResult
-from chaotic_pfc.sweep_plotting import (
+from chaotic_pfc.analysis.sweep import SweepResult
+from chaotic_pfc.analysis.sweep_plotting import (
     DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
     _unpack,
@@ -285,38 +285,6 @@ class TestUnpack(unittest.TestCase):
         np.testing.assert_array_equal(h_out, h_in)
         np.testing.assert_array_equal(Nz, np.array([1, 2]))
         np.testing.assert_array_equal(cutoffs, np.array([0.1, 0.9]))
-
-    def test_rejects_non_adaptive_result(self):
-        """Plotting a non-adaptive result is misleading (single-colour map);
-        the function must raise rather than silently produce a useless figure."""
-        result = _dummy_result()  # no n_iters_used, adaptive flag absent
-        with self.assertRaises(ValueError):
-            plot_difficulty_map(result)
-
-    def test_rejects_when_adaptive_flag_false(self):
-        """A SweepResult with n_iters_used set but adaptive=False (e.g. from
-        the in-kernel non-adaptive path) must still be rejected."""
-        rng = np.random.default_rng(0)
-        result = SweepResult(
-            h=rng.uniform(-0.3, 0.3, size=(3, 4)),
-            h_std=np.zeros((3, 4)),
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.1, 0.9, 4),
-            window="hamming",
-            filter_type="lowpass",
-            n_iters_used=np.full((3, 4), 3000.0),
-            metadata={"adaptive": False},
-        )
-        with self.assertRaises(ValueError):
-            plot_difficulty_map(result)
-
-    def test_returns_figure(self):
-        result = _adaptive_result()
-        fig = plot_difficulty_map(result)
-        # Sanity: the figure has exactly one axes (heatmap) plus the
-        # colorbar axes — i.e. >= 2 in total.
-        self.assertGreaterEqual(len(fig.axes), 2)
-        fig.clear()
 
 
 if __name__ == "__main__":

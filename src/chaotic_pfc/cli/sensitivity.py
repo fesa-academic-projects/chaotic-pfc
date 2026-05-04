@@ -1,7 +1,4 @@
-"""Sensitive Dependence on Initial Conditions (SDIC).
-
-Originally ``scripts/02_sensitivity.py``.
-"""
+"""Sensitive Dependence on Initial Conditions (SDIC)."""
 
 from __future__ import annotations
 
@@ -35,8 +32,8 @@ def run(args: argparse.Namespace) -> int:
     import numpy as np
 
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.maps import henon_standard
-    from chaotic_pfc.plotting import plot_sensitivity
+    from chaotic_pfc.dynamics.maps import henon_standard
+    from chaotic_pfc.plotting.figures import plot_sensitivity
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     fmt = cfg.plot.fmt

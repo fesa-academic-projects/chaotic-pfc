@@ -16,6 +16,7 @@ mutated in tests, or serialised with :func:`dataclasses.asdict`.
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -238,6 +239,29 @@ class ExperimentConfig:
     plot: PlotConfig = field(default_factory=PlotConfig)
     sweep: SweepConfig = field(default_factory=SweepConfig)
     seed: int = 42
+
+    def to_namespace(self) -> argparse.Namespace:
+        """Build an ``argparse.Namespace`` with defaults for every CLI subcommand.
+
+        Useful for ``run all``, which forwards a single namespace to all
+        sub-experiments.
+        """
+        return argparse.Namespace(
+            N=self.comm.N,
+            mu=self.comm.mu,
+            period=self.comm.message_period,
+            cutoff=self.channel.cutoff,
+            taps=self.channel.num_taps,
+            steps=50_000,
+            epsilon=1e-4,
+            Nitera=self.lyapunov.Nitera,
+            Ndiscard=self.lyapunov.Ndiscard,
+            pole_radius=self.lyapunov.pole_radius,
+            w0=self.lyapunov.w0,
+            n_ci=20,
+            perturbation=self.lyapunov.perturbation,
+            data_dir="data/lyapunov",
+        )
 
 
 DEFAULT_CONFIG = ExperimentConfig()

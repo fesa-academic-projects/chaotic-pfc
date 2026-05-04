@@ -29,7 +29,7 @@ initial condition is needed (``transmit_order_n`` with ``x0=None``), a
 import numpy as np
 from numpy.typing import NDArray
 
-from .maps import _henon_n4_step
+from ..dynamics.maps import _henon_n4_step
 
 
 def transmit(

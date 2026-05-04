@@ -4,7 +4,8 @@ import unittest
 
 import numpy as np
 
-from chaotic_pfc.dcsk import (
+from chaotic_pfc.comms.channel import fir_channel
+from chaotic_pfc.comms.dcsk import (
     awgn,
     ber,
     channel_impulsive,
@@ -172,6 +173,54 @@ class TestEFDCSK(unittest.TestCase):
         eff = efdcsk_receive(efdcsk_transmit(bits, beta=64), beta=64)
         self.assertEqual(float(ber(bits, cls)), 0.0)
         self.assertEqual(float(ber(bits, eff)), 0.0)
+
+
+class TestHenonFIRDivergence(unittest.TestCase):
+    def test_default_params_are_finite(self):
+        """Standard Henon FIR sequence should produce finite output."""
+        h = henon_fir_sequence(100, wc=0.5, n_taps=4)
+        self.assertTrue(np.all(np.isfinite(h)))
+
+    def test_non_default_params_run(self):
+        """Non-default Henon params (a=1.2, b=0.2) should run without error."""
+        h = henon_fir_sequence(100, wc=0.5, n_taps=4, a=1.2, b=0.2)
+        self.assertEqual(h.shape, (100,))
+        self.assertTrue(np.all(np.isfinite(h)))
+
+
+class TestChannelKaiser(unittest.TestCase):
+    def test_fir_channel_kaiser(self):
+        s = np.sin(2 * np.pi * 0.05 * np.arange(100))
+        r, _ = fir_channel(s, cutoff=0.3, num_taps=16, window=("kaiser", 5.0))
+        self.assertEqual(r.shape, s.shape)
+        self.assertTrue(np.all(np.isfinite(r)))
+
+
+class TestChannelCustom(unittest.TestCase):
+    def test_impulsive_custom_params(self):
+        s = np.ones(100)
+        r = channel_impulsive(s, snr_db=20.0, prob_impulso=0.05, amp_fator=3.0)
+        self.assertEqual(r.shape, s.shape)
+
+    def test_multipath_custom_params(self):
+        s = np.ones(200)
+        r = channel_multipath(s, snr_db=20.0, delays=[1, 3, 7], gains=[0.8, 0.4, 0.2])
+        self.assertEqual(r.shape, s.shape)
+        self.assertFalse(np.allclose(s, r))
+
+    def test_interferers_custom_params(self):
+        s = np.sin(2 * np.pi * 0.05 * np.arange(500))
+        rng = np.random.default_rng(42)
+        r = channel_interferers(s, snr_db=10.0, sir_dcsk_db=5.0, rng=rng)
+        self.assertEqual(r.shape, s.shape)
+        self.assertTrue(np.all(np.isfinite(r)))
+
+    def test_urban_returns_finite(self):
+        s = np.ones(1000)
+        rng = np.random.default_rng(42)
+        r = channel_urban(s, snr_db=20.0, rng=rng)
+        self.assertEqual(r.shape, s.shape)
+        self.assertTrue(np.all(np.isfinite(r)))
 
 
 if __name__ == "__main__":

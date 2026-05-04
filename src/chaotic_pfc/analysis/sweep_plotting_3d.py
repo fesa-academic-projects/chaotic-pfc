@@ -21,13 +21,18 @@ from numpy.typing import NDArray
 
 from .sweep import load_sweep
 
-try:
-    import plotly.graph_objects as go
-except ImportError as exc:  # pragma: no cover — exercised by the no-plotly test
-    raise ImportError(
-        "Plotly is required for 3-D sweep plotting. "
-        "Install the optional dependency: pip install -e '.[viz3d]'"
-    ) from exc
+
+def _get_go():
+    """Lazy-import plotly; raises a helpful error if not installed."""
+    try:
+        import plotly.graph_objects as go
+
+        return go
+    except ImportError as exc:
+        raise ImportError(
+            "Plotly is required for 3-D sweep plotting. "
+            "Install the optional dependency: pip install -e '.[viz3d]'"
+        ) from exc
 
 
 def aggregate_beta_sweeps(
@@ -111,7 +116,7 @@ def plot_3d_beta_volume(
     orders: NDArray,
     cutoffs: NDArray,
     save_path: str | Path | None = None,
-) -> go.Figure:
+):  # -> plotly.graph_objects.Figure  (plotly is optional; see _get_go)
     """Render a stack of λ_max surfaces, one per β.
 
     Each β contributes a 2-D heat-coloured surface placed at altitude
@@ -132,6 +137,7 @@ def plot_3d_beta_volume(
     -------
     plotly.graph_objects.Figure
     """
+    go = _get_go()
     Nz = np.asarray(orders) - 1
     fig = go.Figure()
 

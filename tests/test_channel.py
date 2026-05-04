@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 from scipy.signal import firwin, lfilter
 
-from chaotic_pfc.channel import fir_channel, ideal_channel
+from chaotic_pfc.comms.channel import fir_channel, ideal_channel
 
 
 class TestIdealChannel(unittest.TestCase):

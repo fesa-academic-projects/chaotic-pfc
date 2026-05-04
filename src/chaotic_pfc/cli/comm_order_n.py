@@ -1,14 +1,11 @@
-"""Communication using N-th order Hénon with internal FIR filter.
-
-Originally ``scripts/05_comm_order_n.py``.
-"""
+"""Communication using N-th order Henon with internal FIR filter."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from ._common import add_save_display_flags, pick_backend
+from ._common import add_save_display_flags, compute_psds, pick_backend, save_or_show
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -17,8 +14,8 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
 
     p = subparsers.add_parser(
         "comm-order-n",
-        help="Transmitter/receiver using an N-th order Hénon with internal FIR.",
-        description="Communication using N-th order Hénon with internal FIR filter.",
+        help="Transmitter/receiver using an N-th order Henon with internal FIR.",
+        description="Communication using N-th order Henon with internal FIR filter.",
     )
     p.add_argument("--N", type=int, default=cfg.comm.N)
     p.add_argument("--mu", type=float, default=cfg.comm.mu)
@@ -31,20 +28,16 @@ def run(args: argparse.Namespace) -> int:
     """Execute the ``comm-order-n`` experiment."""
     headless = pick_backend(args.no_display)
 
-    import matplotlib.pyplot as plt
     import numpy as np
 
-    from chaotic_pfc.channel import fir_channel
+    from chaotic_pfc.comms.channel import fir_channel
+    from chaotic_pfc.comms.receiver import receive_order_n
+    from chaotic_pfc.comms.transmitter import transmit_order_n
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.plotting import plot_comm_grid
-    from chaotic_pfc.receiver import receive_order_n
-    from chaotic_pfc.signals import binary_message
-    from chaotic_pfc.spectral import psd_normalised
-    from chaotic_pfc.transmitter import transmit_order_n
+    from chaotic_pfc.dynamics.signals import binary_message
+    from chaotic_pfc.plotting.figures import plot_comm_grid
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
-    tr = cfg.comm.transient
-    sp_cfg = cfg.spectral
     fmt = cfg.plot.fmt
 
     c = cfg.internal_fir.fir_coeffs()
@@ -53,8 +46,6 @@ def run(args: argparse.Namespace) -> int:
     fdir = Path(cfg.plot.figures_dir)
     if args.save:
         fdir.mkdir(parents=True, exist_ok=True)
-
-    print(f"[05] N-th order Hénon  |  N={args.N:,}  μ={args.mu}  Nc={Nc}")
 
     rng = np.random.default_rng(cfg.seed)
     x0 = 0.5 * rng.random(Nc)
@@ -65,27 +56,23 @@ def run(args: argparse.Namespace) -> int:
     r, h = fir_channel(s, cutoff=cfg.channel.cutoff, num_taps=cfg.channel.num_taps)
     m_hat, _ = receive_order_n(r, c, mu=args.mu, a=a, b=b, y0=y0)
 
-    mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
-    print(f"    MSE (n > {tr}): {mse:.4e}")
+    mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)
+    print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}")
+    print(f"    MSE (n > {cfg.comm.transient}): {mse:.4e}")
 
-    n = np.arange(args.N)
-    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length)
+    omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 
     win = slice(cfg.plot.time_window_start, min(cfg.plot.time_window_end, 1000))
     save_path = str(fdir / f"comm_order_n.{fmt}") if args.save else None
 
-    mhat_ss = m_hat[tr:]
+    mhat_ss = m_hat[cfg.comm.transient :]
     mhat_max = np.percentile(np.abs(mhat_ss), 99)
-    if mhat_max > 5:
-        y_lim_mhat = (-min(mhat_max * 1.1, 300), min(mhat_max * 1.1, 300))
-    else:
-        y_lim_mhat = (-1.5, 1.5)
+    y_lim_mhat = (
+        (-min(mhat_max * 1.1, 300), min(mhat_max * 1.1, 300)) if mhat_max > 5 else (-1.5, 1.5)
+    )
 
     fig = plot_comm_grid(
-        n,
+        np.arange(args.N),
         m,
         s,
         r,
@@ -97,7 +84,7 @@ def run(args: argparse.Namespace) -> int:
         psd_mhat,
         time_window=win,
         suptitle=(
-            r"Hénon de Ordem $N$ — Canal FIR"
+            r"Henon de Ordem $N$ — Canal FIR"
             r"  ($N_c=" + str(Nc) + r",\; \mu=" + str(args.mu) + r"$)"
         ),
         y_lim_mhat=y_lim_mhat,
@@ -105,10 +92,5 @@ def run(args: argparse.Namespace) -> int:
         save_path=save_path,
     )
 
-    if headless:
-        plt.close(fig)
-        if args.save:
-            print(f"    Saved -> {save_path}")
-    else:
-        plt.show()
+    save_or_show(fig, headless, save_path, args)
     return 0

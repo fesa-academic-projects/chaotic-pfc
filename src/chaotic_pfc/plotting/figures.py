@@ -9,6 +9,9 @@ Figures are saved as .svg by default for vector-quality output.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
@@ -78,6 +81,7 @@ def _style(ax: Axes, ts: int = 12) -> None:
 def _save(fig: Figure, path: str | None) -> None:
     """Write ``fig`` to ``path`` if ``path`` is not ``None``; otherwise no-op."""
     if path:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(path)
 
 
@@ -174,6 +178,22 @@ def plot_sensitivity(
 # ── 3. Communication 4×2 grid (time + PSD) ─────────────────────────────────
 
 
+@dataclass
+class PlotGridOptions:
+    """Optional styling parameters for :func:`plot_comm_grid`.
+
+    All fields have sensible defaults; only override what you need.
+    """
+
+    time_window: slice = slice(0, 300)
+    suptitle: str = ""
+    y_lim_msg: tuple[float, float] = (-1.5, 1.5)
+    y_lim_sig: tuple[float, float] = (-2.5, 2.5)
+    y_lim_mhat: tuple[float, float] | None = None
+    h_channel: NDArray | None = None
+    save_path: str | None = None
+
+
 def plot_comm_grid(
     n: NDArray,
     m: NDArray,
@@ -185,6 +205,8 @@ def plot_comm_grid(
     psd_s: NDArray,
     psd_r: NDArray,
     psd_mhat: NDArray,
+    *,
+    opts: PlotGridOptions | None = None,
     time_window: slice = slice(0, 300),
     suptitle: str = "",
     y_lim_msg: tuple = (-1.5, 1.5),
@@ -197,7 +219,23 @@ def plot_comm_grid(
     4×2 grid: left = time domain, right = PSD.
     Rows: m[n], s[n], r[n], m̂[n].
     If h_channel is provided, its frequency response is overlaid on PSD_s.
+
+    The *opts* dataclass overrides individual keyword arguments when both
+    are provided.
     """
+    if opts is not None:
+        if time_window is None or time_window == slice(0, 300):
+            time_window = opts.time_window
+        if not suptitle:
+            suptitle = opts.suptitle
+        y_lim_msg = opts.y_lim_msg if y_lim_msg == (-1.5, 1.5) else y_lim_msg
+        y_lim_sig = opts.y_lim_sig if y_lim_sig == (-2.5, 2.5) else y_lim_sig
+        if y_lim_mhat is None:
+            y_lim_mhat = opts.y_lim_mhat
+        if h_channel is None:
+            h_channel = opts.h_channel
+        if save_path is None:
+            save_path = opts.save_path
     if y_lim_mhat is None:
         y_lim_mhat = y_lim_msg
 

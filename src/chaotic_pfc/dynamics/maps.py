@@ -226,6 +226,7 @@ def _henon_n4_step(
 
 def henon_order_n(
     steps: int,
+    *,
     fir_coeffs: NDArray,
     x0: NDArray | None = None,
     a: float = 1.4,

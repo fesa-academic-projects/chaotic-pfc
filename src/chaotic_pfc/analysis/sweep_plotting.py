@@ -37,7 +37,7 @@ from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
-from .plotting import setup_rc
+from ..plotting.figures import setup_rc
 from .sweep import SweepResult
 
 setup_rc()

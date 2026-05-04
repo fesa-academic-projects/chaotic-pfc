@@ -1,14 +1,11 @@
-"""DCSK communication experiment — BER vs SNR across chaotic modulation schemes.
-
-Originally prototyped in ``dcsk_henon_v4_ipynb.ipynb``.
-"""
+"""DCSK communication experiment — BER vs SNR across chaotic modulation schemes."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from ._common import pick_backend
+from ._common import add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -30,8 +27,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--snr-min", type=float, default=-6)
     p.add_argument("--snr-max", type=float, default=28)
     p.add_argument("--snr-step", type=float, default=2)
-    p.add_argument("--save", action="store_true")
-    p.add_argument("--no-display", dest="no_display", action="store_true")
+    add_save_display_flags(p)
     p.set_defaults(_run=run)
 
 
@@ -42,9 +38,8 @@ def run(args: argparse.Namespace) -> int:
     import matplotlib.pyplot as plt
     import numpy as np
 
-    from chaotic_pfc.channel import ideal_channel
-    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.dcsk import (
+    from chaotic_pfc.comms.channel import ideal_channel
+    from chaotic_pfc.comms.dcsk import (
         awgn,
         ber,
         dcsk_receive,
@@ -52,9 +47,10 @@ def run(args: argparse.Namespace) -> int:
         efdcsk_receive,
         efdcsk_transmit,
     )
-    from chaotic_pfc.receiver import receive
-    from chaotic_pfc.signals import binary_message
-    from chaotic_pfc.transmitter import transmit
+    from chaotic_pfc.comms.receiver import receive
+    from chaotic_pfc.comms.transmitter import transmit
+    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
+    from chaotic_pfc.dynamics.signals import binary_message
 
     rng = np.random.default_rng(42)
     snr_range = np.arange(args.snr_min, args.snr_max + 1e-9, args.snr_step)

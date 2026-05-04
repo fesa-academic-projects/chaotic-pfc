@@ -10,15 +10,18 @@ NumPy-style docstrings extracted from the source.
    :toctree: generated
    :recursive:
 
-   chaotic_pfc.maps
-   chaotic_pfc.signals
-   chaotic_pfc.transmitter
-   chaotic_pfc.channel
-   chaotic_pfc.receiver
-   chaotic_pfc.spectral
-   chaotic_pfc.lyapunov
-   chaotic_pfc.sweep
-   chaotic_pfc.sweep_plotting
-   chaotic_pfc.plotting
+   chaotic_pfc.dynamics.maps
+   chaotic_pfc.dynamics.signals
+   chaotic_pfc.dynamics.lyapunov
+   chaotic_pfc.dynamics.spectral
+   chaotic_pfc.comms.transmitter
+   chaotic_pfc.comms.channel
+   chaotic_pfc.comms.receiver
+   chaotic_pfc.comms.dcsk
+   chaotic_pfc.analysis.sweep
+   chaotic_pfc.analysis.stats
+   chaotic_pfc.analysis.sweep_plotting
+   chaotic_pfc.analysis.sweep_plotting_3d
+   chaotic_pfc.plotting.figures
    chaotic_pfc.config
    chaotic_pfc.cli

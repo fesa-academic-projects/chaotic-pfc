@@ -47,8 +47,14 @@ from pathlib import Path
 
 import numpy as np
 
+from chaotic_pfc.analysis.sweep import (
+    FILTER_TYPES,
+    WINDOWS,
+    quick_sweep_params,
+    run_sweep,
+    save_sweep,
+)
 from chaotic_pfc.cli.sweep import _beta_values
-from chaotic_pfc.sweep import FILTER_TYPES, WINDOWS, quick_sweep_params, run_sweep, save_sweep
 
 from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
 from . import sweep as sweep_mod
@@ -255,36 +261,10 @@ def run(args: argparse.Namespace) -> int:
         # Each experiment gets a namespace with every flag it might look up.
         # Extra fields (e.g. "taps") are harmless because argparse resolved
         # them to defaults earlier when the individual subcommand was built.
-        step_args = argparse.Namespace(
-            **shared,
-            # Defaults matching individual-subcommand behaviour.
-            # Callers that want finer control should invoke each subcommand
-            # directly rather than "run all".
-            steps=50_000,
-            epsilon=1e-4,
-            N=None,
-            mu=None,
-            period=None,
-            cutoff=None,
-            taps=None,
-            # Lyapunov defaults — must match those declared in cli/lyapunov.py
-            Nitera=2000,
-            Ndiscard=1000,
-            pole_radius=0.975,
-            w0=0.0,
-            n_ci=20,
-            perturbation=0.1,
-            data_dir="data/lyapunov",
-        )
-        # Sensitivity keeps the original default of 50 steps — 50_000
-        # makes the point-overlay unreadable.
+        step_args = _build_step_args(shared)
+        # Sensitivity keeps fewer steps to avoid unreadable point overlay
         if tag == "02":
             step_args.steps = 50
-
-        # Fill defaults from DEFAULT_CONFIG when experiment-specific flags
-        # are left as None (so each run() sees the same values as it would
-        # in a direct invocation).
-        _fill_config_defaults(step_args)
         experiment_run(step_args)
 
     # ── 2) Sweep compute (07) ─────────────────────────────────────────────
@@ -328,17 +308,11 @@ def run(args: argparse.Namespace) -> int:
     return 0
 
 
-def _fill_config_defaults(ns: argparse.Namespace) -> None:
-    """Replace ``None`` placeholders with values from ``DEFAULT_CONFIG``."""
+def _build_step_args(shared: dict) -> argparse.Namespace:
+    """Build an argparse.Namespace for each experiment step."""
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
-    if ns.N is None:
-        ns.N = cfg.comm.N
-    if ns.mu is None:
-        ns.mu = cfg.comm.mu
-    if ns.period is None:
-        ns.period = cfg.comm.message_period
-    if ns.cutoff is None:
-        ns.cutoff = cfg.channel.cutoff
-    if ns.taps is None:
-        ns.taps = cfg.channel.num_taps
+    ns = cfg.to_namespace()
+    for k, v in shared.items():
+        setattr(ns, k, v)
+    return ns

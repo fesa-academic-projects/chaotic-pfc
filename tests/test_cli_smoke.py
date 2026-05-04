@@ -236,16 +236,16 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
         """``run_compute`` must forward ``adaptive``/``Nmap_min``/``tol``
         to :func:`chaotic_pfc.sweep.run_sweep`. We monkey-patch the
         symbol on the source module (``chaotic_pfc.sweep``); the CLI
-        does ``from chaotic_pfc.sweep import run_sweep`` *inside*
+        does ``from chaotic_pfc.analysis.sweep import run_sweep`` *inside*
         ``run_compute`` so the patch must precede that local import."""
         import argparse
         from unittest.mock import patch
 
         import numpy as np
 
-        import chaotic_pfc.sweep as sweep_mod
+        import chaotic_pfc.analysis.sweep as sweep_mod
+        from chaotic_pfc.analysis.sweep import SweepResult
         from chaotic_pfc.cli import sweep as cli_sweep
-        from chaotic_pfc.sweep import SweepResult
 
         captured: dict = {}
 

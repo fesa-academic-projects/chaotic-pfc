@@ -29,7 +29,7 @@ Two receivers are provided, mirroring :mod:`chaotic_pfc.transmitter`:
 import numpy as np
 from numpy.typing import NDArray
 
-from .maps import _henon_n4_step
+from ..dynamics.maps import _henon_n4_step
 
 
 def receive(
