@@ -122,12 +122,13 @@ jobs:
           fail_ci_if_error: false
 
   # ───────────────────────────────────────────────────────────────────────
-  # Pipeline smoke test: runs only if unit tests passed.
-  # Exercises every script end-to-end in quick mode.
+  # Pipeline smoke test: runs only if unit tests passed, and only on
+  # pushes to main (not on PRs, where fast lint+test feedback matters).
   # ───────────────────────────────────────────────────────────────────────
   pipeline:
     name: Pipeline smoke test
     needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -152,12 +153,12 @@ jobs:
 
   # ───────────────────────────────────────────────────────────────────────
   # Documentation: Sphinx build.
-  # Runs after the smoke test so docs are built against a proven working
-  # package state (API reference won't break silently).
+  # Runs after the smoke test (push to main only, same rationale).
   # ───────────────────────────────────────────────────────────────────────
   docs:
     name: Documentation (Sphinx)
     needs: pipeline
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
