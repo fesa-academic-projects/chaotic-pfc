@@ -1,0 +1,30 @@
+name: Bug Report
+description: Report a bug or unexpected behaviour.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: What happened? What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal code or CLI commands that trigger the bug.
+      render: bash
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `chaotic_pfc.__version__` or `pip show chaotic-pfc`.
+      placeholder: "0.4.0"
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, Numba availability (`import numba; print(numba.__version__)`).
+      placeholder: |
+        Ubuntu 22.04, Python 3.12.4, Numba 0.60.0
