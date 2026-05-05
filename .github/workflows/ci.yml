@@ -20,7 +20,7 @@ env:
 jobs:
   # ───────────────────────────────────────────────────────────────────────
   # Lint: Ruff check + format check
-  # Fast, independent, no dependencies on the rest.
+  # Fast, independent. Must pass before typecheck or test runs.
   # ───────────────────────────────────────────────────────────────────────
   lint:
     name: Lint (Ruff)
@@ -75,10 +75,12 @@ jobs:
         run: mypy src/chaotic_pfc
 
   # ───────────────────────────────────────────────────────────────────────
-  # Unit tests: pytest with coverage, upload to Codecov
+  # Unit tests: pytest with coverage, upload to Codecov.
+  # Runs only after lint and typecheck both pass.
   # ───────────────────────────────────────────────────────────────────────
   test:
     name: Unit tests (pytest ${{ matrix.python-version }})
+    needs: [lint, typecheck]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -106,6 +108,7 @@ jobs:
           pytest \
             --tb=short \
             --cov=chaotic_pfc \
+            --cov-fail-under=55 \
             --cov-report=xml \
             --cov-report=term
 
@@ -148,12 +151,13 @@ jobs:
         run: chaotic-pfc run all --no-display --quick-sweep
 
   # ───────────────────────────────────────────────────────────────────────
-  # Documentation: Sphinx build
-  # Runs in parallel with lint/typecheck; fails loudly if the API
-  # reference can't be rendered (broken docstrings, missing modules, …).
+  # Documentation: Sphinx build.
+  # Runs after the smoke test so docs are built against a proven working
+  # package state (API reference won't break silently).
   # ───────────────────────────────────────────────────────────────────────
   docs:
     name: Documentation (Sphinx)
+    needs: pipeline
     runs-on: ubuntu-latest
     timeout-minutes: 5
 

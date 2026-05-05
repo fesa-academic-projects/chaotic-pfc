@@ -1,0 +1,16 @@
+# Codecov configuration
+# https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 5%   # warn at -2%, fail at -5%
+        base: auto
+    patch:
+      default:
+        target: auto
+        threshold: 5%
+
+comment: false  # disable PR comments; rely on the check status instead
