@@ -1,7 +1,7 @@
 """
 transmitter.py
 ==============
-Chaos-based modulators that embed a message in the state of a Hénon
+Chaos-based modulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. that embed a message in the state of a Henon
 oscillator.
 
 Two transmitters are provided, mirroring the two receiver modes:
@@ -75,7 +75,8 @@ def transmit(
     The output ``s`` has the same chaotic broadband spectrum as the
     autonomous Hénon map for ``μ ≪ 1``, with the message imprinted as a
     small spectral perturbation.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."""
     N = len(message)
     x1 = np.empty(N + 1)
     x2 = np.empty(N + 1)
@@ -131,7 +132,8 @@ def transmit_order_n(
     state : ndarray, shape (Nc, N + 1)
         Full state trajectory of the N-th order system. Column ``n``
         holds the state at step ``n``, with column 0 equal to ``x0``.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."""
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)

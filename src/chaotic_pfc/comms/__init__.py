@@ -14,10 +14,14 @@ from .dcsk import (
     efdcsk_transmit,
     henon_fir_sequence,
 )
+from .protocols import Channel, Receiver, Transmitter
 from .receiver import receive, receive_order_n
 from .transmitter import transmit, transmit_order_n
 
 __all__ = [
+    "Channel",
+    "Receiver",
+    "Transmitter",
     "awgn",
     "ber",
     "channel_impulsive",

@@ -40,7 +40,8 @@ def ideal_channel(s: NDArray) -> NDArray:
     ndarray, shape (N,)
         An independent copy of ``s``. Mutating the output does not
         affect the input.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Channel`."""
     return s.copy()
 
 
@@ -79,7 +80,8 @@ def fir_channel(
     h : ndarray, shape (num_taps,)
         Filter coefficients, useful for overlaying the channel response
         on PSD plots.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Channel`."""
     h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
     r = lfilter(h, [1.0], s)
     return r, h

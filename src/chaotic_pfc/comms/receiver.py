@@ -1,7 +1,7 @@
 """
 receiver.py
 ===========
-Chaos-synchronisation demodulators that extract the original message
+Chaos-synchronisation demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. that extract the original message
 from a transmitted (and possibly channel-distorted) carrier.
 
 Both receivers rely on the Pecora-Carroll synchronisation principle:
@@ -12,7 +12,7 @@ between the driving signal and the local state estimate.
 
 Two receivers are provided, mirroring :mod:`chaotic_pfc.transmitter`:
 
-* :func:`receive` — 2-D Hénon demodulator; the message is
+* :func:`receive` — 2-D Hénon demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. the message is
 
   .. math::
 
@@ -20,7 +20,7 @@ Two receivers are provided, mirroring :mod:`chaotic_pfc.transmitter`:
 
   where ``y_1`` is the local 2-D state driven by ``r``.
 
-* :func:`receive_order_n` — higher-order demodulator using the same
+* :func:`receive_order_n` — higher-order demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`.using the same
   FIR filter the transmitter used. The carrier is taken from the
   filtered state ``y[2][n]`` and the message follows the same formula
   with ``y_1`` replaced by ``v = y[2]``.
@@ -77,7 +77,8 @@ def receive(
         message while the local oscillator locks in; see
         :data:`chaotic_pfc.config.CommConfig.transient` for the default
         rejection window.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`."""
     N = len(r)
     y1 = np.empty(N + 1)
     y2 = np.empty(N + 1)
@@ -134,7 +135,8 @@ def receive_order_n(
     state : ndarray, shape (Nc, N + 1)
         Full state trajectory of the local oscillator. Column 0 holds
         ``y0``; each subsequent column is the next iterate.
-    """
+
+    Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`."""
     N = len(r)
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)

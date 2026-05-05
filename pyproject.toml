@@ -144,3 +144,11 @@ check_untyped_defs = true
 [[tool.mypy.overrides]]
 module = ["numba.*", "scipy.*", "matplotlib.*"]
 ignore_errors = true
+
+# ── Stricter typing for the communication pipeline ───────────────────
+[[tool.mypy.overrides]]
+module = ["chaotic_pfc.comms.*"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_unused_ignores = true
+warn_unreachable = true
