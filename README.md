@@ -5,6 +5,7 @@
 [![codecov](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc/branch/main/graph/badge.svg)](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
+[![CodeQL](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/codeql.yml/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/codeql.yml)
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
 Chaotic digital communication system based on the Hénon map.
