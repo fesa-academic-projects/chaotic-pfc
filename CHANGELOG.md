@@ -5,18 +5,29 @@ All notable changes to chaotic-pfc are documented in this file.
 ## [Unreleased]
 
 ## [0.4.0] — 2026-05-04
+
+### Package structure
 - Sources reorganised into 4 subpackages: `dynamics/`, `comms/`, `analysis/`, `plotting/`.
 - `analysis.py` renamed to `stats.py`; `plotting.py` renamed to `figures.py`.
 - `sweep.py` (1139 lines) split into `_types`, `_kernel`, `_orchestration`, `_io` submodules.
 - `test_maps.py` split into `test_maps.py`, `test_signals.py`, `test_lyapunov.py`.
 
 ### Added
-- `py.typed` marker (PEP 561) for downstream type-checker support.
-- `chaotic_pfc.__version__` (`_version.py`, reads from single source of truth).
-- `CHANGELOG.md` following Keep a Changelog conventions.
-- `CONTRIBUTING.md` with development workflow, commit conventions, and tooling guide.
-- `Makefile` with 13 targets: `test`, `test-fast`, `lint`, `format`, `typecheck`, `check-all`, `docs`, `benchmark`, `clean`, `pre-commit`, `install`, `help`.
-- `strict_markers = true` in pytest config to catch mistyped marker decorators.
+- Comprehensive statistical sweep analysis suite: filter-type comparison, lambda_max distributions, transition boundaries, spectral robustness, Spearman correlation, bootstrap confidence intervals, parameter ranking, beta-evolution curves, and interpretation.
+- DCSK and EF-DCSK chaotic communication modules with 4 channel models (AWGN, impulsive, multipath, urban interferers).
+- Bandpass and bandstop filter types with bandwidth parameter; `FILTER_TYPES` expanded to 4.
+- `chaotic-pfc run analysis` CLI subcommand.
+- `chaotic-pfc run dcsk` CLI subcommand for BER-vs-SNR comparison.
+- `chaotic-pfc run sweep beta-sweep` for Kaiser beta sweeps.
+- `chaotic-pfc run sweep plot-3d` for Plotly 3-D visualisation.
+- `chaotic-pfc run sweep compute --bandwidth` flag.
+- `chaotic-pfc run all --adaptive` with `--Nmap-min` and `--tol`.
+- `py.typed` marker (PEP 561).
+- `chaotic_pfc.__version__`.
+- `CHANGELOG.md` following Keep a Changelog.
+- `CONTRIBUTING.md`.
+- `Makefile` with 13 targets.
+- `strict_markers = true` in pytest config.
 - `scripts/benchmark.py` — performance benchmarks for Henon maps, FIR bank, and Lyapunov exponents.
 - `PlotGridOptions` dataclass as a typed alternative to `plot_comm_grid` keyword arguments.
 - `ExperimentConfig.to_namespace()` — generates `argparse.Namespace` from config defaults, eliminates `_fill_config_defaults`.
@@ -40,6 +51,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Pre-commit config expanded with `check-ast`, `check-json`, `check-case-conflict`, `debug-statements`, `mixed-line-ending`, `detect-private-key`, and `mypy`.
 - README updated with new package structure and a "Public API" section.
 - `analysis_summary.json` output path moved from project root to `data/` and added to `.gitignore`.
+- `run_all.py` step 08 now plots all window×filter combinations (`--all`) instead of only hamming/lowpass.
 
 ### Fixed
 - Duplicate test method names in `test_sweep_plotting.py` (3 methods copy-pasted into the wrong class).
@@ -51,21 +63,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Outdated `Originally scripts/...` comments in 7 CLI modules.
 - Outdated module paths in `docs/api/index.rst`.
 
-### Added (already shipped in 0.4.0)
-- Comprehensive statistical sweep analysis suite: filter-type comparison, lambda_max distributions, transition boundaries, spectral robustness, Spearman correlation, bootstrap confidence intervals, parameter ranking, beta-evolution curves, and plain-language interpretation.
-- DCSK and EF-DCSK (Efficient DCSK) chaotic communication modules with 4 channel models (AWGN, impulsive, multipath, urban interferers).
-- Bandpass and bandstop filter types with bandwidth parameter; `FILTER_TYPES` expanded to 4.
-- `chaotic-pfc run analysis` CLI subcommand with `--data-dir`, `--report`, and `--json` flags.
-- `chaotic-pfc run dcsk` CLI subcommand for BER-vs-SNR comparison of Pecora-Carroll, DCSK, and EF-DCSK.
-- `chaotic-pfc run sweep beta-sweep` for Kaiser beta parameter sweeps.
-- `chaotic-pfc run sweep plot-3d` for Plotly-based 3-D visualisation of beta stacks.
-- `chaotic-pfc run sweep compute --bandwidth` flag for bandpass/bandstop width control.
-- `chaotic-pfc run all --adaptive` with `--Nmap-min` and `--tol` for Lyapunov early-stop in the full pipeline.
-
-### Changed
-- `run_all.py` step 08 now plots all window×filter combinations (`--all`) instead of only hamming/lowpass.
-
-## [0.3.0] — 2026-04
+## [0.3.0] — 2026-05-03
 
 ### Added
 - Kaiser beta-sweep in the Lyapunov exponent pipeline with interactive 3-D Plotly plots.
@@ -95,7 +93,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Build artifacts (`.egg-info/`, `__pycache__/`) removed from version control.
 - Leftover `run_all.py` in project root removed (superseded by CLI).
 
-## [0.2.0] — 2026-04
+## [0.2.0] — 2026-04-22
 
 - Initial release: Henon map variants, FIR channel models, Pecora-Carroll synchronisation.
 - Lyapunov exponent computation (single IC) and parameter sweep over `(order, cutoff)` grid.
