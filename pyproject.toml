@@ -8,7 +8,7 @@ version = "0.4.0"
 description = "Chaotic communication system based on the Hénon map"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
     { name = "Kauê de Souza Silva", email = "kaue.moelas.com@gmail.com" },
@@ -131,7 +131,7 @@ indent-style = "space"
 # ───────────────────────────────────────────────────────────────────────────
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 files = ["src/chaotic_pfc"]
 ignore_missing_imports = true  # numba, scipy, etc. ship partial stubs
 warn_unused_ignores = true
