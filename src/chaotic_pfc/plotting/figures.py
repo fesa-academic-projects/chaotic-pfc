@@ -9,7 +9,7 @@ Figures are saved as .svg by default for vector-quality output.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -185,7 +185,7 @@ class PlotGridOptions:
     All fields have sensible defaults; only override what you need.
     """
 
-    time_window: slice = slice(0, 300)
+    time_window: slice = field(default_factory=lambda: slice(0, 300))
     suptitle: str = ""
     y_lim_msg: tuple[float, float] = (-1.5, 1.5)
     y_lim_sig: tuple[float, float] = (-2.5, 2.5)
