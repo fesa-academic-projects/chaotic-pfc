@@ -113,7 +113,7 @@ jobs:
             --cov-report=term
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: success()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
