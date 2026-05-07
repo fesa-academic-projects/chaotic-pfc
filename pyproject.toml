@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chaotic-pfc"
-version = "0.4.0"
+version = "0.5.0"
 description = "Chaotic communication system based on the Hénon map"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }

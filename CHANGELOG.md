@@ -4,6 +4,45 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-05-05
+
+### Added
+- Numba made optional via `_compat.py` fallback layer (`[fast]` extra, `pip install chaotic-pfc[fast]`).
+- `Transmitter`, `Channel`, `Receiver` Protocols in `comms/protocols.py`.
+- `PlotGridOptions` dataclass for `plot_comm_grid`.
+- `.codecov.yml` with 5% threshold (warn -2%, fail -5%).
+- `.github/dependabot.yml` with grouped weekly updates for pip and GitHub Actions.
+- `.github/ISSUE_TEMPLATE/` (bug report and feature request).
+- `RELEASING.md` with step-by-step release process.
+- TestPyPI CD: `release` job in `ci.yml` using OIDC trusted publishing (triggered on `git tag v*`).
+- Dual-language README: `README.md` (EN) + `README_pt-BR.md` with language switcher.
+- Hero figure in README (Lyapunov classification map).
+- `py.typed` marker (PEP 561).
+- `chaotic_pfc.__version__` attribute.
+- `CHANGELOG.md` following Keep a Changelog.
+- `CONTRIBUTING.md` with development workflow and project conventions.
+- `Makefile` with 13 targets.
+- `strict_markers = true` in pytest config.
+- Python 3.14 in CI test matrix.
+
+### Changed
+- Minimum Python bumped from 3.10 to 3.11.
+- CI: sequential gate (`lint ∥ typecheck` → `test` → `pipeline` → `docs`). PRs gate at test only.
+- CI: `--cov-fail-under=55` quality gate.
+- `henon_order_n`: `fir_coeffs` is now keyword-only.
+- DCSK transmit functions share `_chaos_sequence` helper.
+- Adaptive Lyapunov early-stop extracted into `_adaptive_checkpoint`.
+- CLI `comm_*` modules share `compute_psds` and `save_or_show`.
+- `plotly` import is now lazy (`_get_go()`) — package imports without plotly installed.
+- `aggregate_beta_sweeps` / `plot_3d_beta_volume` removed from top-level `__init__`; import directly from `chaotic_pfc.analysis.sweep_plotting_3d`.
+- `pyproject.toml`: classifiers and Documentation URL added.
+- `analysis_summary.json` default path moved to `data/`.
+
+### Fixed
+- `PlotGridOptions.time_window` uses `default_factory` for Python 3.11 compatibility.
+- Duplicate `if:` conditions in CI pipeline and docs jobs.
+- CodeQL double-import warning in `test_cli_smoke.py`.
+
 ## [0.4.0] — 2026-05-04
 
 ### Package structure
