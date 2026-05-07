@@ -82,7 +82,7 @@ jobs:
   # Runs only after lint and typecheck both pass.
   # ───────────────────────────────────────────────────────────────────────
   test:
-    if: github.ref_type != "tag"
+    if: github.ref_type != 'tag'
     name: Unit tests (pytest ${{ matrix.python-version }})
     needs: [lint, typecheck]
     runs-on: ubuntu-latest
