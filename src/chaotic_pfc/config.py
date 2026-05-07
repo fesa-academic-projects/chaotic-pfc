@@ -261,6 +261,7 @@ class ExperimentConfig:
             n_ci=20,
             perturbation=self.lyapunov.perturbation,
             data_dir="data/lyapunov",
+            lang="pt",
         )
 
 

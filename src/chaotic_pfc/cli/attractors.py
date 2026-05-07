@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_save_display_flags, pick_backend
+from ._common import add_lang_flag, add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -17,6 +17,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument("--steps", type=int, default=50_000)
     add_save_display_flags(p)
+    add_lang_flag(p)
     p.set_defaults(_run=run)
 
 
@@ -26,10 +27,12 @@ def run(args: argparse.Namespace) -> int:
 
     import matplotlib.pyplot as plt
 
+    from chaotic_pfc._i18n import t
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
     from chaotic_pfc.dynamics.maps import henon_filtered, henon_generalised, henon_standard
     from chaotic_pfc.plotting.figures import plot_attractor
 
+    lang = args.lang
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     steps, fmt = args.steps, cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
@@ -45,7 +48,7 @@ def run(args: argparse.Namespace) -> int:
     f1 = plot_attractor(
         X,
         Y,
-        title=r"Atrator de Hénon Padrão ($a=1.4,\; b=0.3$)",
+        title=t("attractor.standard", lang=lang),
         xlabel=r"$x[n]$",
         ylabel=r"$y[n]$",
         save_path=_build_path(f"attractor_standard.{fmt}"),
@@ -55,7 +58,7 @@ def run(args: argparse.Namespace) -> int:
     f2 = plot_attractor(
         X,
         Y,
-        title=r"Atrator de Hénon Generalizado ($\alpha=1.4,\; \beta=0.3$)",
+        title=t("attractor.generalised", lang=lang),
         xlabel=r"$x_1[n]$",
         ylabel=r"$x_2[n]$",
         save_path=_build_path(f"attractor_generalised.{fmt}"),
@@ -65,7 +68,7 @@ def run(args: argparse.Namespace) -> int:
     f3 = plot_attractor(
         X,
         Y,
-        title=r"Atrator de Hénon Filtrado ($c_0=1,\; c_1=0$)",
+        title=t("attractor.filtered", lang=lang),
         xlabel=r"$x_1[n]$",
         ylabel=r"$x_2[n]$",
         save_path=_build_path(f"attractor_filtered.{fmt}"),

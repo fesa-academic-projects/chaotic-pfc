@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_save_display_flags, pick_backend
+from ._common import add_lang_flag, add_save_display_flags, pick_backend
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -28,6 +28,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--snr-max", type=float, default=28)
     p.add_argument("--snr-step", type=float, default=2)
     add_save_display_flags(p)
+    add_lang_flag(p)
     p.set_defaults(_run=run)
 
 
@@ -38,6 +39,7 @@ def run(args: argparse.Namespace) -> int:
     import matplotlib.pyplot as plt
     import numpy as np
 
+    from chaotic_pfc._i18n import t
     from chaotic_pfc.comms.channel import ideal_channel
     from chaotic_pfc.comms.dcsk import (
         awgn,
@@ -117,22 +119,34 @@ def run(args: argparse.Namespace) -> int:
         "s--",
         color="gray",
         lw=1.6,
-        label="Pecora-Carroll (sincronização)",
+        label=t("dcsk.pecora_carroll", lang=args.lang),
         ms=6,
     )
     ax.semilogy(
-        snrs_dcsk, _safe(bers_dcsk), "o-", color="steelblue", lw=1.8, label="DCSK clássico", ms=6
+        snrs_dcsk,
+        _safe(bers_dcsk),
+        "o-",
+        color="steelblue",
+        lw=1.8,
+        label=t("dcsk.classic", lang=args.lang),
+        ms=6,
     )
     ax.semilogy(
-        snrs_ef, _safe(bers_ef), "D-", color="darkorange", lw=1.8, label="EF-DCSK (eficiente)", ms=6
+        snrs_ef,
+        _safe(bers_ef),
+        "D-",
+        color="darkorange",
+        lw=1.8,
+        label=t("dcsk.efficient", lang=args.lang),
+        ms=6,
     )
 
-    ax.axhline(0.01, color="gray", ls=":", lw=1, label="BER = 1%")
-    ax.axhline(0.50, color="red", ls="--", lw=1.2, label="BER = 50% (colapso)")
+    ax.axhline(0.01, color="gray", ls=":", lw=1, label=t("dcsk.ber_1pct", lang=args.lang))
+    ax.axhline(0.50, color="red", ls="--", lw=1.2, label=t("dcsk.ber_50pct", lang=args.lang))
     ax.set_xlabel("SNR (dB)")
     ax.set_ylabel("BER")
     ax.set_title(
-        "Comparação de Esquemas de Comunicação Caótica\n"
+        t("dcsk.comparison_title", lang=args.lang) + "\n"
         f"Hénon FIR AWGN  (β={args.beta}, {args.n_taps} taps, ωc={args.wc})"
     )
     ax.set_ylim(5e-4, 0.7)

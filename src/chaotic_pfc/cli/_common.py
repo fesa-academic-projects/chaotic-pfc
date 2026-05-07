@@ -44,6 +44,16 @@ def add_save_display_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--no-display", dest="no_display", action="store_true")
 
 
+def add_lang_flag(parser: argparse.ArgumentParser) -> None:
+    """Register ``--lang`` flag for figure language (pt or en)."""
+    parser.add_argument(
+        "--lang",
+        choices=["pt", "en"],
+        default="pt",
+        help="Language for figure titles and labels (default: pt)",
+    )
+
+
 def compute_psds(m, s, r, m_hat, sp_cfg):
     """Compute normalised PSDs for message, carrier, received, and recovered signals.
 

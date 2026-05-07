@@ -259,7 +259,7 @@ def plot_difficulty_map(
     spectrum estimate converged quickly (strongly chaotic or strongly
     stable points), high values mean the running estimate stayed within
     the convergence tolerance only after many iterations (typically
-    fronteira points where |λ_max| ≈ 0). Diverged grid points are shown
+    fronteira points where \\|λ_max\\| ≈ 0). Diverged grid points are shown
     in the same light grey used for unbounded orbits in the
     classification figures, so the two layers can be visually overlaid.
 

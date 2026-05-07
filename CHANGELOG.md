@@ -4,7 +4,51 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
-## [0.5.0] — 2026-05-05
+### Added
+- `docs/background.rst` expanded with full theoretical foundations from the PFC article:
+  physical-layer security, FIR filtering, Lyapunov exponents, Pecora-Carroll synchronisation,
+  DCSK/EF-DCSK/CSK modulation, BER/SNR metrics, parameter dependence, and 14 references.
+- `docs/internals.rst` — Numba kernel architecture, MGS, adaptive early-stop, FIR bank
+  precomputation, fixed-point stability, signal generators, PSD estimation, channel models.
+- `docs/development.rst` — environment setup, tooling, testing, CI/CD, documentation build
+  workflow (including i18n gettext/update-po), and code style conventions.
+- `docs/contributing.rst` — philosophy, contribution workflow, commit format, docstring
+  conventions, public API rules, and pull request checklist.
+- `docs/architecture.rst` expanded with full package tree, communication pipeline diagram,
+  parameter sweep pipeline, 7 design decisions, and subpackage responsibility table.
+- `docs/usage.rst` expanded with index, all CLI subcommands with examples, adaptive sweep
+  options, and language support section.
+- Bilingual translations (pt_BR) for all hand-written documentation pages — index,
+  background, architecture, usage, internals, development, and contributing.
+- Multi-format documentation downloads: PDF + EPUB + HTMLZip (en and pt_BR).
+- `html_baseurl` and improved LaTeX/EPUB/math configuration in `docs/conf.py`.
+
+### Changed
+- `docs/conf.py` refactored: full i18n/l10n, clean Furo sidebar, intersphinx, copybutton.
+- `docs/Makefile` rewritten with `html`, `html-pt`, `html-all`, `pdf`, `pdf-pt`, `epub`,
+  `epub-pt`, `gettext`, and `update-po` targets — output under `_build/html/en/` and
+  `_build/html/pt_BR/`.
+- Root `Makefile` updated with `docs-all`, `docs-pdf`, `docs-pdf-pt`, `docs-epub`,
+  `docs-epub-pt` targets.
+- `.readthedocs.yaml`: added `texlive` apt packages, PDF + EPUB build commands, and
+  `htmlzip` format.
+- `.gitignore`: added `_build/`, `_readthedocs/`, and `*.mo` patterns.
+- `pyproject.toml` docs extra: removed unused `sphinxcontrib-bibtex`.
+- All `.po` headers updated: version 0.6.0, proper author/translator metadata.
+- API reference `.po` files removed — auto-generated docstrings stay in English.
+- Version consolidated to 0.6.0 across `pyproject.toml`, `_version.py`, `conf.py`, and
+  `CHANGELOG.md`.
+
+### Fixed
+- Duplicate `CONTRIBUTING.md` entry in v0.6.0 changelog.
+- Broken `spectral.py` entry in `api/index.po` (Sphinx warning captured as msgid).
+- Missing LaTeX/PDF build configuration for ReadTheDocs.
+- `run_all` not passing `lang` attribute to experiment subcommands (`AttributeError`).
+- RST substitution warnings in docstrings (`|x|` → `\\|x\\|` in sweep_plotting, dcsk,
+  run_all; title underline in spectral).
+- Placeholder `FIRST AUTHOR <EMAIL@ADDRESS>` in `index_body.po` and `sphinx.po`.
+
+## [0.5.0] — 2026-05-07
 
 ### Added
 - Numba made optional via `_compat.py` fallback layer (`[fast]` extra, `pip install chaotic-pfc[fast]`).

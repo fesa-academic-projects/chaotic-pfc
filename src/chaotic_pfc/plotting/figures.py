@@ -19,6 +19,8 @@ from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from scipy.signal import freqz
 
+from chaotic_pfc._i18n import t
+
 # ── Global RC params for LaTeX-like rendering ───────────────────────────────
 
 
@@ -165,7 +167,7 @@ def plot_sensitivity(
     ax.set_xlabel(r"$n$", fontsize=12)
     ax.set_ylabel(r"$x[n]$", fontsize=12)
     ax.set_title(
-        r"Sensibilidade às Condições Iniciais — Mapa de Hénon",
+        t("sensitivity.title"),
         fontsize=13,
     )
     ax.legend(fontsize=11, framealpha=0.9)
@@ -314,8 +316,8 @@ def plot_comm_grid(
             ax_f.legend(fontsize=9, loc="upper right")
 
     # Column titles
-    axes[0, 0].set_title(r"Domínio do Tempo", fontsize=12)
-    axes[0, 1].set_title(r"PSD Normalizada (Welch)", fontsize=12)
+    axes[0, 0].set_title(t("comm.time_domain"), fontsize=12)
+    axes[0, 1].set_title(t("comm.psd"), fontsize=12)
 
     fig.tight_layout()
     _save(fig, save_path)

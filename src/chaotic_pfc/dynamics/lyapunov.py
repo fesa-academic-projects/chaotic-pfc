@@ -354,7 +354,7 @@ def lyapunov_henon2d(
 #   4. Report per-IC exponents + λ_max, plus aggregated statistics.
 #
 # The 2-D variant uses the positive fixed point x_f^+ as the centre of
-# the sampling box (matching the convention used in the TCC scripts).
+# the sampling box (matching the convention used in the codebase scripts).
 
 
 @dataclass
@@ -451,7 +451,7 @@ def _sample_ics(
 ) -> NDArray:
     """Draw ``n_initial`` ICs uniformly in ``[fp·(1−p), fp·(1+p)]``.
 
-    The sampling formula matches the TCC experimental protocol exactly:
+    The sampling formula matches the experimental protocol exactly:
     ``np.random.uniform(low=fp*(1-p), high=fp*(1+p), size=(n_initial, dim))``.
     It uses the legacy ``np.random.seed`` + ``np.random.uniform`` API so
     that results are byte-for-byte reproducible against the original
@@ -570,7 +570,7 @@ def lyapunov_max_ensemble(
     )
 
 
-# ── 2-D ensemble (positive fixed point, matching the TCC script) ──────────
+# ── 2-D ensemble (positive fixed point) ──
 
 
 def lyapunov_henon2d_ensemble(

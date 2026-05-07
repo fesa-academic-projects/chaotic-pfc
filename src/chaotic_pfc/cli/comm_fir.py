@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_save_display_flags, compute_psds, pick_backend, save_or_show
+from ._common import add_lang_flag, add_save_display_flags, compute_psds, pick_backend, save_or_show
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -23,6 +23,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--cutoff", type=float, default=cfg.channel.cutoff)
     p.add_argument("--taps", type=int, default=cfg.channel.num_taps)
     add_save_display_flags(p)
+    add_lang_flag(p)
     p.set_defaults(_run=run)
 
 
@@ -32,6 +33,7 @@ def run(args: argparse.Namespace) -> int:
 
     import numpy as np
 
+    from chaotic_pfc._i18n import t
     from chaotic_pfc.comms.channel import fir_channel
     from chaotic_pfc.comms.receiver import receive
     from chaotic_pfc.comms.transmitter import transmit
@@ -80,8 +82,12 @@ def run(args: argparse.Namespace) -> int:
         psd_mhat,
         time_window=win,
         suptitle=(
-            r"Comunicacao Caotica — Canal FIR"
-            r"  ($\omega_c/\pi=" + f"{args.cutoff}" + r",\; N_{{taps}}=" + f"{args.taps}" + r"$)"
+            t("comm.fir", lang=args.lang)
+            + r"  ($\omega_c/\pi="
+            + f"{args.cutoff}"
+            + r",\; N_{{taps}}="
+            + f"{args.taps}"
+            + r"$)"
         ),
         y_lim_mhat=y_lim_mhat,
         h_channel=h,

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_save_display_flags, compute_psds, pick_backend, save_or_show
+from ._common import add_lang_flag, add_save_display_flags, compute_psds, pick_backend, save_or_show
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -21,6 +21,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--mu", type=float, default=cfg.comm.mu)
     p.add_argument("--period", type=int, default=cfg.comm.message_period)
     add_save_display_flags(p)
+    add_lang_flag(p)
     p.set_defaults(_run=run)
 
 
@@ -30,6 +31,7 @@ def run(args: argparse.Namespace) -> int:
 
     import numpy as np
 
+    from chaotic_pfc._i18n import t
     from chaotic_pfc.comms.channel import fir_channel
     from chaotic_pfc.comms.receiver import receive_order_n
     from chaotic_pfc.comms.transmitter import transmit_order_n
@@ -84,8 +86,12 @@ def run(args: argparse.Namespace) -> int:
         psd_mhat,
         time_window=win,
         suptitle=(
-            r"Henon de Ordem $N$ — Canal FIR"
-            r"  ($N_c=" + str(Nc) + r",\; \mu=" + str(args.mu) + r"$)"
+            t("comm.order_n", lang=args.lang)
+            + r"  ($N_c="
+            + str(Nc)
+            + r",\; \mu="
+            + str(args.mu)
+            + r"$)"
         ),
         y_lim_mhat=y_lim_mhat,
         h_channel=h,

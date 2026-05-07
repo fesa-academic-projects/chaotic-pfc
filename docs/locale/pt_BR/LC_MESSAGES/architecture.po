@@ -1,0 +1,359 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-08 00:42-0300\n"
+"PO-Revision-Date: 2026-05-07 18:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../architecture.rst:4
+msgid "Architecture"
+msgstr "Arquitetura"
+
+#: ../../architecture.rst:6
+msgid ""
+"This page describes how the subpackages of ``chaotic-pfc`` connect and "
+"how data flows through the system — from chaotic signal generation to "
+"statistical analysis of parameter sweeps."
+msgstr ""
+"Esta página descreve como os subpacotes do ``chaotic-pfc`` se conectam e "
+"como os dados fluem através do sistema — da geração de sinais caóticos "
+"até a análise estatística das varreduras de parâmetros."
+
+#: ../../architecture.rst:11
+msgid "Package layout"
+msgstr "Estrutura do Pacote"
+
+#: ../../architecture.rst:57
+msgid "Data flow"
+msgstr "Fluxo de Dados"
+
+#: ../../architecture.rst:60
+msgid "Communication pipeline"
+msgstr "Pipeline de Comunicação"
+
+#: ../../architecture.rst:62
+msgid "The full end-to-end communication chain:"
+msgstr "A cadeia completa de comunicação ponta a ponta:"
+
+#: ../../architecture.rst:98
+#, python-brace-format
+msgid ""
+"The transmitter embeds a binary message into the chaotic carrier via "
+"Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \\mu \\cdot m[n]`. The "
+"channel applies distortion (ideal pass-through, FIR band-limiting, AWGN, "
+"multipath, or composite urban model). The receiver synchronises to the "
+"carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx "
+"m[n]`."
+msgstr ""
+"O transmissor incorpora uma mensagem binária na portadora caótica via "
+"modulação Pecora-Carroll: :math:`s[n] = x_1[n] + \\mu \\cdot m[n]`. O "
+"canal aplica distorção (passagem ideal, limitação de banda FIR, AWGN, "
+"multipercurso ou modelo urbano composto). O receptor sincroniza com a "
+"portadora e recupera a estimativa da mensagem :math:`\\hat{m}[n] \\approx"
+" m[n]`."
+
+#: ../../architecture.rst:106
+msgid "Parameter sweep pipeline"
+msgstr "Pipeline de varredura de parâmetros"
+
+#: ../../architecture.rst:108
+msgid ""
+"The sweep framework is the computational core of the project. Its design "
+"balances raw throughput, deterministic reproducibility, and optional "
+"Numba dependency:"
+msgstr ""
+"O framework de varredura é o núcleo computacional do projeto. Seu design "
+"equilibra vazão bruta, reprodutibilidade determinística e dependência "
+"opcional de Numba:"
+
+#: ../../architecture.rst:131
+msgid ""
+"Every hot loop is Numba-JIT compiled. The outer loop is a single "
+"``prange`` where tasks are **interleaved** (not chunked) via the permuted"
+" task order, balancing thread load across the heterogeneous (high-cutoff "
+"= many-tap = slow, low-cutoff = few-tap = fast) grid points."
+msgstr ""
+"Todo laço crítico é compilado via Numba-JIT. O laço externo é um único "
+"``prange`` onde as tarefas são **intercaladas** (não particionadas em "
+"blocos) via ordem de tarefas permutada, balanceando a carga entre threads"
+" ao longo dos pontos heterogêneos da grade (corte alto = muitos taps = "
+"lento, corte baixo = poucos taps = rápido)."
+
+#: ../../architecture.rst:138
+msgid "Key design decisions"
+msgstr "Decisões de Design"
+
+#: ../../architecture.rst:140
+msgid ""
+"**Numba as an optional accelerator.** The package imports and runs "
+"correctly without Numba installed. All JIT-compiled kernels fall back to "
+"pure Python via :mod:`chaotic_pfc._compat` — a thin compatibility layer "
+"that no-ops ``njit``, aliases ``prange`` to ``range``, and returns ``1`` "
+"for ``get_num_threads()``. Install the ``[fast]`` extra for 20–50× "
+"speedup on the sweep."
+msgstr ""
+"**Numba como acelerador opcional.** O pacote importa e executa "
+"corretamente sem o Numba instalado. Todos os kernels compilados via JIT "
+"fazem fallback para Python puro via :mod:`chaotic_pfc._compat` — uma fina"
+" camada de compatibilidade que transforma ``njit`` em no-op, mapeia "
+"``prange`` para ``range`` e retorna ``1`` para ``get_num_threads()``. "
+"Instale o extra ``[fast]`` para um ganho de 20–50× na varredura."
+
+#: ../../architecture.rst:147
+msgid ""
+"**Deterministic reproducibility.** Perturbation vectors are pre-generated"
+" on the Python side using ``np.random.seed`` and passed as NumPy arrays "
+"into the Numba kernel. This is necessary because Numba's per-thread RNG "
+"does not honour the global seed. Every run with the same seed produces "
+"bit-exact identical results."
+msgstr ""
+"**Reprodutibilidade determinística.** Vetores de perturbação são "
+"pré-gerados no lado Python usando ``np.random.seed`` e passados como "
+"arrays NumPy para o kernel Numba. Isso é necessário porque o RNG por "
+"thread do Numba não respeita a semente global. Cada execução com a mesma "
+"semente produz resultados bit a bit idênticos."
+
+#: ../../architecture.rst:153
+msgid ""
+"**Lazy optional imports.** 3-D visualisation requires ``plotly`` "
+"installed via the ``[viz3d]`` extra. The import is deferred until "
+":mod:`chaotic_pfc.analysis.sweep_plotting_3d` is actually used, so "
+"``import chaotic_pfc`` always succeeds. The same pattern applies to "
+":samp:`scipy.signal.firwin` imports within dataclass methods."
+msgstr ""
+"**Importações opcionais tardias.** A visualização 3-D requer ``plotly`` "
+"instalado via o extra ``[viz3d]``. A importação é adiada até que "
+":mod:`chaotic_pfc.analysis.sweep_plotting_3d` seja de fato utilizado, de "
+"modo que ``import chaotic_pfc`` sempre funcione. O mesmo padrão se aplica"
+" às importações de :samp:`scipy.signal.firwin` dentro dos métodos das "
+"dataclasses."
+
+#: ../../architecture.rst:159
+msgid ""
+"**Structural protocols.** :mod:`chaotic_pfc.comms.protocols` defines "
+"``typing.Protocol`` classes — ``Transmitter``, ``Channel``, ``Receiver`` "
+"— as structural contracts. Concrete implementations (``transmit``, "
+"``ideal_channel``, ``receive``, etc.) satisfy these protocols by duck "
+"typing. This provides mypy-level documentation of the communication "
+"pipeline's interface without runtime overhead."
+msgstr ""
+"**Protocolos estruturais.** :mod:`chaotic_pfc.comms.protocols` define "
+"classes ``typing.Protocol`` — ``Transmitter``, ``Channel``, ``Receiver`` "
+"— como contratos estruturais. Implementações concretas (``transmit``, "
+"``ideal_channel``, ``receive``, etc.) satisfazem esses protocolos por "
+"duck typing. Isso fornece documentação em nível mypy da interface do "
+"pipeline de comunicação sem custo em tempo de execução."
+
+#: ../../architecture.rst:166
+msgid ""
+"**Shallow config hierarchy.** All defaults reside in "
+":mod:`chaotic_pfc.config` as frozen dataclasses. The hierarchy is "
+"intentionally shallow — every sub-config has only primitive fields or "
+"nested dataclasses of primitives — enabling trivial copying "
+"(``dataclasses.replace``), test isolation, and serialisation "
+"(``dataclasses.asdict``)."
+msgstr ""
+"**Hierarquia de configuração rasa.** Todos os valores padrão residem em "
+":mod:`chaotic_pfc.config` como dataclasses congeladas. A hierarquia é "
+"intencionalmente rasa — cada sub-configuração possui apenas campos "
+"primitivos ou dataclasses aninhadas de primitivos — permitindo cópia "
+"trivial (``dataclasses.replace``), isolamento para testes e serialização "
+"(``dataclasses.asdict``)."
+
+#: ../../architecture.rst:173
+#, python-brace-format
+msgid ""
+"**Single ``prange`` with load balancing.** The sweep kernel uses a single"
+" parallel region (not nested parallelism) with a permuted task order. "
+"Tasks with different filter orders have vastly different per-iteration "
+"costs (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)`), so "
+"simple block partitioning would leave threads idle. Interleaving ensures "
+"that each thread sees a balanced mix of light and heavy tasks."
+msgstr ""
+"**``prange`` único com balanceamento de carga.** O kernel de varredura "
+"utiliza uma única região paralela (não paralelismo aninhado) com ordem de"
+" tarefas permutada. Tarefas com diferentes ordens de filtro têm custos "
+"por iteração muito diferentes (o laço interno MGS escala como "
+":math:`\\mathcal{O}(N_s^3)`), portanto o particionamento simples em "
+"blocos deixaria threads ociosas. O intercalamento garante que cada thread"
+" receba uma mistura balanceada de tarefas leves e pesadas."
+
+#: ../../architecture.rst:181
+#, python-brace-format, python-format
+msgid ""
+"**Adaptive early-stop.** The Lyapunov estimator implements an optional "
+"early-stop criterion: if :math:`\\lambda_{\\max}` stabilises within a "
+"specified tolerance for a streak of consecutive checkpoints, the "
+"remaining iterations are skipped. This provides 3–4× speedup over fixed-"
+"iteration computation with negligible accuracy loss (< 0.1% in "
+":math:`\\lambda_{\\max}`)."
+msgstr ""
+"**Parada antecipada adaptativa.** O estimador de Lyapunov implementa um "
+"critério opcional de parada antecipada: se :math:`\\lambda_{\\max}` se "
+"estabilizar dentro de uma tolerância especificada por uma sequência de "
+"pontos de verificação consecutivos, as iterações restantes são puladas. "
+"Isso proporciona um ganho de 3–4× em relação ao cálculo com iterações "
+"fixas, com perda desprezível de precisão (< 0,1% em "
+":math:`\\lambda_{\\max}`)."
+
+#: ../../architecture.rst:189
+msgid "Configuration"
+msgstr "Configuração"
+
+#: ../../architecture.rst:191
+msgid ""
+"All default values live in :mod:`chaotic_pfc.config` as frozen "
+"dataclasses:"
+msgstr ""
+"Todos os valores padrão residem em :mod:`chaotic_pfc.config` como "
+"dataclasses congeladas:"
+
+#: ../../architecture.rst:214
+msgid ""
+"Experiment scripts import ``DEFAULT_CONFIG`` and override only the fields"
+" exposed as CLI flags. The "
+":meth:`~chaotic_pfc.config.ExperimentConfig.to_namespace` method "
+"generates an ``argparse.Namespace`` for ``run all``, forwarding a single "
+"namespace to all sub-experiments."
+msgstr ""
+"Scripts de experimento importam ``DEFAULT_CONFIG`` e sobrescrevem apenas "
+"os campos expostos como flags da CLI. O método "
+":meth:`~chaotic_pfc.config.ExperimentConfig.to_namespace` gera um "
+"``argparse.Namespace`` para ``run all``, encaminhando um único namespace "
+"para todos os sub-experimentos."
+
+#: ../../architecture.rst:220
+msgid "Subpackages and their responsibilities"
+msgstr "Subpacotes e suas responsabilidades"
+
+#: ../../architecture.rst:226
+msgid "Subpackage"
+msgstr "Subpacote"
+
+#: ../../architecture.rst:227
+msgid "Responsibility"
+msgstr "Responsabilidade"
+
+#: ../../architecture.rst:228
+msgid "``dynamics``"
+msgstr "``dynamics``"
+
+#: ../../architecture.rst:229
+msgid ""
+"Hénon map variants, Lyapunov exponents (2-D and 4-D), PSD estimation "
+"(Welch), binary/sinusoidal message generators"
+msgstr ""
+"Variantes do mapa de Hénon, expoentes de Lyapunov (2-D e 4-D), estimação "
+"de DEP (Welch), geradores de mensagem binária/senoidal"
+
+#: ../../architecture.rst:231
+msgid "``comms``"
+msgstr "``comms``"
+
+#: ../../architecture.rst:232
+msgid ""
+"Chaotic modulation (transmitter), synchronised demodulation (receiver), "
+"channel models (ideal, FIR low-pass), DCSK/EF-DCSK with AWGN and "
+"multipath"
+msgstr ""
+"Modulação caótica (transmissor), demodulação sincronizada (receptor), "
+"modelos de canal (ideal, FIR passa-baixas), DCSK/EF-DCSK com AWGN e "
+"multipercurso"
+
+#: ../../architecture.rst:235
+msgid "``analysis``"
+msgstr "``analysis``"
+
+#: ../../architecture.rst:236
+msgid ""
+"Parameter sweep orchestration, Numba JIT kernels, statistical post-"
+"processing (ranking, correlation, bootstrap CI), 2-D/3-D plotting"
+msgstr ""
+"Orquestração de varredura de parâmetros, kernels Numba JIT, pós-"
+"processamento estatístico (ranqueamento, correlação, IC bootstrap), "
+"plotagem 2-D/3-D"
+
+#: ../../architecture.rst:239
+msgid "``plotting``"
+msgstr "``plotting``"
+
+#: ../../architecture.rst:240
+msgid ""
+"Publication-quality SVG figures with STIX fonts: attractor portraits, "
+"SDIC overlays, 4×2 communication grids"
+msgstr ""
+"Figuras SVG com qualidade de publicação usando fontes STIX: retratos de "
+"atratores, sobreposições SDIC, grades de comunicação 4×2"
+
+#: ../../architecture.rst:242
+msgid "``cli``"
+msgstr "``cli``"
+
+#: ../../architecture.rst:243
+msgid ""
+"Unified argparse-based CLI with hierarchical subcommands, shared helpers "
+"(PSD computation, save/show logic)"
+msgstr ""
+"CLI unificada baseada em argparse com subcomandos hierárquicos, funções "
+"auxiliares compartilhadas (cálculo de DEP, lógica de salvar/exibir)"
+
+#: ../../architecture.rst:245
+msgid "``config``"
+msgstr "``config``"
+
+#: ../../architecture.rst:246
+msgid "Centralised frozen-dataclass configuration, default singleton"
+msgstr "Configuração centralizada em dataclasses congeladas, singleton padrão"
+
+#~ msgid ""
+#~ "All hot loops are Numba-JIT "
+#~ "compiled. The outer loop is a "
+#~ "single ``prange`` where tasks are "
+#~ "interleaved to balance thread load."
+#~ msgstr ""
+#~ "Todos os laços críticos são compilados"
+#~ " via Numba-JIT. O laço externo "
+#~ "é um único ``prange`` onde as "
+#~ "tarefas são intercaladas para balancear "
+#~ "a carga entre threads."
+
+#~ msgid ""
+#~ "**Lazy plotly import.** 3-D visualisation "
+#~ "requires ``plotly`` installed via the "
+#~ "``[viz3d]`` extra. Importing ``chaotic_pfc`` "
+#~ "must succeed without it."
+#~ msgstr ""
+#~ "**Importação tardia do plotly.** A "
+#~ "visualização 3-D requer ``plotly`` instalado"
+#~ " via o extra ``[viz3d]``. A "
+#~ "importação de ``chaotic_pfc`` deve funcionar"
+#~ " sem ele."
+
+#~ msgid ""
+#~ "**Protocols.** :mod:`chaotic_pfc.comms.protocols` defines"
+#~ " structural contracts (``Transmitter``, "
+#~ "``Channel``, ``Receiver``) that concrete "
+#~ "implementations satisfy."
+#~ msgstr ""
+#~ "**Protocolos.** :mod:`chaotic_pfc.comms.protocols` definem"
+#~ " contratos estruturais (``Transmitter``, "
+#~ "``Channel``, ``Receiver``) que as "
+#~ "implementações concretas satisfazem."
+
+#~ msgid "Table of Contents"
+#~ msgstr "Índice"
+

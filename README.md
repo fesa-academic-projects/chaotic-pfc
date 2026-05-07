@@ -31,7 +31,8 @@ state of a Hénon map; the receiver recovers the message via chaos
 synchronisation. The pipeline also includes a full numerical study of the
 Lyapunov exponents of the Hénon map and of higher-order variants with
 internal FIR filters, including a 2-D parameter sweep over filter order and
-cutoff frequency.
+cutoff frequency — classifying regions of the parameter space as chaotic,
+periodic, or divergent (figure above).
 
 The project is organised as an installable Python package (`chaotic_pfc`)
 with numbered scripts that reproduce each experiment. The heavy Lyapunov
@@ -187,13 +188,21 @@ make check-all     # lint + format + typecheck + fast tests
 | `make format-check` | Check formatting without changing files |
 | `make typecheck` | mypy static type checker |
 | `make check-all` | lint + format-check + typecheck + test-fast |
-| `make docs` | Build Sphinx HTML |
+| `make docs` | Build Sphinx HTML documentation (English) |
+| `make docs-pt` | Build Sphinx HTML documentation (Portuguese) |
+| `make docs-pdf` | Build Sphinx PDF documentation |
+| `make docs-epub` | Build Sphinx EPUB documentation |
 | `make benchmark` | Performance benchmarks |
 | `make pre-commit` | Run all pre-commit hooks |
 | `make clean` | Remove cache and build artifacts |
 | `make help` | Show all targets |
 
 ## Documentation
+
+Full documentation is hosted at
+[chaotic-pfc.readthedocs.io](https://chaotic-pfc.readthedocs.io/)
+in English and Portuguese (Brasil), with downloadable PDF, EPUB, and
+HTMLZip formats available.
 
 Build the HTML documentation locally:
 

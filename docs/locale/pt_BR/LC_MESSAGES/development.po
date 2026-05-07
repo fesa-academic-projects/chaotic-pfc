@@ -1,0 +1,331 @@
+# Portuguese (Brazil) translations for chaotic-pfc.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-08 01:10-0300\n"
+"PO-Revision-Date: 2026-05-08 00:12-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../development.rst:4
+msgid "Development"
+msgstr "Desenvolvimento"
+
+#: ../../development.rst:6
+msgid ""
+"This page covers the development environment setup, tooling, and workflow"
+" for contributing to ``chaotic-pfc``."
+msgstr ""
+"Esta página aborda a configuração do ambiente de desenvolvimento, "
+"ferramentas e fluxo de trabalho para contribuir com o ``chaotic-pfc``."
+
+#: ../../development.rst:10
+msgid "Environment setup"
+msgstr "Configuração do ambiente"
+
+#: ../../development.rst:12
+msgid "Requirements:"
+msgstr "Requisitos:"
+
+#: ../../development.rst:14
+msgid "**Python 3.11+** (3.11, 3.12, 3.13 tested in CI)."
+msgstr "**Python 3.11+** (3.11, 3.12, 3.13 testados no CI)."
+
+#: ../../development.rst:15
+msgid "**Git** for version control."
+msgstr "**Git** para controle de versão."
+
+#: ../../development.rst:16
+msgid "Optional: **Numba** 0.59+ for JIT acceleration (via ``[fast]`` extra)."
+msgstr "Opcional: **Numba** 0.59+ para aceleração JIT (via extra ``[fast]``)."
+
+#: ../../development.rst:38
+msgid "Project structure"
+msgstr "Estrutura do projeto"
+
+#: ../../development.rst:55
+msgid "Tooling"
+msgstr "Ferramentas"
+
+#: ../../development.rst:57
+msgid "Development tools"
+msgstr "Ferramentas de desenvolvimento"
+
+#: ../../development.rst:61
+msgid "Tool"
+msgstr "Ferramenta"
+
+#: ../../development.rst:62
+msgid "Purpose"
+msgstr "Propósito"
+
+#: ../../development.rst:63
+msgid "Command"
+msgstr "Comando"
+
+#: ../../development.rst:64
+msgid "**pytest**"
+msgstr "**pytest**"
+
+#: ../../development.rst:65
+msgid "Test runner"
+msgstr "Executor de testes"
+
+#: ../../development.rst:66
+msgid "``make test`` or ``pytest``"
+msgstr "``make test`` ou ``pytest``"
+
+#: ../../development.rst:67
+msgid "**ruff**"
+msgstr "**ruff**"
+
+#: ../../development.rst:68
+msgid "Linting + formatting"
+msgstr "Linting + formatação"
+
+#: ../../development.rst:69
+msgid "``make lint`` / ``make format``"
+msgstr "``make lint`` / ``make format``"
+
+#: ../../development.rst:70
+msgid "**mypy**"
+msgstr "**mypy**"
+
+#: ../../development.rst:71
+msgid "Static type checking"
+msgstr "Verificação estática de tipos"
+
+#: ../../development.rst:72
+msgid "``make typecheck``"
+msgstr "``make typecheck``"
+
+#: ../../development.rst:73
+msgid "**pre-commit**"
+msgstr "**pre-commit**"
+
+#: ../../development.rst:74
+msgid "Git hook automation"
+msgstr "Automação de hooks Git"
+
+#: ../../development.rst:75
+msgid "``pre-commit run --all-files``"
+msgstr "``pre-commit run --all-files``"
+
+#: ../../development.rst:76
+msgid "**coverage**"
+msgstr "**coverage**"
+
+#: ../../development.rst:77
+msgid "Test coverage reports"
+msgstr "Relatórios de cobertura de testes"
+
+#: ../../development.rst:78
+msgid "``pytest --cov=chaotic_pfc``"
+msgstr "``pytest --cov=chaotic_pfc``"
+
+#: ../../development.rst:95
+msgid "Testing"
+msgstr "Testes"
+
+#: ../../development.rst:97
+msgid ""
+"Tests live under ``tests/`` and mirror the source structure. Every source"
+" module has a corresponding test file."
+msgstr ""
+"Os testes residem em ``tests/`` e espelham a estrutura do código-fonte. "
+"Cada módulo fonte possui um arquivo de teste correspondente."
+
+#: ../../development.rst:117
+msgid "**Test categories:**"
+msgstr "**Categorias de teste:**"
+
+#: ../../development.rst:119
+msgid "**Unit tests** — verify individual functions with known inputs/outputs."
+msgstr ""
+"**Testes unitários** — verificam funções individuais com entradas/saídas "
+"conhecidas."
+
+#: ../../development.rst:120
+msgid "**Integration tests** — test the communication pipeline end-to-end."
+msgstr "**Testes de integração** — testam o pipeline de comunicação ponta a ponta."
+
+#: ../../development.rst:121
+msgid "**Smoke tests** — run the full CLI with ``--quick-sweep``."
+msgstr "**Testes de fumaça** — executam a CLI completa com ``--quick-sweep``."
+
+#: ../../development.rst:122
+msgid ""
+"**Slow tests** — marked with ``@pytest.mark.slow``, run full-resolution "
+"sweeps. Skipped by ``make test-fast``."
+msgstr ""
+"**Testes lentos** — marcados com ``@pytest.mark.slow``, executam "
+"varreduras de resolução completa. Ignorados por ``make test-fast``."
+
+#: ../../development.rst:125
+msgid ""
+"Numba-compiled kernels are tested directly (not mocked) to ensure bit-"
+"exact equivalence between JIT and pure-Python fallback paths."
+msgstr ""
+"Kernels compilados com Numba são testados diretamente (sem mock) para "
+"garantir equivalência bit a bit entre os caminhos JIT e fallback em "
+"Python puro."
+
+#: ../../development.rst:129
+msgid "CI/CD"
+msgstr "CI/CD"
+
+#: ../../development.rst:131
+msgid "GitHub Actions runs on every push and pull request:"
+msgstr "GitHub Actions é executado a cada push e pull request:"
+
+#: ../../development.rst:133
+msgid "**Lint** — ``ruff check`` on the entire codebase."
+msgstr "**Lint** — ``ruff check`` em toda a base de código."
+
+#: ../../development.rst:134
+msgid "**Format check** — ``ruff format --check``."
+msgstr "**Verificação de formatação** — ``ruff format --check``."
+
+#: ../../development.rst:135
+msgid "**Type check** — ``mypy`` on ``src/chaotic_pfc``."
+msgstr "**Verificação de tipos** — ``mypy`` em ``src/chaotic_pfc``."
+
+#: ../../development.rst:136
+msgid "**Tests** — ``pytest`` (full suite) with ``--cov``."
+msgstr "**Testes** — ``pytest`` (suíte completa) com ``--cov``."
+
+#: ../../development.rst:137
+msgid ""
+"**Pipeline smoke test** — ``chaotic-pfc run all --no-display --quick-"
+"sweep``."
+msgstr ""
+"**Teste de fumaça do pipeline** — ``chaotic-pfc run all --no-display "
+"--quick-sweep``."
+
+#: ../../development.rst:138
+msgid "**Codecov upload** — coverage report to Codecov."
+msgstr "**Upload Codecov** — relatório de cobertura para Codecov."
+
+#: ../../development.rst:140
+msgid ""
+"On ``git tag v*`` push, an additional **release** job builds and "
+"publishes the wheel and sdist to TestPyPI via OIDC trusted publishing."
+msgstr ""
+"No push ``git tag v*``, um job adicional de **release** constrói e "
+"publica o wheel e sdist no TestPyPI via publicação confiável OIDC."
+
+#: ../../development.rst:144
+msgid "Documentation"
+msgstr "Documentação"
+
+#: ../../development.rst:146
+msgid ""
+"The documentation is built with Sphinx and hosted on Read the Docs. "
+"Output goes to ``docs/_build/html/`` with each language in its own "
+"subdirectory."
+msgstr ""
+"A documentação é construída com Sphinx e hospedada no Read the Docs. "
+"A saída vai para ``docs/_build/html/`` com cada idioma em seu próprio "
+"subdiretório."
+
+#: ../../development.rst:177
+msgid "To update translations after changing English sources:"
+msgstr "Para atualizar as traduções após alterar as fontes em inglês:"
+
+#: ../../development.rst:186
+msgid ""
+"Documentation sources are in ``docs/`` as reStructuredText (``.rst``). "
+"Translations (Brazilian Portuguese) are in "
+"``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
+"reference pages are **not** translated — they stay in English because "
+"they are auto-generated from Python docstrings."
+msgstr ""
+"As fontes da documentação estão em ``docs/`` como reStructuredText "
+"(``.rst``). As traduções (português brasileiro) estão em "
+"``docs/locale/pt_BR/LC_MESSAGES/`` como arquivos Gettext ``.po``. "
+"As páginas de referência da API **não** são traduzidas — permanecem em "
+"inglês porque são geradas automaticamente a partir das docstrings Python."
+
+#: ../../development.rst:193
+msgid "Code style"
+msgstr "Estilo de código"
+
+#: ../../development.rst:195
+msgid "The project follows these conventions:"
+msgstr "O projeto segue estas convenções:"
+
+#: ../../development.rst:200
+msgid "Aspect"
+msgstr "Aspecto"
+
+#: ../../development.rst:201
+msgid "Convention"
+msgstr "Convenção"
+
+#: ../../development.rst:202
+msgid "Line length"
+msgstr "Comprimento de linha"
+
+#: ../../development.rst:203
+msgid "100 characters (ruff formatter)"
+msgstr "100 caracteres (formatador ruff)"
+
+#: ../../development.rst:204
+msgid "Quotes"
+msgstr "Aspas"
+
+#: ../../development.rst:205
+msgid "Double quotes (ruff formatter default)"
+msgstr "Aspas duplas (padrão do formatador ruff)"
+
+#: ../../development.rst:206
+msgid "Docstrings"
+msgstr "Docstrings"
+
+#: ../../development.rst:207
+msgid "NumPy-style, consumed by Sphinx with napoleon"
+msgstr "Estilo NumPy, consumido pelo Sphinx com napoleon"
+
+#: ../../development.rst:208
+msgid "Typing"
+msgstr "Tipagem"
+
+#: ../../development.rst:209
+msgid "Full type annotations (enforced by mypy)"
+msgstr "Anotações de tipo completas (aplicadas por mypy)"
+
+#: ../../development.rst:210
+msgid "Commit messages"
+msgstr "Mensagens de commit"
+
+#: ../../development.rst:211
+msgid ""
+"Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
+"``ci``, ``refactor``)"
+msgstr ""
+"Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
+"``ci``, ``refactor``)"
+
+#: ../../development.rst:212
+msgid "Language"
+msgstr "Idioma"
+
+#: ../../development.rst:213
+msgid "Code and docstrings in English; figure labels bilingual (pt / en)"
+msgstr "Código e docstrings em inglês; rótulos de figuras bilíngues (pt / en)"
+
+#~ msgid "Table of Contents"
+#~ msgstr "Índice"
+

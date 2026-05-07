@@ -1,5 +1,13 @@
 # Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html
+# https://docs.readthedocs.io/en/stable/config-file/v2.html
+#
+# Bilingual setup via RTD's native "Translations" feature:
+# - Parent project (chaotic-pfc)         → Language: English      → /en/latest/
+# - Translation project (chaotic-pfc-pt-br) → Language: Portuguese (BR) → /pt-br/latest/
+#
+# Both projects point to this same repository and read this same file.
+# Sphinx picks the language from the READTHEDOCS_LANGUAGE env var
+# that RTD injects per project.
 
 version: 2
 
@@ -10,8 +18,6 @@ build:
 
 sphinx:
   configuration: docs/conf.py
-  # Do not fail on the intersphinx "inventory" warnings that always show
-  # up the first time a build can reach external docs.
   fail_on_warning: false
 
 python:
@@ -22,4 +28,6 @@ python:
         - docs
 
 formats:
+  - pdf
+  - epub
   - htmlzip

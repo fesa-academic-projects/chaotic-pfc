@@ -26,8 +26,27 @@ typecheck:  ## Run mypy static type checker
 
 check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
 
-docs:  ## Build Sphinx HTML documentation
-	$(MAKE) -C docs html
+SPHINXBUILD = .venv/bin/sphinx-build
+
+docs:  ## Build Sphinx HTML documentation (English)
+	cd docs && ../$(SPHINXBUILD) -b html . _build/html -D language=en -W --keep-going
+
+docs-pt:  ## Build Sphinx HTML documentation (Portuguese)
+	cd docs && ../$(SPHINXBUILD) -b html . _build/html/pt_BR -D language=pt_BR -W --keep-going
+
+docs-all: docs docs-pt  ## Build Sphinx HTML documentation (both languages)
+
+docs-pdf:  ## Build Sphinx PDF documentation (English)
+	cd docs && ../$(SPHINXBUILD) -b latex . _build/latex -D language=en
+
+docs-pdf-pt:  ## Build Sphinx PDF documentation (Portuguese)
+	cd docs && ../$(SPHINXBUILD) -b latex . _build/latex -D language=pt_BR
+
+docs-epub:  ## Build Sphinx EPUB documentation (English)
+	cd docs && ../$(SPHINXBUILD) -b epub . _build/epub -D language=en
+
+docs-epub-pt:  ## Build Sphinx EPUB documentation (Portuguese)
+	cd docs && ../$(SPHINXBUILD) -b epub . _build/epub -D language=pt_BR
 
 benchmark:  ## Run performance benchmarks
 	python scripts/benchmark.py

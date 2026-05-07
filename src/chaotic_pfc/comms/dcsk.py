@@ -1,13 +1,18 @@
 """
 dcsk.py
 =======
-Differential Chaos Shift Keying (DCSK) over a FIR-filtered Hénon map.
+Differential Chaos Shift Keying (DCSK) over a FIR-filtered Henon map.
 
-Reference
----------
+References
+----------
 .. [Kolumban96] G. Kolumbán, B. Vizvári, W. Schwarz, A. Abel.
    "Differential chaos shift keying: A robust coding for chaotic
-   communication."  Proc. NDES, 1996.
+   communication." Proc. NDES, 1996.
+
+.. [Kaddoum13] G. Kaddoum, E. Soujeri, Y. Nijsure.
+   "Design of a Short Reference Noncoherent Chaos-Based
+   Communication System." IEEE Trans. Commun., vol. 61,
+   no. 12, pp. 4854–4863, 2013.
 """
 
 from __future__ import annotations
@@ -51,7 +56,7 @@ def henon_fir_sequence(
     Raises
     ------
     ValueError
-        If the trajectory diverges (|x| > 100) or produces NaN/Inf.
+        If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
     """
     h = firwin(n_taps, wc, window=window)
     buf = np.full(n_taps, 0.1)

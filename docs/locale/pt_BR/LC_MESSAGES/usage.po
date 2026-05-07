@@ -1,0 +1,441 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-08 00:42-0300\n"
+"PO-Revision-Date: 2026-05-07 18:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../usage.rst:4
+msgid "Usage guide"
+msgstr "Guia de Uso"
+
+#: ../../usage.rst:6
+msgid ""
+"This page walks through every CLI workflow with example commands and "
+"their expected outputs."
+msgstr ""
+"Esta página percorre cada fluxo de trabalho da CLI com exemplos de "
+"comandos e suas saídas esperadas."
+
+#: ../../usage.rst:10
+msgid "Full pipeline (quick mode)"
+msgstr "Pipeline Completo (modo rápido)"
+
+#: ../../usage.rst:16
+msgid ""
+"Runs every experiment in sequence using a reduced Lyapunov grid (seconds "
+"of compute time rather than hours). Produces attractor portraits, SDIC "
+"visualisation, communication figures, Lyapunov CSV tables, sweep ``.npz``"
+" checkpoints, and classification maps."
+msgstr ""
+"Executa todos os experimentos em sequência usando uma grade de Lyapunov "
+"reduzida (segundos de tempo de computação em vez de horas). Produz "
+"retratos de atratores, visualização SDIC, figuras de comunicação, tabelas"
+" CSV de Lyapunov, checkpoints ``.npz`` de varredura e mapas de "
+"classificação."
+
+#: ../../usage.rst:23
+msgid ""
+"Use ``--quick-sweep`` for smoke testing. Remove it to execute the full-"
+"resolution sweep (~40 orders × 100 cutoffs × 25 ICs × 3000 iterations "
+"each)."
+msgstr ""
+"Use ``--quick-sweep`` para smoke testing. Remova-o para executar a "
+"varredura em resolução completa (~40 ordens × 100 cortes × 25 CIs × 3000 "
+"iterações cada)."
+
+#: ../../usage.rst:28
+msgid "Single experiments"
+msgstr "Experimentos Individuais"
+
+#: ../../usage.rst:31
+msgid "Attractors"
+msgstr "Atratores"
+
+#: ../../usage.rst:37
+msgid ""
+"Generates three phase-space portraits (standard, generalised, and "
+"filtered Hénon maps). The :math:`x`-axis shows the first state variable; "
+"the :math:`y`-axis shows the second."
+msgstr ""
+"Gera três retratos no espaço de fase (mapas de Hénon padrão, generalizado"
+" e filtrado). O eixo :math:`x` mostra a primeira variável de estado; o "
+"eixo :math:`y` mostra a segunda."
+
+#: ../../usage.rst:45
+msgid "Saves SVG figures with English titles to the ``figures/`` directory."
+msgstr "Salva figuras SVG com títulos em inglês no diretório ``figures/``."
+
+#: ../../usage.rst:48
+msgid "Sensitivity (SDIC)"
+msgstr "Sensibilidade (SDIC)"
+
+#: ../../usage.rst:54
+#, python-brace-format
+msgid ""
+"Overlays two Hénon trajectories with initial conditions separated by "
+":math:`10^{-4}` to visualise exponential divergence — the hallmark of "
+"chaotic dynamics."
+msgstr ""
+"Sobrepõe duas trajetórias de Hénon com condições iniciais separadas por "
+":math:`10^{-4}` para visualizar a divergência exponencial — a marca "
+"registrada da dinâmica caótica."
+
+#: ../../usage.rst:59
+msgid "Communication pipeline"
+msgstr "Pipeline de Comunicação"
+
+#: ../../usage.rst:61
+msgid ""
+"Three channel types are available for the full transmit-channel-receive "
+"chain:"
+msgstr ""
+"Três tipos de canal estão disponíveis para a cadeia completa transmissão-"
+"canal-recepção:"
+
+#: ../../usage.rst:70
+msgid ""
+"Each produces a :math:`4 \\times 2` grid of time-domain and PSD plots for"
+" the message, carrier, received signal, and recovered message."
+msgstr ""
+"Cada um produz uma grade :math:`4 \\times 2` de gráficos no domínio do "
+"tempo e de DEP para a mensagem, portadora, sinal recebido e mensagem "
+"recuperada."
+
+#: ../../usage.rst:73
+msgid ""
+"Add ``--save`` to write figures to ``figures/``. Use ``--lang pt`` for "
+"Portuguese figure labels."
+msgstr ""
+"Adicione ``--save`` para salvar as figuras em ``figures/``. Use ``--lang "
+"pt`` para rótulos de figuras em português."
+
+#: ../../usage.rst:77
+msgid "Lyapunov spectra"
+msgstr "Espectros de Lyapunov"
+
+#: ../../usage.rst:83
+msgid "Computes Lyapunov exponents for 2-D and 4-D systems in four parts:"
+msgstr "Calcula expoentes de Lyapunov para sistemas 2-D e 4-D em quatro partes:"
+
+#: ../../usage.rst:85
+msgid "**(A)** 2-D Hénon — single initial condition."
+msgstr "**(A)** Hénon 2-D — condição inicial única."
+
+#: ../../usage.rst:86
+msgid "**(B)** 4-D pole-filtered Hénon — single IC."
+msgstr "**(B)** Hénon 4-D com filtro de polos — CI única."
+
+#: ../../usage.rst:87
+msgid "**(C)** 2-D Hénon — ensemble protocol with :math:`N_{\\text{CI}}` ICs."
+msgstr "**(C)** Hénon 2-D — protocolo de ensemble com :math:`N_{\\text{CI}}` CIs."
+
+#: ../../usage.rst:88
+msgid ""
+"**(D)** 4-D pole-filtered Hénon — ensemble protocol with "
+":math:`N_{\\text{CI}}` ICs."
+msgstr ""
+"**(D)** Hénon 4-D com filtro de polos — protocolo de ensemble com "
+":math:`N_{\\text{CI}}` CIs."
+
+#: ../../usage.rst:94
+msgid "Saves per-IC CSV tables with 50 initial conditions to ``data/lyapunov/``."
+msgstr ""
+"Salva tabelas CSV por CI com 50 condições iniciais no diretório "
+"``data/lyapunov/``."
+
+#: ../../usage.rst:98
+msgid "Sweep compute"
+msgstr "Varredura — Computação"
+
+#: ../../usage.rst:100
+msgid "Runs the 2-D (filter order, cutoff frequency) Lyapunov sweep:"
+msgstr ""
+"Executa a varredura de Lyapunov 2-D (ordem do filtro, frequência de "
+"corte):"
+
+#: ../../usage.rst:106
+msgid ""
+"Results are saved as ``data/sweeps/<display-"
+"name>/variables_lyapunov.npz``."
+msgstr ""
+"Os resultados são salvos como ``data/sweeps/<nome-de-"
+"exibição>/variables_lyapunov.npz``."
+
+#: ../../usage.rst:127
+msgid "Sweep plot"
+msgstr "Varredura — Gráficos"
+
+#: ../../usage.rst:129
+msgid "Generates classification figures from saved ``.npz`` checkpoints:"
+msgstr "Gera figuras de classificação a partir de checkpoints ``.npz`` salvos:"
+
+#: ../../usage.rst:147
+msgid "Produces (per combination):"
+msgstr "Produz (por combinação):"
+
+#: ../../usage.rst:149
+#, python-brace-format
+msgid ""
+"**Heatmap** — continuous :math:`\\lambda_{\\max}` over :math:`(N_z, "
+"\\omega_c / \\pi)`."
+msgstr ""
+"**Mapa de calor** — :math:`\\lambda_{\\max}` contínuo sobre :math:`(N_z, "
+"\\omega_c / \\pi)`."
+
+#: ../../usage.rst:151
+msgid ""
+"**Classification interleaved** — discrete map: periodic (blue), chaotic "
+"(red), unbounded (grey)."
+msgstr ""
+"**Classificação intercalada** — mapa discreto: periódico (azul), caótico "
+"(vermelho), ilimitado (cinza)."
+
+#: ../../usage.rst:153
+msgid ""
+"**Difficulty map** — adaptive iteration count per grid point (only for "
+"adaptive sweeps)."
+msgstr ""
+"**Mapa de dificuldade** — contagem adaptativa de iterações por ponto da "
+"grade (apenas para varreduras adaptativas)."
+
+#: ../../usage.rst:155
+#, python-brace-format
+msgid ""
+"**Beta curves** — :math:`\\lambda_{\\max}` evolution across Kaiser "
+":math:`\\beta` values (only for Kaiser sweeps)."
+msgstr ""
+"**Curvas beta** — evolução de :math:`\\lambda_{\\max}` ao longo dos "
+"valores de :math:`\\beta` de Kaiser (apenas para varreduras Kaiser)."
+
+#: ../../usage.rst:159
+msgid "Beta sweep"
+msgstr "Varredura — Beta"
+
+#: ../../usage.rst:161
+msgid "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
+msgstr ""
+"Executa a varredura de Lyapunov para uma faixa de valores de "
+":math:`\\beta` de Kaiser:"
+
+#: ../../usage.rst:167
+msgid ""
+"Runs sweeps for every :math:`\\beta` in the interval for each filter type"
+" under the Kaiser window. Results go to ``data/sweeps/kaiser/``."
+msgstr ""
+"Executa varreduras para cada :math:`\\beta` no intervalo para cada tipo "
+"de filtro sob a janela Kaiser. Os resultados vão para "
+"``data/sweeps/kaiser/``."
+
+#: ../../usage.rst:177
+msgid "3-D visualisation (requires plotly)"
+msgstr "Visualização 3-D (requer plotly)"
+
+#: ../../usage.rst:184
+msgid ""
+"Opens an interactive 3-D Plotly volume stacking all :math:`\\beta` "
+"surfaces, with configurable camera angle and colour scale."
+msgstr ""
+"Abre um volume 3-D interativo no Plotly empilhando todas as superfícies "
+":math:`\\beta`, com ângulo de câmera e escala de cores configuráveis."
+
+#: ../../usage.rst:188
+msgid "DCSK comparison"
+msgstr "Comparação DCSK"
+
+#: ../../usage.rst:194
+msgid ""
+"Generates a BER-vs-SNR plot comparing three modulation schemes over an "
+"FIR-filtered Hénon map with AWGN:"
+msgstr ""
+"Gera um gráfico BER×SNR comparando três esquemas de modulação sobre um "
+"mapa de Hénon com filtro FIR e AWGN:"
+
+#: ../../usage.rst:197
+msgid "Pecora-Carroll synchronisation (coherent)"
+msgstr "Sincronização Pecora-Carroll (coerente)"
+
+#: ../../usage.rst:198
+msgid "Classical DCSK (non-coherent, half bit rate)"
+msgstr "DCSK clássico (não coerente, metade da taxa de bits)"
+
+#: ../../usage.rst:199
+msgid "EF-DCSK (non-coherent, full bit rate)"
+msgstr "EF-DCSK (não coerente, taxa de bits completa)"
+
+#: ../../usage.rst:201
+msgid "Options:"
+msgstr "Opções:"
+
+#: ../../usage.rst:210
+msgid "Statistical analysis"
+msgstr "Análise Estatística"
+
+#: ../../usage.rst:216
+msgid ""
+"Prints a comprehensive 10-section report summarising all sweep results "
+"found under ``data/sweeps/``:"
+msgstr ""
+"Exibe um relatório abrangente de 10 seções resumindo todos os resultados "
+"de varredura encontrados em ``data/sweeps/``:"
+
+#: ../../usage.rst:219
+msgid ""
+"**Summary table** — one row per sweep with chaotic/periodic/divergent "
+"percentages."
+msgstr ""
+"**Tabela de resumo** — uma linha por varredura com percentuais "
+"caótico/periódico/divergente."
+
+#: ../../usage.rst:220
+msgid ""
+"**Filter-type comparison** — aggregates per filter type (lowpass, "
+"highpass, bandpass, bandstop)."
+msgstr ""
+"**Comparação por tipo de filtro** — agrega por tipo de filtro (passa-"
+"baixas, passa-altas, passa-faixa, rejeita-faixa)."
+
+#: ../../usage.rst:221
+msgid "**Best chaos-preserving filters** — ranked by chaotic coverage."
+msgstr ""
+"**Melhores filtros preservadores de caos** — ranqueados por cobertura "
+"caótica."
+
+#: ../../usage.rst:222
+msgid "**Lambda-max distribution** — histogram with skewness statistics."
+msgstr ""
+"**Distribuição de lambda-max** — histograma com estatísticas de "
+"assimetria."
+
+#: ../../usage.rst:223
+msgid "**Transition boundaries** — first chaotic cutoff per filter order."
+msgstr "**Fronteiras de transição** — primeiro corte caótico por ordem de filtro."
+
+#: ../../usage.rst:224
+msgid "**Spectral robustness (chaos margin)** — width of the chaotic region."
+msgstr "**Robustez espectral (margem de caos)** — largura da região caótica."
+
+#: ../../usage.rst:225
+#, python-brace-format
+msgid "**Spearman correlation** — (order, cutoff) vs. :math:`\\lambda_{\\max}`."
+msgstr "**Correlação de Spearman** — (ordem, corte) vs. :math:`\\lambda_{\\max}`."
+
+#: ../../usage.rst:226
+msgid "**Bootstrap 95% CI** — confidence intervals for chaotic proportion."
+msgstr "**IC bootstrap 95%** — intervalos de confiança para a proporção caótica."
+
+#: ../../usage.rst:227
+#, python-brace-format
+msgid ""
+"**Optimal parameters** — (order, cutoff) pairs yielding the highest "
+":math:`\\lambda_{\\max}`."
+msgstr ""
+"**Parâmetros ótimos** — pares (ordem, corte) que produzem o maior "
+":math:`\\lambda_{\\max}`."
+
+#: ../../usage.rst:228
+#, python-brace-format
+msgid ""
+"**Kaiser beta evolution** — :math:`\\lambda_{\\max}` as function of "
+":math:`\\beta`."
+msgstr ""
+"**Evolução do beta de Kaiser** — :math:`\\lambda_{\\max}` em função de "
+":math:`\\beta`."
+
+#: ../../usage.rst:239
+msgid "Language support"
+msgstr "Suporte a idiomas"
+
+#: ../../usage.rst:241
+msgid ""
+"The CLI supports bilingual figure labels via the ``--lang`` flag or the "
+"``CHAOTIC_PFC_LANG`` environment variable:"
+msgstr ""
+"A CLI oferece suporte a rótulos de figuras bilíngues via a flag "
+"``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG``:"
+
+#: ../../usage.rst:256
+msgid ""
+"The flag is supported by ``attractors``, ``sensitivity``, ``comm-ideal``,"
+" ``comm-fir``, ``comm-order-n``, ``dcsk``, and ``run all``."
+msgstr ""
+"A flag é suportada por ``attractors``, ``sensitivity``, ``comm-ideal``, "
+"``comm-fir``, ``comm-order-n``, ``dcsk`` e ``run all``."
+
+#: ../../usage.rst:261
+msgid "Further reading"
+msgstr "Leitura adicional"
+
+#: ../../usage.rst:263
+msgid ":doc:`architecture` — how the modules fit together."
+msgstr ":doc:`architecture` — como os módulos se integram."
+
+#: ../../usage.rst:264
+msgid ":doc:`internals` — Numba kernels, MGS, adaptive early-stop."
+msgstr ":doc:`internals` — kernels Numba, MGS, parada antecipada adaptativa."
+
+#: ../../usage.rst:265
+msgid ":doc:`background` — complete theoretical foundations."
+msgstr ":doc:`background` — fundamentos teóricos completos."
+
+#: ../../usage.rst:266
+msgid ":doc:`development` — development environment and tooling."
+msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
+
+#~ msgid "Quick mode (~seconds, reduced grid) for smoke testing."
+#~ msgstr "Modo rápido (~segundos, grade reduzida) para smoke test."
+
+#~ msgid "Kaiser window with custom beta and bandpass bandwidth."
+#~ msgstr "Janela Kaiser com beta e largura de banda personalizados."
+
+#~ msgid ""
+#~ "Generates the four classification figures "
+#~ "(heatmap, interleaved, difficulty map, and "
+#~ "Beta curves if available) for every "
+#~ "window×filter combination in ``data/sweeps/``."
+#~ msgstr ""
+#~ "Gera as quatro figuras de classificação"
+#~ " (heatmap, intercalado, mapa de dificuldade"
+#~ " e curvas Beta se disponíveis) para"
+#~ " cada combinação janela×filtro em "
+#~ "``data/sweeps/``."
+
+#~ msgid ""
+#~ "Prints a 10-section report summarising "
+#~ "all sweep results: filter comparison, "
+#~ "distributions, transition boundaries, spectral "
+#~ "robustness, Spearman correlation, bootstrap "
+#~ "CI, best/optimal parameters, beta evolution,"
+#~ " and interpretation."
+#~ msgstr ""
+#~ "Imprime um relatório de 10 seções "
+#~ "resumindo todos os resultados da "
+#~ "varredura: comparação de filtros, "
+#~ "distribuições, fronteiras de transição, "
+#~ "robustez espectral, correlação de Spearman,"
+#~ " IC bootstrap, melhores parâmetros e "
+#~ "interpretação."
+
+#~ msgid "Exports the full summary table as JSON."
+#~ msgstr "Exporta a tabela de resumo completa como JSON."
+
+#~ msgid "Architecture"
+#~ msgstr "Arquitetura"
+
+#~ msgid "Table of Contents"
+#~ msgstr "Índice"
+

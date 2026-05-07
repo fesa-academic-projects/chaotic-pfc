@@ -93,7 +93,7 @@ def henon_generalised(
 
     Mathematically equivalent to :func:`henon_standard` under a change
     of variables, but parameterised using ``α`` and ``β`` because that
-    is the form used in the TCC theoretical derivations.
+    is the form used in the theoretical derivations of the project.
 
     Parameters
     ----------

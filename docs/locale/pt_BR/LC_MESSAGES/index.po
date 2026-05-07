@@ -1,0 +1,268 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-08 00:42-0300\n"
+"PO-Revision-Date: 2026-05-07 18:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../index.rst:99
+msgid "Contents"
+msgstr "Conteúdo"
+
+#: ../../index.rst:2
+msgid "chaotic-pfc documentation"
+msgstr "Documentação do chaotic-pfc"
+
+#: ../../index.rst:4
+msgid ""
+"A scientific computing library implementing a complete chaos-based "
+"digital communication system using the Hénon map — providing physical-"
+"layer security through chaotic carriers."
+msgstr ""
+"Uma biblioteca de computação científica que implementa um sistema "
+"completo de comunicação digital baseado em caos utilizando o mapa de "
+"Hénon — provendo segurança na camada física por meio de portadoras "
+"caóticas."
+
+#: ../../index.rst:8
+msgid ""
+"The project models an end-to-end pipeline: message generation, chaotic "
+"modulation at the transmitter, propagation through ideal or FIR band-"
+"limited channels, and demodulation through chaos synchronisation at the "
+"receiver — backed by a rigorous Lyapunov-exponent analysis of the "
+"underlying nonlinear dynamics. The library also includes a full numerical"
+" study that classifies regions of the (filter order, cutoff frequency) "
+"parameter space as chaotic, periodic, or divergent."
+msgstr ""
+"O projeto modela um pipeline ponta a ponta: geração de mensagem, "
+"modulação caótica no transmissor, propagação por canais ideais ou FIR com"
+" banda limitada e demodulação via sincronização de caos no receptor — "
+"respaldado por uma análise rigorosa dos expoentes de Lyapunov da dinâmica"
+" não linear subjacente. A biblioteca também inclui um estudo numérico "
+"completo que classifica regiões do espaço de parâmetros (ordem do filtro,"
+" frequência de corte) como caóticas, periódicas ou divergentes."
+
+#: ../../index.rst:16
+msgid "Status"
+msgstr "Status"
+
+#: ../../index.rst:19
+msgid ""
+"Undergraduate final project (PFC) in Engineering at FESA (Faculdade "
+"Engenheiro Salvador Arena), Brazil. Developed as part of the scientific "
+"article *\"Sistemas de comunicação baseados em mapas de Hénon utilizando "
+"filtro FIR\"* (2026)."
+msgstr ""
+"Projeto Final de Curso (PFC) em Engenharia na FESA (Faculdade Engenheiro "
+"Salvador Arena), Brasil. Desenvolvido como parte do artigo científico "
+"*\"Sistemas de comunicação baseados em mapas de Hénon utilizando filtro "
+"FIR\"* (2026)."
+
+#: ../../index.rst:25
+msgid "Features"
+msgstr "Funcionalidades"
+
+#: ../../index.rst:27
+msgid ""
+"**Hénon map variants** — 2-D standard Hénon, generalised Hénon, filtered "
+"Hénon, and N-th order filtered Hénon maps as chaotic oscillators "
+"(:mod:`chaotic_pfc.dynamics.maps`)."
+msgstr ""
+"**Variantes do mapa de Hénon** — mapas de Hénon 2-D padrão, Hénon "
+"generalizado, Hénon filtrado e Hénon filtrado de ordem N como osciladores"
+" caóticos (:mod:`chaotic_pfc.dynamics.maps`)."
+
+#: ../../index.rst:30
+msgid ""
+"**Chaos-based communication** — transmitter/receiver pair via Pecora-"
+"Carroll synchronisation (:mod:`chaotic_pfc.comms.transmitter`, "
+":mod:`chaotic_pfc.comms.receiver`)."
+msgstr ""
+"**Comunicação baseada em caos** — par transmissor/receptor via "
+"sincronização de Pecora-Carroll (:mod:`chaotic_pfc.comms.transmitter`, "
+":mod:`chaotic_pfc.comms.receiver`)."
+
+#: ../../index.rst:33
+msgid ""
+"**Channel models** — ideal pass-through, FIR band-limited channels, AWGN,"
+" multipath propagation, impulsive noise, and urban composite channels "
+"(:mod:`chaotic_pfc.comms.channel`, :mod:`chaotic_pfc.comms.dcsk`)."
+msgstr ""
+"**Modelos de canal** — passagem ideal, canais FIR com banda limitada, "
+"AWGN, propagação multipercurso, ruído impulsivo e canais compostos "
+"urbanos (:mod:`chaotic_pfc.comms.channel`, "
+":mod:`chaotic_pfc.comms.dcsk`)."
+
+#: ../../index.rst:36
+msgid ""
+"**Lyapunov exponent computation** — single-IC and N-IC ensemble protocol "
+"using tangent-map method with Modified Gram-Schmidt re-orthonormalisation"
+" (:mod:`chaotic_pfc.dynamics.lyapunov`)."
+msgstr ""
+"**Cálculo de expoentes de Lyapunov** — protocolo de CI única e ensemble "
+"com N CIs utilizando o método do mapa tangente com reortogonalização de "
+"Gram-Schmidt Modificado (:mod:`chaotic_pfc.dynamics.lyapunov`)."
+
+#: ../../index.rst:39
+msgid ""
+"**High-performance parameter sweep** — deterministic parallel Lyapunov "
+"sweep across the (filter order, cutoff frequency) grid via Numba JIT "
+"compilation (:mod:`chaotic_pfc.analysis.sweep`)."
+msgstr ""
+"**Varredura de parâmetros de alto desempenho** — varredura determinística"
+" e paralela de Lyapunov sobre a grade (ordem do filtro, frequência de "
+"corte) via compilação Numba JIT (:mod:`chaotic_pfc.analysis.sweep`)."
+
+#: ../../index.rst:42
+msgid ""
+"**Modulation schemes** — DCSK, EF-DCSK, and Pecora-Carroll modulation "
+"with BER-vs-SNR comparison (:mod:`chaotic_pfc.comms.dcsk`)."
+msgstr ""
+"**Esquemas de modulação** — modulação DCSK, EF-DCSK e Pecora-Carroll com "
+"comparação BER×SNR (:mod:`chaotic_pfc.comms.dcsk`)."
+
+#: ../../index.rst:44
+msgid ""
+"**Statistical analysis suite** — summary tables, filter-type comparison, "
+"transition boundaries, Spearman correlation, bootstrap confidence "
+"intervals, and optimal-parameter identification "
+"(:mod:`chaotic_pfc.analysis.stats`)."
+msgstr ""
+"**Suíte de análise estatística** — tabelas-resumo, comparação entre tipos"
+" de filtro, fronteiras de transição, correlação de Spearman, intervalos "
+"de confiança bootstrap e identificação de parâmetros ótimos "
+"(:mod:`chaotic_pfc.analysis.stats`)."
+
+#: ../../index.rst:47
+msgid ""
+"**Publication-quality figures** — SVG outputs with STIX fonts, attractor "
+"portraits, SDIC visualisation, 4×2 communication grids, and 3-D Plotly "
+"volumes (:mod:`chaotic_pfc.plotting.figures`)."
+msgstr ""
+"**Figuras com qualidade de publicação** — saídas em SVG com fontes STIX, "
+"retratos de atratores, visualização SDIC, grades de comunicação 4×2 e "
+"volumes 3-D com Plotly (:mod:`chaotic_pfc.plotting.figures`)."
+
+#: ../../index.rst:50
+msgid ""
+"**Unified CLI** — ``chaotic-pfc run <experiment>`` backed by importable "
+"submodules under :mod:`chaotic_pfc.cli`."
+msgstr ""
+"**CLI unificada** — ``chaotic-pfc run <experimento>`` respaldada por "
+"submódulos importáveis em :mod:`chaotic_pfc.cli`."
+
+#: ../../index.rst:54
+msgid "Installation"
+msgstr "Instalação"
+
+#: ../../index.rst:56
+msgid "Requires **Python 3.11+**."
+msgstr "Requer **Python 3.11+**."
+
+#: ../../index.rst:64
+msgid ""
+"The package imports and runs *without* Numba installed — kernels fall "
+"back to pure Python via :mod:`chaotic_pfc._compat`. Install the "
+"``[fast]`` extra for 20–50× speedup on the parameter sweep."
+msgstr ""
+"O pacote importa e executa *sem* o Numba instalado — os kernels fazem "
+"fallback para Python puro via :mod:`chaotic_pfc._compat`. Instale o extra"
+" ``[fast]`` para um ganho de 20–50× na varredura de parâmetros."
+
+#: ../../index.rst:69
+msgid "Quick start"
+msgstr "Início Rápido"
+
+#: ../../index.rst:75
+msgid ""
+"The ``--quick-sweep`` flag runs the full pipeline with a reduced Lyapunov"
+" grid — seconds of compute time rather than hours — sufficient to smoke-"
+"test every component. Remove it to execute the full-resolution sweep."
+msgstr ""
+"A flag ``--quick-sweep`` executa o pipeline completo com uma grade de "
+"Lyapunov reduzida — segundos de computação em vez de horas — o suficiente"
+" para um smoke-test de todos os componentes. Remova-a para executar a "
+"varredura em resolução completa."
+
+#: ../../index.rst:80
+msgid "Key experiments"
+msgstr "Experimentos principais"
+
+#: ../../index.rst:86
+msgid "**Attractors**"
+msgstr "**Atratores**"
+
+#: ../../index.rst:87
+msgid ""
+"Phase-space portraits of three Hénon variants: ``chaotic-pfc run "
+"attractors``"
+msgstr ""
+"Retratos no espaço de fase de três variantes do mapa de Hénon: ``chaotic-"
+"pfc run attractors``"
+
+#: ../../index.rst:88
+msgid "**Sensitivity (SDIC)**"
+msgstr "**Sensibilidade (SDIC)**"
+
+#: ../../index.rst:89
+msgid "Exponential divergence visualisation: ``chaotic-pfc run sensitivity``"
+msgstr "Visualização da divergência exponencial: ``chaotic-pfc run sensitivity``"
+
+#: ../../index.rst:90
+msgid "**Communication**"
+msgstr "**Comunicação**"
+
+#: ../../index.rst:91
+msgid "Full pipeline over ideal/FIR channels: ``chaotic-pfc run comm-ideal``"
+msgstr "Pipeline completo sobre canais ideais/FIR: ``chaotic-pfc run comm-ideal``"
+
+#: ../../index.rst:92
+msgid "**Lyapunov Spectra**"
+msgstr "**Espectros de Lyapunov**"
+
+#: ../../index.rst:93
+msgid "Single-IC and ensemble protocols: ``chaotic-pfc run lyapunov``"
+msgstr "Protocolos de CI única e ensemble: ``chaotic-pfc run lyapunov``"
+
+#: ../../index.rst:94
+msgid "**Parameter Sweep**"
+msgstr "**Varredura de Parâmetros**"
+
+#: ../../index.rst:95
+msgid "High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``"
+msgstr "Grade de alta resolução (ordem × corte): ``chaotic-pfc run sweep compute``"
+
+#: ../../index.rst:96
+msgid "**BER Comparison**"
+msgstr "**Comparação de BER**"
+
+#: ../../index.rst:97
+msgid "DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``"
+msgstr "DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``"
+
+#~ msgid "Undergraduate final project (PFC) in Engineering at FESA, Brazil."
+#~ msgstr "Projeto Final de Curso (PFC) em Engenharia na FESA, Brasil."
+
+#~ msgid ""
+#~ "Ideal and FIR band-limited channels "
+#~ "with AWGN and multipath "
+#~ "(:mod:`chaotic_pfc.comms.channel`)."
+#~ msgstr ""
+#~ "Canais com banda limitada ideal e "
+#~ "FIR com AWGN e multipercurso "
+#~ "(:mod:`chaotic_pfc.comms.channel`)."
+

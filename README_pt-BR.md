@@ -14,7 +14,7 @@
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
 Sistema de comunicação digital caótico baseado no mapa de Hénon.
-Projeto de TCC (*Trabalho de Conclusão de Curso*).
+Projeto de PFC (*Projeto Final de Curso*).
 
 <p align="center">
   <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Mapa de classificação de Lyapunov — Hamming lowpass">
@@ -29,10 +29,10 @@ Este repositório contém a implementação de um sistema de comunicação digit
 caótico baseado no mapa de Hénon. O transmissor modula uma mensagem binária
 no estado de um oscilador caótico; o receptor recupera a mensagem por
 sincronização de Pecora-Carroll. O projeto inclui ainda um estudo numérico
-completo dos expoentes de Lyapunov do mapa de Hénon com filtros FIR internos,
-incluindo varreduras de parâmetros sobre ordem do filtro e frequência de corte —
-o que permite classificar regiões do espaço de parâmetros como caóticas,
-periódicas ou divergentes (figura acima).
+completo dos expoentes de Lyapunov do mapa de Hénon e de variantes de ordem
+superior com filtros FIR internos, incluindo varreduras de parâmetros sobre
+ordem do filtro e frequência de corte — o que permite classificar regiões do
+espaço de parâmetros como caóticas, periódicas ou divergentes (figura acima).
 
 O projeto é organizado como um pacote Python instalável (`chaotic_pfc`)
 com uma CLI unificada que reproduz cada experimento. A varredura pesada de
@@ -188,13 +188,21 @@ make check-all     # lint + format + typecheck + testes rápidos
 | `make format-check` | Verifica formatação sem alterar arquivos |
 | `make typecheck` | mypy static type checker |
 | `make check-all` | lint + format-check + typecheck + test-fast |
-| `make docs` | Compila documentação Sphinx HTML |
+| `make docs` | Compila documentação Sphinx HTML (inglês) |
+| `make docs-pt` | Compila documentação Sphinx HTML (português) |
+| `make docs-pdf` | Compila documentação Sphinx PDF |
+| `make docs-epub` | Compila documentação Sphinx EPUB |
 | `make benchmark` | Benchmarks de performance |
 | `make pre-commit` | Executa todos os hooks de pre-commit |
 | `make clean` | Remove artefatos de build e cache |
 | `make help` | Mostra todos os comandos |
 
 ## Documentação
+
+A documentação completa está disponível em
+[chaotic-pfc.readthedocs.io](https://chaotic-pfc.readthedocs.io/)
+em inglês e português (Brasil), com formatos para download: PDF, EPUB e
+HTMLZip.
 
 Compile a documentação HTML localmente:
 

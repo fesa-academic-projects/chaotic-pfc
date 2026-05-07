@@ -1,11 +1,11 @@
 """
 spectral.py
-==========
+===========
 Power-spectral-density estimation utilities used by the plotting layer.
 
 The single public function, :func:`psd_normalised`, wraps
 :func:`scipy.signal.welch` with the conventions adopted throughout the
-TCC: peak-normalised magnitude, and the frequency axis expressed as
+project: peak-normalised magnitude, and the frequency axis expressed as
 ``ω/π ∈ [0, 1]`` rather than cycles or hertz.
 """
 
@@ -38,7 +38,7 @@ def psd_normalised(
 
     The PSD is one-sided, peak-normalised to ``1.0``, and the frequency
     axis is returned as ``ω/π`` for consistency with the notation used
-    in the TCC figures (x-axis of every PSD panel).
+    in the project figures (x-axis of every PSD panel).
 
     Parameters
     ----------

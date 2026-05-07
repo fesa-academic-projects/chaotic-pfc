@@ -30,7 +30,7 @@ Run the sweep in quick mode (tiny grid, seconds) — useful for CI::
     chaotic-pfc run all --no-display --quick-sweep
 
 Run the sweep with adaptive Lyapunov early-stop (≈3-4× speedup, mean
-|Δλ| < 0.001 vs. the fixed-Nmap reference)::
+\\|Δλ\\| < 0.001 vs. the fixed-Nmap reference)::
 
     chaotic-pfc run all --no-display --adaptive
 
@@ -58,6 +58,7 @@ from chaotic_pfc.cli.sweep import _beta_values
 
 from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
 from . import sweep as sweep_mod
+from ._common import add_lang_flag
 
 # Experiments run before the sweep, in order. Each module exposes
 # a run(args) function whose signature is documented in its own module.
@@ -103,7 +104,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         action="store_true",
         help=(
             "Enable adaptive Lyapunov early-stop in the sweep step. "
-            "Typical speedup: 3-4× on the full sweep. Mean |Δλ| vs the "
+            "Typical speedup: 3-4× on the full sweep. Mean \\|Δλ\\| vs the "
             "fixed-Nmap reference is < 0.001. Mutually exclusive with "
             "--quick-sweep."
         ),
@@ -124,6 +125,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         default=1e-3,
         help=("Adaptive convergence tolerance (default: 1e-3). Ignored without --adaptive."),
     )
+    add_lang_flag(p)
     p.set_defaults(_run=run)
 
 
@@ -262,6 +264,7 @@ def run(args: argparse.Namespace) -> int:
         # Extra fields (e.g. "taps") are harmless because argparse resolved
         # them to defaults earlier when the individual subcommand was built.
         step_args = _build_step_args(shared)
+        step_args.lang = getattr(args, "lang", "pt")
         # Sensitivity keeps fewer steps to avoid unreadable point overlay
         if tag == "02":
             step_args.steps = 50

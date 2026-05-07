@@ -8,7 +8,7 @@
 * **Part D** — 4-D Pole-filtered ensemble, same protocol, 4-D system.
 
 Parts A/B are quick sanity checks; parts C/D implement the full
-experimental protocol used in the TCC. With ``--save`` the per-IC
+experimental protocol. With ``--save`` the per-IC
 tables are written to ``data/lyapunov/henon2d_ensemble.csv`` and
 ``data/lyapunov/henon4d_ensemble.csv``.
 """

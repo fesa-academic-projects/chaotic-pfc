@@ -1,33 +1,44 @@
-"""Sphinx configuration for chaotic-pfc."""
+"""Sphinx configuration for chaotic-pfc — bilingual (EN + pt_BR)."""
 
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from datetime import datetime
-from importlib.metadata import version as _pkg_version
 from pathlib import Path
 
 # ─────────────────────────────────────────────────────────────────────────
-# Path setup — make the package importable without installing it first.
+# Path setup — make the package importable without installing it first
 # ─────────────────────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
 
 # ─────────────────────────────────────────────────────────────────────────
 # Project information
 # ─────────────────────────────────────────────────────────────────────────
 project = "chaotic-pfc"
-author = "FESA TCC team"
+author = "Roger Freitas Pereira"
 copyright = f"{datetime.now().year}, {author} and contributors"
-language = "en"  # keep the doc itself English regardless of the builder's locale
+# Read the Docs injects READTHEDOCS_LANGUAGE per project (e.g. "en", "pt-br").
+# Locally, fall back to SPHINX_LANGUAGE (set by Makefile/CLI) or English.
+_rtd_lang = os.environ.get("READTHEDOCS_LANGUAGE")
+if _rtd_lang:
+    # RTD uses kebab-case ("pt-br"); Sphinx expects "pt_BR".
+    language = _rtd_lang.replace("-", "_") if _rtd_lang != "en" else "en"
+    if language == "pt_br":
+        language = "pt_BR"
+else:
+    language = os.environ.get("SPHINX_LANGUAGE", "en")
+version = "0.6.0"
+release = "0.6.0"
 
-try:
-    release = _pkg_version("chaotic-pfc")
-except Exception:
-    release = "0.3.0"
-version = ".".join(release.split(".")[:2])
-
+# ─────────────────────────────────────────────────────────────────────────
+# i18n / l10n support
+# ─────────────────────────────────────────────────────────────────────────
+locale_dirs = ["locale"]
+gettext_compact = False
+gettext_uuid = False
+gettext_location = True
 
 # ─────────────────────────────────────────────────────────────────────────
 # Sphinx extensions
@@ -39,6 +50,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.todo",
     "sphinx_copybutton",
     "myst_parser",
 ]
@@ -47,7 +60,6 @@ source_suffix = {
     ".rst": "restructuredtext",
     ".md": "markdown",
 }
-
 
 # ─────────────────────────────────────────────────────────────────────────
 # autodoc / autosummary
@@ -62,7 +74,6 @@ autodoc_default_options = {
 autodoc_typehints = "description"
 autodoc_member_order = "bysource"
 
-
 # ─────────────────────────────────────────────────────────────────────────
 # napoleon — parse NumPy-style docstrings
 # ─────────────────────────────────────────────────────────────────────────
@@ -73,9 +84,8 @@ napoleon_include_private_with_doc = False
 napoleon_use_param = True
 napoleon_use_rtype = True
 
-
 # ─────────────────────────────────────────────────────────────────────────
-# intersphinx — clickable cross-references to external libraries
+# intersphinx — cross-references to external libraries
 # ─────────────────────────────────────────────────────────────────────────
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -84,52 +94,97 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
 }
 
-
 # ─────────────────────────────────────────────────────────────────────────
 # HTML output — furo theme
 # ─────────────────────────────────────────────────────────────────────────
 html_theme = "furo"
-html_static_path = ["_static"]
-html_title = f"{project} {release}"
+html_title = f"{project} v{release}"
+html_baseurl = "https://chaotic-pfc.readthedocs.io/"
 html_theme_options = {
     "sidebar_hide_name": False,
     "navigation_with_keys": True,
     "source_repository": "https://github.com/fesa-academic-projects/chaotic-pfc/",
     "source_branch": "main",
     "source_directory": "docs/",
+    "footer_icons": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/fesa-academic-projects/chaotic-pfc/",
+            "html": "",
+            "class": "fa-brands fa-github fa-2x",
+        },
+    ],
 }
 
+# ─────────────────────────────────────────────────────────────────────────
+# LaTeX / PDF output
+# ─────────────────────────────────────────────────────────────────────────
+latex_engine = "xelatex"
+latex_show_pagerefs = False
+latex_show_urls = "footnote"
+latex_elements = {
+    "papersize": "a4paper",
+    "pointsize": "11pt",
+    "preamble": r"""
+    \usepackage{amsmath,amssymb}
+    """,
+}
+
+latex_documents = [
+    (
+        "index",
+        "chaotic-pfc.tex",
+        f"{project} Documentation",
+        author,
+        "manual",
+        False,
+    ),
+]
+
+# ─────────────────────────────────────────────────────────────────────────
+# EPUB output
+# ─────────────────────────────────────────────────────────────────────────
+epub_title = f"{project} Documentation"
+epub_author = author
+epub_show_urls = "footnote"
+epub_language = language
+epub_uid = "chaotic-pfc-docs"
 
 # ─────────────────────────────────────────────────────────────────────────
 # Miscellaneous
 # ─────────────────────────────────────────────────────────────────────────
-templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "locale/**/*.mo",
+    "locale/**/LC_MESSAGES/*.pot",
+]
 
-nitpicky = False  # start loose; tighten once the doc is fleshed out
+nitpicky = False
 
-suppress_warnings = ["autosectionlabel.*"]
+suppress_warnings = [
+    "autosectionlabel.*",
+    "epub.unknown_project_files",
+]
 
 autodoc_mock_imports: list[str] = []
 
+numfig = True
+
+# todo extension
+todo_include_todos = False
+
+# copybutton extension
+copybutton_prompt_text = r">>> |\.\.\. |\$ |chaotic-pfc |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
 
 # ─────────────────────────────────────────────────────────────────────────
 # Dataclass duplicate-warning filter
 # ─────────────────────────────────────────────────────────────────────────
-# autosummary :recursive: generates per-attribute pages for every dataclass
-# field, AND the class page itself lists the same fields via autodoc — so
-# Sphinx emits 'duplicate object description' once per field. The content
-# is correct; only the warning is noise. Sphinx 9 no longer accepts this
-# category in ``suppress_warnings``, so we filter at the logging layer.
-#
-# The warning message is localised by the builder's ``LANG`` / ``LC_MESSAGES``
-# setting (not by the doc's ``language`` option), so the substring differs
-# between machines. Match every locale we actually run on: English on CI
-# and ReadTheDocs, Portuguese (pt_BR) on local dev.
-
 _DUPLICATE_SUBSTRINGS = (
-    "duplicate object description",  # English
-    "descrição duplicada de objeto",  # pt_BR
+    "duplicate object description",
+    "descrição duplicada de objeto",
 )
 
 

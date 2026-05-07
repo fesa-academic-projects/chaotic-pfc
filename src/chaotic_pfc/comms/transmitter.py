@@ -51,7 +51,7 @@ def transmit(
         Modulation depth. Small values (≪ 1) keep the Hénon dynamics
         near their autonomous regime, which is important for reliable
         chaos synchronisation at the receiver. The default ``0.01``
-        matches the convention used throughout the TCC.
+        matches the convention used throughout the project.
     a, b
         Hénon parameters. The canonical chaotic regime is ``(1.4, 0.3)``.
     x0, y0
