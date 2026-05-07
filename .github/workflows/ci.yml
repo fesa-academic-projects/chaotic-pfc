@@ -163,6 +163,9 @@ jobs:
     name: Publish to TestPyPI
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Check out repository
