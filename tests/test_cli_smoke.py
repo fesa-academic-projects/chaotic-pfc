@@ -244,7 +244,6 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
         import numpy as np
 
         import chaotic_pfc.analysis.sweep as sweep_mod
-        from chaotic_pfc.analysis.sweep import SweepResult
         from chaotic_pfc.cli import sweep as cli_sweep
 
         captured: dict = {}
@@ -263,7 +262,7 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
             n = len(orders)
             m = len(cutoffs)
             h = np.full((n, m), 0.1)
-            return SweepResult(
+            return sweep_mod.SweepResult(
                 h=h,
                 h_std=np.zeros_like(h),
                 orders=np.asarray(orders),
