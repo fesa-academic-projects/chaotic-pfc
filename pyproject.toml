@@ -21,12 +21,6 @@ dependencies = [
     "matplotlib>=3.8",
 ]
 
-[project.urls]
-Homepage = "https://github.com/fesa-academic-projects/chaotic-pfc"
-Documentation = "https://chaotic-pfc.readthedocs.io"
-Repository = "https://github.com/fesa-academic-projects/chaotic-pfc"
-Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
-
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
@@ -39,6 +33,12 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
 ]
+
+[project.urls]
+Homepage = "https://github.com/fesa-academic-projects/chaotic-pfc"
+Documentation = "https://chaotic-pfc.readthedocs.io"
+Repository = "https://github.com/fesa-academic-projects/chaotic-pfc"
+Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
 
 [project.optional-dependencies]
 fast = [
