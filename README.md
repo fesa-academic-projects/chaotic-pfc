@@ -1,5 +1,10 @@
 # chaotic-pfc
 
+<p align="right">
+  <strong><a href="./README_pt-BR.md">🇧🇷 Português (Brasil)</a></strong> |
+  <strong>🇺🇸 English</strong>
+</p>
+
 [![CI](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/chaotic-pfc/badge/?version=latest)](https://chaotic-pfc.readthedocs.io/)
 [![codecov](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc/branch/main/graph/badge.svg)](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc)
@@ -10,6 +15,13 @@
 
 Chaotic digital communication system based on the Hénon map.
 Undergraduate final project (*Trabalho de Conclusão de Curso*).
+
+<p align="center">
+  <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Lyapunov classification map — Hamming lowpass">
+</p>
+<p align="center">
+  <em>Lyapunov exponent classification across filter orders and cutoffs — periodic (blue), chaotic (red), unbounded (grey).</em>
+</p>
 
 ## Overview
 
