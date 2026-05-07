@@ -23,8 +23,22 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/fesa-academic-projects/chaotic-pfc"
+Documentation = "https://chaotic-pfc.readthedocs.io"
 Repository = "https://github.com/fesa-academic-projects/chaotic-pfc"
 Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+]
 
 [project.optional-dependencies]
 fast = [
