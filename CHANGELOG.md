@@ -9,6 +9,8 @@ All notable changes to chaotic-pfc are documented in this file.
 ### Fixed
 - TestPyPI publish rejected: filename previously used and deleted. Patch bump only.
 
+*Note: version 0.6.1 was a failed publish to TestPyPI (rejected filename) and was never released.*
+
 ## [0.6.0] — 2026-05-10
 
 ### Added

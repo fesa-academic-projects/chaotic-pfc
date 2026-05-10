@@ -12,7 +12,7 @@
 In `CHANGELOG.md`, rename the `## [Unreleased]` section to the new version and date:
 
 ```markdown
-## [0.5.0] — 2026-06-01
+## [X.Y.Z] — 2026-06-01
 ```
 
 Open a fresh empty `## [Unreleased]` above it.
@@ -22,22 +22,22 @@ Open a fresh empty `## [Unreleased]` above it.
 In `pyproject.toml`, update the `version` field:
 
 ```toml
-version = "0.5.0"
+version = "X.Y.Z"
 ```
 
 Also update `src/chaotic_pfc/_version.py`:
 
 ```python
-__version__ = "0.5.0"
+__version__ = "X.Y.Z"
 ```
 
-Commit both with a message like `release: bump version to 0.5.0`.
+Commit both with a message like `release: bump version to X.Y.Z`.
 
 ### 3. Tag the release
 
 ```bash
-git tag -a v0.5.0 -m "v0.5.0 — <short description>"
-git push origin v0.5.0
+git tag -a vX.Y.Z -m "vX.Y.Z — <short description>"
+git push origin vX.Y.Z
 ```
 
 Pushing the tag triggers the `release` job in CI, which:
@@ -57,8 +57,8 @@ pip install --index-url https://test.pypi.org/simple/ chaotic-pfc
 ### 5. Create a GitHub Release
 
 1. Go to **Releases → Draft a new release**.
-2. Choose the tag just pushed (`v0.5.0`).
-3. Title: `v0.5.0`.
+2. Choose the tag just pushed (`vX.Y.Z`).
+3. Title: `vX.Y.Z`.
 4. Body: paste the relevant section from `CHANGELOG.md`.
 5. Mark as **pre-release** (until 1.0.0).
 6. Publish.

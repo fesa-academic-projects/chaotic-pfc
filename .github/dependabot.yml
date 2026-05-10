@@ -21,7 +21,6 @@ updates:
         patterns:
           - "sphinx*"
           - "furo"
-          - "myst-parser"
           - "sphinx-copybutton"
         update-types:
           - "minor"
