@@ -112,7 +112,7 @@ jobs:
           pytest \
             --tb=short \
             --cov=chaotic_pfc \
-            --cov-fail-under=55 \
+            --cov-fail-under=65 \
             --cov-report=xml \
             --cov-report=term
 

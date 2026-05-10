@@ -115,6 +115,15 @@ class TestTransmitOrderN(unittest.TestCase):
         s, _ = transmit_order_n(np.ones(50), c, seed=None)
         self.assertEqual(len(s), 50)
 
+    def test_transmit_diverges_with_large_mu(self):
+        """mu=0.5 typically causes overflow/divergence in Hénon carrier."""
+        m = binary_message(10_000, period=20)
+        s = transmit(m, mu=0.5)
+        self.assertTrue(
+            np.any(~np.isfinite(s)) or np.max(np.abs(s)) > 1e10,
+            "expected divergence for mu=0.5",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -155,6 +155,7 @@ class TestRunSweep(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Triggers Numba compilation once for the whole test class.
+        # cls.result is read-only — tests must not mutate it.
         cls.result = run_sweep(
             window="hamming",
             filter_type="lowpass",

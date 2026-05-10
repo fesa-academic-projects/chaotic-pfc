@@ -187,6 +187,12 @@ class TestHenonFIRDivergence(unittest.TestCase):
         self.assertEqual(h.shape, (100,))
         self.assertTrue(np.all(np.isfinite(h)))
 
+    def test_divergent_params_raise_value_error(self):
+        """henon_fir_sequence must raise ValueError when trajectory diverges."""
+        with self.assertRaises(ValueError) as ctx:
+            henon_fir_sequence(10_000, n_taps=3, wc=0.99, a=2.5)
+        self.assertIn("diverged", str(ctx.exception))
+
 
 class TestChannelKaiser(unittest.TestCase):
     def test_fir_channel_kaiser(self):
@@ -221,6 +227,14 @@ class TestChannelCustom(unittest.TestCase):
         r = channel_urban(s, snr_db=20.0, rng=rng)
         self.assertEqual(r.shape, s.shape)
         self.assertTrue(np.all(np.isfinite(r)))
+
+    def test_channel_interferers_reproducible(self):
+        sig = dcsk_transmit(np.array([0, 1, 0, 1]), beta=64)
+        rng1 = np.random.default_rng(123)
+        rng2 = np.random.default_rng(123)
+        rx1 = channel_interferers(sig, snr_db=20.0, rng=rng1)
+        rx2 = channel_interferers(sig, snr_db=20.0, rng=rng2)
+        np.testing.assert_array_equal(rx1, rx2)
 
 
 if __name__ == "__main__":

@@ -16,9 +16,7 @@ import unittest
 import warnings
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")  # must precede any pyplot import, including transitive
+import pytest
 
 from chaotic_pfc.cli import main
 
@@ -179,10 +177,7 @@ class TestRunAllSmoke(_IsolatedCwdMixin, unittest.TestCase):
     covers ``cli/run_all.py``.
     """
 
-    @unittest.skipIf(
-        os.environ.get("CHAOTIC_PFC_SKIP_SLOW") == "1",
-        "slow test disabled via CHAOTIC_PFC_SKIP_SLOW=1",
-    )
+    @pytest.mark.slow
     def test_run_all_quick(self):
         code = main(["run", "all", "--no-display", "--quick-sweep"])
         self.assertEqual(code, 0)
@@ -310,6 +305,43 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
         self.assertTrue(captured["adaptive"])
         self.assertEqual(captured["Nmap_min"], 300)
         self.assertEqual(captured["tol"], 5e-4)
+
+
+class TestDCSKSmoke(unittest.TestCase, _IsolatedCwdMixin):
+    def setUp(self):
+        _IsolatedCwdMixin.setUp(self)
+
+    def test_run_dcsk_no_display(self):
+        code = main(["run", "dcsk", "--no-display"])
+        self.assertEqual(code, 0)
+
+
+class TestSweepPlotSmoke(unittest.TestCase, _IsolatedCwdMixin):
+    def setUp(self):
+        _IsolatedCwdMixin.setUp(self)
+
+    @pytest.mark.slow
+    def test_run_sweep_plot_hamming_lowpass(self):
+        # Sweep plot reads from versioned .npz files in the project's
+        # data/ directory, not from the isolated temp CWD.
+        proj_root = Path(__file__).resolve().parents[1]
+        code = main(
+            [
+                "run",
+                "sweep",
+                "plot",
+                "--window",
+                "hamming",
+                "--filter",
+                "lowpass",
+                "--no-display",
+                "--data-dir",
+                str(proj_root / "data" / "sweeps"),
+                "--figures-dir",
+                str(self.workdir / "figures"),
+            ]
+        )
+        self.assertEqual(code, 0)
 
 
 if __name__ == "__main__":
