@@ -10,6 +10,7 @@ paths like ``figures/`` (from :class:`PlotConfig`) land in the tmp
 directory and do not pollute the working tree.
 """
 
+import importlib.util
 import os
 import tempfile
 import unittest
@@ -19,6 +20,8 @@ from pathlib import Path
 import pytest
 
 from chaotic_pfc.cli import main
+
+HAS_PLOTLY = importlib.util.find_spec("plotly") is not None
 
 # matplotlib's Agg backend is chatty in headless tests; none of the
 # warnings are actionable here.
@@ -369,6 +372,7 @@ class TestPlot3DSmoke(unittest.TestCase, _IsolatedCwdMixin):
         _IsolatedCwdMixin.setUp(self)
 
     @pytest.mark.slow
+    @unittest.skipUnless(HAS_PLOTLY, "plotly not installed")
     def test_run_sweep_plot_3d(self):
         proj_root = Path(__file__).resolve().parents[1]
         code = main(
