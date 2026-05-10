@@ -122,11 +122,11 @@ chaotic-pfc/
 
 ### Public API
 
-The top-level `chaotic_pfc` namespace reexports ~60 symbols that form the
+The top-level `chaotic_pfc` namespace reexports ~65 symbols that form the
 stable public API. They are importable from `chaotic_pfc` directly:
 
 ```python
-from chaotic_pfc import run_sweep, henon_standard, fir_channel, SweepResult
+from chaotic_pfc import run_sweep, henon_standard, fir_channel, LyapunovResult
 ```
 
 Internal implementation details (private modules with underscore prefix, e.g.
@@ -153,6 +153,8 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run lyapunov`           | Lyapunov spectra: single IC and N-IC ensemble for 2-D and 4-D systems. |
 | `chaotic-pfc run sweep compute`      | Parallel Lyapunov sweep over `(filter order × cutoff)`. |
 | `chaotic-pfc run sweep plot`         | Classification maps from saved sweep data. |
+| `chaotic-pfc run dcsk`               | DCSK / EF-DCSK / Pecora-Carroll BER vs SNR comparison. |
+| `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
 
 ## Tests

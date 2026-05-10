@@ -124,10 +124,6 @@ def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
 class LyapunovResult:
     """Result of a single-IC Lyapunov exponent computation (2-D or 4-D).
 
-    Supports both attribute access (``result.lyapunov_max``) and
-    dict-style access (``result["lyapunov_max"]``) for backward
-    compatibility with code that previously received a bare ``dict``.
-
     Fields populated by :func:`lyapunov_max` (4-D):
         lyapunov_max, all_exponents, fixed_point, eigenvalues, stable
 

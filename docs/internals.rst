@@ -53,8 +53,8 @@ loop.
 Adaptive early-stop mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``_adaptive_checkpoint(n, Ns, lyap_sum, last_lyap, stable_count, tol,
-Nmap_min, Nmap)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY = 100``
+``_adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est,
+streak, n_used)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY = 100``
 iterations. It computes the current :math:`\lambda_{\max}` estimate and
 checks whether it has stabilised:
 
@@ -63,10 +63,11 @@ checks whether it has stabilised:
     \left| \lambda_{\text{current}} - \lambda_{\text{previous}} \right| < \text{tol}
 
 If this condition holds for ``_ADAPTIVE_STREAK = 2`` consecutive
-checkpoints *and* ``Nmap_min`` iterations have elapsed, the kernel
-signals early termination. The actual number of iterations used is
-recorded in the ``SweepResult`` attribute ``n_iters_used``, available
-for the difficulty-map visualisation.
+checkpoints *and* ``Nitera_min`` iterations have elapsed, the kernel
+signals early termination and returns ``(cur, streak, n_done, True)``.
+Otherwise it returns ``(cur, streak, n_used, False)``. The actual number
+of iterations used is recorded in the ``SweepResult`` attribute
+``n_iters_used``, available for the difficulty-map visualisation.
 
 Lyapunov estimator kernels
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,8 +81,10 @@ estimator kernels. They:
    early-stop triggers).
 3. At each estimation iteration, evolve the perturbation vectors
    through the Jacobian (tangent map) and apply MGS.
-4. Return the mean :math:`\lambda_{\max}` over ``n_initial``
-   independent initial conditions tested in sequence.
+4. Return ``(best, n_used)`` — the :math:`\lambda_{\max}` estimate for
+   a single initial condition and the number of iterations used. The
+   aggregation across ``n_initial`` independent ICs is performed by
+   ``_sweep_kernel``, which calls these kernels in sequence.
 
 The "online" naming reflects that the estimator updates continuously
 during the trajectory, rather than collecting the full state history
@@ -156,7 +159,7 @@ feed the communication pipeline:
   samples, each bit spans 20 iterations of the chaotic map.
 
 :func:`~chaotic_pfc.dynamics.signals.sinusoidal_message`
-  Produces a single-tone cosine probe for spectral-response
+  Produces a single-tone sine probe for spectral-response
   measurements. Useful for characterising the channel transfer
   function independently of the chaotic carrier.
 
@@ -186,7 +189,8 @@ Channel models
 
 Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and
 :func:`~chaotic_pfc.comms.channel.fir_channel`, the DCSK module
-provides four composite channel models:
+provides four composite channel models. All accept an optional ``rng``
+parameter (``numpy.random.Generator``) for deterministic reproducibility:
 
 :func:`~chaotic_pfc.comms.dcsk.awgn`
   Additive white Gaussian noise with configurable SNR (dB).
@@ -240,7 +244,8 @@ dataclasses:
     ├── lyapunov: LyapunovConfig        # Nitera, Ndiscard, perturbation, ...
     ├── plot: PlotConfig                # time_window, dpi, figures_dir, fmt
     ├── sweep: SweepConfig              # Nmap, n_initial, order range, ...
-    └── seed: int = 42
+    ├── seed: int = 42
+    └── lang: str = "pt"
 
 Each sub-config is a ``@dataclass`` with only primitive fields (int,
 float, str) or nested dataclasses with primitives. This design enables:
