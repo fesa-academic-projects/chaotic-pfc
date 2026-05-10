@@ -185,6 +185,36 @@ class TestRunAllSmoke(_IsolatedCwdMixin, unittest.TestCase):
         code = main(["run", "all", "--no-display", "--quick-sweep"])
         self.assertEqual(code, 0)
 
+    def test_to_namespace_has_all_required_fields(self):
+        """Every CLI subcommand reachable from ``run all`` reads its args
+        from a Namespace built by ``ExperimentConfig.to_namespace``. Each
+        attribute the subcommands access must be present, otherwise
+        ``run all`` fails with AttributeError mid-pipeline."""
+        from chaotic_pfc.config import DEFAULT_CONFIG
+
+        ns = DEFAULT_CONFIG.to_namespace()
+        required = [
+            "N",
+            "mu",
+            "period",
+            "cutoff",
+            "taps",
+            "Nc",
+            "internal_cutoff",
+            "steps",
+            "epsilon",
+            "Nitera",
+            "Ndiscard",
+            "pole_radius",
+            "w0",
+            "n_ci",
+            "perturbation",
+            "data_dir",
+            "lang",
+        ]
+        missing = [f for f in required if not hasattr(ns, f)]
+        self.assertFalse(missing, f"to_namespace missing fields: {missing}")
+
 
 # ───────────────────────────────────────────────────────────────────────
 # Adaptive flag — argument validation
