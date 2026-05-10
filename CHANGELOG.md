@@ -4,6 +4,13 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
+## [0.6.2] — 2026-05-10
+
+### Fixed
+- TestPyPI publish rejected: filename previously used and deleted. Patch bump only.
+
+## [0.6.0] — 2026-05-10
+
 ### Added
 - `docs/background.rst` expanded with full theoretical foundations from the PFC article:
   physical-layer security, FIR filtering, Lyapunov exponents, Pecora-Carroll synchronisation,
@@ -20,33 +27,32 @@ All notable changes to chaotic-pfc are documented in this file.
   options, and language support section.
 - Bilingual translations (pt_BR) for all hand-written documentation pages — index,
   background, architecture, usage, internals, development, and contributing.
-- Multi-format documentation downloads: PDF + EPUB + HTMLZip (en and pt_BR).
-- `html_baseurl` and improved LaTeX/EPUB/math configuration in `docs/conf.py`.
+- `chaotic_pfc._i18n` module — bilingual figure labels (pt / en) with dictionary-based
+  lookup, controllable via `CHAOTIC_PFC_LANG` env var or `--lang` CLI flag.
+- `--lang pt|en` CLI flag for attractors, sensitivity, comm-*, dcsk, and run-all.
+- `docs/_redirect.html` — RTD language landing page.
 
 ### Changed
-- `docs/conf.py` refactored: full i18n/l10n, clean Furo sidebar, intersphinx, copybutton.
+- `docs/conf.py` refactored: full i18n/l10n, clean Furo sidebar, intersphinx, copybutton,
+  xelatex for Unicode PDF support.
 - `docs/Makefile` rewritten with `html`, `html-pt`, `html-all`, `pdf`, `pdf-pt`, `epub`,
-  `epub-pt`, `gettext`, and `update-po` targets — output under `_build/html/en/` and
-  `_build/html/pt_BR/`.
+  `epub-pt`, `gettext`, and `update-po` targets.
 - Root `Makefile` updated with `docs-all`, `docs-pdf`, `docs-pdf-pt`, `docs-epub`,
   `docs-epub-pt` targets.
-- `.readthedocs.yaml`: added `texlive` apt packages, PDF + EPUB build commands, and
-  `htmlzip` format.
+- `.readthedocs.yaml` simplified to default Sphinx builder with `htmlzip` format.
 - `.gitignore`: added `_build/`, `_readthedocs/`, and `*.mo` patterns.
 - `pyproject.toml` docs extra: removed unused `sphinxcontrib-bibtex`.
-- All `.po` headers updated: version 0.6.0, proper author/translator metadata.
+- `README.md` and `README_pt-BR.md` synchronised.
 - API reference `.po` files removed — auto-generated docstrings stay in English.
-- Version consolidated to 0.6.0 across `pyproject.toml`, `_version.py`, `conf.py`, and
-  `CHANGELOG.md`.
 
 ### Fixed
-- Duplicate `CONTRIBUTING.md` entry in v0.6.0 changelog.
-- Broken `spectral.py` entry in `api/index.po` (Sphinx warning captured as msgid).
-- Missing LaTeX/PDF build configuration for ReadTheDocs.
 - `run_all` not passing `lang` attribute to experiment subcommands (`AttributeError`).
 - RST substitution warnings in docstrings (`|x|` → `\\|x\\|` in sweep_plotting, dcsk,
   run_all; title underline in spectral).
-- Placeholder `FIRST AUTHOR <EMAIL@ADDRESS>` in `index_body.po` and `sphinx.po`.
+- LaTeX PDF build failures: switched to xelatex for Unicode characters in docstrings,
+  replaced Unicode box-drawing in architecture diagram with plain ASCII.
+- Placeholder `FIRST AUTHOR <EMAIL@ADDRESS>` in `.po` headers.
+- Broken `spectral.py` entry in `api/index.po`.
 
 ## [0.5.0] — 2026-05-07
 
