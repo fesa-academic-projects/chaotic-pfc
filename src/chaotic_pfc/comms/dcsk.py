@@ -296,9 +296,13 @@ def channel_multipath(
     return awgn(out, snr_db, rng)
 
 
-def _wifi_interferer(N: int, fc: float = 0.2, bw: float = 0.08) -> NDArray:
+def _wifi_interferer(
+    N: int, fc: float = 0.2, bw: float = 0.08, rng: np.random.Generator | None = None
+) -> NDArray:
     """Synthetic narrow-band interferer (noise filtered in a sub-band)."""
-    noise = np.random.default_rng().normal(0, 1, N)
+    if rng is None:
+        rng = np.random.default_rng()
+    noise = rng.normal(0, 1, N)
     h_bp = firwin(101, [fc - bw / 2, fc + bw / 2], pass_zero=False)
     return lfilter(h_bp, 1.0, noise)
 
@@ -341,7 +345,7 @@ def channel_interferers(
     rx += esc_dcsk * sig_int
 
     # WiFi-like interferer
-    sig_wifi = _wifi_interferer(N)
+    sig_wifi = _wifi_interferer(N, rng=rng)
     p_wifi = float(np.mean(sig_wifi**2))
     esc_wifi = np.sqrt(p_sig / (p_wifi * 10 ** (sir_wifi_db / 10)))
     rx += esc_wifi * sig_wifi

@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-08 00:42-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
@@ -161,14 +161,14 @@ msgstr ""
 #: ../../architecture.rst:166
 msgid ""
 "**Shallow config hierarchy.** All defaults reside in "
-":mod:`chaotic_pfc.config` as frozen dataclasses. The hierarchy is "
+":mod:`chaotic_pfc.config` as dataclasses. The hierarchy is "
 "intentionally shallow — every sub-config has only primitive fields or "
 "nested dataclasses of primitives — enabling trivial copying "
 "(``dataclasses.replace``), test isolation, and serialisation "
 "(``dataclasses.asdict``)."
 msgstr ""
 "**Hierarquia de configuração rasa.** Todos os valores padrão residem em "
-":mod:`chaotic_pfc.config` como dataclasses congeladas. A hierarquia é "
+":mod:`chaotic_pfc.config` como dataclasses. A hierarquia é "
 "intencionalmente rasa — cada sub-configuração possui apenas campos "
 "primitivos ou dataclasses aninhadas de primitivos — permitindo cópia "
 "trivial (``dataclasses.replace``), isolamento para testes e serialização "
@@ -214,13 +214,13 @@ msgstr ""
 msgid "Configuration"
 msgstr "Configuração"
 
-#: ../../architecture.rst:191
+#: ../../architecture.rst:190
 msgid ""
-"All default values live in :mod:`chaotic_pfc.config` as frozen "
+"All default values live in :mod:`chaotic_pfc.config` as "
 "dataclasses:"
 msgstr ""
 "Todos os valores padrão residem em :mod:`chaotic_pfc.config` como "
-"dataclasses congeladas:"
+"dataclasses:"
 
 #: ../../architecture.rst:214
 msgid ""
@@ -316,8 +316,8 @@ msgid "``config``"
 msgstr "``config``"
 
 #: ../../architecture.rst:246
-msgid "Centralised frozen-dataclass configuration, default singleton"
-msgstr "Configuração centralizada em dataclasses congeladas, singleton padrão"
+msgid "Centralised dataclass configuration, default singleton"
+msgstr "Configuração centralizada em dataclasses, singleton padrão"
 
 #~ msgid ""
 #~ "All hot loops are Numba-JIT "

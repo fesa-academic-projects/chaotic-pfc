@@ -451,17 +451,14 @@ def _sample_ics(
 ) -> NDArray:
     """Draw ``n_initial`` ICs uniformly in ``[fp·(1−p), fp·(1+p)]``.
 
-    The sampling formula matches the experimental protocol exactly:
-    ``np.random.uniform(low=fp*(1-p), high=fp*(1+p), size=(n_initial, dim))``.
-    It uses the legacy ``np.random.seed`` + ``np.random.uniform`` API so
-    that results are byte-for-byte reproducible against the original
-    standalone scripts, not just statistically similar.
+    Uses ``np.random.default_rng(seed)`` so that results are
+    deterministic and reproducible without mutating the global NumPy
+    RNG state.
     """
-    if seed is not None:
-        np.random.seed(seed)
+    rng = np.random.default_rng(seed)
     low = fixed_point * (1.0 - perturbation)
     high = fixed_point * (1.0 + perturbation)
-    return np.random.uniform(low=low, high=high, size=(n_initial, len(fixed_point)))
+    return rng.uniform(low=low, high=high, size=(n_initial, len(fixed_point)))
 
 
 # ── Generic ensemble runner ────────────────────────────────────────────────

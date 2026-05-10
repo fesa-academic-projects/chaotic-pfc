@@ -57,7 +57,7 @@ def run(args: argparse.Namespace) -> int:
     rng = np.random.default_rng(42)
     snr_range = np.arange(args.snr_min, args.snr_max + 1e-9, args.snr_step)
 
-    a, b = cfg.comm.henon.a, cfg.comm.henon.b
+    a, b_henon = cfg.comm.henon.a, cfg.comm.henon.b
     transient = cfg.comm.transient
 
     print(f"DCSK  |  β={args.beta}  taps={args.n_taps}  ωc={args.wc}  μ={args.mu}")
@@ -73,14 +73,14 @@ def run(args: argparse.Namespace) -> int:
 
     bers_pc, snrs_pc = [], []
     for snr in snr_range:
-        s = transmit(bits_pc, mu=args.mu, a=a, b=b, x0=0.0, y0=0.0)
+        s = transmit(bits_pc, mu=args.mu, a=a, b=b_henon, x0=0.0, y0=0.0)
         r = awgn(ideal_channel(s), snr, rng)
-        m_hat = receive(r, mu=args.mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+        m_hat = receive(r, mu=args.mu, a=a, b=b_henon, y0=rng.random(), z0=rng.random())
         rx_int = np.where(m_hat[transient:] > 0, 0, 1).astype(np.int64)
-        b = ber(bits_int_pc[transient:], rx_int)
+        ber_val = ber(bits_int_pc[transient:], rx_int)
         snrs_pc.append(snr)
-        bers_pc.append(b)
-        if b >= 0.50:
+        bers_pc.append(ber_val)
+        if ber_val >= 0.50:
             break
 
     # ── DCSK (classical) ─────────────────────────────────────────────────
@@ -90,10 +90,10 @@ def run(args: argparse.Namespace) -> int:
     for snr in snr_range:
         sig = dcsk_transmit(bits_dcsk, beta=args.beta, n_taps=args.n_taps, wc=args.wc)
         rx = awgn_chan(sig, snr)
-        b = ber(bits_dcsk, dcsk_receive(rx, args.beta))
+        ber_val = ber(bits_dcsk, dcsk_receive(rx, args.beta))
         snrs_dcsk.append(snr)
-        bers_dcsk.append(b)
-        if b >= 0.50:
+        bers_dcsk.append(ber_val)
+        if ber_val >= 0.50:
             break
 
     # ── EF-DCSK (efficient) ──────────────────────────────────────────────
@@ -101,10 +101,10 @@ def run(args: argparse.Namespace) -> int:
     for snr in snr_range:
         sig = efdcsk_transmit(bits_dcsk, beta=args.beta, n_taps=args.n_taps, wc=args.wc)
         rx = awgn_chan(sig, snr)
-        b = ber(bits_dcsk, efdcsk_receive(rx, args.beta))
+        ber_val = ber(bits_dcsk, efdcsk_receive(rx, args.beta))
         snrs_ef.append(snr)
-        bers_ef.append(b)
-        if b >= 0.50:
+        bers_ef.append(ber_val)
+        if ber_val >= 0.50:
             break
 
     # ── Plot ──────────────────────────────────────────────────────────────

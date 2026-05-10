@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 00:42-0300\n"
+"POT-Creation-Date: 2026-05-10 04:51-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -147,42 +147,42 @@ msgstr "Mecanismo adaptativo de parada antecipada"
 #, python-brace-format
 msgid ""
 "``_adaptive_checkpoint(n, Ns, lyap_sum, last_lyap, stable_count, tol, "
-"Nmap_min, Nmap)`` is called every ``ADAPTIVE_CHECKPOINT_EVERY = 100`` "
+"Nmap_min, Nmap)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY = 100`` "
 "iterations. It computes the current :math:`\\lambda_{\\max}` estimate and"
 " checks whether it has stabilised:"
 msgstr ""
 "``_adaptive_checkpoint(n, Ns, lyap_sum, last_lyap, stable_count, tol, "
-"Nmap_min, Nmap)`` é chamada a cada ``ADAPTIVE_CHECKPOINT_EVERY = 100`` "
+"Nmap_min, Nmap)`` é chamada a cada ``_ADAPTIVE_CHECKPOINT_EVERY = 100`` "
 "iterações. Calcula a estimativa atual de :math:`\\lambda_{\\max}` e "
 "verifica se estabilizou:"
 
 #: ../../internals.rst:61
 msgid ""
-"\\left| \\frac{\\lambda_{\\text{current}} - \\lambda_{\\text{previous}}}\n"
-"            {\\lambda_{\\text{previous}}} \\right| < \\text{tol}"
+"\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right|"
+" < \\text{tol}"
 msgstr ""
-"\\left| \\frac{\\lambda_{\\text{current}} - \\lambda_{\\text{previous}}}\n"
-"            {\\lambda_{\\text{previous}}} \\right| < \\text{tol}"
+"\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right|"
+" < \\text{tol}"
 
-#: ../../internals.rst:66
+#: ../../internals.rst:65
 msgid ""
-"If this condition holds for ``ADAPTIVE_STREAK = 2`` consecutive "
+"If this condition holds for ``_ADAPTIVE_STREAK = 2`` consecutive "
 "checkpoints *and* ``Nmap_min`` iterations have elapsed, the kernel "
 "signals early termination. The actual number of iterations used is "
 "recorded in the ``SweepResult`` attribute ``n_iters_used``, available for"
 " the difficulty-map visualisation."
 msgstr ""
-"Se esta condição se mantiver por ``ADAPTIVE_STREAK = 2`` pontos de "
+"Se esta condição se mantiver por ``_ADAPTIVE_STREAK = 2`` pontos de "
 "verificação consecutivos *e* ``Nmap_min`` iterações tiverem decorrido, o "
 "kernel sinaliza término antecipado. O número real de iterações utilizadas"
 " é registrado no atributo ``n_iters_used`` de ``SweepResult``, disponível"
 " para a visualização do mapa de dificuldade."
 
-#: ../../internals.rst:73
+#: ../../internals.rst:72
 msgid "Lyapunov estimator kernels"
 msgstr "Kernels estimadores de Lyapunov"
 
-#: ../../internals.rst:75
+#: ../../internals.rst:74
 msgid ""
 "``_lyap_online_n12`` and ``_lyap_online_nN`` are the inner Lyapunov "
 "estimator kernels. They:"
@@ -190,7 +190,7 @@ msgstr ""
 "``_lyap_online_n12`` e ``_lyap_online_nN`` são os kernels internos do "
 "estimador de Lyapunov. Eles:"
 
-#: ../../internals.rst:78
+#: ../../internals.rst:77
 msgid ""
 "Run ``Nitera`` burn-in iterations (trajectory convergence to the "
 "attractor)."
@@ -198,7 +198,7 @@ msgstr ""
 "Executam ``Nitera`` iterações de aquecimento (convergência da trajetória "
 "para o atrator)."
 
-#: ../../internals.rst:80
+#: ../../internals.rst:79
 msgid ""
 "Run ``Nmap`` estimation iterations (or fewer, if adaptive early-stop "
 "triggers)."
@@ -206,7 +206,7 @@ msgstr ""
 "Executam ``Nmap`` iterações de estimação (ou menos, se a parada "
 "antecipada adaptativa for acionada)."
 
-#: ../../internals.rst:82
+#: ../../internals.rst:81
 msgid ""
 "At each estimation iteration, evolve the perturbation vectors through the"
 " Jacobian (tangent map) and apply MGS."
@@ -214,7 +214,7 @@ msgstr ""
 "A cada iteração de estimação, evoluem os vetores de perturbação através "
 "do Jacobiano (mapa tangente) e aplicam MGS."
 
-#: ../../internals.rst:84
+#: ../../internals.rst:83
 #, python-brace-format
 msgid ""
 "Return the mean :math:`\\lambda_{\\max}` over ``n_initial`` independent "
@@ -223,7 +223,7 @@ msgstr ""
 "Retornam a média de :math:`\\lambda_{\\max}` sobre ``n_initial`` "
 "condições iniciais independentes testadas em sequência."
 
-#: ../../internals.rst:87
+#: ../../internals.rst:86
 msgid ""
 "The \"online\" naming reflects that the estimator updates continuously "
 "during the trajectory, rather than collecting the full state history and "
@@ -233,11 +233,11 @@ msgstr ""
 "durante a trajetória, em vez de coletar o histórico completo de estados e"
 " calcular os expoentes de Lyapunov offline."
 
-#: ../../internals.rst:92
+#: ../../internals.rst:91
 msgid "Parallel sweep kernel"
 msgstr "Kernel de varredura paralela"
 
-#: ../../internals.rst:94
+#: ../../internals.rst:93
 msgid ""
 "``_sweep_kernel`` is the single ``prange`` (or ``range``, without Numba) "
 "parallel loop over all (order, cutoff) grid points. It receives the "
@@ -249,7 +249,7 @@ msgstr ""
 "entradas o banco de coeficientes FIR pré-calculado, o tensor de "
 "perturbação e a permutação de ordem das tarefas."
 
-#: ../../internals.rst:99
+#: ../../internals.rst:98
 #, python-brace-format
 msgid ""
 "The ``_build_task_order`` function creates a permuted list of "
@@ -266,11 +266,11 @@ msgstr ""
 "desiguais (o laço interno MGS escala como :math:`\\mathcal{O}(N_s^3)` com"
 " a ordem do filtro :math:`N_s`)."
 
-#: ../../internals.rst:107
+#: ../../internals.rst:106
 msgid "Fixed-point stability analysis"
 msgstr "Análise de estabilidade de ponto fixo"
 
-#: ../../internals.rst:109
+#: ../../internals.rst:108
 msgid ""
 ":func:`~chaotic_pfc.dynamics.lyapunov.fixed_point_stability` provides a "
 "quick eigenvalue-based sanity check before the full Lyapunov simulation:"
@@ -279,7 +279,7 @@ msgstr ""
 "verificação rápida baseada em autovalores antes da simulação completa de "
 "Lyapunov:"
 
-#: ../../internals.rst:113
+#: ../../internals.rst:112
 msgid ""
 "Compute the coordinates of the fixed point(s) of the filtered Hénon "
 "system."
@@ -287,7 +287,7 @@ msgstr ""
 "Calcula as coordenadas do(s) ponto(s) fixo(s) do sistema de Hénon "
 "filtrado."
 
-#: ../../internals.rst:115
+#: ../../internals.rst:114
 #, python-brace-format
 msgid ""
 "Assemble the Jacobian matrix :math:`\\mathbf{J}` of the expanded "
@@ -296,7 +296,7 @@ msgstr ""
 "Monta a matriz Jacobiana :math:`\\mathbf{J}` do sistema expandido de "
 "dimensão :math:`K'` no ponto fixo."
 
-#: ../../internals.rst:117
+#: ../../internals.rst:116
 #, python-brace-format
 msgid ""
 "Compute the eigenvalues of :math:`\\mathbf{J}` via "
@@ -305,7 +305,7 @@ msgstr ""
 "Calcula os autovalores de :math:`\\mathbf{J}` via "
 ":func:`scipy.linalg.eig`."
 
-#: ../../internals.rst:119
+#: ../../internals.rst:118
 msgid ""
 "Classify: if :math:`\\max |\\lambda_i| < 1`, the fixed point is linearly "
 "stable (periodic); if :math:`\\max |\\lambda_i| > 1`, the fixed point is "
@@ -317,7 +317,7 @@ msgstr ""
 "instável, e o estimador completo de Lyapunov é necessário para determinar"
 " se a órbita resultante é caótica ou divergente."
 
-#: ../../internals.rst:124
+#: ../../internals.rst:123
 msgid ""
 "This two-stage approach saves significant computation: points with stable"
 " fixed points can often be classified without running the full MGS "
@@ -332,11 +332,11 @@ msgstr ""
 "ser negativo (órbita periódica) ou positivo (caótico) apesar da "
 "instabilidade."
 
-#: ../../internals.rst:131
+#: ../../internals.rst:130
 msgid "FIR bank precomputation"
 msgstr "Pré-cálculo do banco FIR"
 
-#: ../../internals.rst:133
+#: ../../internals.rst:132
 msgid ""
 "The FIR coefficient bank is the largest precomputed data structure in the"
 " sweep pipeline. For ``N_orders = 40`` orders and ``N_cutoffs = 100`` "
@@ -346,7 +346,7 @@ msgstr ""
 " pipeline de varredura. Para ``N_orders = 40`` ordens e ``N_cutoffs = "
 "100`` cortes, contém:"
 
-#: ../../internals.rst:137
+#: ../../internals.rst:136
 msgid ""
 "Shape ``(N_coef, N_cutoffs, max_taps)`` — each ``(order, cutoff)`` pair "
 "produces a filter of length ``order``, zero-padded to ``max_taps``."
@@ -355,7 +355,7 @@ msgstr ""
 "produz um filtro de comprimento ``ordem``, preenchido com zeros até "
 "``max_taps``."
 
-#: ../../internals.rst:140
+#: ../../internals.rst:139
 msgid ""
 "Shape ``(N_coef, N_cutoffs)`` — the gain matrix maps each filter's total "
 "gain."
@@ -363,7 +363,7 @@ msgstr ""
 "Formato ``(N_coef, N_cutoffs)`` — a matriz de ganho mapeia o ganho total "
 "de cada filtro."
 
-#: ../../internals.rst:143
+#: ../../internals.rst:142
 msgid ""
 "The bank is built by "
 ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, which calls "
@@ -377,11 +377,11 @@ msgstr ""
 "armazenados em **float64** (precisão dupla) para corresponder ao tipo de "
 "dados utilizado em todos os kernels Numba."
 
-#: ../../internals.rst:149
+#: ../../internals.rst:148
 msgid "Signal generators"
 msgstr "Geradores de sinais"
 
-#: ../../internals.rst:151
+#: ../../internals.rst:150
 msgid ""
 "Two message waveform generators in :mod:`chaotic_pfc.dynamics.signals` "
 "feed the communication pipeline:"
@@ -389,11 +389,11 @@ msgstr ""
 "Dois geradores de forma de onda de mensagem em "
 ":mod:`chaotic_pfc.dynamics.signals` alimentam o pipeline de comunicação:"
 
-#: ../../internals.rst:154
+#: ../../internals.rst:153
 msgid ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
 msgstr ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
 
-#: ../../internals.rst:155
+#: ../../internals.rst:154
 #, python-brace-format
 msgid ""
 "Produces a BPSK-style square wave of :math:`\\{+1, -1\\}` with a "
@@ -404,11 +404,11 @@ msgstr ""
 "de bit configurável (em amostras). No período padrão de 20 amostras, cada"
 " bit abrange 20 iterações do mapa caótico."
 
-#: ../../internals.rst:159
+#: ../../internals.rst:158
 msgid ":func:`~chaotic_pfc.dynamics.signals.sinusoidal_message`"
 msgstr ":func:`~chaotic_pfc.dynamics.signals.sinusoidal_message`"
 
-#: ../../internals.rst:160
+#: ../../internals.rst:159
 msgid ""
 "Produces a single-tone cosine probe for spectral-response measurements. "
 "Useful for characterising the channel transfer function independently of "
@@ -418,11 +418,11 @@ msgstr ""
 "espectral. Útil para caracterizar a função de transferência do canal "
 "independentemente da portadora caótica."
 
-#: ../../internals.rst:165
+#: ../../internals.rst:164
 msgid "PSD estimation"
 msgstr "Estimação de PSD"
 
-#: ../../internals.rst:167
+#: ../../internals.rst:166
 msgid ""
 ":func:`~chaotic_pfc.dynamics.spectral.psd_normalised` estimates the power"
 " spectral density (PSD) via Welch's averaged periodogram method. Key "
@@ -432,7 +432,7 @@ msgstr ""
 "espectral de potência (PSD) via método do periodograma médio de Welch. "
 "Características principais:"
 
-#: ../../internals.rst:171
+#: ../../internals.rst:170
 msgid ""
 "Returns **peak-normalised** PSD (maximum value set to 1) with frequency "
 "axis in :math:`\\omega / \\pi \\in [0, 1]`."
@@ -440,7 +440,7 @@ msgstr ""
 "Retorna PSD **normalizada pelo pico** (valor máximo definido como 1) com "
 "eixo de frequência em :math:`\\omega / \\pi \\in [0, 1]`."
 
-#: ../../internals.rst:173
+#: ../../internals.rst:172
 msgid ""
 "Supports seven window types: Hamming, Hann (Hanning), Blackman, Kaiser "
 "(:math:`\\beta=5`), Blackman-Harris, Boxcar (rectangular), and Bartlett "
@@ -450,7 +450,7 @@ msgstr ""
 "(:math:`\\beta=5`), Blackman-Harris, Boxcar (retangular) e Bartlett "
 "(triangular)."
 
-#: ../../internals.rst:176
+#: ../../internals.rst:175
 msgid ""
 "The ``remove_dc`` option subtracts the mean before computing the PSD, "
 "suppressing the DC component."
@@ -458,7 +458,7 @@ msgstr ""
 "A opção ``remove_dc`` subtrai a média antes de calcular a PSD, suprimindo"
 " a componente DC."
 
-#: ../../internals.rst:178
+#: ../../internals.rst:177
 msgid ""
 "Wraps :func:`scipy.signal.welch` with internal parameter normalisation "
 "(``fs=2`` maps to :math:`\\omega / \\pi`)."
@@ -466,7 +466,7 @@ msgstr ""
 "Encapsula :func:`scipy.signal.welch` com normalização interna de "
 "parâmetros (``fs=2`` mapeia para :math:`\\omega / \\pi`)."
 
-#: ../../internals.rst:181
+#: ../../internals.rst:180
 msgid ""
 "The normalised frequency convention is essential for the sweep pipeline, "
 "where the cutoff frequency :math:`\\omega_c / \\pi` directly maps to the "
@@ -476,11 +476,11 @@ msgstr ""
 "varredura, onde a frequência de corte :math:`\\omega_c / \\pi` mapeia "
 "diretamente para o parâmetro ``cutoff`` de :func:`scipy.signal.firwin`."
 
-#: ../../internals.rst:186
+#: ../../internals.rst:185
 msgid "Channel models"
 msgstr "Modelos de canal"
 
-#: ../../internals.rst:188
+#: ../../internals.rst:187
 msgid ""
 "Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and "
 ":func:`~chaotic_pfc.comms.channel.fir_channel`, the DCSK module provides "
@@ -490,19 +490,19 @@ msgstr ""
 ":func:`~chaotic_pfc.comms.channel.fir_channel`, o módulo DCSK fornece "
 "quatro modelos de canal compostos:"
 
-#: ../../internals.rst:192
+#: ../../internals.rst:191
 msgid ":func:`~chaotic_pfc.comms.dcsk.awgn`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.awgn`"
 
-#: ../../internals.rst:193
+#: ../../internals.rst:192
 msgid "Additive white Gaussian noise with configurable SNR (dB)."
 msgstr "Ruído gaussiano branco aditivo com SNR configurável (dB)."
 
-#: ../../internals.rst:195
+#: ../../internals.rst:194
 msgid ":func:`~chaotic_pfc.comms.dcsk.channel_impulsive`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_impulsive`"
 
-#: ../../internals.rst:196
+#: ../../internals.rst:195
 msgid ""
 "Middleton Class-A impulsive noise model, producing bursts of high-"
 "amplitude interference superimposed on AWGN."
@@ -510,11 +510,11 @@ msgstr ""
 "Modelo de ruído impulsivo Middleton Classe-A, produzindo rajadas de "
 "interferência de alta amplitude sobrepostas ao AWGN."
 
-#: ../../internals.rst:199
+#: ../../internals.rst:198
 msgid ":func:`~chaotic_pfc.comms.dcsk.channel_multipath`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_multipath`"
 
-#: ../../internals.rst:200
+#: ../../internals.rst:199
 msgid ""
 "Configurable multipath propagation with user-specified tap delays "
 "(samples) and gain factors (linear). Models frequency-selective fading."
@@ -523,11 +523,11 @@ msgstr ""
 "fatores de ganho (lineares) especificados pelo usuário. Modela "
 "desvanecimento seletivo em frequência."
 
-#: ../../internals.rst:204
+#: ../../internals.rst:203
 msgid ":func:`~chaotic_pfc.comms.dcsk.channel_interferers`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_interferers`"
 
-#: ../../internals.rst:205
+#: ../../internals.rst:204
 msgid ""
 "Composite channel combining AWGN, a DCSK interferer (simulating co-"
 "channel chaotic transmissions), and a WiFi-like narrowband interferer."
@@ -536,11 +536,11 @@ msgstr ""
 "transmissões caóticas co-canal) e um interferente de banda estreita "
 "similar a WiFi."
 
-#: ../../internals.rst:209
+#: ../../internals.rst:208
 msgid ":func:`~chaotic_pfc.comms.dcsk.channel_urban`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_urban`"
 
-#: ../../internals.rst:210
+#: ../../internals.rst:209
 msgid ""
 "All-in-one urban channel model combining AWGN, multipath, impulsive "
 "noise, and interferers — representing a worst-case composite propagation "
@@ -550,11 +550,11 @@ msgstr ""
 "impulsivo e interferentes — representando um ambiente de propagação "
 "composto de pior caso."
 
-#: ../../internals.rst:215
+#: ../../internals.rst:214
 msgid "Translation layer"
 msgstr "Camada de tradução"
 
-#: ../../internals.rst:217
+#: ../../internals.rst:216
 msgid ""
 ":mod:`chaotic_pfc._i18n` provides bilingual figure labels (Portuguese and"
 " English) without requiring ``gettext`` at runtime. Features:"
@@ -562,11 +562,11 @@ msgstr ""
 ":mod:`chaotic_pfc._i18n` fornece rótulos de figura bilíngues (português e"
 " inglês) sem exigir ``gettext`` em tempo de execução. Características:"
 
-#: ../../internals.rst:220
+#: ../../internals.rst:219
 msgid "Simple dictionary-based lookup via :func:`chaotic_pfc._i18n.t`."
 msgstr "Busca simples baseada em dicionário via :func:`chaotic_pfc._i18n.t`."
 
-#: ../../internals.rst:221
+#: ../../internals.rst:220
 msgid ""
 "Default language controllable via ``CHAOTIC_PFC_LANG`` environment "
 "variable or ``--lang`` CLI flag."
@@ -574,7 +574,7 @@ msgstr ""
 "Idioma padrão controlável via variável de ambiente ``CHAOTIC_PFC_LANG`` "
 "ou flag CLI ``--lang``."
 
-#: ../../internals.rst:223
+#: ../../internals.rst:222
 msgid ""
 "Covers attractor titles, sensitivity axis labels, communication grid "
 "subplot titles, and DCSK plotting strings."
@@ -582,23 +582,23 @@ msgstr ""
 "Abrange títulos de atratores, rótulos de eixos de sensibilidade, títulos "
 "de subplots da grade de comunicação e strings de plotagem DCSK."
 
-#: ../../internals.rst:225
+#: ../../internals.rst:224
 msgid "Falls back to the raw key if a translation is missing."
 msgstr "Retorna à chave bruta se uma tradução estiver ausente."
 
-#: ../../internals.rst:228
+#: ../../internals.rst:227
 msgid "Configuration model"
 msgstr "Modelo de configuração"
 
-#: ../../internals.rst:230
+#: ../../internals.rst:229
 msgid ""
-"The :mod:`chaotic_pfc.config` module uses a shallow hierarchy of frozen "
+"The :mod:`chaotic_pfc.config` module uses a shallow hierarchy of "
 "dataclasses:"
 msgstr ""
 "O módulo :mod:`chaotic_pfc.config` utiliza uma hierarquia rasa de "
-"dataclasses congeladas:"
+"dataclasses:"
 
-#: ../../internals.rst:246
+#: ../../internals.rst:245
 msgid ""
 "Each sub-config is a ``@dataclass`` with only primitive fields (int, "
 "float, str) or nested dataclasses with primitives. This design enables:"
@@ -607,21 +607,21 @@ msgstr ""
 "(int, float, str) ou dataclasses aninhadas com primitivos. Este design "
 "permite:"
 
-#: ../../internals.rst:249
+#: ../../internals.rst:248
 msgid "``dataclasses.replace(cfg, seed=7)`` for test isolation."
 msgstr "``dataclasses.replace(cfg, seed=7)`` para isolamento de testes."
 
-#: ../../internals.rst:250
+#: ../../internals.rst:249
 msgid "``dataclasses.asdict(cfg)`` for serialisation."
 msgstr "``dataclasses.asdict(cfg)`` para serialização."
 
-#: ../../internals.rst:251
+#: ../../internals.rst:250
 msgid "Type-safe access through attribute paths (``cfg.comm.henon.a``)."
 msgstr ""
 "Acesso com segurança de tipos através de caminhos de atributos "
 "(``cfg.comm.henon.a``)."
 
-#: ../../internals.rst:252
+#: ../../internals.rst:251
 msgid ""
 "Clear ownership: every configuration field belongs to exactly one "
 "subsystem."

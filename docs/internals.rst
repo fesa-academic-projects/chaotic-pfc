@@ -54,16 +54,15 @@ Adaptive early-stop mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``_adaptive_checkpoint(n, Ns, lyap_sum, last_lyap, stable_count, tol,
-Nmap_min, Nmap)`` is called every ``ADAPTIVE_CHECKPOINT_EVERY = 100``
+Nmap_min, Nmap)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY = 100``
 iterations. It computes the current :math:`\lambda_{\max}` estimate and
 checks whether it has stabilised:
 
 .. math::
 
-    \left| \frac{\lambda_{\text{current}} - \lambda_{\text{previous}}}
-                {\lambda_{\text{previous}}} \right| < \text{tol}
+    \left| \lambda_{\text{current}} - \lambda_{\text{previous}} \right| < \text{tol}
 
-If this condition holds for ``ADAPTIVE_STREAK = 2`` consecutive
+If this condition holds for ``_ADAPTIVE_STREAK = 2`` consecutive
 checkpoints *and* ``Nmap_min`` iterations have elapsed, the kernel
 signals early termination. The actual number of iterations used is
 recorded in the ``SweepResult`` attribute ``n_iters_used``, available
@@ -228,7 +227,7 @@ Configuration model
 -------------------
 
 The :mod:`chaotic_pfc.config` module uses a shallow hierarchy of
-frozen dataclasses:
+dataclasses:
 
 .. code-block:: text
 

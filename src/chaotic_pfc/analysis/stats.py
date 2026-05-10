@@ -263,7 +263,7 @@ def beta_summary(
             if np.isnan(beta):
                 continue
             h = result.h
-            chaotic = np.sum(h > 0)
+            chaotic = np.sum((~np.isnan(h)) & (h > 0))
             total = h.size
             mn, mx = _safe_stats(h)
             out[ft][beta] = {

@@ -26,10 +26,8 @@ def _precompute_perturbations(
     Ncoef = len(orders)
     max_Ns = int(orders.max()) if Ncoef > 0 else 0
 
-    if seed is not None:
-        np.random.seed(seed)
-
-    return np.random.rand(Ncoef, n_cutoffs, n_initial, max_Ns)
+    rng = np.random.default_rng(seed)
+    return rng.random((Ncoef, n_cutoffs, n_initial, max_Ns), dtype=np.float64)
 
 
 def precompute_fir_bank(

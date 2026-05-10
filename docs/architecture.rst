@@ -16,7 +16,7 @@ Package layout
     ├── _version.py                      # single source of truth: __version__
     ├── _compat.py                       # Numba compatibility layer (no-op fallback)
     ├── _i18n.py                         # bilingual figure labels (pt / en)
-    ├── config.py                        # centralised frozen-dataclass configuration
+    ├── config.py                        # centralised dataclass configuration
     ├── dynamics/                        # core mathematical machinery
     │   ├── maps.py                      # Hénon map variants (standard → order-N)
     │   ├── lyapunov.py                  # Lyapunov exponents (single-IC + ensemble)
@@ -164,7 +164,7 @@ protocols by duck typing. This provides mypy-level documentation of the
 communication pipeline's interface without runtime overhead.
 
 **Shallow config hierarchy.** All defaults reside in
-:mod:`chaotic_pfc.config` as frozen dataclasses. The hierarchy is
+:mod:`chaotic_pfc.config` as dataclasses. The hierarchy is
 intentionally shallow — every sub-config has only primitive fields
 or nested dataclasses of primitives — enabling trivial copying
 (``dataclasses.replace``), test isolation, and serialisation
@@ -188,7 +188,7 @@ fixed-iteration computation with negligible accuracy loss (< 0.1% in
 Configuration
 -------------
 
-All default values live in :mod:`chaotic_pfc.config` as frozen
+All default values live in :mod:`chaotic_pfc.config` as
 dataclasses:
 
 .. code-block:: python
@@ -243,4 +243,4 @@ Subpackages and their responsibilities
      - Unified argparse-based CLI with hierarchical subcommands,
        shared helpers (PSD computation, save/show logic)
    * - ``config``
-     - Centralised frozen-dataclass configuration, default singleton
+     - Centralised dataclass configuration, default singleton

@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.0\n"
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-08 00:42-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"

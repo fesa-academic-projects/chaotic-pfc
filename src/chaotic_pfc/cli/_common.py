@@ -61,10 +61,11 @@ def compute_psds(m, s, r, m_hat, sp_cfg):
     """
     from chaotic_pfc.dynamics.spectral import psd_normalised
 
-    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length)
-    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length)
+    kwargs = dict(window=sp_cfg.window, kaiser_beta=sp_cfg.kaiser_beta)
+    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
+    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
+    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
+    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
     return omega, psd_m, psd_s, psd_r, psd_mhat
 
 
