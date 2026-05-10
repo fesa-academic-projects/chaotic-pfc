@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 01:10-0300\n"
+"POT-Creation-Date: 2026-05-10 17:18-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -251,9 +251,10 @@ msgid "Public API"
 msgstr "API pública"
 
 #: ../../contributing.rst:182
+#, fuzzy
 msgid ""
 "The canonic public API is defined in :mod:`chaotic_pfc.__init__` via the "
-"``__all__`` list (~70 symbols). All names in ``__all__`` are re-exported "
+"``__all__`` list (61 symbols). All names in ``__all__`` are re-exported "
 "at the top level:"
 msgstr ""
 "A API pública canônica é definida em :mod:`chaotic_pfc.__init__` via a "
@@ -436,3 +437,4 @@ msgstr "Mensagens de commit seguem Conventional Commits."
 
 #~ msgid "Table of Contents"
 #~ msgstr "Índice"
+

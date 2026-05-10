@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 13:29-0300\n"
+"POT-Creation-Date: 2026-05-10 17:18-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -303,13 +303,15 @@ msgstr ""
 "dimensão :math:`K'` no ponto fixo."
 
 #: ../../internals.rst:119
-#, python-brace-format
-msgid ""
-"Compute the eigenvalues of :math:`\\mathbf{J}` via "
-":func:`scipy.linalg.eig`."
+#, fuzzy, python-brace-format
+msgid "Compute the eigenvalues of :math:`\\mathbf{J}` via"
 msgstr ""
 "Calcula os autovalores de :math:`\\mathbf{J}` via "
 ":func:`scipy.linalg.eig`."
+
+#: ../../internals.rst:120
+msgid ":func:`numpy.linalg.eigvals`."
+msgstr ""
 
 #: ../../internals.rst:121
 msgid ""
@@ -496,10 +498,12 @@ msgstr ""
 "Além dos básicos :func:`~chaotic_pfc.comms.channel.ideal_channel` e "
 ":func:`~chaotic_pfc.comms.channel.fir_channel`, o módulo DCSK fornece "
 "quatro modelos de canal compostos. Todos aceitam um parâmetro opcional "
-"``rng`` (``numpy.random.Generator``) para reprodutibilidade determinística:"
+"``rng`` (``numpy.random.Generator``) para reprodutibilidade "
+"determinística:"
 
 #: ../../internals.rst:195
-msgid ":func:`~chaotic_pfc.comms.dcsk.awgn`"
+#, fuzzy
+msgid ":func:`~chaotic_pfc.comms.channel.awgn`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.awgn`"
 
 #: ../../internals.rst:196
@@ -507,7 +511,8 @@ msgid "Additive white Gaussian noise with configurable SNR (dB)."
 msgstr "Ruído gaussiano branco aditivo com SNR configurável (dB)."
 
 #: ../../internals.rst:198
-msgid ":func:`~chaotic_pfc.comms.dcsk.channel_impulsive`"
+#, fuzzy
+msgid ":func:`~chaotic_pfc.comms.channel.channel_impulsive`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_impulsive`"
 
 #: ../../internals.rst:199
@@ -519,7 +524,8 @@ msgstr ""
 "interferência de alta amplitude sobrepostas ao AWGN."
 
 #: ../../internals.rst:202
-msgid ":func:`~chaotic_pfc.comms.dcsk.channel_multipath`"
+#, fuzzy
+msgid ":func:`~chaotic_pfc.comms.channel.channel_multipath`"
 msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_multipath`"
 
 #: ../../internals.rst:203
@@ -571,7 +577,8 @@ msgstr ""
 " inglês) sem exigir ``gettext`` em tempo de execução. Características:"
 
 #: ../../internals.rst:223
-msgid "Simple dictionary-based lookup via :func:`chaotic_pfc._i18n.t`."
+#, fuzzy
+msgid "Simple dictionary-based lookup via chaotic_pfc._i18n.t."
 msgstr "Busca simples baseada em dicionário via :func:`chaotic_pfc._i18n.t`."
 
 #: ../../internals.rst:224
@@ -648,3 +655,4 @@ msgstr ""
 #~ "Retornam a média de :math:`\\lambda_{\\max}`"
 #~ " sobre ``n_initial`` condições iniciais "
 #~ "independentes testadas em sequência."
+

@@ -169,40 +169,6 @@ def henon_filtered(
 # ── N-th order map (vectorised state) ──────────────────────────────────────
 
 
-def henon_n4_step(
-    x: NDArray,
-    s: float,
-    a: float,
-    b: float,
-    c: NDArray,
-) -> NDArray:
-    """Single step of the N-th order filtered Hénon map.
-
-    Allocates a new output array on every call. For hot loops, prefer
-    :func:`henon_n4_step_inplace` which writes into a pre-allocated buffer.
-
-    Parameters
-    ----------
-    x
-        Current state, shape ``(Nc,)``.
-    s
-        Current driving value.
-    a, b
-        Hénon parameters.
-    c
-        FIR coefficients, shape ``(Nc,)``.
-
-    Returns
-    -------
-    ndarray, shape (Nc,)
-        The updated state ``x[n+1]``.
-    """
-    Nc = len(c)
-    out = np.empty(Nc)
-    henon_n4_step_inplace(out, x, s, a, b, c)
-    return out
-
-
 def henon_n4_step_inplace(
     out: NDArray,
     x: NDArray,
@@ -259,7 +225,7 @@ def henon_order_n(
     The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``.
     At each step, the carrier output is the filtered state component
     ``x[2]``, and the next iterate is computed by
-    :func:`henon_n4_step`.
+    :func:`henon_n4_step_inplace`.
 
     The ``driving`` parameter lets callers override the nonlinear
     input: when ``driving=None`` the map runs autonomously (``s = x[2]``);
@@ -310,15 +276,13 @@ def henon_order_n(
 
 # ── FIR-filtered Hénon sequence generator ──────────────────────────────────
 
-DCSK_DEFAULT_WC: float = 0.9091
-
 
 def henon_fir_sequence(
     N: int,
     a: float = 1.4,
     b: float = 0.3,
     n_taps: int = 5,
-    wc: float = DCSK_DEFAULT_WC,
+    wc: float = 0.9091,
     window: str = "hamming",
 ) -> NDArray:
     """Generate a chaotic sequence from the FIR-filtered Hénon map.

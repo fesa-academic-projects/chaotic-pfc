@@ -600,9 +600,9 @@ class TestKernelFunctions(unittest.TestCase):
         self.assertEqual(x_new.shape, (4,))
 
     def test_mgs_accumulate_maintains_orthogonality(self):
-        np.random.seed(0)
+        rng = np.random.default_rng(0)
         Ns = 4
-        z = np.random.randn(Ns, Ns) * 0.1
+        z = rng.standard_normal((Ns, Ns)) * 0.1
         lyap_sum = np.zeros(Ns)
         self._mgs(z, Ns, lyap_sum)
         self.assertTrue(np.all(np.isfinite(z)))

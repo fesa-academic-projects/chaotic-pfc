@@ -117,7 +117,7 @@ simulation:
 2. Assemble the Jacobian matrix :math:`\mathbf{J}` of the expanded
    :math:`K'`-dimensional system at the fixed point.
 3. Compute the eigenvalues of :math:`\mathbf{J}` via
-   :func:`scipy.linalg.eig`.
+    :func:`numpy.linalg.eigvals`.
 4. Classify: if :math:`\max |\lambda_i| < 1`, the fixed point is
    linearly stable (periodic); if :math:`\max |\lambda_i| > 1`, the
    fixed point is unstable, and the full Lyapunov estimator is needed
@@ -192,14 +192,14 @@ Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and
 provides four composite channel models. All accept an optional ``rng``
 parameter (``numpy.random.Generator``) for deterministic reproducibility:
 
-:func:`~chaotic_pfc.comms.dcsk.awgn`
+:func:`~chaotic_pfc.comms.channel.awgn`
   Additive white Gaussian noise with configurable SNR (dB).
 
-:func:`~chaotic_pfc.comms.dcsk.channel_impulsive`
+:func:`~chaotic_pfc.comms.channel.channel_impulsive`
   Middleton Class-A impulsive noise model, producing bursts of
   high-amplitude interference superimposed on AWGN.
 
-:func:`~chaotic_pfc.comms.dcsk.channel_multipath`
+:func:`~chaotic_pfc.comms.channel.channel_multipath`
   Configurable multipath propagation with user-specified tap delays
   (samples) and gain factors (linear). Models frequency-selective
   fading.
@@ -220,7 +220,7 @@ Translation layer
 :mod:`chaotic_pfc._i18n` provides bilingual figure labels (Portuguese
 and English) without requiring ``gettext`` at runtime. Features:
 
-* Simple dictionary-based lookup via :func:`chaotic_pfc._i18n.t`.
+* Simple dictionary-based lookup via chaotic_pfc._i18n.t.
 * Default language controllable via ``CHAOTIC_PFC_LANG`` environment
   variable or ``--lang`` CLI flag.
 * Covers attractor titles, sensitivity axis labels, communication

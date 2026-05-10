@@ -50,7 +50,7 @@ Package layout
         ├── comm_order_n.py              # order-N Hénon + FIR channel
         ├── lyapunov.py                  # Lyapunov spectra
         ├── dcsk.py                      # BER-vs-SNR comparison
-        ├── sweep.py                     # sweep compute / plot / beta-sweep / plot-3d
+        ├── sweep/                       # sweep compute / plot / beta-sweep / plot-3d
         └── analysis.py                  # statistical report
 
 Data flow
@@ -117,7 +117,7 @@ optional Numba dependency:
 
     _build_task_order()                   →  permuted task list (load-balanced)
 
-    _precompute_perturbations()           →  noise tensor (np.random.seed)
+    _precompute_perturbations()           →  noise tensor (default_rng(seed))
 
     _sweep_kernel(prange)                 ← Numba JIT (or pure-Python fallback)
     ├── burn-in (Nitera iters)            →  state buffer
@@ -145,7 +145,7 @@ returns ``1`` for ``get_num_threads()``. Install the ``[fast]`` extra
 for 20–50× speedup on the sweep.
 
 **Deterministic reproducibility.** Perturbation vectors are
-pre-generated on the Python side using ``np.random.seed`` and passed as
+pre-generated on the Python side using ``default_rng(seed)`` and passed as
 NumPy arrays into the Numba kernel. This is necessary because Numba's
 per-thread RNG does not honour the global seed. Every run with the same
 seed produces bit-exact identical results.

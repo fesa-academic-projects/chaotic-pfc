@@ -153,6 +153,8 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run lyapunov`           | Espectros de Lyapunov: CI única e ensemble para sistemas 2-D e 4-D. |
 | `chaotic-pfc run sweep compute`      | Varredura paralela de Lyapunov sobre `(ordem × cutoff)`. |
 | `chaotic-pfc run sweep plot`         | Mapas de classificação a partir dos dados salvos. |
+| `chaotic-pfc run sweep beta-sweep`   | Varredura Kaiser β: agrega resultados de Lyapunov por β. |
+| `chaotic-pfc run sweep plot-3d`      | Volume 3-D interativo das varreduras Kaiser β via Plotly. |
 | `chaotic-pfc run dcsk`               | Comparação DCSK / EF-DCSK / Pecora-Carroll — BER vs SNR. |
 | `chaotic-pfc run analysis`           | Análise estatística dos resultados da varredura. |
 | `chaotic-pfc run all`                | Pipeline completo, em ordem. |

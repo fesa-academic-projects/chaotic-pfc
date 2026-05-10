@@ -12,7 +12,7 @@ import time
 
 import numpy as np
 
-from chaotic_pfc._compat import _HAS_NUMBA
+from chaotic_pfc._compat import HAS_NUMBA
 from chaotic_pfc.analysis.sweep import precompute_fir_bank
 
 # ── Imports ──────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ def _timeit(label: str, fn, *args, **kwargs) -> float:
 def main() -> None:
     print("=" * 65)
     print("  chaotic-pfc benchmarks")
-    print(f"  Numba JIT: {'available' if _HAS_NUMBA else 'NOT available (pure Python)'}")
+    print(f"  Numba JIT: {'available' if HAS_NUMBA else 'NOT available (pure Python)'}")
     print("=" * 65)
 
     # ── Henon maps ───────────────────────────────────────────────────────

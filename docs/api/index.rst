@@ -18,6 +18,7 @@ NumPy-style docstrings extracted from the source.
    chaotic_pfc.comms.channel
    chaotic_pfc.comms.receiver
    chaotic_pfc.comms.dcsk
+   chaotic_pfc.comms.protocols
    chaotic_pfc.analysis.sweep
    chaotic_pfc.analysis.stats
    chaotic_pfc.analysis.sweep_plotting

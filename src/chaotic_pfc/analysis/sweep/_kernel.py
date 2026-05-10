@@ -75,6 +75,14 @@ def _henon_nN_inplace(x, x_new, alpha, beta, c):
 # ═══════════════════════════════════════════════════════════════════════════
 # Lyapunov kernels — buffer-reusing, structure-aware J@W
 # ═══════════════════════════════════════════════════════════════════════════
+#
+# The two Lyapunov estimator variants (_n12 for Ns ∈ {1, 2},
+# _nN for Ns ≥ 3) share the same adaptive early-stop protocol.
+# The common loop body (init → iterate → checkpoint → finalise) is
+# factored into ``_lyap_online_core`` so that only the kernel-specific
+# Jacobian-vector product and state update differ between the two.
+# This eliminates ~60 duplicated lines and makes the adaptive logic
+# testable independently of the map dimension.
 
 
 @njit(cache=True, inline="always")
@@ -118,112 +126,27 @@ def _adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak
 
 
 @njit(cache=True)
-def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
-    """Lyapunov kernel for Ns in {1, 2}. State dimension is 2.
+def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta):
+    """Shared adaptive Lyapunov loop — init, iterate, checkpoint, finalise.
 
-    See :func:`_lyap_online_nN` for the adaptive early-stop protocol;
-    the logic is identical, only the kernel body differs.
-    """
-    Ns_full = 2
-    for i in range(Ns_full):
-        for j in range(Ns_full):
-            ww[0, i, j] = 1.0 if i == j else 0.0
-        lyap_sum[i] = 0.0
-
-    c0 = c[0]
-    c1 = c[1] if Ns >= 2 else 0.0
-
-    adaptive = Nitera_min < Nitera
-    prev_est = 0.0
-    streak = 0
-    n_used = Nitera
-
-    tick = 0
-    for it in range(Nitera):
-        w_in = ww[tick]
-        z_out = ww[1 - tick]
-        x_in = xx[tick]
-        x_out = xx[1 - tick]
-        z_lin = c0 * x_in[0] + c1 * x_in[1]
-        a = -2.0 * c0 * z_lin
-        b = -2.0 * c1 * z_lin + beta
-        for col in range(Ns_full):
-            z_out[0, col] = a * w_in[0, col] + b * w_in[1, col]
-            z_out[1, col] = w_in[0, col]
-        _mgs_accumulate(z_out, Ns_full, lyap_sum)
-        _henon_n12_inplace(x_in, x_out, alpha, beta, c)
-        tick = 1 - tick
-
-        if adaptive:
-            n_done = it + 1
-            if n_done >= Nitera_min and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0:
-                prev_est, streak, n_used, should_break = _adaptive_checkpoint(
-                    lyap_sum, Ns_full, n_done, Nitera_min, tol, prev_est, streak, n_used
-                )
-                if should_break:
-                    break
-
-    best = -1e30
-    for k in range(Ns_full):
-        val = lyap_sum[k] / n_used
-        if val > best:
-            best = val
-    return best, n_used
-
-
-@njit(cache=True)
-def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
-    """N-tap (N >= 3) Lyapunov kernel with O(Ns^2) structured J @ W.
-
-    Buffer protocol
-    ---------------
-    ``ww`` has shape ``(2, Ns, Ns)`` and ``xx`` has shape ``(2, dim)``.
-    On entry the "current" state is ``xx[0]`` (the caller wrote the
-    burn-in result there). The kernel ping-pongs between ``ww[0] / ww[1]``
-    and ``xx[0] / xx[1]`` to avoid copying ``w <- z`` and ``x <- x_new``
-    on every Lyapunov iteration.
+    ``_step_id`` is 0 for the n12 kernel (Ns ∈ {1, 2}) or 1 for nN (Ns ≥ 3).
     """
     for i in range(Ns):
         for j in range(Ns):
             ww[0, i, j] = 1.0 if i == j else 0.0
         lyap_sum[i] = 0.0
 
-    c0 = c[0]
-    c1 = c[1]
-    c2 = c[2]
-    cb02 = c0 * beta + c2
-
     adaptive = Nitera_min < Nitera
     prev_est = 0.0
     streak = 0
     n_used = Nitera
-
     tick = 0
+
     for it in range(Nitera):
-        w_in = ww[tick]
-        z_out = ww[1 - tick]
-        x_in = xx[tick]
-        x_out = xx[1 - tick]
-
-        m02 = -2.0 * x_in[2]
-        m22 = -2.0 * c0 * x_in[2]
-        for col in range(Ns):
-            w0 = w_in[0, col]
-            w1 = w_in[1, col]
-            w2 = w_in[2, col]
-            row2 = c1 * w0 + cb02 * w1 + m22 * w2
-            for k in range(3, Ns):
-                row2 += c[k] * w_in[k, col]
-            z_out[0, col] = beta * w1 + m02 * w2
-            z_out[1, col] = w0
-            z_out[2, col] = row2
-            z_out[3, col] = w1
-            for k in range(4, Ns):
-                z_out[k, col] = w_in[k - 1, col]
-
-        _mgs_accumulate(z_out, Ns, lyap_sum)
-        _henon_nN_inplace(x_in, x_out, alpha, beta, c)
-        tick = 1 - tick
+        if _step_id == 0:
+            tick = _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta)
+        else:
+            tick = _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta)
 
         if adaptive:
             n_done = it + 1
@@ -240,6 +163,73 @@ def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, bet
         if val > best:
             best = val
     return best, n_used
+
+
+@njit(cache=True, inline="always")
+def _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+    """Single-iteration step for the Ns ∈ {1, 2} Jacobian."""
+    Ns_full = 2
+    w_in = ww[tick]
+    z_out = ww[1 - tick]
+    x_in = xx[tick]
+    x_out = xx[1 - tick]
+
+    c0 = c[0]
+    c1 = c[1] if Ns >= 2 else 0.0
+    z_lin = c0 * x_in[0] + c1 * x_in[1]
+    a = -2.0 * c0 * z_lin
+    b_val = -2.0 * c1 * z_lin + beta
+    for col in range(Ns_full):
+        z_out[0, col] = a * w_in[0, col] + b_val * w_in[1, col]
+        z_out[1, col] = w_in[0, col]
+    _mgs_accumulate(z_out, Ns_full, lyap_sum)
+    _henon_n12_inplace(x_in, x_out, alpha, beta, c)
+    return 1 - tick
+
+
+@njit(cache=True)
+def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
+    """Lyapunov kernel for Ns ∈ {1, 2}. Delegates to :func:`_lyap_online_core`."""
+    return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, 2, 0, c, alpha, beta)
+
+
+@njit(cache=True, inline="always")
+def _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+    """Single-iteration step for the Ns ≥ 3 Jacobian (O(Ns²) structured J@W)."""
+    w_in = ww[tick]
+    z_out = ww[1 - tick]
+    x_in = xx[tick]
+    x_out = xx[1 - tick]
+
+    c0 = c[0]
+    c1 = c[1]
+    c2 = c[2]
+    cb02 = c0 * beta + c2
+    m02 = -2.0 * x_in[2]
+    m22 = -2.0 * c0 * x_in[2]
+    for col in range(Ns):
+        w0 = w_in[0, col]
+        w1 = w_in[1, col]
+        w2 = w_in[2, col]
+        row2 = c1 * w0 + cb02 * w1 + m22 * w2
+        for k in range(3, Ns):
+            row2 += c[k] * w_in[k, col]
+        z_out[0, col] = beta * w1 + m02 * w2
+        z_out[1, col] = w0
+        z_out[2, col] = row2
+        z_out[3, col] = w1
+        for k in range(4, Ns):
+            z_out[k, col] = w_in[k - 1, col]
+
+    _mgs_accumulate(z_out, Ns, lyap_sum)
+    _henon_nN_inplace(x_in, x_out, alpha, beta, c)
+    return 1 - tick
+
+
+@njit(cache=True)
+def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
+    """Lyapunov kernel for Ns ≥ 3. Delegates to :func:`_lyap_online_core`."""
+    return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, 1, c, alpha, beta)
 
 
 def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:

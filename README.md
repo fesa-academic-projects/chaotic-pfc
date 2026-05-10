@@ -153,6 +153,8 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run lyapunov`           | Lyapunov spectra: single IC and N-IC ensemble for 2-D and 4-D systems. |
 | `chaotic-pfc run sweep compute`      | Parallel Lyapunov sweep over `(filter order × cutoff)`. |
 | `chaotic-pfc run sweep plot`         | Classification maps from saved sweep data. |
+| `chaotic-pfc run sweep beta-sweep`   | Kaiser β-sweep: aggregate per-β Lyapunov results. |
+| `chaotic-pfc run sweep plot-3d`      | Interactive 3-D volume of Kaiser β-sweeps via Plotly. |
 | `chaotic-pfc run dcsk`               | DCSK / EF-DCSK / Pecora-Carroll BER vs SNR comparison. |
 | `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
