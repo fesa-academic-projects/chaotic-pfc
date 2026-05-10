@@ -306,7 +306,6 @@ def run(args: argparse.Namespace) -> int:
     sweep_mod.run_plot(
         argparse.Namespace(
             no_display=shared["no_display"],
-            save=shared["save"],
             all=True,
             data_dir="data/sweeps",
             figures_dir="figures/sweeps",
@@ -322,8 +321,6 @@ def run(args: argparse.Namespace) -> int:
         _banner("09")
         sweep_mod.run_plot_3d(
             argparse.Namespace(
-                no_display=shared["no_display"],
-                save=shared["save"],
                 all=True,
                 data_dir="data/sweeps/kaiser",
                 figures_dir="figures/sweeps",
