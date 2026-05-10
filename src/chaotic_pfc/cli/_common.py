@@ -5,6 +5,12 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+
+    from chaotic_pfc.config import SpectralConfig
 
 
 def pick_backend(no_display: bool) -> bool:
@@ -57,18 +63,25 @@ def add_lang_flag(parser: argparse.ArgumentParser) -> None:
     )
 
 
-def compute_psds(m, s, r, m_hat, sp_cfg):
+def compute_psds(
+    m: NDArray,
+    s: NDArray,
+    r: NDArray,
+    m_hat: NDArray,
+    sp_cfg: SpectralConfig,
+) -> tuple[NDArray, NDArray, NDArray, NDArray, NDArray]:
     """Compute normalised PSDs for message, carrier, received, and recovered signals.
 
     Returns (omega, psd_m, psd_s, psd_r, psd_mhat).
     """
     from chaotic_pfc.dynamics.spectral import psd_normalised
 
-    kwargs = dict(window=sp_cfg.window, kaiser_beta=sp_cfg.kaiser_beta)
-    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
-    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
-    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
-    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length, **kwargs)
+    w = sp_cfg.window
+    kb = sp_cfg.kaiser_beta
+    omega, psd_m = psd_normalised(m, sp_cfg.nfft, sp_cfg.window_length, window=w, kaiser_beta=kb)
+    _, psd_s = psd_normalised(s, sp_cfg.nfft, sp_cfg.window_length, window=w, kaiser_beta=kb)
+    _, psd_r = psd_normalised(r, sp_cfg.nfft, sp_cfg.window_length, window=w, kaiser_beta=kb)
+    _, psd_mhat = psd_normalised(m_hat, sp_cfg.nfft, sp_cfg.window_length, window=w, kaiser_beta=kb)
     return omega, psd_m, psd_s, psd_r, psd_mhat
 
 

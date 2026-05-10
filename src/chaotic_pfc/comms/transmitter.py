@@ -134,9 +134,11 @@ def transmit_order_n(
         Full state trajectory of the N-th order system. Column ``n``
         holds the state at step ``n``, with column 0 equal to ``x0``.
 
-    Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter` (2-D variant only;
-    :func:`transmit_order_n` returns a ``(signal, state)`` tuple and is documented
-    separately)."""
+    Note: this function does NOT implement
+    :class:`~chaotic_pfc.comms.protocols.Transmitter` because it returns a
+    ``(signal, state)`` tuple instead of a single ndarray. Use
+    :func:`transmit` (the 2-D variant) for code that types against the
+    Transmitter protocol."""
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)

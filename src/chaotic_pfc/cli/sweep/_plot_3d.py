@@ -35,17 +35,6 @@ def _add_plot_3d_parser(subparsers: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Generate 3-D plots for every filter type found under --data-dir",
     )
-    p.add_argument(
-        "--save",
-        action="store_true",
-        help="(accepted for CLI consistency; figure is always saved)",
-    )
-    p.add_argument(
-        "--no-display",
-        dest="no_display",
-        action="store_true",
-        help="(accepted for CLI consistency; plotly runs headless)",
-    )
     p.set_defaults(_run=run_plot_3d)
 
 

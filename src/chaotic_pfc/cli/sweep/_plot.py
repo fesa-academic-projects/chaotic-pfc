@@ -47,15 +47,10 @@ def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Output format(s). Multiple values allowed, e.g. '--fmt png svg'.",
     )
     p.add_argument(
-        "--save",
-        action="store_true",
-        help="(accepted for CLI consistency; figures are always saved)",
-    )
-    p.add_argument(
         "--no-display",
         dest="no_display",
         action="store_true",
-        help="(accepted for CLI consistency; matplotlib runs headless)",
+        help="Run matplotlib in headless mode.",
     )
     p.set_defaults(_run=run_plot)
 

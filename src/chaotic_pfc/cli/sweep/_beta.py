@@ -60,12 +60,6 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction) -> None:
         default="data/sweeps/beta",
         help="Root directory for .npz output (default: data/sweeps/beta)",
     )
-    p.add_argument(
-        "--no-display",
-        dest="no_display",
-        action="store_true",
-        help="(accepted for CLI consistency; this command has no UI)",
-    )
     p.set_defaults(_run=run_beta_sweep)
 
 
