@@ -1,8 +1,9 @@
 """
 transmitter.py
 ==============
-Chaos-based modulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. that embed a message in the state of a Henon
-oscillator.
+Chaos-based modulator. Implements the
+:class:`~chaotic_pfc.comms.protocols.Transmitter` protocol — a callable
+that embeds a message in the state of a Hénon oscillator.
 
 Two transmitters are provided, mirroring the two receiver modes:
 

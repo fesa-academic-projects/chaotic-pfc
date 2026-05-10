@@ -1,8 +1,10 @@
 """
 receiver.py
 ===========
-Chaos-synchronisation demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. that extract the original message
-from a transmitted (and possibly channel-distorted) carrier.
+Chaos-synchronisation demodulator. Implements the
+:class:`~chaotic_pfc.comms.protocols.Receiver` protocol — a callable that
+extracts the original message from a transmitted (and possibly
+channel-distorted) carrier.
 
 Both receivers rely on the Pecora-Carroll synchronisation principle:
 running a second copy of the Hénon oscillator driven by the received
@@ -10,9 +12,10 @@ signal causes it to track the transmitter's state after a short
 transient. The recovered message is then extracted as the difference
 between the driving signal and the local state estimate.
 
-Two receivers are provided, mirroring :mod:`chaotic_pfc.transmitter`:
+Two receivers are provided, mirroring
+:mod:`chaotic_pfc.comms.transmitter`:
 
-* :func:`receive` — 2-D Hénon demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`. the message is
+* :func:`receive` — 2-D Hénon demodulator. The message is recovered via
 
   .. math::
 
@@ -20,7 +23,7 @@ Two receivers are provided, mirroring :mod:`chaotic_pfc.transmitter`:
 
   where ``y_1`` is the local 2-D state driven by ``r``.
 
-* :func:`receive_order_n` — higher-order demodulator. Implements :class:`~chaotic_pfc.comms.protocols.Transmitter`.using the same
+* :func:`receive_order_n` — higher-order demodulator. Uses the same
   FIR filter the transmitter used. The carrier is taken from the
   filtered state ``y[2][n]`` and the message follows the same formula
   with ``y_1`` replaced by ``v = y[2]``.

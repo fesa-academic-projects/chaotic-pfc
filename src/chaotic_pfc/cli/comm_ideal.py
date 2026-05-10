@@ -76,6 +76,7 @@ def run(args: argparse.Namespace) -> int:
         time_window=win,
         suptitle=(t("comm.ideal", lang=args.lang) + r"  ($\mu=" + str(args.mu) + r"$)"),
         save_path=save_path,
+        lang=args.lang,
     )
 
     save_or_show(fig, headless, save_path, args)

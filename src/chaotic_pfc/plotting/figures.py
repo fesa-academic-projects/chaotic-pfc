@@ -1,6 +1,6 @@
 """
-plotting.py
-===========
+figures.py
+==========
 Publication-quality SVG figures with LaTeX-style labels.
 
 All text uses matplotlib's mathtext engine (no external LaTeX needed).
@@ -139,6 +139,7 @@ def plot_sensitivity(
     X1: NDArray,
     X2: NDArray,
     save_path: str | None = None,
+    lang: str = "pt",
 ) -> Figure:
     """Overlay two Hénon trajectories to illustrate sensitivity to ICs.
 
@@ -155,6 +156,8 @@ def plot_sensitivity(
         only by ``x0_2 = x0_1 + 1e-4``.
     save_path
         If given, the figure is written to this path.
+    lang
+        Language code for the figure title (``"pt"`` or ``"en"``).
 
     Returns
     -------
@@ -167,7 +170,7 @@ def plot_sensitivity(
     ax.set_xlabel(r"$n$", fontsize=12)
     ax.set_ylabel(r"$x[n]$", fontsize=12)
     ax.set_title(
-        t("sensitivity.title"),
+        t("sensitivity.title", lang=lang),
         fontsize=13,
     )
     ax.legend(fontsize=11, framealpha=0.9)
@@ -216,6 +219,7 @@ def plot_comm_grid(
     y_lim_mhat: tuple | None = None,
     h_channel: NDArray | None = None,
     save_path: str | None = None,
+    lang: str = "pt",
 ) -> Figure:
     """
     4×2 grid: left = time domain, right = PSD.
@@ -316,8 +320,8 @@ def plot_comm_grid(
             ax_f.legend(fontsize=9, loc="upper right")
 
     # Column titles
-    axes[0, 0].set_title(t("comm.time_domain"), fontsize=12)
-    axes[0, 1].set_title(t("comm.psd"), fontsize=12)
+    axes[0, 0].set_title(t("comm.time_domain", lang=lang), fontsize=12)
+    axes[0, 1].set_title(t("comm.psd", lang=lang), fontsize=12)
 
     fig.tight_layout()
     _save(fig, save_path)

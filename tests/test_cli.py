@@ -24,11 +24,13 @@ class TestParserStructure(unittest.TestCase):
 
     def test_version_flag(self):
         """--version prints version and exits 0 (argparse convention)."""
+        from chaotic_pfc._version import __version__
+
         buf = io.StringIO()
         with redirect_stdout(buf), self.assertRaises(SystemExit) as cm:
             main(["--version"])
         self.assertEqual(cm.exception.code, 0)
-        self.assertIn("0.3.0", buf.getvalue())
+        self.assertIn(__version__, buf.getvalue())
 
 
 class TestExperimentsRegistered(unittest.TestCase):

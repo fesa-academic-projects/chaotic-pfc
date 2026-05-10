@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from .._version import __version__
 from . import (
     analysis,
     attractors,
@@ -71,7 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s 0.3.0",
+        version=f"%(prog)s {__version__}",
     )
 
     # Top-level groups — only "run" for now, but keeping the tree open

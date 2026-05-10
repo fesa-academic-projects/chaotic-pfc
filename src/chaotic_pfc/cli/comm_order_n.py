@@ -96,6 +96,7 @@ def run(args: argparse.Namespace) -> int:
         y_lim_mhat=y_lim_mhat,
         h_channel=h,
         save_path=save_path,
+        lang=args.lang,
     )
 
     save_or_show(fig, headless, save_path, args)
