@@ -35,6 +35,9 @@ def pick_backend(no_display: bool) -> bool:
         import matplotlib
 
         matplotlib.use("Agg")
+    from chaotic_pfc.plotting.figures import setup_rc
+
+    setup_rc()
     return headless
 
 

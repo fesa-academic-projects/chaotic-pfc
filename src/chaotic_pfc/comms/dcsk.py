@@ -17,6 +17,8 @@ References
 
 from __future__ import annotations
 
+from functools import lru_cache
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin, lfilter
@@ -63,14 +65,17 @@ def henon_fir_sequence(
     x_val, y_val = 0.1, 0.1
     seq = np.empty(N)
 
+    write_idx = 0
     for n in range(N):
-        xf = float(np.dot(h, buf))
+        xf = 0.0
+        for k in range(n_taps):
+            xf += h[k] * buf[(write_idx - k) % n_taps]
         xn = 1.0 - a * xf * xf + y_val
         yn = b * x_val
         if not np.isfinite(xn) or abs(xn) > 100:
             raise ValueError(f"henon_fir_sequence diverged at n={n}")
-        buf = np.roll(buf, 1)
-        buf[0] = xn
+        buf[write_idx] = xn
+        write_idx = (write_idx + 1) % n_taps
         x_val, y_val = xn, yn
         seq[n] = xn
 
@@ -83,7 +88,8 @@ def _chaos_sequence(
     """Generate and normalise a chaotic FIR-Henon sequence."""
     chaos = henon_fir_sequence(transient + n_samples, n_taps=n_taps, wc=wc, window=window)
     chaos = chaos[transient:]
-    return chaos / (float(np.std(chaos)) + 1e-12)
+    chaos /= float(np.std(chaos)) + 1e-12
+    return chaos
 
 
 def dcsk_transmit(
@@ -303,8 +309,14 @@ def _wifi_interferer(
     if rng is None:
         rng = np.random.default_rng()
     noise = rng.normal(0, 1, N)
-    h_bp = firwin(101, [fc - bw / 2, fc + bw / 2], pass_zero=False)
+    h_bp = _wifi_fir(fc, bw)
     return lfilter(h_bp, 1.0, noise)
+
+
+@lru_cache(maxsize=4)
+def _wifi_fir(fc: float, bw: float) -> NDArray:
+    """Cached FIR band-pass filter for the WiFi-like interferer."""
+    return firwin(101, [fc - bw / 2, fc + bw / 2], pass_zero=False)
 
 
 def channel_interferers(

@@ -174,38 +174,55 @@ def _henon_n4_step(
 ) -> NDArray:
     """Single step of the N-th order filtered Hénon map.
 
-    Implements one iteration of the ``N_c``-dimensional system whose
-    state vector has length ``N_c = len(c)``. The carrier output of
-    the oscillator is the filtered component ``x[2]``, driven by the
-    FIR coefficients ``c``.
+    Allocates a new output array on every call. For hot loops, prefer
+    :func:`_henon_n4_step_inplace` which writes into a pre-allocated buffer.
 
     Parameters
     ----------
     x
         Current state, shape ``(Nc,)``.
     s
-        Current driving value. When called autonomously, this is
-        ``x[2]`` itself; when called from the transmitter/receiver, it
-        is the carrier value seen by the channel.
+        Current driving value.
     a, b
         Hénon parameters.
     c
-        FIR coefficients, shape ``(Nc,)``. ``Nc`` must be at least 3.
+        FIR coefficients, shape ``(Nc,)``.
 
     Returns
     -------
     ndarray, shape (Nc,)
         The updated state ``x[n+1]``.
-
-    Notes
-    -----
-    This is a private helper used by :func:`henon_order_n`,
-    :func:`chaotic_pfc.transmitter.transmit_order_n`, and
-    :func:`chaotic_pfc.receiver.receive_order_n`. Not part of the
-    public API.
     """
     Nc = len(c)
     out = np.empty(Nc)
+    _henon_n4_step_inplace(out, x, s, a, b, c)
+    return out
+
+
+def _henon_n4_step_inplace(
+    out: NDArray,
+    x: NDArray,
+    s: float,
+    a: float,
+    b: float,
+    c: NDArray,
+) -> None:
+    """Single step of the N-th order filtered Hénon map, writing into *out*.
+
+    Parameters
+    ----------
+    out
+        Pre-allocated output buffer, shape ``(Nc,)``.
+    x
+        Current state, shape ``(Nc,)``.
+    s
+        Current driving value.
+    a, b
+        Hénon parameters.
+    c
+        FIR coefficients, shape ``(Nc,)``.
+    """
+    Nc = len(c)
 
     x1_new = a - s**2 + b * x[1]
     x2_new = x[0]
@@ -221,7 +238,6 @@ def _henon_n4_step(
         out[3] = x[1]
     if Nc > 4:
         out[4:] = x[3 : Nc - 1]
-    return out
 
 
 def henon_order_n(
@@ -284,6 +300,5 @@ def henon_order_n(
     for i in range(steps):
         s_i = float(driving[i]) if driving is not None else state[2, i]
         output[i] = state[2, i]
-        state[:, i + 1] = _henon_n4_step(state[:, i], s_i, a, b, c)
-
+        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
     return state, output

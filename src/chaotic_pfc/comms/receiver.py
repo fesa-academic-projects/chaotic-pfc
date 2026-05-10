@@ -32,7 +32,7 @@ Two receivers are provided, mirroring
 import numpy as np
 from numpy.typing import NDArray
 
-from ..dynamics.maps import _henon_n4_step
+from ..dynamics.maps import _henon_n4_step_inplace
 
 
 def receive(
@@ -152,5 +152,5 @@ def receive_order_n(
     for i in range(N):
         v = state[2, i]
         m_hat[i] = (r[i] - v) / mu
-        state[:, i + 1] = _henon_n4_step(state[:, i], r[i], a, b, c)
+        _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], a, b, c)
     return m_hat, state
