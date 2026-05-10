@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .._common import pick_backend
+from .._common import add_lang_flag, pick_backend
 
 
 def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -52,6 +52,7 @@ def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Run matplotlib in headless mode.",
     )
+    add_lang_flag(p)
     p.set_defaults(_run=run_plot)
 
 
@@ -119,7 +120,7 @@ def run_plot(args: argparse.Namespace) -> int:
         print(f"     ← {npz_path}")
         print(f"     → {out_dir}")
         for fmt in args.fmt:
-            paths = plot_all(result, out_dir, fmt=fmt)
+            paths = plot_all(result, out_dir, fmt=fmt, lang=args.lang)
             for p in paths:
                 print(f"       {p.name}")
 

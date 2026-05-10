@@ -4,7 +4,7 @@ maps.py
 Hénon map variants used as chaotic oscillators throughout the
 communication system.
 
-Three 2-D maps and one generalised N-th order map are provided:
+Four Henon map variants and one chaotic-sequence generator are provided:
 
 * :func:`henon_standard` — the original Hénon (1976) map,
 

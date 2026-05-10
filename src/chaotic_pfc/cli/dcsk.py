@@ -69,6 +69,13 @@ def run(args: argparse.Namespace) -> int:
     def awgn_chan(sig, snr):
         return awgn(sig, snr, rng)
 
+    # NOTE: Pecora-Carroll uses a periodic binary_message(period=20) while
+    # DCSK and EF-DCSK use random bits. The two are not directly comparable
+    # because PC operates on continuous-time synchronisation, not on bit
+    # decisions. The PC curve here serves as an indicative reference for
+    # the noise floor of synchronisation, not a fair BER benchmark against
+    # the discrete-modulation schemes.
+
     # ── Pecora-Carroll (original method) ──────────────────────────────────
     bits_pc = binary_message(args.N, period=20)
     bits_int_pc = np.where(bits_pc > 0, 0, 1).astype(np.int64)
@@ -154,6 +161,15 @@ def run(args: argparse.Namespace) -> int:
     ax.set_ylim(5e-4, 0.7)
     ax.legend(fontsize=9, loc="lower left")
     fig.tight_layout()
+
+    # Asymmetry note: PC uses a periodic message; DCSK/EF-DCSK use random
+    # bits. See module-level comment above the Pecora-Carroll section.
+    note = (
+        "Nota: PC usa mensagem periodica; DCSK/EF-DCSK usam bits aleatorios."
+        if args.lang == "pt"
+        else "Note: PC uses a periodic message; DCSK/EF-DCSK use random bits."
+    )
+    fig.text(0.5, 0.01, note, ha="center", fontsize=8, color="gray", style="italic")
 
     if args.save:
         fdir = Path("figures")

@@ -45,6 +45,7 @@ from chaotic_pfc.comms.channel import (
     ideal_channel,
 )
 from chaotic_pfc.comms.dcsk import (
+    DCSK_DEFAULT_WC,
     ber,
     channel_interferers,
     channel_urban,
@@ -76,6 +77,7 @@ from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
 from chaotic_pfc.dynamics.spectral import psd_normalised
 
 __all__ = [
+    "DCSK_DEFAULT_WC",
     "FILTER_TYPES",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",

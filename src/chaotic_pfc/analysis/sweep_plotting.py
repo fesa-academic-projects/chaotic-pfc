@@ -36,6 +36,8 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
+from chaotic_pfc._i18n import t
+
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
 from ..plotting.figures import _save as _figures_save
 from .sweep import SweepResult
@@ -60,11 +62,27 @@ _cmap_disc = mcolors.ListedColormap(
 _bounds_disc = [-1.5, -0.5, 0.5, 2.5, 3.5]
 _norm_disc = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
 
-_LEGEND_HANDLES = [
-    Patch(facecolor=COLOR_PERIODIC, edgecolor="gray", label="Periodic orbits"),
-    Patch(facecolor=COLOR_CHAOTIC, edgecolor="gray", label="Chaotic orbits"),
-    Patch(facecolor=COLOR_UNBOUNDED, edgecolor="gray", label="Unbounded orbits"),
-]
+
+def _build_legend_handles(lang: str = "pt") -> list:
+    """Build the discrete-classification legend in the requested language."""
+    return [
+        Patch(
+            facecolor=COLOR_PERIODIC,
+            edgecolor="gray",
+            label=t("sweep.legend.periodic", lang=lang),
+        ),
+        Patch(
+            facecolor=COLOR_CHAOTIC,
+            edgecolor="gray",
+            label=t("sweep.legend.chaotic", lang=lang),
+        ),
+        Patch(
+            facecolor=COLOR_UNBOUNDED,
+            edgecolor="gray",
+            label=t("sweep.legend.unbounded", lang=lang),
+        ),
+    ]
+
 
 _YTICKS = np.arange(0.0, 1.01, 0.1)
 
@@ -152,6 +170,7 @@ def plot_classification_interleaved(
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,
+    lang: str = "pt",
 ) -> Figure:
     """Publication-style layout with gaps between adjacent orders.
 
@@ -215,7 +234,7 @@ def plot_classification_interleaved(
     ax.set_xlim(-0.5, total_slots - 0.5)
 
     ax.legend(
-        handles=_LEGEND_HANDLES,
+        handles=_build_legend_handles(lang),
         fontsize=9,
         loc="upper right",
         framealpha=0.95,
@@ -383,6 +402,7 @@ def plot_all(
     *,
     fmt: str = "png",
     close_figures: bool = True,
+    lang: str = "pt",
 ) -> list[Path]:
     """Generate the standard figures for a sweep and save them to
     ``out_dir/<fig>.{fmt}``. Returns the list of written paths.
@@ -390,7 +410,7 @@ def plot_all(
     Always produces the two classification figures listed in
     :data:`FIGURE_FILENAMES`. Additionally produces
     ``fig3_difficulty_map.{fmt}`` (see :data:`DIFFICULTY_FIGURE_FILENAME`)
-    when ``result`` was generated with ``adaptive=True`` — the figure is
+    when ``result`` was generated with ``adaptive=True``: the figure is
     silently skipped for non-adaptive sweeps because it would be
     monochromatic and therefore uninformative.
 
@@ -399,18 +419,19 @@ def plot_all(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    plotters: tuple = (
-        plot_heatmap_continuous,
-        plot_classification_interleaved,
-    )
-
     paths: list[Path] = []
-    for fname, plotter in zip(FIGURE_FILENAMES, plotters, strict=True):
-        path = out_dir / f"{fname}.{fmt}"
-        fig = plotter(result, save_path=path)
-        if close_figures:
-            plt.close(fig)
-        paths.append(path)
+
+    path = out_dir / f"fig1_heatmap_continuous.{fmt}"
+    fig = plot_heatmap_continuous(result, save_path=path)
+    if close_figures:
+        plt.close(fig)
+    paths.append(path)
+
+    path = out_dir / f"fig2_classification_interleaved.{fmt}"
+    fig = plot_classification_interleaved(result, save_path=path, lang=lang)
+    if close_figures:
+        plt.close(fig)
+    paths.append(path)
 
     if _has_difficulty_data(result):
         path = out_dir / f"{DIFFICULTY_FIGURE_FILENAME}.{fmt}"

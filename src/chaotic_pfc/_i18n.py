@@ -87,6 +87,18 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": "Comparação de Esquemas de Comunicação Caótica",
         "en": "Comparison of Chaotic Communication Schemes",
     },
+    "sweep.legend.periodic": {
+        "pt": "Órbitas periódicas",
+        "en": "Periodic orbits",
+    },
+    "sweep.legend.chaotic": {
+        "pt": "Órbitas caóticas",
+        "en": "Chaotic orbits",
+    },
+    "sweep.legend.unbounded": {
+        "pt": "Órbitas não-limitadas",
+        "en": "Unbounded orbits",
+    },
 }
 
 

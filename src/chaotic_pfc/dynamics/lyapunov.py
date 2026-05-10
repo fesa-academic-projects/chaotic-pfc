@@ -40,9 +40,19 @@ import csv
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
+
+
+class FixedPointInfo(TypedDict):
+    """Result of :func:`fixed_point_stability` — fixed point, eigenvalues, stability."""
+
+    fixed_point: NDArray
+    eigenvalues: NDArray
+    stable: bool
+
 
 # ── Fixed-point computation ─────────────────────────────────────────────────
 
@@ -243,7 +253,7 @@ def fixed_point_stability(
     Gz: float = 1.0,
     pole_radius: float = 0.975,
     w0: float = 0.0,
-) -> dict:
+) -> FixedPointInfo:
     """Quick check: fixed point, eigenvalues, stability (4-D filtered)."""
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
     xf = _fixed_point(alpha, beta, b, a)
