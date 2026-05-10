@@ -268,14 +268,6 @@ def run(args: argparse.Namespace) -> int:
         # Sensitivity keeps fewer steps to avoid unreadable point overlay
         if tag == "02":
             step_args.steps = 50
-        # comm-order-n needs internal FIR args
-        if tag == "05":
-            from chaotic_pfc.config import DEFAULT_CONFIG as _cfg
-
-            step_args.Nc = _cfg.internal_fir.num_taps
-            step_args.internal_cutoff = _cfg.internal_fir.cutoff
-            step_args.cutoff = _cfg.channel.cutoff
-            step_args.taps = _cfg.channel.num_taps
         experiment_run(step_args)
 
     # ── 1b) DCSK comparison (06b) ───────────────────────────────────────

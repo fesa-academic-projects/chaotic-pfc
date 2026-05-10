@@ -255,6 +255,8 @@ class ExperimentConfig:
             period=self.comm.message_period,
             cutoff=self.channel.cutoff,
             taps=self.channel.num_taps,
+            Nc=self.internal_fir.num_taps,
+            internal_cutoff=self.internal_fir.cutoff,
             steps=50,
             epsilon=1e-4,
             Nitera=self.lyapunov.Nitera,
