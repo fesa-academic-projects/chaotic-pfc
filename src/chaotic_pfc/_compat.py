@@ -19,11 +19,11 @@ try:
     from numba import njit as _njit
     from numba import prange as _prange
 
-    _HAS_NUMBA = True
+    HAS_NUMBA = True
 except ImportError:
-    _HAS_NUMBA = False
+    HAS_NUMBA = False
 
-if _HAS_NUMBA:
+if HAS_NUMBA:
     njit = _njit
     prange = _prange
     get_num_threads = _get_num_threads

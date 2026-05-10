@@ -37,19 +37,21 @@ from chaotic_pfc.analysis.sweep_plotting import (
     plot_difficulty_map,
     plot_heatmap_continuous,
 )
-from chaotic_pfc.comms.channel import fir_channel, ideal_channel
-from chaotic_pfc.comms.dcsk import (
+from chaotic_pfc.comms.channel import (
     awgn,
-    ber,
     channel_impulsive,
-    channel_interferers,
     channel_multipath,
+    fir_channel,
+    ideal_channel,
+)
+from chaotic_pfc.comms.dcsk import (
+    ber,
+    channel_interferers,
     channel_urban,
     dcsk_receive,
     dcsk_transmit,
     efdcsk_receive,
     efdcsk_transmit,
-    henon_fir_sequence,
 )
 from chaotic_pfc.comms.protocols import Channel, Receiver, Transmitter
 from chaotic_pfc.comms.receiver import receive, receive_order_n
@@ -65,6 +67,7 @@ from chaotic_pfc.dynamics.lyapunov import (
 )
 from chaotic_pfc.dynamics.maps import (
     henon_filtered,
+    henon_fir_sequence,
     henon_generalised,
     henon_order_n,
     henon_standard,

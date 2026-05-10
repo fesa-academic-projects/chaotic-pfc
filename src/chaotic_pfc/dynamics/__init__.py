@@ -9,7 +9,13 @@ from .lyapunov import (
     lyapunov_max,
     lyapunov_max_ensemble,
 )
-from .maps import henon_filtered, henon_generalised, henon_order_n, henon_standard
+from .maps import (
+    henon_filtered,
+    henon_fir_sequence,
+    henon_generalised,
+    henon_order_n,
+    henon_standard,
+)
 from .signals import binary_message, sinusoidal_message
 from .spectral import psd_normalised
 
@@ -19,6 +25,7 @@ __all__ = [
     "binary_message",
     "fixed_point_stability",
     "henon_filtered",
+    "henon_fir_sequence",
     "henon_generalised",
     "henon_order_n",
     "henon_standard",

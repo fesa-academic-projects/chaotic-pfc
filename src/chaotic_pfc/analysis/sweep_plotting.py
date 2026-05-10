@@ -37,6 +37,7 @@ from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
+from ..plotting.figures import _save as _figures_save
 from .sweep import SweepResult
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -106,10 +107,8 @@ def _axis_cosmetics(ax, ylabel_fs: int = 24) -> None:
 
 
 def _save(fig: Figure, path: str | Path | None) -> None:
-    if path is not None:
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(path, dpi=200, bbox_inches="tight", facecolor="white")
+    """Save figure with sweep-plotting defaults (dpi=200, tight bbox)."""
+    _figures_save(fig, path, dpi=200, bbox_inches="tight", facecolor="white")
 
 
 # ═══════════════════════════════════════════════════════════════════════════

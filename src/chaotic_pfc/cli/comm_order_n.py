@@ -20,6 +20,24 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--N", type=int, default=cfg.comm.N)
     p.add_argument("--mu", type=float, default=cfg.comm.mu)
     p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument(
+        "--cutoff", type=float, default=cfg.channel.cutoff, help="External channel cutoff"
+    )
+    p.add_argument("--taps", type=int, default=cfg.channel.num_taps, help="External channel taps")
+    p.add_argument(
+        "--internal-cutoff",
+        type=float,
+        default=cfg.internal_fir.cutoff,
+        dest="internal_cutoff",
+        help="Internal FIR cutoff inside the Hénon oscillator",
+    )
+    p.add_argument(
+        "--Nc",
+        type=int,
+        default=cfg.internal_fir.num_taps,
+        dest="Nc",
+        help="Internal FIR order (number of coefficients inside the oscillator)",
+    )
     add_save_display_flags(p)
     add_lang_flag(p)
     p.set_defaults(_run=run)
@@ -30,6 +48,7 @@ def run(args: argparse.Namespace) -> int:
     headless = pick_backend(args.no_display)
 
     import numpy as np
+    from scipy.signal import firwin
 
     from chaotic_pfc._i18n import t
     from chaotic_pfc.comms.channel import fir_channel
@@ -42,7 +61,9 @@ def run(args: argparse.Namespace) -> int:
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
     fmt = cfg.plot.fmt
 
-    c = cfg.internal_fir.fir_coeffs()
+    c = firwin(
+        numtaps=args.Nc, cutoff=args.internal_cutoff, window="hamming", pass_zero=True, fs=2.0
+    )
     Nc = len(c)
 
     fdir = Path(cfg.plot.figures_dir)
@@ -55,7 +76,7 @@ def run(args: argparse.Namespace) -> int:
 
     m = binary_message(args.N, period=args.period)
     s, _ = transmit_order_n(m, c, mu=args.mu, a=a, b=b, x0=x0)
-    r, h = fir_channel(s, cutoff=cfg.channel.cutoff, num_taps=cfg.channel.num_taps)
+    r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
     m_hat, _ = receive_order_n(r, c, mu=args.mu, a=a, b=b, y0=y0)
 
     mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)

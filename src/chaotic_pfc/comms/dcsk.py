@@ -17,71 +17,13 @@ References
 
 from __future__ import annotations
 
-from functools import lru_cache
-
 import numpy as np
 from numpy.typing import NDArray
-from scipy.signal import firwin, lfilter
+
+from ..dynamics.maps import henon_fir_sequence
+from .channel import _wifi_interferer, awgn, channel_impulsive, channel_multipath
 
 DCSK_DEFAULT_WC: float = 0.9091
-
-
-def henon_fir_sequence(
-    N: int,
-    a: float = 1.4,
-    b: float = 0.3,
-    n_taps: int = 5,
-    wc: float = DCSK_DEFAULT_WC,
-    window: str = "hamming",
-) -> NDArray:
-    """Generate a chaotic sequence from the FIR-filtered Hénon map.
-
-    Iterates ``x[n+1] = 1 - a * xf[n]^2 + y[n]`` where ``xf`` is the
-    current output of an FIR filter applied to the state history.
-
-    Parameters
-    ----------
-    N
-        Number of samples to produce.
-    a, b
-        Hénon map parameters (default: 1.4, 0.3).
-    n_taps
-        FIR filter order (number of coefficients).
-    wc
-        Normalised cutoff frequency in (0, 1).
-    window
-        SciPy window name (e.g. ``"hamming"``, ``"kaiser"``).
-
-    Returns
-    -------
-    ndarray, shape (N,)
-        Chaotic samples.
-
-    Raises
-    ------
-    ValueError
-        If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
-    """
-    h = firwin(n_taps, wc, window=window)
-    buf = np.full(n_taps, 0.1)
-    x_val, y_val = 0.1, 0.1
-    seq = np.empty(N)
-
-    write_idx = 0
-    for n in range(N):
-        xf = 0.0
-        for k in range(n_taps):
-            xf += h[k] * buf[(write_idx - k) % n_taps]
-        xn = 1.0 - a * xf * xf + y_val
-        yn = b * x_val
-        if not np.isfinite(xn) or abs(xn) > 100:
-            raise ValueError(f"henon_fir_sequence diverged at n={n}")
-        buf[write_idx] = xn
-        write_idx = (write_idx + 1) % n_taps
-        x_val, y_val = xn, yn
-        seq[n] = xn
-
-    return seq
 
 
 def _chaos_sequence(
@@ -227,98 +169,6 @@ def ber(tx: NDArray, rx: NDArray) -> float:
 
 
 # ── Channel models ───────────────────────────────────────────────────────────
-
-
-def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) -> NDArray:
-    """Add white Gaussian noise to *sig* for a given SNR in dB.
-
-    Parameters
-    ----------
-    sig
-        Signal samples.
-    snr_db
-        Signal-to-noise ratio in dB.
-    rng
-        Random generator (uses ``np.random.default_rng`` if None).
-    """
-    if rng is None:
-        rng = np.random.default_rng()
-    p = float(np.mean(sig**2)) / 10 ** (snr_db / 10)
-    return sig + rng.normal(0.0, float(np.sqrt(p)), sig.shape)
-
-
-def channel_impulsive(
-    sig: NDArray,
-    snr_db: float,
-    prob_impulso: float = 0.01,
-    amp_fator: float = 10.0,
-    rng: np.random.Generator | None = None,
-) -> NDArray:
-    """AWGN channel with Middleton Class-A impulsive noise.
-
-    Parameters
-    ----------
-    prob_impulso
-        Probability a sample is hit by an impulse (e.g. 0.01 = 1 %).
-    amp_fator
-        Impulse amplitude in multiples of the signal std.
-    """
-    if rng is None:
-        rng = np.random.default_rng()
-    rx = awgn(sig, snr_db, rng)
-    std = float(np.std(sig))
-    mask = rng.random(len(sig)) < prob_impulso
-    rx[mask] += amp_fator * std * rng.choice(np.array([-1.0, 1.0]), mask.sum())
-    return rx
-
-
-def channel_multipath(
-    sig: NDArray,
-    snr_db: float,
-    delays: list[int] | None = None,
-    gains: list[float] | None = None,
-    rng: np.random.Generator | None = None,
-) -> NDArray:
-    """Multipath channel with configurable tap delays and gains.
-
-    Parameters
-    ----------
-    delays
-        Delay of each path in samples (default: ``[0, 3, 7, 15]``).
-    gains
-        Attenuation per path (default: ``[1.0, 0.6, 0.4, 0.2]``).
-    """
-    if delays is None:
-        delays = [0, 3, 7, 15]
-    if gains is None:
-        gains = [1.0, 0.6, 0.4, 0.2]
-
-    N = len(sig)
-    out = np.zeros(N)
-    for d, g in zip(delays, gains, strict=True):
-        if d == 0:
-            out += g * sig
-        else:
-            out[d:] += g * sig[: N - d]
-    out *= float(np.sqrt(np.mean(sig**2))) / (float(np.std(out)) + 1e-12)
-    return awgn(out, snr_db, rng)
-
-
-def _wifi_interferer(
-    N: int, fc: float = 0.2, bw: float = 0.08, rng: np.random.Generator | None = None
-) -> NDArray:
-    """Synthetic narrow-band interferer (noise filtered in a sub-band)."""
-    if rng is None:
-        rng = np.random.default_rng()
-    noise = rng.normal(0, 1, N)
-    h_bp = _wifi_fir(fc, bw)
-    return lfilter(h_bp, 1.0, noise)
-
-
-@lru_cache(maxsize=4)
-def _wifi_fir(fc: float, bw: float) -> NDArray:
-    """Cached FIR band-pass filter for the WiFi-like interferer."""
-    return firwin(101, [fc - bw / 2, fc + bw / 2], pass_zero=False)
 
 
 def channel_interferers(

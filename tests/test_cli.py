@@ -120,7 +120,6 @@ class TestSweepComputeSmokeTest(unittest.TestCase):
                     "sweep",
                     "compute",
                     "--quick",
-                    "--no-display",
                     "--data-dir",
                     tmp,
                 ]

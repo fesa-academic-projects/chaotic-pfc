@@ -30,7 +30,7 @@ initial condition is needed (``transmit_order_n`` with ``x0=None``), a
 import numpy as np
 from numpy.typing import NDArray
 
-from ..dynamics.maps import _henon_n4_step_inplace
+from ..dynamics.maps import henon_n4_step_inplace
 
 
 def transmit(
@@ -149,5 +149,5 @@ def transmit_order_n(
     for i in range(N):
         v = state[2, i]
         s[i] = v + mu * message[i]
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], a, b, c)
+        henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], a, b, c)
     return s, state

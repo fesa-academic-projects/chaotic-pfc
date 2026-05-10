@@ -56,7 +56,7 @@ from chaotic_pfc.analysis.sweep import (
 )
 from chaotic_pfc.cli.sweep import _beta_values
 
-from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
+from . import attractors, comm_fir, comm_ideal, comm_order_n, dcsk, lyapunov, sensitivity
 from . import sweep as sweep_mod
 from ._common import add_lang_flag
 
@@ -270,6 +270,24 @@ def run(args: argparse.Namespace) -> int:
             step_args.steps = 50
         experiment_run(step_args)
 
+    # ── 1b) DCSK comparison (06b) ───────────────────────────────────────
+    _banner("06b")
+    dcsk.run(
+        argparse.Namespace(
+            no_display=shared["no_display"],
+            save=shared["save"],
+            N=600,
+            beta=64,
+            n_taps=5,
+            wc=0.9091,
+            mu=0.01,
+            snr_min=-6,
+            snr_max=28,
+            snr_step=2,
+            lang=getattr(args, "lang", "pt"),
+        )
+    )
+
     # ── 2) Sweep compute (07) ─────────────────────────────────────────────
     if args.skip_sweep:
         _banner("07  (skipped)")
@@ -285,27 +303,31 @@ def run(args: argparse.Namespace) -> int:
 
     # ── 3) Sweep plot (08) ────────────────────────────────────────────────
     _banner("08")
-    plot_args = argparse.Namespace(
-        **shared,
-        all=True,
-        data_dir="data/sweeps",
-        figures_dir="figures/sweeps",
-        fmt=["png", "svg"],
+    sweep_mod.run_plot(
+        argparse.Namespace(
+            no_display=shared["no_display"],
+            save=shared["save"],
+            all=True,
+            data_dir="data/sweeps",
+            figures_dir="figures/sweeps",
+            fmt=["png", "svg"],
+        )
     )
-    sweep_mod.run_plot(plot_args)
 
     # ── 4) Plot 3-D (09) ──────────────────────────────────────────────────
     if args.skip_sweep or args.quick_sweep:
         _banner("09  (skipped — use normal run for 3-D plot)")
     else:
         _banner("09")
-        plot_3d_args = argparse.Namespace(
-            **shared,
-            data_dir="data/sweeps/kaiser",
-            figures_dir="figures/sweeps",
-            all=True,
+        sweep_mod.run_plot_3d(
+            argparse.Namespace(
+                no_display=shared["no_display"],
+                save=shared["save"],
+                all=True,
+                data_dir="data/sweeps/kaiser",
+                figures_dir="figures/sweeps",
+            )
         )
-        sweep_mod.run_plot_3d(plot_3d_args)
 
     print("\nAll experiments completed successfully.")
     return 0

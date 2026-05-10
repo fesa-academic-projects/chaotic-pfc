@@ -38,10 +38,14 @@ Three 2-D maps and one generalised N-th order map are provided:
 * :func:`henon_order_n` — general case with an FIR filter of arbitrary
   order acting on the system's state vector. Used by the higher-order
   transmitter/receiver pair and by the Lyapunov sweep.
+
+* :func:`henon_fir_sequence` — generates a chaotic sequence from the
+  FIR-filtered Hénon map, used by the DCSK communication schemes.
 """
 
 import numpy as np
 from numpy.typing import NDArray
+from scipy.signal import firwin
 
 # ── 2-D maps ────────────────────────────────────────────────────────────────
 
@@ -165,7 +169,7 @@ def henon_filtered(
 # ── N-th order map (vectorised state) ──────────────────────────────────────
 
 
-def _henon_n4_step(
+def henon_n4_step(
     x: NDArray,
     s: float,
     a: float,
@@ -175,7 +179,7 @@ def _henon_n4_step(
     """Single step of the N-th order filtered Hénon map.
 
     Allocates a new output array on every call. For hot loops, prefer
-    :func:`_henon_n4_step_inplace` which writes into a pre-allocated buffer.
+    :func:`henon_n4_step_inplace` which writes into a pre-allocated buffer.
 
     Parameters
     ----------
@@ -195,11 +199,11 @@ def _henon_n4_step(
     """
     Nc = len(c)
     out = np.empty(Nc)
-    _henon_n4_step_inplace(out, x, s, a, b, c)
+    henon_n4_step_inplace(out, x, s, a, b, c)
     return out
 
 
-def _henon_n4_step_inplace(
+def henon_n4_step_inplace(
     out: NDArray,
     x: NDArray,
     s: float,
@@ -255,7 +259,7 @@ def henon_order_n(
     The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``.
     At each step, the carrier output is the filtered state component
     ``x[2]``, and the next iterate is computed by
-    :func:`_henon_n4_step`.
+    :func:`henon_n4_step`.
 
     The ``driving`` parameter lets callers override the nonlinear
     input: when ``driving=None`` the map runs autonomously (``s = x[2]``);
@@ -300,5 +304,68 @@ def henon_order_n(
     for i in range(steps):
         s_i = float(driving[i]) if driving is not None else state[2, i]
         output[i] = state[2, i]
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
+        henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
     return state, output
+
+
+# ── FIR-filtered Hénon sequence generator ──────────────────────────────────
+
+DCSK_DEFAULT_WC: float = 0.9091
+
+
+def henon_fir_sequence(
+    N: int,
+    a: float = 1.4,
+    b: float = 0.3,
+    n_taps: int = 5,
+    wc: float = DCSK_DEFAULT_WC,
+    window: str = "hamming",
+) -> NDArray:
+    """Generate a chaotic sequence from the FIR-filtered Hénon map.
+
+    Iterates ``x[n+1] = 1 - a * xf[n]^2 + y[n]`` where ``xf`` is the
+    current output of an FIR filter applied to the state history.
+
+    Parameters
+    ----------
+    N
+        Number of samples to produce.
+    a, b
+        Hénon map parameters (default: 1.4, 0.3).
+    n_taps
+        FIR filter order (number of coefficients).
+    wc
+        Normalised cutoff frequency in (0, 1).
+    window
+        SciPy window name (e.g. ``"hamming"``, ``"kaiser"``).
+
+    Returns
+    -------
+    ndarray, shape (N,)
+        Chaotic samples.
+
+    Raises
+    ------
+    ValueError
+        If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
+    """
+    h = firwin(n_taps, wc, window=window)
+    buf = np.full(n_taps, 0.1)
+    x_val, y_val = 0.1, 0.1
+    seq = np.empty(N)
+
+    write_idx = 0
+    for n in range(N):
+        xf = 0.0
+        for k in range(n_taps):
+            xf += h[k] * buf[(write_idx - k) % n_taps]
+        xn = 1.0 - a * xf * xf + y_val
+        yn = b * x_val
+        if not np.isfinite(xn) or abs(xn) > 100:
+            raise ValueError(f"henon_fir_sequence diverged at n={n}")
+        buf[write_idx] = xn
+        write_idx = (write_idx + 1) % n_taps
+        x_val, y_val = xn, yn
+        seq[n] = xn
+
+    return seq

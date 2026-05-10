@@ -198,7 +198,7 @@ class TestAdaptiveCliRejection(_IsolatedCwdMixin, unittest.TestCase):
 
     def test_run_sweep_compute_quick_with_adaptive_rejected(self):
         """--quick already shrinks Nmap; --adaptive on top is redundant."""
-        code = main(["run", "sweep", "compute", "--quick", "--adaptive", "--no-display"])
+        code = main(["run", "sweep", "compute", "--quick", "--adaptive"])
         self.assertEqual(code, 2)
 
     def test_run_all_skip_sweep_with_adaptive_rejected(self):
@@ -337,6 +337,47 @@ class TestSweepPlotSmoke(unittest.TestCase, _IsolatedCwdMixin):
                 "--no-display",
                 "--data-dir",
                 str(proj_root / "data" / "sweeps"),
+                "--figures-dir",
+                str(self.workdir / "figures"),
+            ]
+        )
+        self.assertEqual(code, 0)
+
+
+class TestAnalysisSmoke(unittest.TestCase, _IsolatedCwdMixin):
+    def setUp(self):
+        _IsolatedCwdMixin.setUp(self)
+
+    @pytest.mark.slow
+    def test_run_analysis(self):
+        proj_root = Path(__file__).resolve().parents[1]
+        code = main(
+            [
+                "run",
+                "analysis",
+                "--data-dir",
+                str(proj_root / "data" / "sweeps"),
+                "--json",
+                str(self.workdir / "summary.json"),
+            ]
+        )
+        self.assertEqual(code, 0)
+
+
+class TestPlot3DSmoke(unittest.TestCase, _IsolatedCwdMixin):
+    def setUp(self):
+        _IsolatedCwdMixin.setUp(self)
+
+    @pytest.mark.slow
+    def test_run_sweep_plot_3d(self):
+        proj_root = Path(__file__).resolve().parents[1]
+        code = main(
+            [
+                "run",
+                "sweep",
+                "plot-3d",
+                "--data-dir",
+                str(proj_root / "data" / "sweeps" / "kaiser"),
                 "--figures-dir",
                 str(self.workdir / "figures"),
             ]

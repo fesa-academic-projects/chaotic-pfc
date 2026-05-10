@@ -4,20 +4,17 @@ import unittest
 
 import numpy as np
 
-from chaotic_pfc.comms.channel import fir_channel
+from chaotic_pfc.comms.channel import awgn, channel_impulsive, channel_multipath, fir_channel
 from chaotic_pfc.comms.dcsk import (
-    awgn,
     ber,
-    channel_impulsive,
     channel_interferers,
-    channel_multipath,
     channel_urban,
     dcsk_receive,
     dcsk_transmit,
     efdcsk_receive,
     efdcsk_transmit,
-    henon_fir_sequence,
 )
+from chaotic_pfc.dynamics.maps import henon_fir_sequence
 
 
 class TestHenonFIR(unittest.TestCase):

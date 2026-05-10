@@ -77,11 +77,14 @@ def _style(ax: Axes, ts: int = 12) -> None:
         sp.set_linewidth(1.2)
 
 
-def _save(fig: Figure, path: str | None) -> None:
-    """Write ``fig`` to ``path`` if ``path`` is not ``None``; otherwise no-op."""
-    if path:
+def _save(fig: Figure, path: str | Path | None, **savefig_kwargs) -> None:
+    """Write ``fig`` to ``path`` if not ``None``, creating parent directories.
+
+    Extra keyword arguments are forwarded to ``fig.savefig()``.
+    """
+    if path is not None:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(path)
+        fig.savefig(path, **savefig_kwargs)
 
 
 # ── 1. Attractor ────────────────────────────────────────────────────────────
