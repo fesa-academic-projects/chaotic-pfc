@@ -19,13 +19,13 @@ from chaotic_pfc.dynamics.lyapunov import (
 class TestLyapunov(unittest.TestCase):
     def test_lyapunov_max_returns_expected_keys(self):
         result = lyapunov_max(Nitera=200, Ndiscard=100)
-        self.assertIn("lyapunov_max", result)
-        self.assertIn("all_exponents", result)
-        self.assertEqual(len(result["all_exponents"]), 4)
+        self.assertIsNotNone(result.lyapunov_max)
+        self.assertIsNotNone(result.all_exponents)
+        self.assertEqual(len(result.all_exponents), 4)
 
     def test_positive_exponent(self):
         result = lyapunov_max(pole_radius=0.0, Nitera=500, Ndiscard=200)
-        self.assertGreater(result["lyapunov_max"], 0)
+        self.assertGreater(result.lyapunov_max, 0)
 
     def test_fixed_point_stability(self):
         info = fixed_point_stability()
@@ -34,16 +34,14 @@ class TestLyapunov(unittest.TestCase):
 
     def test_henon2d_chaotic(self):
         res = lyapunov_henon2d(Nitera=300, Ndiscard=100)
-        self.assertGreater(res["lyapunov_max"], 0)
+        self.assertGreater(res.lyapunov_max, 0)
 
     def test_henon2d_fixed_points(self):
         res = lyapunov_henon2d(Nitera=100, Ndiscard=50)
-        self.assertIn("fixed_point_p", res)
-        self.assertIn("fixed_point_n", res)
-        # (+): x = (1-b + sqrt((1-b)^2 + 4a)) / 2, with a=1.4, b=0.3
-        self.assertAlmostEqual(res["fixed_point_p"][0], 0.8838962679253065, places=4)
-        # (-): x = (1-b - sqrt((1-b)^2 + 4a)) / 2
-        self.assertAlmostEqual(res["fixed_point_n"][0], -1.5838962679253065, places=4)
+        self.assertIsNotNone(res.fixed_point_p)
+        self.assertIsNotNone(res.fixed_point_n)
+        self.assertAlmostEqual(res.fixed_point_p[0], 0.8838962679253065, places=4)
+        self.assertAlmostEqual(res.fixed_point_n[0], -1.5838962679253065, places=4)
 
 
 class TestLyapunovEnsemble(unittest.TestCase):

@@ -53,13 +53,9 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.todo",
     "sphinx_copybutton",
-    "myst_parser",
 ]
 
-source_suffix = {
-    ".rst": "restructuredtext",
-    ".md": "markdown",
-}
+source_suffix = ".rst"
 
 # ─────────────────────────────────────────────────────────────────────────
 # autodoc / autosummary

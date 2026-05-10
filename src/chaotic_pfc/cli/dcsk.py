@@ -10,6 +10,8 @@ from ._common import add_lang_flag, add_save_display_flags, pick_backend
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the ``run dcsk`` subcommand."""
+    from chaotic_pfc.comms.dcsk import DCSK_DEFAULT_WC
+
     p = subparsers.add_parser(
         "dcsk",
         help="DCSK / EF-DCSK / Pecora-Carroll — BER vs SNR comparison.",
@@ -20,7 +22,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         "--beta", type=int, default=64, help="Spreading factor for DCSK/EF-DCSK (default: 64)"
     )
     p.add_argument("--n-taps", type=int, default=5, dest="n_taps")
-    p.add_argument("--wc", type=float, default=0.9091)
+    p.add_argument("--wc", type=float, default=DCSK_DEFAULT_WC)
     p.add_argument(
         "--mu", type=float, default=0.01, help="Modulation index for Pecora-Carroll (default: 0.01)"
     )

@@ -51,10 +51,12 @@ from chaotic_pfc.comms.dcsk import (
     efdcsk_transmit,
     henon_fir_sequence,
 )
+from chaotic_pfc.comms.protocols import Channel, Receiver, Transmitter
 from chaotic_pfc.comms.receiver import receive, receive_order_n
 from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
 from chaotic_pfc.dynamics.lyapunov import (
     EnsembleResult,
+    LyapunovResult,
     fixed_point_stability,
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
@@ -67,15 +69,19 @@ from chaotic_pfc.dynamics.maps import (
     henon_order_n,
     henon_standard,
 )
-from chaotic_pfc.dynamics.signals import binary_message
+from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
 from chaotic_pfc.dynamics.spectral import psd_normalised
 
 __all__ = [
     "FILTER_TYPES",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
+    "Channel",
     "EnsembleResult",
+    "LyapunovResult",
+    "Receiver",
     "SweepResult",
+    "Transmitter",
     "__version__",
     "awgn",
     "ber",
@@ -123,6 +129,7 @@ __all__ = [
     "receive_order_n",
     "run_sweep",
     "save_sweep",
+    "sinusoidal_message",
     "summary_table",
     "transition_boundary",
     "transmit",

@@ -23,7 +23,6 @@ The public API is small:
 from ._io import _infer_config_from_path, load_sweep, save_sweep
 from ._kernel import _build_task_order
 from ._orchestration import (
-    _precompute_perturbations,
     precompute_fir_bank,
     quick_sweep_params,
     run_sweep,
@@ -42,7 +41,6 @@ __all__ = [
     "SweepResult",
     "_build_task_order",
     "_infer_config_from_path",
-    "_precompute_perturbations",
     "load_sweep",
     "precompute_fir_bank",
     "quick_sweep_params",

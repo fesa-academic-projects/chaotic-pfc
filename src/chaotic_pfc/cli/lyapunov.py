@@ -116,17 +116,17 @@ def run(args: argparse.Namespace) -> int:
         seed=cfg.seed,
     )
 
-    print(f"     Fixed point (+): {res2d['fixed_point_p']}")
-    print(f"     Fixed point (-): {res2d['fixed_point_n']}")
-    for label, key in [("(+)", "eigenvalues_p"), ("(-)", "eigenvalues_n")]:
-        eigs = res2d[key]
+    print(f"     Fixed point (+): {res2d.fixed_point_p}")
+    print(f"     Fixed point (-): {res2d.fixed_point_n}")
+    for label, eigs in [("(+)", res2d.eigenvalues_p), ("(-)", res2d.eigenvalues_n)]:
+        assert eigs is not None
         print(f"     Eigenvalues {label}: {eigs}")
         print(f"     |lambda| {label}:     {np.abs(eigs)}")
-    print(f"     Stable (+): {res2d['stable_p']}   (-): {res2d['stable_n']}")
-    print(f"     Lyapunov exponents: {res2d['all_exponents']}")
+    print(f"     Stable (+): {res2d.stable_p}   (-): {res2d.stable_n}")
+    print(f"     Lyapunov exponents: {res2d.all_exponents}")
     print(
-        f"     lambda_max = {res2d['lyapunov_max']:.6f}  "
-        f"→ {'Chaotic' if res2d['lyapunov_max'] > 0 else 'Non-chaotic'}"
+        f"     lambda_max = {res2d.lyapunov_max:.6f}  "
+        f"→ {'Chaotic' if res2d.lyapunov_max > 0 else 'Non-chaotic'}"
     )
 
     # ─── Part B: 4-D Pole-filtered Henon (single IC) ───────────────────────
@@ -147,14 +147,15 @@ def run(args: argparse.Namespace) -> int:
         seed=cfg.seed,
     )
 
-    print(f"     Fixed point:  {res4d['fixed_point']}")
-    print(f"     Eigenvalues:  {res4d['eigenvalues']}")
-    print(f"     |lambda|:     {np.abs(res4d['eigenvalues'])}")
-    print(f"     Stable:       {res4d['stable']}")
-    print(f"     Lyapunov exponents: {res4d['all_exponents']}")
+    print(f"     Fixed point:  {res4d.fixed_point}")
+    print(f"     Eigenvalues:  {res4d.eigenvalues}")
+    assert res4d.eigenvalues is not None
+    print(f"     |lambda|:     {np.abs(res4d.eigenvalues)}")
+    print(f"     Stable:       {res4d.stable}")
+    print(f"     Lyapunov exponents: {res4d.all_exponents}")
     print(
-        f"     lambda_max = {res4d['lyapunov_max']:.6f}  "
-        f"→ {'Chaotic' if res4d['lyapunov_max'] > 0 else 'Non-chaotic'}"
+        f"     lambda_max = {res4d.lyapunov_max:.6f}  "
+        f"→ {'Chaotic' if res4d.lyapunov_max > 0 else 'Non-chaotic'}"
     )
 
     # ─── Part C: 2-D Henon ensemble (N_ci ICs +/-perturbation) ─────────────

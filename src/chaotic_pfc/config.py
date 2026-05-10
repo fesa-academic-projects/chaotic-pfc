@@ -157,10 +157,12 @@ class LyapunovConfig:
     Nitera: int = 2000
     Ndiscard: int = 1000
     perturbation: float = 0.1
+    n_ci: int = 20
+    data_dir: str = "data/lyapunov"
     # Pole-filter params
     Gz: float = 1.0
     pole_radius: float = 0.975
-    w0: float = 0.0  # normalised angular frequency (×π)
+    w0: float = 0.0
 
 
 @dataclass
@@ -239,6 +241,7 @@ class ExperimentConfig:
     plot: PlotConfig = field(default_factory=PlotConfig)
     sweep: SweepConfig = field(default_factory=SweepConfig)
     seed: int = 42
+    lang: str = "pt"
 
     def to_namespace(self) -> argparse.Namespace:
         """Build an ``argparse.Namespace`` with defaults for every CLI subcommand.
@@ -252,16 +255,16 @@ class ExperimentConfig:
             period=self.comm.message_period,
             cutoff=self.channel.cutoff,
             taps=self.channel.num_taps,
-            steps=50_000,
+            steps=50,
             epsilon=1e-4,
             Nitera=self.lyapunov.Nitera,
             Ndiscard=self.lyapunov.Ndiscard,
             pole_radius=self.lyapunov.pole_radius,
             w0=self.lyapunov.w0,
-            n_ci=20,
+            n_ci=self.lyapunov.n_ci,
             perturbation=self.lyapunov.perturbation,
-            data_dir="data/lyapunov",
-            lang="pt",
+            data_dir=self.lyapunov.data_dir,
+            lang=self.lang,
         )
 
 

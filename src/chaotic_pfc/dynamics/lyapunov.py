@@ -116,18 +116,37 @@ def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Generic spectrum loop — shared by 2-D and 4-D variants
+# 4-D pole-filtered Henon map
 # ═══════════════════════════════════════════════════════════════════════════
-#
-# Both variants run the same algorithm:
-#   1. Discard ``Ndiscard`` transient iterations from the IC ``x``.
-#   2. For ``Nitera`` steps: J = jacobian(x); Z = J @ W; (W, norms) =
-#      Gram-Schmidt(Z); accumulate log(max(norms_k, 1e-300)); advance x.
-#   3. The k-th Lyapunov exponent is the time-average of ``log_r[k, :]``.
-#
-# Pulling this into a helper means the 2-D and 4-D entry points contain
-# only the parameter-handling boilerplate (computing fp, eigenvalues,
-# building the IC), plus the three callbacks.
+
+
+@dataclass
+class LyapunovResult:
+    """Result of a single-IC Lyapunov exponent computation (2-D or 4-D).
+
+    Supports both attribute access (``result.lyapunov_max``) and
+    dict-style access (``result["lyapunov_max"]``) for backward
+    compatibility with code that previously received a bare ``dict``.
+
+    Fields populated by :func:`lyapunov_max` (4-D):
+        lyapunov_max, all_exponents, fixed_point, eigenvalues, stable
+
+    Fields populated by :func:`lyapunov_henon2d` (2-D):
+        lyapunov_max, all_exponents, fixed_point_p, fixed_point_n,
+        eigenvalues_p, eigenvalues_n, stable_p, stable_n
+    """
+
+    lyapunov_max: float
+    all_exponents: np.ndarray
+    fixed_point: np.ndarray | None = None
+    eigenvalues: np.ndarray | None = None
+    stable: bool | None = None
+    fixed_point_p: np.ndarray | None = None
+    fixed_point_n: np.ndarray | None = None
+    eigenvalues_p: np.ndarray | None = None
+    eigenvalues_n: np.ndarray | None = None
+    stable_p: bool | None = None
+    stable_n: bool | None = None
 
 
 def _lyapunov_spectrum(
@@ -142,8 +161,7 @@ def _lyapunov_spectrum(
     Parameters
     ----------
     x
-        Initial condition, shape ``(dim,)``. Modified by reference is
-        avoided — the function makes its own working copy.
+        Initial condition, shape ``(dim,)``.
     iterate
         ``x_next = iterate(x)``.
     jacobian
@@ -175,9 +193,6 @@ def _lyapunov_spectrum(
     return np.array([np.mean(log_r[k, :]) for k in range(dim)])
 
 
-# ── Lyapunov exponent (single IC) ──────────────────────────────────────────
-
-
 def lyapunov_max(
     alpha: float = 1.4,
     beta: float = 0.3,
@@ -188,16 +203,14 @@ def lyapunov_max(
     Ndiscard: int = 1000,
     perturbation: float = 0.1,
     seed: int = 42,
-) -> dict:
+) -> LyapunovResult:
     """
     Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map.
 
-    Returns a dict with keys:
-        'lyapunov_max'  : float — largest Lyapunov exponent
-        'all_exponents' : ndarray of shape (4,)
-        'fixed_point'   : ndarray of shape (4,)
-        'eigenvalues'   : ndarray of shape (4,) — eigenvalues at fixed point
-        'stable'        : bool
+    Returns
+    -------
+    LyapunovResult
+        With fields: lyapunov_max, all_exponents, fixed_point, eigenvalues, stable.
     """
     dim = 4
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
@@ -219,13 +232,13 @@ def lyapunov_max(
         Ndiscard=Ndiscard,
     )
 
-    return {
-        "lyapunov_max": float(np.max(exponents)),
-        "all_exponents": exponents,
-        "fixed_point": xf,
-        "eigenvalues": eigs,
-        "stable": stable,
-    }
+    return LyapunovResult(
+        lyapunov_max=float(np.max(exponents)),
+        all_exponents=exponents,
+        fixed_point=xf,
+        eigenvalues=eigs,
+        stable=stable,
+    )
 
 
 def fixed_point_stability(
@@ -292,18 +305,14 @@ def lyapunov_henon2d(
     Ndiscard: int = 1000,
     perturbation: float = 0.1,
     seed: int = 42,
-) -> dict:
+) -> LyapunovResult:
     """Compute Lyapunov exponents for the standard 2-D Hénon map.
 
-    Returns dict with keys:
-        'lyapunov_max'   : float
-        'all_exponents'  : ndarray of shape (2,)
-        'fixed_point_p'  : ndarray — positive fixed point
-        'fixed_point_n'  : ndarray — negative fixed point
-        'eigenvalues_p'  : ndarray — eigenvalues at (+) fixed point
-        'eigenvalues_n'  : ndarray — eigenvalues at (−) fixed point
-        'stable_p'       : bool
-        'stable_n'       : bool
+    Returns
+    -------
+    LyapunovResult
+        With fields: lyapunov_max, all_exponents, fixed_point_p,
+        fixed_point_n, eigenvalues_p, eigenvalues_n, stable_p, stable_n.
     """
     dim = 2
 
@@ -329,16 +338,16 @@ def lyapunov_henon2d(
         Ndiscard=Ndiscard,
     )
 
-    return {
-        "lyapunov_max": float(np.max(exponents)),
-        "all_exponents": exponents,
-        "fixed_point_p": xf_p,
-        "fixed_point_n": xf_n,
-        "eigenvalues_p": eigs_p,
-        "eigenvalues_n": eigs_n,
-        "stable_p": stable_p,
-        "stable_n": stable_n,
-    }
+    return LyapunovResult(
+        lyapunov_max=float(np.max(exponents)),
+        all_exponents=exponents,
+        fixed_point_p=xf_p,
+        fixed_point_n=xf_n,
+        eigenvalues_p=eigs_p,
+        eigenvalues_n=eigs_n,
+        stable_p=stable_p,
+        stable_n=stable_n,
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════

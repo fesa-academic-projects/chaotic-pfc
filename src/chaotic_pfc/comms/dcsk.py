@@ -23,13 +23,15 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin, lfilter
 
+DCSK_DEFAULT_WC: float = 0.9091
+
 
 def henon_fir_sequence(
     N: int,
     a: float = 1.4,
     b: float = 0.3,
     n_taps: int = 5,
-    wc: float = 0.9091,
+    wc: float = DCSK_DEFAULT_WC,
     window: str = "hamming",
 ) -> NDArray:
     """Generate a chaotic sequence from the FIR-filtered Hénon map.
@@ -96,7 +98,7 @@ def dcsk_transmit(
     bits: NDArray,
     beta: int = 64,
     n_taps: int = 5,
-    wc: float = 0.9091,
+    wc: float = DCSK_DEFAULT_WC,
     window: str = "hamming",
     transient: int = 500,
 ) -> NDArray:
@@ -173,7 +175,7 @@ def efdcsk_transmit(
     bits: NDArray,
     beta: int = 64,
     n_taps: int = 5,
-    wc: float = 0.9091,
+    wc: float = DCSK_DEFAULT_WC,
     window: str = "hamming",
     transient: int = 500,
 ) -> NDArray:

@@ -2,6 +2,7 @@
 
 from .lyapunov import (
     EnsembleResult,
+    LyapunovResult,
     fixed_point_stability,
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
@@ -9,11 +10,12 @@ from .lyapunov import (
     lyapunov_max_ensemble,
 )
 from .maps import henon_filtered, henon_generalised, henon_order_n, henon_standard
-from .signals import binary_message
+from .signals import binary_message, sinusoidal_message
 from .spectral import psd_normalised
 
 __all__ = [
     "EnsembleResult",
+    "LyapunovResult",
     "binary_message",
     "fixed_point_stability",
     "henon_filtered",
@@ -25,4 +27,5 @@ __all__ = [
     "lyapunov_max",
     "lyapunov_max_ensemble",
     "psd_normalised",
+    "sinusoidal_message",
 ]
