@@ -648,4 +648,3 @@ msgstr ""
 #~ "Retornam a média de :math:`\\lambda_{\\max}`"
 #~ " sobre ``n_initial`` condições iniciais "
 #~ "independentes testadas em sequência."
-

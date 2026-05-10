@@ -328,4 +328,3 @@ msgstr "Código e docstrings em inglês; rótulos de figuras bilíngues (pt / en
 
 #~ msgid "Table of Contents"
 #~ msgstr "Índice"
-

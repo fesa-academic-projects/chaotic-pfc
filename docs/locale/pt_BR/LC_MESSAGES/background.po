@@ -1100,4 +1100,3 @@ msgstr ""
 
 #~ msgid "Table of Contents"
 #~ msgstr "Sumário"
-

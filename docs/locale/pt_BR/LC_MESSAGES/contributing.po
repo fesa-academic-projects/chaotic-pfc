@@ -436,4 +436,3 @@ msgstr "Mensagens de commit seguem Conventional Commits."
 
 #~ msgid "Table of Contents"
 #~ msgstr "Índice"
-

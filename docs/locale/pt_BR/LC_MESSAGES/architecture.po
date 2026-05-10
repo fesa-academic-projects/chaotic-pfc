@@ -356,4 +356,3 @@ msgstr "Configuração centralizada em dataclasses, singleton padrão"
 
 #~ msgid "Table of Contents"
 #~ msgstr "Índice"
-

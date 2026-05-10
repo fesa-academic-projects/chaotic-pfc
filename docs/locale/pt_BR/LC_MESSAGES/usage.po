@@ -438,4 +438,3 @@ msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
 
 #~ msgid "Table of Contents"
 #~ msgstr "Índice"
-

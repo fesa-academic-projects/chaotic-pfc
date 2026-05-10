@@ -265,4 +265,3 @@ msgstr "DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``"
 #~ "Canais com banda limitada ideal e "
 #~ "FIR com AWGN e multipercurso "
 #~ "(:mod:`chaotic_pfc.comms.channel`)."
-

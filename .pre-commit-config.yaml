@@ -22,8 +22,6 @@ repos:
         exclude: ^(figures|data)/
       - id: check-toml
         exclude: ^(figures|data)/
-      - id: check-json
-        exclude: ^(figures|data)/
       - id: check-merge-conflict
         exclude: ^(figures|data)/
       - id: check-added-large-files
