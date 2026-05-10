@@ -128,7 +128,7 @@ def summary_table(
     rows: list[dict] = []
     for result in _discover_all(data_dir):
         h = result.h
-        chaotic = np.sum(h > 0)
+        chaotic = np.sum((~np.isnan(h)) & (h > 0))
         periodic = np.sum((~np.isnan(h)) & (h <= 0))
         divergent = np.sum(np.isnan(h))
         total = h.size
