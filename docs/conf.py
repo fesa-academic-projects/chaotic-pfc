@@ -7,6 +7,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from chaotic_pfc._version import __version__
 
 # ─────────────────────────────────────────────────────────────────────────
 # Path setup: make the package importable without installing it first
@@ -29,8 +30,8 @@ if _rtd_lang:
         language = "pt_BR"
 else:
     language = os.environ.get("SPHINX_LANGUAGE", "en")
-version = "0.7.0"
-release = "0.7.0"
+version = __version__
+release = __version__
 
 # ─────────────────────────────────────────────────────────────────────────
 # i18n / l10n support
