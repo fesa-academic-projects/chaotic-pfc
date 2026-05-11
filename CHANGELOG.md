@@ -4,6 +4,66 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
+## [0.7.0]: 2026-05-10
+
+### Fixed
+- FIR circular buffer off-by-one in `henon_fir_sequence`: `h[0]` was multiplying the
+  oldest buffer value instead of the newest, scrambling coefficient order for all DCSK.
+- Triple AWGN in `channel_urban`: each sub-call applied independent AWGN at the requested
+  SNR, producing 3x the intended noise power. SNR is now compensated per sub-call.
+- Wrong expected Lyapunov exponent sum: diagnostic printed `2*ln|beta|` instead of the
+  correct `ln|beta| + 2*ln|r|` for the 4-D pole-filtered system.
+- `summary_table` chaotic count silently undercounted when `h` contained NaN; now uses
+  the same `~isnan` mask as periodic and divergent counts (symmetric with `beta_summary`).
+- Four broken Sphinx cross-references: `chaotic_pfc.channel.*` routed to
+  `chaotic_pfc.comms.channel.*`; `chaotic_pfc.spectral.*` to `chaotic_pfc.dynamics.spectral.*`.
+- Missing `[Kolumban96]` and `[Kaddoum13]` bibliography entries in `background.rst`.
+- `to_namespace()` missing `Nc` and `internal_cutoff` fields, breaking `run all` at
+  step [05] with `AttributeError`.
+
+### Added
+- `DCSK_DEFAULT_WC` exposed at package top level and in `__all__`.
+- i18n support for sweep classification legends via `_build_legend_handles(lang)` and
+  new `_i18n` keys (`sweep.legend.periodic`, `.chaotic`, `.unbounded`).
+- `FixedPointInfo` TypedDict for `fixed_point_stability` return type.
+- Type hints (`NDArray`, `SpectralConfig`) on `compute_psds` in `cli/_common.py`.
+- Regression test `test_to_namespace_has_all_required_fields` guarding against future
+  `to_namespace` field omissions.
+- Documentation of Pecora-Carroll vs DCSK BER comparison asymmetry in `cli/dcsk.py`.
+
+### Changed
+- `maps.py` module header updated from "Three 2-D maps" to "Four Henon map variants and
+  one chaotic-sequence generator".
+- `test_cli.EXPERIMENTS` extended with `dcsk` and `analysis` subcommands.
+- Phantom `--save` and `--no-display` flags removed from `sweep/_beta.py`,
+  `sweep/_plot.py`, and `sweep/_plot_3d.py` (they were no-ops).
+- `transmit_order_n` and `receive_order_n` docstrings clarified: both explicitly state
+  they do NOT implement the `Transmitter`/`Receiver` protocols.
+- `to_namespace()` expanded with `seed` field; intentional omissions of `PlotConfig`,
+  `SpectralConfig`, and `SweepConfig` documented.
+- `run_all.py` references `DCSK_DEFAULT_WC` and `cfg.comm.mu` instead of hardcoded
+  magic numbers; duplicate local `DEFAULT_CONFIG` import removed.
+- `plotting/` restored to coverage measurement (was excluded despite `test_plotting.py`).
+- `DEFAULT_CONFIG` singleton documented as read-only with `dataclasses.replace()` guidance.
+- CI `--cov-fail-under` raised from 65 to 75.
+- CI pipeline smoke test upgraded from Python 3.12 to 3.14.
+- `RELEASING.md` updated to include `docs/conf.py` in version bump checklist.
+- Makefile `.PHONY` completed with all targets (`format-check`, `docs-pt`, etc.).
+- Test class inheritance standardized to `(_IsolatedCwdMixin, unittest.TestCase)` across
+  all smoke test classes.
+- `test_transmit_diverges_with_large_mu` moved from `TestTransmitOrderN` to
+  `TestTransmitStandard`.
+
+### Removed
+- All em-dashes (travessões) from documentation: replaced with colons, commas, or
+  semicolons. Applies to all `.rst`, `.md`, and source docstrings.
+
+### Docs
+- Sphinx `.po` files regenerated via `sphinx-intl update`; 92 fuzzy entries resolved.
+- Stale translations fixed: symbol count (62), `default_rng(seed)`, channel module paths.
+- README `__all__` count corrected from `~65` to `62`.
+- `docs/contributing.rst` symbol count corrected from `61` to `62`.
+
 ## [0.6.2]: 2026-05-10
 
 ### Fixed

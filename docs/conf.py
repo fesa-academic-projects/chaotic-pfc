@@ -29,8 +29,8 @@ if _rtd_lang:
         language = "pt_BR"
 else:
     language = os.environ.get("SPHINX_LANGUAGE", "en")
-version = "0.6.2"
-release = "0.6.2"
+version = "0.7.0"
+release = "0.7.0"
 
 # ─────────────────────────────────────────────────────────────────────────
 # i18n / l10n support
