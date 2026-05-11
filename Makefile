@@ -1,4 +1,4 @@
-.PHONY: help install test test-fast lint format typecheck check-all docs clean pre-commit
+.PHONY: help install test test-fast lint format format-check typecheck check-all docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'

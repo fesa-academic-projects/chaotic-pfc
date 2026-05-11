@@ -340,19 +340,13 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
         self.assertEqual(captured["tol"], 5e-4)
 
 
-class TestDCSKSmoke(unittest.TestCase, _IsolatedCwdMixin):
-    def setUp(self):
-        _IsolatedCwdMixin.setUp(self)
-
+class TestDCSKSmoke(_IsolatedCwdMixin, unittest.TestCase):
     def test_run_dcsk_no_display(self):
         code = main(["run", "dcsk", "--no-display"])
         self.assertEqual(code, 0)
 
 
-class TestSweepPlotSmoke(unittest.TestCase, _IsolatedCwdMixin):
-    def setUp(self):
-        _IsolatedCwdMixin.setUp(self)
-
+class TestSweepPlotSmoke(_IsolatedCwdMixin, unittest.TestCase):
     @pytest.mark.slow
     def test_run_sweep_plot_hamming_lowpass(self):
         # Sweep plot reads from versioned .npz files in the project's
@@ -377,10 +371,7 @@ class TestSweepPlotSmoke(unittest.TestCase, _IsolatedCwdMixin):
         self.assertEqual(code, 0)
 
 
-class TestAnalysisSmoke(unittest.TestCase, _IsolatedCwdMixin):
-    def setUp(self):
-        _IsolatedCwdMixin.setUp(self)
-
+class TestAnalysisSmoke(_IsolatedCwdMixin, unittest.TestCase):
     @pytest.mark.slow
     def test_run_analysis(self):
         proj_root = Path(__file__).resolve().parents[1]
@@ -397,10 +388,7 @@ class TestAnalysisSmoke(unittest.TestCase, _IsolatedCwdMixin):
         self.assertEqual(code, 0)
 
 
-class TestPlot3DSmoke(unittest.TestCase, _IsolatedCwdMixin):
-    def setUp(self):
-        _IsolatedCwdMixin.setUp(self)
-
+class TestPlot3DSmoke(_IsolatedCwdMixin, unittest.TestCase):
     @pytest.mark.slow
     @unittest.skipUnless(HAS_PLOTLY, "plotly not installed")
     def test_run_sweep_plot_3d(self):

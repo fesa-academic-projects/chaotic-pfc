@@ -105,5 +105,5 @@ def psd_normalised(
     peak = Pxx.max()
     if peak > 0:
         Pxx = Pxx / peak
-    omega_norm = 2.0 * f / fs  # ω/π ∈ [0, 1]
+    omega_norm = 2.0 * f / fs  # Convert Welch f (cycles/sample) to ω/π: ω = 2πf, so ω/π = 2f/fs
     return omega_norm, Pxx

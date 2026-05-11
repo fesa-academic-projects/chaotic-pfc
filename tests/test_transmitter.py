@@ -67,6 +67,15 @@ class TestTransmitStandard(unittest.TestCase):
         self.assertAlmostEqual(float(s[0]), s0_expected, places=12)
         self.assertAlmostEqual(float(s[1]), s1_expected, places=12)
 
+    def test_transmit_diverges_with_large_mu(self):
+        """mu=0.5 typically causes overflow/divergence in Henon carrier."""
+        m = binary_message(10_000, period=20)
+        s = transmit(m, mu=0.5)
+        self.assertTrue(
+            np.any(~np.isfinite(s)) or np.max(np.abs(s)) > 1e10,
+            "expected divergence for mu=0.5",
+        )
+
 
 class TestTransmitOrderN(unittest.TestCase):
     def test_output_shapes(self):
@@ -114,15 +123,6 @@ class TestTransmitOrderN(unittest.TestCase):
         c = make_fir_coeffs(4)
         s, _ = transmit_order_n(np.ones(50), c, seed=None)
         self.assertEqual(len(s), 50)
-
-    def test_transmit_diverges_with_large_mu(self):
-        """mu=0.5 typically causes overflow/divergence in Hénon carrier."""
-        m = binary_message(10_000, period=20)
-        s = transmit(m, mu=0.5)
-        self.assertTrue(
-            np.any(~np.isfinite(s)) or np.max(np.abs(s)) > 1e10,
-            "expected divergence for mu=0.5",
-        )
 
 
 if __name__ == "__main__":
