@@ -84,7 +84,6 @@ source = ["chaotic_pfc"]
 branch = true
 omit = [
     "*/__main__.py",
-    "*/plotting/*",
 ]
 
 [tool.coverage.report]

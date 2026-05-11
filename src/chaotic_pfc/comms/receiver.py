@@ -139,7 +139,11 @@ def receive_order_n(
         Full state trajectory of the local oscillator. Column 0 holds
         ``y0``; each subsequent column is the next iterate.
 
-    Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`."""
+    Note: this function does NOT implement
+    :class:`~chaotic_pfc.comms.protocols.Receiver` because it returns a
+    ``(recovered, state)`` tuple instead of a single ndarray. Use
+    :func:`receive` (the 2-D variant) for code that types against the
+    Receiver protocol."""
     N = len(r)
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)

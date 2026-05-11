@@ -55,6 +55,8 @@ from chaotic_pfc.analysis.sweep import (
     save_sweep,
 )
 from chaotic_pfc.cli.sweep import _beta_values
+from chaotic_pfc.comms.dcsk import DCSK_DEFAULT_WC
+from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
 from . import attractors, comm_fir, comm_ideal, comm_order_n, dcsk, lyapunov, sensitivity
 from . import sweep as sweep_mod
@@ -276,11 +278,11 @@ def run(args: argparse.Namespace) -> int:
         argparse.Namespace(
             no_display=shared["no_display"],
             save=shared["save"],
-            N=600,
+            N=600,  # demo-friendly; the CLI default matches
             beta=64,
             n_taps=5,
-            wc=0.9091,
-            mu=0.01,
+            wc=DCSK_DEFAULT_WC,
+            mu=cfg.comm.mu,
             snr_min=-6,
             snr_max=28,
             snr_step=2,
@@ -333,8 +335,6 @@ def run(args: argparse.Namespace) -> int:
 
 def _build_step_args(shared: dict) -> argparse.Namespace:
     """Build an argparse.Namespace for each experiment step."""
-    from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-
     ns = cfg.to_namespace()
     for k, v in shared.items():
         setattr(ns, k, v)

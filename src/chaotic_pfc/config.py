@@ -248,6 +248,10 @@ class ExperimentConfig:
 
         Useful for ``run all``, which forwards a single namespace to all
         sub-experiments.
+
+        Note: ``PlotConfig``, ``SpectralConfig``, and ``SweepConfig`` fields
+        are intentionally omitted; CLI modules that need them read directly
+        from :data:`DEFAULT_CONFIG`.
         """
         return argparse.Namespace(
             N=self.comm.N,
@@ -266,9 +270,17 @@ class ExperimentConfig:
             n_ci=self.lyapunov.n_ci,
             perturbation=self.lyapunov.perturbation,
             data_dir=self.lyapunov.data_dir,
+            seed=self.seed,
             lang=self.lang,
         )
 
 
 DEFAULT_CONFIG = ExperimentConfig()
-"""The project-wide singleton. Import this, don't instantiate a new one."""
+"""The project-wide singleton.
+
+Import this, do not instantiate a new one. Treat as read-only
+at runtime; mutating a sub-config field (e.g. ``cfg.comm.N = 100``)
+will affect all subsequent experiments in the same process. If a test
+needs a modified copy, use :func:`dataclasses.replace` on the relevant
+sub-dataclass.
+"""
