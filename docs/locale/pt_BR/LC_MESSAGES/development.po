@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 01:10-0300\n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -152,22 +152,22 @@ msgid "**Test categories:**"
 msgstr "**Categorias de teste:**"
 
 #: ../../development.rst:119
-msgid "**Unit tests** — verify individual functions with known inputs/outputs."
+msgid "**Unit tests**: verify individual functions with known inputs/outputs."
 msgstr ""
 "**Testes unitários** — verificam funções individuais com entradas/saídas "
 "conhecidas."
 
 #: ../../development.rst:120
-msgid "**Integration tests** — test the communication pipeline end-to-end."
+msgid "**Integration tests**: test the communication pipeline end-to-end."
 msgstr "**Testes de integração** — testam o pipeline de comunicação ponta a ponta."
 
 #: ../../development.rst:121
-msgid "**Smoke tests** — run the full CLI with ``--quick-sweep``."
+msgid "**Smoke tests**: run the full CLI with ``--quick-sweep``."
 msgstr "**Testes de fumaça** — executam a CLI completa com ``--quick-sweep``."
 
 #: ../../development.rst:122
 msgid ""
-"**Slow tests** — marked with ``@pytest.mark.slow``, run full-resolution "
+"**Slow tests**: marked with ``@pytest.mark.slow``, run full-resolution "
 "sweeps. Skipped by ``make test-fast``."
 msgstr ""
 "**Testes lentos** — marcados com ``@pytest.mark.slow``, executam "
@@ -191,31 +191,31 @@ msgid "GitHub Actions runs on every push and pull request:"
 msgstr "GitHub Actions é executado a cada push e pull request:"
 
 #: ../../development.rst:133
-msgid "**Lint** — ``ruff check`` on the entire codebase."
+msgid "**Lint**: ``ruff check`` on the entire codebase."
 msgstr "**Lint** — ``ruff check`` em toda a base de código."
 
 #: ../../development.rst:134
-msgid "**Format check** — ``ruff format --check``."
+msgid "**Format check**: ``ruff format --check``."
 msgstr "**Verificação de formatação** — ``ruff format --check``."
 
 #: ../../development.rst:135
-msgid "**Type check** — ``mypy`` on ``src/chaotic_pfc``."
+msgid "**Type check**: ``mypy`` on ``src/chaotic_pfc``."
 msgstr "**Verificação de tipos** — ``mypy`` em ``src/chaotic_pfc``."
 
 #: ../../development.rst:136
-msgid "**Tests** — ``pytest`` (full suite) with ``--cov``."
+msgid "**Tests**: ``pytest`` (full suite) with ``--cov``."
 msgstr "**Testes** — ``pytest`` (suíte completa) com ``--cov``."
 
 #: ../../development.rst:137
 msgid ""
-"**Pipeline smoke test** — ``chaotic-pfc run all --no-display --quick-"
+"**Pipeline smoke test**: ``chaotic-pfc run all --no-display --quick-"
 "sweep``."
 msgstr ""
 "**Teste de fumaça do pipeline** — ``chaotic-pfc run all --no-display "
 "--quick-sweep``."
 
 #: ../../development.rst:138
-msgid "**Codecov upload** — coverage report to Codecov."
+msgid "**Codecov upload**: coverage report to Codecov."
 msgstr "**Upload Codecov** — relatório de cobertura para Codecov."
 
 #: ../../development.rst:140
@@ -236,8 +236,8 @@ msgid ""
 "Output goes to ``docs/_build/html/`` with each language in its own "
 "subdirectory."
 msgstr ""
-"A documentação é construída com Sphinx e hospedada no Read the Docs. "
-"A saída vai para ``docs/_build/html/`` com cada idioma em seu próprio "
+"A documentação é construída com Sphinx e hospedada no Read the Docs. A "
+"saída vai para ``docs/_build/html/`` com cada idioma em seu próprio "
 "subdiretório."
 
 #: ../../development.rst:177
@@ -249,13 +249,13 @@ msgid ""
 "Documentation sources are in ``docs/`` as reStructuredText (``.rst``). "
 "Translations (Brazilian Portuguese) are in "
 "``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
-"reference pages are **not** translated — they stay in English because "
-"they are auto-generated from Python docstrings."
+"reference pages are **not** translated: they stay in English because they"
+" are auto-generated from Python docstrings."
 msgstr ""
 "As fontes da documentação estão em ``docs/`` como reStructuredText "
 "(``.rst``). As traduções (português brasileiro) estão em "
-"``docs/locale/pt_BR/LC_MESSAGES/`` como arquivos Gettext ``.po``. "
-"As páginas de referência da API **não** são traduzidas — permanecem em "
+"``docs/locale/pt_BR/LC_MESSAGES/`` como arquivos Gettext ``.po``. As "
+"páginas de referência da API **não** são traduzidas — permanecem em "
 "inglês porque são geradas automaticamente a partir das docstrings Python."
 
 #: ../../development.rst:193

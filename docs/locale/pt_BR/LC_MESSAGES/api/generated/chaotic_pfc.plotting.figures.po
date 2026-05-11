@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:2
+msgid "chaotic\\_pfc.plotting.figures"
+msgstr ""
+
+#: chaotic_pfc.plotting.figures:2 of
+msgid "figures.py"
+msgstr ""
+
+#: chaotic_pfc.plotting.figures:3 of
+msgid "Publication-quality SVG figures with LaTeX-style labels."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures:5 of
+msgid ""
+"All text uses matplotlib's mathtext engine (no external LaTeX needed). "
+"Figures are saved as .svg by default for vector-quality output."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_attractor <chaotic_pfc.plotting.figures.plot_attractor>`\\ "
+"\\(X\\, Y\\[\\, title\\, xlabel\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+#: chaotic_pfc.plotting.figures.plot_attractor:1 of
+msgid "Plot a phase-space portrait of a 2-D trajectory."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_comm_grid <chaotic_pfc.plotting.figures.plot_comm_grid>`\\ "
+"\\(n\\, m\\, s\\, r\\, m\\_hat\\, omega\\, ...\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+msgid "4×2 grid: left = time domain, right = PSD."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_sensitivity "
+"<chaotic_pfc.plotting.figures.plot_sensitivity>`\\ \\(n\\, X1\\, X2\\[\\,"
+" save\\_path\\, lang\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+#: chaotic_pfc.plotting.figures.plot_sensitivity:1 of
+msgid "Overlay two Hénon trajectories to illustrate sensitivity to ICs."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+msgid ":py:obj:`setup_rc <chaotic_pfc.plotting.figures.setup_rc>`\\ \\(\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:15:<autosummary>:1
+#: chaotic_pfc.plotting.figures.setup_rc:1 of
+msgid "Configure matplotlib for publication-quality LaTeX-style SVG output."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:17
+msgid "Classes"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:20:<autosummary>:1
+msgid ""
+":py:obj:`PlotGridOptions "
+"<chaotic_pfc.plotting.figures.PlotGridOptions>`\\ \\(\\[time\\_window\\, "
+"suptitle\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst:20:<autosummary>:1
+#: chaotic_pfc.plotting.figures.PlotGridOptions:1 of
+msgid "Optional styling parameters for :func:`plot_comm_grid`."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.setup_rc:3 of
+msgid ""
+"Uses STIX fonts (the standard for scientific publishing, very close to "
+"Computer Modern) and converts all text to vector paths so that SVGs "
+"render identically on any system without requiring font installation."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst
+#: chaotic_pfc.plotting.figures.plot_comm_grid of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_attractor:3
+#: chaotic_pfc.plotting.figures.plot_attractor:4 of
+msgid "State-variable trajectories, same length."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_attractor:5 of
+msgid "Optional figure title. If empty, no title is drawn."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_attractor:6
+#: chaotic_pfc.plotting.figures.plot_attractor:8 of
+msgid "Axis labels. Defaults use LaTeX-style math for ``x_1`` and ``x_2``."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_attractor:10 of
+msgid ""
+"If given, the figure is written to this path. The extension selects the "
+"format (``.svg``, ``.png``, etc.)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_attractor:13 of
+msgid ""
+"The matplotlib ``Figure`` object. Returned so callers can inspect or "
+"further annotate it before showing / closing."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst
+#: chaotic_pfc.plotting.figures.plot_comm_grid of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:3 of
+msgid ""
+"Plots two state trajectories that start from infinitesimally different "
+"initial conditions, making visually obvious how they diverge "
+"exponentially — the classic demonstration of chaos."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:7 of
+msgid "Sample index axis, shape ``(N,)``."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:8
+#: chaotic_pfc.plotting.figures.plot_sensitivity:10 of
+msgid ""
+"Two state trajectories evaluated on ``n``. Typically differing only by "
+"``x0_2 = x0_1 + 1e-4``."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:12 of
+msgid "If given, the figure is written to this path."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:13 of
+msgid "Language code for the figure title (``\"pt\"`` or ``\"en\"``)."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_sensitivity:15 of
+msgid "The matplotlib ``Figure`` object."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.PlotGridOptions:3 of
+msgid "All fields have sensible defaults; only override what you need."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:1 of
+msgid ""
+"4×2 grid: left = time domain, right = PSD. Rows: m[n], s[n], r[n], m̂[n]."
+" If h_channel is provided, its frequency response is overlaid on PSD_s."
+msgstr ""
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:5 of
+msgid ""
+"The *opts* dataclass overrides individual keyword arguments when both are"
+" provided."
+msgstr ""
+

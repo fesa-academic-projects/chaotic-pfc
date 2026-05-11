@@ -12,7 +12,7 @@
 In `CHANGELOG.md`, rename the `## [Unreleased]` section to the new version and date:
 
 ```markdown
-## [X.Y.Z] — 2026-06-01
+## [X.Y.Z]: 2026-06-01
 ```
 
 Open a fresh empty `## [Unreleased]` above it.
@@ -25,18 +25,25 @@ In `pyproject.toml`, update the `version` field:
 version = "X.Y.Z"
 ```
 
-Also update `src/chaotic_pfc/_version.py`:
+Update `src/chaotic_pfc/_version.py`:
 
 ```python
 __version__ = "X.Y.Z"
 ```
 
-Commit both with a message like `release: bump version to X.Y.Z`.
+And `docs/conf.py`:
+
+```python
+version = "X.Y.Z"
+release = "X.Y.Z"
+```
+
+Commit all three with a message like `release: bump version to X.Y.Z`.
 
 ### 3. Tag the release
 
 ```bash
-git tag -a vX.Y.Z -m "vX.Y.Z — <short description>"
+git tag -a vX.Y.Z -m "vX.Y.Z: <short description>"
 git push origin vX.Y.Z
 ```
 

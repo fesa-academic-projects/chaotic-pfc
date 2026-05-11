@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.cli.rst:2
+msgid "chaotic\\_pfc.cli"
+msgstr ""
+
+#: chaotic_pfc.cli:2 of
+msgid "cli"
+msgstr ""
+
+#: chaotic_pfc.cli:3 of
+msgid "Unified command-line interface for the chaotic_pfc package."
+msgstr ""
+
+#: chaotic_pfc.cli:5 of
+msgid ""
+"The parser layout is ``chaotic-pfc run <experiment> [options]``, where "
+"``<experiment>`` is one of the pipeline stages (``attractors``, "
+"``sensitivity``, ``comm-ideal``, ``comm-fir``, ``comm-order-n``, "
+"``lyapunov``, ``sweep compute``, ``sweep plot``, ``all``)."
+msgstr ""
+
+#: chaotic_pfc.cli:10 of
+msgid "Each experiment lives in its own submodule and exposes two functions:"
+msgstr ""
+
+#: chaotic_pfc.cli:12 of
+msgid ""
+"``add_parser(subparsers)`` — register the experiment's own parser and "
+"flags onto the given ``argparse._SubParsersAction``."
+msgstr ""
+
+#: chaotic_pfc.cli:14 of
+msgid "``run(args)`` — execute the experiment using the parsed namespace."
+msgstr ""
+
+#: chaotic_pfc.cli:16 of
+#, python-brace-format
+msgid ""
+"The sub-commands under ``sweep`` (``compute`` and ``plot``) use the same "
+"pattern recursively, producing a two-level parser tree (``run → sweep → "
+"{compute, plot}``)."
+msgstr ""
+
+#: chaotic_pfc.cli:20 of
+msgid ""
+"Adding a new experiment is a matter of dropping a new submodule here and "
+"appending its name to :data:`EXPERIMENTS` below."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:12:<autosummary>:1
+msgid ":py:obj:`build_parser <chaotic_pfc.cli.build_parser>`\\ \\(\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.build_parser:1 of
+msgid "Assemble the top-level parser with every experiment registered."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:12:<autosummary>:1
+msgid ":py:obj:`main <chaotic_pfc.cli.main>`\\ \\(\\[argv\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.main:1 of
+msgid "Parse ``argv`` (or :data:`sys.argv`) and dispatch to the right experiment."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.cli.build_parser:3 of
+msgid ""
+"A parser whose namespace carries a ``_run`` attribute pointing at the "
+"callable to invoke for the selected subcommand."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.cli.main:3 of
+msgid ""
+"Optional list of arguments. Defaults to :data:`sys.argv[1:]`. Passing an "
+"explicit ``argv`` is what makes :mod:`tests.test_cli` possible without "
+"shelling out to a subprocess."
+msgstr ""
+
+#: chaotic_pfc.cli.main:7 of
+msgid ""
+"Exit code. ``0`` on success, ``2`` when the user requested help without "
+"picking a subcommand (argparse convention)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:15
+msgid "Modules"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`analysis <chaotic_pfc.cli.analysis>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Statistical analysis of sweep data."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`attractors <chaotic_pfc.cli.attractors>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Phase-space attractors for three Hénon variants."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`comm_fir <chaotic_pfc.cli.comm_fir>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Chaotic communication through FIR low-pass channel."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`comm_ideal <chaotic_pfc.cli.comm_ideal>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Full communication pipeline over an ideal (noiseless) channel."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`comm_order_n <chaotic_pfc.cli.comm_order_n>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Communication using N-th order Henon with internal FIR filter."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`dcsk <chaotic_pfc.cli.dcsk>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ""
+"DCSK communication experiment — BER vs SNR across chaotic modulation "
+"schemes."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`lyapunov <chaotic_pfc.cli.lyapunov>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Lyapunov exponent computation (text output + optional CSV)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`run_all <chaotic_pfc.cli.run_all>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Run every experiment in sequence."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`sensitivity <chaotic_pfc.cli.sensitivity>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Sensitive Dependence on Initial Conditions (SDIC)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid ":py:obj:`sweep <chaotic_pfc.cli.sweep>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+msgid "Sweep Lyapunov exponents across (order, cutoff) grid."
+msgstr ""
+

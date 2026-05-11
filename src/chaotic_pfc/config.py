@@ -65,7 +65,7 @@ class CommConfig:
 
 @dataclass
 class ChannelConfig:
-    """External FIR-channel parameters (:func:`~chaotic_pfc.channel.fir_channel`)."""
+    """External FIR-channel parameters (:func:`~chaotic_pfc.comms.channel.fir_channel`)."""
 
     cutoff: float = 0.99
     num_taps: int = 201
@@ -109,7 +109,7 @@ class InternalFIRConfig:
 
 @dataclass
 class SpectralConfig:
-    """Defaults for :func:`~chaotic_pfc.spectral.psd_normalised`.
+    """Defaults for :func:`~chaotic_pfc.dynamics.spectral.psd_normalised`.
 
     Attributes
     ----------

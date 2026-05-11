@@ -322,7 +322,7 @@ def henon_fir_sequence(
     for n in range(N):
         xf = 0.0
         for k in range(n_taps):
-            xf += h[k] * buf[(write_idx - k) % n_taps]
+            xf += h[k] * buf[(write_idx - 1 - k) % n_taps]
         xn = 1.0 - a * xf * xf + y_val
         yn = b * x_val
         if not np.isfinite(xn) or abs(xn) > 100:

@@ -1,4 +1,4 @@
-"""Sphinx configuration for chaotic-pfc — bilingual (EN + pt_BR)."""
+"""Sphinx configuration for chaotic-pfc: bilingual (EN + pt_BR)."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 # ─────────────────────────────────────────────────────────────────────────
-# Path setup — make the package importable without installing it first
+# Path setup: make the package importable without installing it first
 # ─────────────────────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
@@ -71,7 +71,7 @@ autodoc_typehints = "description"
 autodoc_member_order = "bysource"
 
 # ─────────────────────────────────────────────────────────────────────────
-# napoleon — parse NumPy-style docstrings
+# napoleon: parse NumPy-style docstrings
 # ─────────────────────────────────────────────────────────────────────────
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
@@ -81,7 +81,7 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 
 # ─────────────────────────────────────────────────────────────────────────
-# intersphinx — cross-references to external libraries
+# intersphinx: cross-references to external libraries
 # ─────────────────────────────────────────────────────────────────────────
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -91,7 +91,7 @@ intersphinx_mapping = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────
-# HTML output — furo theme
+# HTML output: furo theme
 # ─────────────────────────────────────────────────────────────────────────
 html_theme = "furo"
 html_title = f"{project} v{release}"

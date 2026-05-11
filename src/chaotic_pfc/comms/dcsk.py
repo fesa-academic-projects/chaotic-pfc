@@ -239,6 +239,7 @@ def channel_urban(
     if rng is None:
         rng = np.random.default_rng()
 
-    rx = channel_impulsive(sig, snr_db, prob_impulso, amp_fator, rng)
-    rx = channel_multipath(rx, snr_db, delays, gains, rng)
-    return channel_interferers(rx, snr_db, sir_dcsk_db, sir_wifi_db, rng=rng)
+    snr_compensated = snr_db + 10.0 * np.log10(3.0)
+    rx = channel_impulsive(sig, snr_compensated, prob_impulso, amp_fator, rng)
+    rx = channel_multipath(rx, snr_compensated, delays, gains, rng)
+    return channel_interferers(rx, snr_compensated, sir_dcsk_db, sir_wifi_db, rng=rng)

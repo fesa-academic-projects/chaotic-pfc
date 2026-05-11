@@ -4,7 +4,7 @@ Architecture
 ============
 
 This page describes how the subpackages of ``chaotic-pfc`` connect and
-how data flows through the system — from chaotic signal generation to
+how data flows through the system: from chaotic signal generation to
 statistical analysis of parameter sweeps.
 
 Package layout
@@ -139,7 +139,7 @@ Key design decisions
 
 **Numba as an optional accelerator.** The package imports and runs
 correctly without Numba installed. All JIT-compiled kernels fall back
-to pure Python via :mod:`chaotic_pfc._compat` — a thin compatibility
+to pure Python via :mod:`chaotic_pfc._compat`: a thin compatibility
 layer that no-ops ``njit``, aliases ``prange`` to ``range``, and
 returns ``1`` for ``get_num_threads()``. Install the ``[fast]`` extra
 for 20–50× speedup on the sweep.
@@ -157,16 +157,16 @@ installed via the ``[viz3d]`` extra. The import is deferred until
 :samp:`scipy.signal.firwin` imports within dataclass methods.
 
 **Structural protocols.** :mod:`chaotic_pfc.comms.protocols` defines
-``typing.Protocol`` classes — ``Transmitter``, ``Channel``,
-``Receiver`` — as structural contracts. Concrete implementations
+``typing.Protocol`` classes: ``Transmitter``, ``Channel``,
+``Receiver``: as structural contracts. Concrete implementations
 (``transmit``, ``ideal_channel``, ``receive``, etc.) satisfy these
 protocols by duck typing. This provides mypy-level documentation of the
 communication pipeline's interface without runtime overhead.
 
 **Shallow config hierarchy.** All defaults reside in
 :mod:`chaotic_pfc.config` as dataclasses. The hierarchy is
-intentionally shallow — every sub-config has only primitive fields
-or nested dataclasses of primitives — enabling trivial copying
+intentionally shallow: every sub-config has only primitive fields
+or nested dataclasses of primitives: enabling trivial copying
 (``dataclasses.replace``), test isolation, and serialisation
 (``dataclasses.asdict``).
 

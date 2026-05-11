@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.cli.sweep.rst:2
+msgid "chaotic\\_pfc.cli.sweep"
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:1 of
+msgid "Sweep Lyapunov exponents across (order, cutoff) grid."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:3 of
+msgid "Nested under ``chaotic-pfc run sweep ...`` with four sub-subcommands:"
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:5 of
+msgid ""
+"``compute`` — run the actual numerical sweep for one or more ``(window, "
+"filter)`` combinations and save ``.npz`` checkpoints. Originally "
+"``scripts/07_henon_sweep_compute.py``."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:8 of
+msgid ""
+"``plot`` — turn previously saved ``.npz`` checkpoints into the four "
+"standard classification figures. Originally "
+"``scripts/08_henon_sweep_plot.py``."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:11 of
+msgid "``beta-sweep`` — run Kaiser β-sweeps across multiple β values."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:12 of
+msgid "``plot-3d`` — render an interactive 3-D surface stack of Kaiser β-sweeps."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep:14 of
+msgid ""
+"The two steps are kept separate so plotting iterations (label sizes, "
+"colour maps, format changes) do not require rerunning the multi-hour "
+"sweep."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.sweep.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.sweep.rst:11:<autosummary>:1
+msgid ":py:obj:`add_parser <chaotic_pfc.cli.sweep.add_parser>`\\ \\(subparsers\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.sweep.rst:11:<autosummary>:1
+#: chaotic_pfc.cli.sweep.add_parser:1 of
+msgid "Register the ``run sweep`` group with its own sub-subcommands."
+msgstr ""
+
+#: chaotic_pfc.cli.sweep.add_parser of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.cli.sweep.add_parser of
+msgid "Return type"
+msgstr ""
+

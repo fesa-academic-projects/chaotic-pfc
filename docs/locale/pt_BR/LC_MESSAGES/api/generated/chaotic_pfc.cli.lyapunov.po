@@ -1,0 +1,88 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:2
+msgid "chaotic\\_pfc.cli.lyapunov"
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:1 of
+msgid "Lyapunov exponent computation (text output + optional CSV)."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:4 of
+msgid "**Part A** — pure 2-D Henon, single perturbed IC, both fixed points."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:5 of
+msgid "**Part B** — 4-D Pole-filtered Henon, single perturbed IC."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:6 of
+msgid ""
+"**Part C** — 2-D Henon ensemble, ``n_ci`` ICs drawn uniformly in "
+"``±perturbation`` around the fixed point."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:8 of
+msgid "**Part D** — 4-D Pole-filtered ensemble, same protocol, 4-D system."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov:10 of
+msgid ""
+"Parts A/B are quick sanity checks; parts C/D implement the full "
+"experimental protocol. With ``--save`` the per-IC tables are written to "
+"``data/lyapunov/henon2d_ensemble.csv`` and "
+"``data/lyapunov/henon4d_ensemble.csv``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:12:<autosummary>:1
+msgid ""
+":py:obj:`add_parser <chaotic_pfc.cli.lyapunov.add_parser>`\\ "
+"\\(subparsers\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.lyapunov.add_parser:1 of
+msgid "Register the ``run lyapunov`` subcommand."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:12:<autosummary>:1
+msgid ":py:obj:`run <chaotic_pfc.cli.lyapunov.run>`\\ \\(args\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.lyapunov.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.lyapunov.run:1 of
+msgid "Execute the ``lyapunov`` experiment."
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov.add_parser chaotic_pfc.cli.lyapunov.run of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.cli.lyapunov.add_parser chaotic_pfc.cli.lyapunov.run of
+msgid "Return type"
+msgstr ""
+

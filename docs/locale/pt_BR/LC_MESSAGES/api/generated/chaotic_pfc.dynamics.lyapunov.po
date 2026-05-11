@@ -1,0 +1,339 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:2
+msgid "chaotic\\_pfc.dynamics.lyapunov"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:2 of
+msgid "lyapunov.py"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:3 of
+msgid ""
+"Lyapunov exponent computation for the Hénon map (2-D) and the Hénon map "
+"with a pole filter (4-D)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:6 of
+msgid "4-D system:"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:7 of
+msgid ""
+"x₁[n+1] = α − x₃[n]² + β·x₂[n] x₂[n+1] = x₁[n] x₃[n+1] = b₀·(α − x₃[n]² +"
+" β·x₂[n]) + a₁·x₃[n] + a₂·x₄[n] x₄[n+1] = x₃[n]"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:12 of
+msgid "where b = [b₀, 0, 0] and a = −[1, −2r·cos(w₀), r²]  (pole-filter coeffs)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:14 of
+msgid "2-D system:"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:15 of
+msgid "x₁[n+1] = α − x₁[n]² + β·x₂[n] x₂[n+1] = x₁[n]"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:18 of
+msgid "Two flavours of computation are provided:"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:20 of
+msgid ""
+"``lyapunov_max`` / ``lyapunov_henon2d`` — single perturbed initial "
+"condition, returning one estimate of the spectrum."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:22 of
+msgid ""
+"``lyapunov_max_ensemble`` / ``lyapunov_henon2d_ensemble`` — full "
+"experimental protocol: sample N_ci initial conditions uniformly around "
+"the fixed point (±``perturbation``), compute the spectrum for each, and "
+"aggregate statistics. Results can be exported to CSV via "
+":meth:`EnsembleResult.to_csv`."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:29 of
+msgid "Implementation note"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov:30 of
+msgid ""
+"The 2-D and 4-D variants share the same QR/Gram-Schmidt loop; the only "
+"differences are the iterate function, the Jacobian, and the dimension. "
+"Both single-IC and ensemble entry points delegate to the generic helpers "
+"``_lyapunov_spectrum`` and ``_run_ensemble``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`fixed_point_stability "
+"<chaotic_pfc.dynamics.lyapunov.fixed_point_stability>`\\ \\(\\[alpha\\, "
+"beta\\, Gz\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.fixed_point_stability:1 of
+msgid "Quick check: fixed point, eigenvalues, stability (4-D filtered)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`lyapunov_henon2d "
+"<chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d>`\\ \\(\\[alpha\\, "
+"beta\\, Nitera\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:1 of
+msgid "Compute Lyapunov exponents for the standard 2-D Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`lyapunov_henon2d_ensemble "
+"<chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble>`\\ "
+"\\(\\[alpha\\, beta\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble:1 of
+msgid "Ensemble Lyapunov protocol for the standard 2-D Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`lyapunov_max <chaotic_pfc.dynamics.lyapunov.lyapunov_max>`\\ "
+"\\(\\[alpha\\, beta\\, Gz\\, pole\\_radius\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max:1 of
+msgid "Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`lyapunov_max_ensemble "
+"<chaotic_pfc.dynamics.lyapunov.lyapunov_max_ensemble>`\\ \\(\\[alpha\\, "
+"beta\\, Gz\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max_ensemble:1 of
+msgid "Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:18
+msgid "Classes"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`EnsembleResult <chaotic_pfc.dynamics.lyapunov.EnsembleResult>`\\"
+" \\(fixed\\_point\\, eigenvalues\\, ...\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:1 of
+msgid "Outcome of the ensemble Lyapunov protocol."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+msgid ":py:obj:`FixedPointInfo <chaotic_pfc.dynamics.lyapunov.FixedPointInfo>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.FixedPointInfo:1 of
+msgid ""
+"Result of :func:`fixed_point_stability` — fixed point, eigenvalues, "
+"stability."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`LyapunovResult <chaotic_pfc.dynamics.lyapunov.LyapunovResult>`\\"
+" \\(lyapunov\\_max\\, all\\_exponents\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:23:<autosummary>:1
+#: chaotic_pfc.dynamics.lyapunov.LyapunovResult:1 of
+msgid "Result of a single-IC Lyapunov exponent computation (2-D or 4-D)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.LyapunovResult:3 of
+msgid "Fields populated by :func:`lyapunov_max` (4-D):"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.LyapunovResult:4 of
+msgid "lyapunov_max, all_exponents, fixed_point, eigenvalues, stable"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.LyapunovResult:6 of
+msgid "Fields populated by :func:`lyapunov_henon2d` (2-D):"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.LyapunovResult:7 of
+msgid ""
+"lyapunov_max, all_exponents, fixed_point_p, fixed_point_n, eigenvalues_p,"
+" eigenvalues_n, stable_p, stable_n"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv
+#: chaotic_pfc.dynamics.lyapunov.fixed_point_stability
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max_ensemble of
+msgid "Parameters"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max:3 of
+msgid ""
+"With fields: lyapunov_max, all_exponents, fixed_point, eigenvalues, "
+"stable."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv
+#: chaotic_pfc.dynamics.lyapunov.fixed_point_stability
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max_ensemble of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:3 of
+msgid ""
+"With fields: lyapunov_max, all_exponents, fixed_point_p, fixed_point_n, "
+"eigenvalues_p, eigenvalues_n, stable_p, stable_n."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:5 of
+msgid "Fixed point used as the sampling centre."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult of
+msgid "type"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:7
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:13
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:43 of
+msgid "ndarray, shape (dim,)"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:11 of
+msgid "Eigenvalues of the Jacobian at ``fixed_point``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:17 of
+msgid "``True`` iff ``all(|eigenvalues| < 1)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:19 of
+msgid "bool"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:23 of
+msgid "Initial conditions drawn for each run."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:25
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:31 of
+msgid "ndarray, shape (n_initial, dim)"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:29 of
+msgid "Full Lyapunov spectrum for each IC."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:35 of
+msgid "Largest Lyapunov exponent for each IC."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:37 of
+msgid "ndarray, shape (n_initial,)"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:41 of
+msgid "Per-component mean of ``exponents_per_ci``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:47 of
+msgid "Aggregates of ``lmax_per_ci``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:49 of
+msgid "float"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:53 of
+msgid "Counts of ICs with ``λ_max > 0`` and ``λ_max ≤ 0``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:55 of
+msgid "int"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:59 of
+msgid "Free-form metadata (parameters used for the run)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult:61 of
+msgid "dict"
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv:1 of
+msgid "Write the per-IC table to CSV."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv:3 of
+msgid ""
+"Columns: ``ci, x0_0, x0_1, ..., lambda_1, lambda_2, ..., lmax, status``. "
+"Parent directories are created automatically."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_max_ensemble:3 of
+msgid ""
+"See :class:`EnsembleResult` for the output schema. Samples ``n_initial`` "
+"initial conditions uniformly in a box of half-width ``perturbation`` "
+"around the fixed point, then runs the single-IC Gram-Schmidt Lyapunov "
+"estimator on each."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble:3 of
+msgid ""
+"Samples around the *positive* fixed point (the one usually found in the "
+"strange attractor basin for α = 1.4, β = 0.3). See "
+":class:`EnsembleResult` for the output schema."
+msgstr ""
+

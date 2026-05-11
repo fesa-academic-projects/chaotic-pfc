@@ -1,0 +1,228 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:2
+msgid "chaotic\\_pfc.comms.dcsk"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk:2 of
+msgid "dcsk.py"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk:3 of
+msgid "Differential Chaos Shift Keying (DCSK) over a FIR-filtered Henon map."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk:6 of
+msgid "References"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk:7 of
+msgid ""
+"G. Kolumbán, B. Vizvári, W. Schwarz, A. Abel. \"Differential chaos shift "
+"keying: A robust coding for chaotic communication.\" Proc. NDES, 1996."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk:11 of
+msgid ""
+"G. Kaddoum, E. Soujeri, Y. Nijsure. \"Design of a Short Reference "
+"Noncoherent Chaos-Based Communication System.\" IEEE Trans. Commun., vol."
+" 61, no. 12, pp. 4854–4863, 2013."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ":py:obj:`ber <chaotic_pfc.comms.dcsk.ber>`\\ \\(tx\\, rx\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.ber:1 of
+msgid "Bit error rate between transmitted and received bit arrays."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`channel_interferers "
+"<chaotic_pfc.comms.dcsk.channel_interferers>`\\ \\(sig\\, snr\\_db\\[\\, "
+"...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.channel_interferers:1 of
+msgid "AWGN + DCSK interferer + narrow-band WiFi-like interferer."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`channel_urban <chaotic_pfc.comms.dcsk.channel_urban>`\\ "
+"\\(sig\\, snr\\_db\\[\\, prob\\_impulso\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.channel_urban:1 of
+msgid "Combined urban channel: impulsive noise + multipath + interferers."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`dcsk_receive <chaotic_pfc.comms.dcsk.dcsk_receive>`\\ "
+"\\(rx\\[\\, beta\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.dcsk_receive:1 of
+msgid "Demodulate a DCSK signal by correlating reference and data slots."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`dcsk_transmit <chaotic_pfc.comms.dcsk.dcsk_transmit>`\\ "
+"\\(bits\\[\\, beta\\, n\\_taps\\, wc\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:1 of
+msgid "Modulate a bit sequence using DCSK over FIR-filtered Henon."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`efdcsk_receive <chaotic_pfc.comms.dcsk.efdcsk_receive>`\\ "
+"\\(rx\\[\\, beta\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.efdcsk_receive:1 of
+msgid "Demodulate EF-DCSK by correlating with the time-reversed signal."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+msgid ""
+":py:obj:`efdcsk_transmit <chaotic_pfc.comms.dcsk.efdcsk_transmit>`\\ "
+"\\(bits\\[\\, beta\\, n\\_taps\\, wc\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst:17:<autosummary>:1
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:1 of
+msgid "Modulate bits using Efficient DCSK (EF-DCSK)."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:3 of
+msgid ""
+"Each bit is encoded as two consecutive ``beta``-sample slots: a "
+"*reference* slot followed by a *data* slot. For bit 0 the data slot is a "
+"copy of the reference; for bit 1 it is inverted."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst chaotic_pfc.comms.dcsk.ber
+#: chaotic_pfc.comms.dcsk.channel_urban chaotic_pfc.comms.dcsk.efdcsk_receive
+#: of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:7 of
+msgid "Binary array (0/1) of message bits."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:8 of
+msgid "Spreading factor — samples per slot."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:9
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:10
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:11 of
+msgid "Passed to :func:`henon_fir_sequence`."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:12 of
+msgid "Burn-in samples discarded before modulation."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_transmit:14 of
+msgid "DCSK-modulated signal samples."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.dcsk.rst chaotic_pfc.comms.dcsk.ber
+#: chaotic_pfc.comms.dcsk.channel_urban chaotic_pfc.comms.dcsk.efdcsk_receive
+#: of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_receive:3 of
+msgid "Received signal (must be aligned to symbol boundaries)."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_receive:4 of
+msgid "Spreading factor used by the transmitter."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.dcsk_receive:6 of
+msgid "Decoded bits (0 or 1)."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:3 of
+msgid ""
+"Each bit occupies a single ``beta``-sample slot: ``s = ref + b * "
+"ref_reversed``, where ``b = +1`` for 0, ``-1`` for 1."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:6
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:7
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:8
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:9
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:10
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:11 of
+msgid "Same semantics as :func:`dcsk_transmit`."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.efdcsk_transmit:13 of
+msgid "EF-DCSK signal, half the length of classical DCSK."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.efdcsk_receive:3 of
+msgid "The decision variable is ``dot(received, received_reversed)``."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.channel_interferers:3 of
+msgid "Signal-to-interference ratio for the DCSK interferer."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.channel_interferers:4 of
+msgid "Signal-to-interference ratio for the WiFi-like interferer."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.channel_interferers:5
+#: chaotic_pfc.comms.dcsk.channel_interferers:6 of
+msgid "Filter parameters for the interfering DCSK transmitter."
+msgstr ""
+
+#: chaotic_pfc.comms.dcsk.channel_urban:3 of
+msgid "Applies all three impairments simultaneously for realistic testing."
+msgstr ""
+

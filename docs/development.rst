@@ -116,10 +116,10 @@ source module has a corresponding test file.
 
 **Test categories:**
 
-* **Unit tests** — verify individual functions with known inputs/outputs.
-* **Integration tests** — test the communication pipeline end-to-end.
-* **Smoke tests** — run the full CLI with ``--quick-sweep``.
-* **Slow tests** — marked with ``@pytest.mark.slow``, run full-resolution
+* **Unit tests**: verify individual functions with known inputs/outputs.
+* **Integration tests**: test the communication pipeline end-to-end.
+* **Smoke tests**: run the full CLI with ``--quick-sweep``.
+* **Slow tests**: marked with ``@pytest.mark.slow``, run full-resolution
   sweeps. Skipped by ``make test-fast``.
 
 Numba-compiled kernels are tested directly (not mocked) to ensure
@@ -130,12 +130,12 @@ CI/CD
 
 GitHub Actions runs on every push and pull request:
 
-1. **Lint** — ``ruff check`` on the entire codebase.
-2. **Format check** — ``ruff format --check``.
-3. **Type check** — ``mypy`` on ``src/chaotic_pfc``.
-4. **Tests** — ``pytest`` (full suite) with ``--cov``.
-5. **Pipeline smoke test** — ``chaotic-pfc run all --no-display --quick-sweep``.
-6. **Codecov upload** — coverage report to Codecov.
+1. **Lint**: ``ruff check`` on the entire codebase.
+2. **Format check**: ``ruff format --check``.
+3. **Type check**: ``mypy`` on ``src/chaotic_pfc``.
+4. **Tests**: ``pytest`` (full suite) with ``--cov``.
+5. **Pipeline smoke test**: ``chaotic-pfc run all --no-display --quick-sweep``.
+6. **Codecov upload**: coverage report to Codecov.
 
 On ``git tag v*`` push, an additional **release** job builds and
 publishes the wheel and sdist to TestPyPI via OIDC trusted publishing.
@@ -186,7 +186,7 @@ To update translations after changing English sources:
 Documentation sources are in ``docs/`` as reStructuredText (``.rst``).
 Translations (Brazilian Portuguese) are in
 ``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files.
-API reference pages are **not** translated — they stay in English
+API reference pages are **not** translated: they stay in English
 because they are auto-generated from Python docstrings.
 
 Code style

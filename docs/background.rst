@@ -25,11 +25,11 @@ security directly at the *Physical Layer* [Baptista21]_.
 This approach exploits the intrinsic properties of the chaotic carrier
 signal:
 
-* **Broad bandwidth** — the signal occupies a wide portion of the
+* **Broad bandwidth**: the signal occupies a wide portion of the
   spectrum, resembling white noise.
-* **Noise-like appearance** — the waveform shows no discernible pattern
+* **Noise-like appearance**: the waveform shows no discernible pattern
   to an observer lacking the system parameters.
-* **Sensitivity to initial conditions (SDIC)** — infinitesimal parameter
+* **Sensitivity to initial conditions (SDIC)**: infinitesimal parameter
   mismatches cause exponential divergence, preventing unauthorised
   synchronisation.
 
@@ -142,7 +142,7 @@ The bandwidth problem
 
 Chaotic signals are **inherently broadband**: their continuous power
 spectrum extends over a wide frequency range. However, physical
-transmission channels are invariably **band-limited** — every real-world
+transmission channels are invariably **band-limited**: every real-world
 communication medium (copper wire, optical fibre, radio-frequency
 spectrum) imposes a finite bandwidth constraint.
 
@@ -157,8 +157,8 @@ To reconcile bandwidth constraints with chaotic signal generation,
 Fontes and Eisencraft (2016) proposed inserting **finite impulse
 response (FIR) filters** directly into the feedback loop of the chaotic
 generator [FontesEisencraft16]_. The filter design relies on classical
-signal-processing techniques — windowing methods (Hamming, Blackman,
-Kaiser) — as established by Oppenheim and Schafer
+signal-processing techniques: windowing methods (Hamming, Blackman,
+Kaiser), as established by Oppenheim and Schafer
 [OppenheimSchafer09]_.
 
 In this architecture, the variable :math:`x_1[n]` in the nonlinearity
@@ -169,7 +169,7 @@ order (number of taps).
 
 The result is a **band-limited chaotic signal** whose spectrum is shaped
 by the FIR filter, making it compatible with practical channel bandwidth
-constraints without sacrificing chaotic behaviour — *provided* the
+constraints without sacrificing chaotic behaviour, *provided* the
 filter parameters are chosen within regions that preserve the chaotic
 regime.
 
@@ -197,9 +197,9 @@ filtering introduces unexpected dynamical complexity
 [BorgesEisencraft22]_. The linear filter interacts non-trivially
 with the map's nonlinearity, potentially inducing:
 
-* **Bifurcation cascades** — sequences of period-doubling transitions
-  as filter parameters vary.
-* **"Shrimps"** — islands of periodicity immersed within chaotic
+* **Bifurcation cascades**: sequences of period-doubling transitions
+that accumulate toward chaos from a periodic state.
+* **"Shrimps"**: islands of periodicity immersed within chaotic
   regions of the parameter space. Named for their characteristic
   shape in parameter-space diagrams.
 
@@ -268,19 +268,20 @@ of a 2-D grid of (filter order :math:`N_z`, cutoff frequency
 :math:`\omega_c`) pairs, building a classification map of the entire
 parameter space. For each grid point:
 
-1. **FIR bank precomputation** — all filter coefficient sets are
-   computed analytically (for zero-placement experiments) or via
-   :func:`scipy.signal.firwin` (for windowed designs).
-2. **Initial condition generation** — :math:`N_{\text{IC}}` initial
-   conditions are uniformly distributed in a sphere of radius
-   :math:`0.01` centered at the stable fixed point :math:`p^+` of the
-   filtered system.
-3. **Transient discard** — the first :math:`N_{\text{discard}}`
-   iterations are discarded to allow convergence to the attractor.
-4. **Lyapunov estimation** — :math:`N_{\text{itera}}` iterations are
-   accumulated using the tangent-map method with Modified Gram-Schmidt
-   (MGS) re-orthonormalisation at every step.
-5. **Ensemble aggregation** — :math:`\lambda_{\max}` is reported as
+1. **FIR bank precomputation**: all filter coefficient sets are
+computed once using SciPy's :func:`~scipy.signal.firwin`.
+
+2. **Initial condition generation**: :math:`N_{\text{IC}}` initial
+conditions are sampled from a uniform box around the fixed point.
+
+3. **Transient discard**: the first :math:`N_{\text{discard}}`
+iterations are discarded to eliminate transient dynamics.
+
+4. **Lyapunov estimation**: :math:`N_{\text{itera}}` iterations are
+performed, tracking the evolution of :math:`N_s` tangent vectors
+via modified Gram-Schmidt orthogonalisation.
+
+5. **Ensemble aggregation**: :math:`\lambda_{\max}` is reported as
    the mean over all :math:`N_{\text{IC}}` initial conditions.
 
 Tangent-map method and Modified Gram-Schmidt
@@ -324,7 +325,7 @@ The inner loop of the Lyapunov computation is
 reduces this to practical execution times, enabling sweeps with up to
 :math:`N_s = 41` filter taps, :math:`N_{\text{IC}} = 25` initial
 conditions per grid point, and :math:`N_{\text{itera}} = 3\,000`
-iterations per IC — totalling :math:`40 \times 100 = 4\,000` grid
+iterations per IC, totalling :math:`40 \times 100 = 4\,000` grid
 points, each with :math:`25 \times 3\,000 = 75\,000` orbit
 evaluations. Without Numba, this would require tens of hours; with
 JIT, it completes in minutes on a modern multicore processor.
@@ -364,7 +365,7 @@ For the standard 2-D Hénon, the receiver state evolves as:
 
 where :math:`r[n]` is the received (possibly channel-distorted) carrier.
 The receiver does **not** use its own :math:`y_1[n]` in the
-nonlinearity — instead, it is driven by :math:`r[n]`, which carries the
+nonlinearity; instead, it is driven by :math:`r[n]`, which carries the
 transmitter state plus the embedded message.
 
 After a short transient (typically 200–500 iterations), the receiver
@@ -383,7 +384,7 @@ Modulation schemes
 
 The package implements three modulation techniques:
 
-**CSK — Chaos Shift Keying.** Sistematised by Williams (2001)
+**CSK: Chaos Shift Keying.** Sistematised by Williams (2001)
 [Williams01]_. Each binary symbol corresponds to a distinct set of
 parameters or initial conditions of the chaotic generator: the message
 is encoded in the selection between two different chaotic attractors.
@@ -392,7 +393,7 @@ identifying which attractor the received signal belongs to. CSK requires
 a synchronisation period before each symbol, reducing spectral
 efficiency.
 
-**DCSK — Differential Chaos Shift Keying.** Introduced by Kolumban et
+**DCSK: Differential Chaos Shift Keying.** Introduced by Kolumban et
 al. (1996) [Kolumban96]_. Each bit period is split into two equal
 halves: a reference slot transmitting a chaotic reference sequence,
 followed by a data slot transmitting the same reference (bit 0) or its
@@ -402,7 +403,7 @@ making it inherently robust to channel variations. The cost is a 50%
 reduction in bit rate (one information bit per two transmitted chaotic
 sequences).
 
-**EF-DCSK — Efficient DCSK.** Proposed by Kaddoum et al. (2013)
+**EF-DCSK: Efficient DCSK.** Proposed by Kaddoum et al. (2013)
 [Kaddoum13]_. Improves the data rate by using a single slot per bit:
 the reference and its time-reversed copy are superposed in the same
 slot. The decoder correlates the received signal with its own
@@ -415,13 +416,13 @@ Performance metrics
 Quantitative evaluation of digital communication performance relies on
 two standard metrics [Haykin01]_ [LathiDing09]_:
 
-**BER — Bit Error Rate.** The ratio of incorrectly received bits to the
+**BER: Bit Error Rate.** The ratio of incorrectly received bits to the
 total number of transmitted bits. In chaotic systems, BER integrates
 the combined effects of channel AWGN (additive white Gaussian noise),
 synchronisation imperfections, quantisation errors, and transient
 settling before receiver convergence.
 
-**SNR — Signal-to-Noise Ratio.** The ratio of average signal power to
+**SNR: Signal-to-Noise Ratio.** The ratio of average signal power to
 noise power, expressed in dB:
 
 .. math::
@@ -467,6 +468,15 @@ References
 .. [LathiDing09] B. P. Lathi, Z. Ding.
    "Modern Digital and Analog Communication Systems."
    4th ed., Oxford University Press, 2009.
+
+.. [Kolumban96] G. Kolumban, M. P. Kennedy, G. Kis.
+   "Performance evaluation of FM-DCSK."
+   Proc. IEEE ISSSTA, pp. 686--690, 1996.
+
+.. [Kaddoum13] G. Kaddoum, E. Soujeri, C. Arcila, K. Eshteiwi.
+   "Design and performance analysis of a multiuser OFDM based
+   differential chaos shift keying communication system."
+   IEEE Trans. Commun., v. 61, n. 12, pp. 4908--4920, 2013.
 
 .. [OliveiraFilgueiras22] E. V. Oliveira, R. Filgueiras.
    "A importância da segurança da informação para as organizações."

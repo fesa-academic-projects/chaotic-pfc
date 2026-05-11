@@ -1,0 +1,265 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:2
+msgid "chaotic\\_pfc.comms.channel"
+msgstr ""
+
+#: chaotic_pfc.comms.channel:2 of
+msgid "channel.py"
+msgstr ""
+
+#: chaotic_pfc.comms.channel:3 of
+msgid ""
+"Transmission-channel models sitting between the chaotic transmitter and "
+"the receiver."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:6 of
+msgid "Eight channels are provided:"
+msgstr ""
+
+#: chaotic_pfc.comms.channel:8 of
+msgid ""
+":func:`ideal_channel` — noiseless pass-through used to establish a best-"
+"case baseline for chaos synchronisation."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:10 of
+msgid ""
+":func:`fir_channel` — a symmetric FIR low-pass filter built on top of "
+":func:`scipy.signal.firwin`, representing a band-limited physical link."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:13 of
+msgid ":func:`awgn` — additive white Gaussian noise."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:14 of
+msgid ":func:`channel_impulsive` — AWGN with Middleton Class-A impulsive noise."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:15 of
+msgid ""
+":func:`channel_multipath` — multipath channel with configurable tap "
+"delays and gains."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:17 of
+msgid ""
+":func:`channel_interferers` — composite channel (AWGN + DCSK interferer +"
+" narrow-band WiFi-like interferer), lives in "
+":mod:`chaotic_pfc.comms.dcsk`."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:19 of
+msgid ""
+":func:`channel_urban` — combined urban channel with impulsive noise, "
+"multipath, and interferers, lives in :mod:`chaotic_pfc.comms.dcsk`."
+msgstr ""
+
+#: chaotic_pfc.comms.channel:22 of
+msgid ""
+"All accept the transmitted signal ``s`` as a 1-D array and return the "
+"received signal ``r`` of the same length. The FIR channel additionally "
+"returns its filter coefficients so they can be overlaid on the PSD plots "
+"produced by :mod:`chaotic_pfc.plotting`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`awgn <chaotic_pfc.comms.channel.awgn>`\\ \\(sig\\, "
+"snr\\_db\\[\\, rng\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+#: chaotic_pfc.comms.channel.awgn:1 of
+msgid "Add white Gaussian noise to *sig* for a given SNR in dB."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`channel_impulsive "
+"<chaotic_pfc.comms.channel.channel_impulsive>`\\ \\(sig\\, snr\\_db\\[\\,"
+" ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+#: chaotic_pfc.comms.channel.channel_impulsive:1 of
+msgid "AWGN channel with Middleton Class-A impulsive noise."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`channel_multipath "
+"<chaotic_pfc.comms.channel.channel_multipath>`\\ \\(sig\\, snr\\_db\\[\\,"
+" delays\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+#: chaotic_pfc.comms.channel.channel_multipath:1 of
+msgid "Multipath channel with configurable tap delays and gains."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`fir_channel <chaotic_pfc.comms.channel.fir_channel>`\\ "
+"\\(s\\[\\, cutoff\\, num\\_taps\\, window\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+#: chaotic_pfc.comms.channel.fir_channel:1 of
+msgid "Transmit ``s`` through a symmetric FIR low-pass channel."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`ideal_channel <chaotic_pfc.comms.channel.ideal_channel>`\\ "
+"\\(s\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst:15:<autosummary>:1
+#: chaotic_pfc.comms.channel.ideal_channel:1 of
+msgid "Transmit ``s`` through a noiseless, distortion-free channel."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.ideal_channel:3 of
+msgid ""
+"This is literally a copy of the input. It is still defined as a function "
+"(rather than aliased to ``numpy.ndarray.copy``) so that the receiver-side"
+" code can always call ``ideal_channel(s)`` consistently regardless of the"
+" channel configuration chosen by the caller."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:8
+#: chaotic_pfc.comms.channel.ideal_channel:8 of
+msgid "Transmitted signal, shape ``(N,)``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.comms.channel.ideal_channel:10 of
+msgid ""
+"* *ndarray, shape (N,)* -- An independent copy of ``s``. Mutating the "
+"output does not   affect the input. * **Implements** "
+"(:class:`~chaotic_pfc.comms.protocols.Channel`.)"
+msgstr ""
+
+#: chaotic_pfc.comms.channel.ideal_channel:10 of
+msgid ""
+"*ndarray, shape (N,)* -- An independent copy of ``s``. Mutating the "
+"output does not affect the input."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:20
+#: chaotic_pfc.comms.channel.ideal_channel:12 of
+msgid "**Implements** (:class:`~chaotic_pfc.comms.protocols.Channel`.)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.comms.channel.rst
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:3 of
+msgid ""
+"The channel is built with :func:`scipy.signal.firwin` using "
+"``pass_zero=True`` (true low-pass) and unit sampling frequency "
+"normalisation (``fs=2.0``). The DC gain of the resulting filter is "
+"normalised to ``1.0``."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:9 of
+msgid ""
+"Normalised cutoff frequency ``ω_c / π ∈ (0, 1)``. Defaults to ``0.99`` — "
+"i.e. the channel passes almost everything, mimicking a very lightly band-"
+"limited link."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:12 of
+msgid "Length of the FIR filter in samples. Must be a positive integer."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:13 of
+msgid ""
+"Window function passed through to ``firwin``. Any name accepted by "
+":func:`scipy.signal.get_window` is valid — common choices are "
+"``\"hamming\"``, ``\"hann\"``, ``\"blackman\"``."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:17 of
+msgid ""
+"* **r** (*ndarray, shape (N,)*) -- Received signal, ``s`` filtered "
+"through the FIR coefficients. * **h** (*ndarray, shape (num_taps,)*) -- "
+"Filter coefficients, useful for overlaying the channel response   on PSD "
+"plots. * **Implements** (:class:`~chaotic_pfc.comms.protocols.Channel`.)"
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:17 of
+msgid ""
+"**r** (*ndarray, shape (N,)*) -- Received signal, ``s`` filtered through "
+"the FIR coefficients."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.fir_channel:18 of
+msgid ""
+"**h** (*ndarray, shape (num_taps,)*) -- Filter coefficients, useful for "
+"overlaying the channel response on PSD plots."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.awgn:3 of
+msgid "Signal samples."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.awgn:4 of
+msgid "Signal-to-noise ratio in dB."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.awgn:5 of
+msgid "Random generator (uses ``np.random.default_rng`` if None)."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.channel_impulsive:3 of
+msgid "Probability a sample is hit by an impulse (e.g. 0.01 = 1 %)."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.channel_impulsive:4 of
+msgid "Impulse amplitude in multiples of the signal std."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.channel_multipath:3 of
+msgid "Delay of each path in samples (default: ``[0, 3, 7, 15]``)."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.channel_multipath:4 of
+msgid "Attenuation per path (default: ``[1.0, 0.6, 0.4, 0.2]``)."
+msgstr ""
+

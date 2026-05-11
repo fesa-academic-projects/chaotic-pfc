@@ -4,35 +4,35 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ## [Unreleased]
 
-## [0.6.2] — 2026-05-10
+## [0.6.2]: 2026-05-10
 
 ### Fixed
 - TestPyPI publish rejected: filename previously used and deleted. Patch bump only.
 
 *Note: version 0.6.1 was a failed publish to TestPyPI (rejected filename) and was never released.*
 
-## [0.6.0] — 2026-05-10
+## [0.6.0]: 2026-05-10
 
 ### Added
 - `docs/background.rst` expanded with full theoretical foundations from the PFC article:
   physical-layer security, FIR filtering, Lyapunov exponents, Pecora-Carroll synchronisation,
   DCSK/EF-DCSK/CSK modulation, BER/SNR metrics, parameter dependence, and 14 references.
-- `docs/internals.rst` — Numba kernel architecture, MGS, adaptive early-stop, FIR bank
+- `docs/internals.rst`: Numba kernel architecture, MGS, adaptive early-stop, FIR bank
   precomputation, fixed-point stability, signal generators, PSD estimation, channel models.
-- `docs/development.rst` — environment setup, tooling, testing, CI/CD, documentation build
+- `docs/development.rst`: environment setup, tooling, testing, CI/CD, documentation build
   workflow (including i18n gettext/update-po), and code style conventions.
-- `docs/contributing.rst` — philosophy, contribution workflow, commit format, docstring
+- `docs/contributing.rst`: philosophy, contribution workflow, commit format, docstring
   conventions, public API rules, and pull request checklist.
 - `docs/architecture.rst` expanded with full package tree, communication pipeline diagram,
   parameter sweep pipeline, 7 design decisions, and subpackage responsibility table.
 - `docs/usage.rst` expanded with index, all CLI subcommands with examples, adaptive sweep
   options, and language support section.
-- Bilingual translations (pt_BR) for all hand-written documentation pages — index,
+- Bilingual translations (pt_BR) for all hand-written documentation pages: index,
   background, architecture, usage, internals, development, and contributing.
-- `chaotic_pfc._i18n` module — bilingual figure labels (pt / en) with dictionary-based
+- `chaotic_pfc._i18n` module: bilingual figure labels (pt / en) with dictionary-based
   lookup, controllable via `CHAOTIC_PFC_LANG` env var or `--lang` CLI flag.
 - `--lang pt|en` CLI flag for attractors, sensitivity, comm-*, dcsk, and run-all.
-- `docs/_redirect.html` — RTD language landing page.
+- `docs/_redirect.html`: RTD language landing page.
 
 ### Changed
 - `docs/conf.py` refactored: full i18n/l10n, clean Furo sidebar, intersphinx, copybutton,
@@ -45,7 +45,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - `.gitignore`: added `_build/`, `_readthedocs/`, and `*.mo` patterns.
 - `pyproject.toml` docs extra: removed unused `sphinxcontrib-bibtex`.
 - `README.md` and `README_pt-BR.md` synchronised.
-- API reference `.po` files removed — auto-generated docstrings stay in English.
+- API reference `.po` files removed: auto-generated docstrings stay in English.
 
 ### Fixed
 - `run_all` not passing `lang` attribute to experiment subcommands (`AttributeError`).
@@ -56,7 +56,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Placeholder `FIRST AUTHOR <EMAIL@ADDRESS>` in `.po` headers.
 - Broken `spectral.py` entry in `api/index.po`.
 
-## [0.5.0] — 2026-05-07
+## [0.5.0]: 2026-05-07
 
 ### Added
 - Numba made optional via `_compat.py` fallback layer (`[fast]` extra, `pip install chaotic-pfc[fast]`).
@@ -85,7 +85,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - DCSK transmit functions share `_chaos_sequence` helper.
 - Adaptive Lyapunov early-stop extracted into `_adaptive_checkpoint`.
 - CLI `comm_*` modules share `compute_psds` and `save_or_show`.
-- `plotly` import is now lazy (`_get_go()`) — package imports without plotly installed.
+- `plotly` import is now lazy (`_get_go()`): package imports without plotly installed.
 - `aggregate_beta_sweeps` / `plot_3d_beta_volume` removed from top-level `__init__`; import directly from `chaotic_pfc.analysis.sweep_plotting_3d`.
 - `pyproject.toml`: classifiers and Documentation URL added.
 - `analysis_summary.json` default path moved to `data/`.
@@ -95,7 +95,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Duplicate `if:` conditions in CI pipeline and docs jobs.
 - CodeQL double-import warning in `test_cli_smoke.py`.
 
-## [0.4.0] — 2026-05-04
+## [0.4.0]: 2026-05-04
 
 ### Package structure
 - Sources reorganised into 4 subpackages: `dynamics/`, `comms/`, `analysis/`, `plotting/`.
@@ -119,23 +119,23 @@ All notable changes to chaotic-pfc are documented in this file.
 - `CONTRIBUTING.md`.
 - `Makefile` with 13 targets.
 - `strict_markers = true` in pytest config.
-- `scripts/benchmark.py` — performance benchmarks for Henon maps, FIR bank, and Lyapunov exponents.
+- `scripts/benchmark.py`: performance benchmarks for Henon maps, FIR bank, and Lyapunov exponents.
 - `PlotGridOptions` dataclass as a typed alternative to `plot_comm_grid` keyword arguments.
-- `ExperimentConfig.to_namespace()` — generates `argparse.Namespace` from config defaults, eliminates `_fill_config_defaults`.
+- `ExperimentConfig.to_namespace()`: generates `argparse.Namespace` from config defaults, eliminates `_fill_config_defaults`.
 - `TypedDict` definitions in `stats.py`: `SummaryRow`, `FilterTypeAggregate`, `OptimalParams`, `LmaxDistribution`, `CorrelationMatrix`, `BootstrapConfidence`.
 - `tests/_test_helpers.py` with shared `make_fir_coeffs` and `assert_seed_determinism`.
 - 18 new tests: kernel functions (4), DCSK channel custom parameters (4), `henon_fir_sequence` edge cases (2), `fir_channel` kaiser window (1), `transmit_order_n`/`receive_order_n` `seed=None` (2), `lyapunov_max_ensemble` CSV 4-D (1), `stats.py` distribution/boundary/correlation/bootstrap (9, partially replacing implicit coverage), `sweep.py` helpers/edge cases (9).
 
 ### Changed
 - CLI output and `print()` statements translated to English (figure titles kept in Portuguese for the academic article).
-- `henon_order_n` — `fir_coeffs` is now keyword-only (`*` marker in signature).
+- `henon_order_n`: `fir_coeffs` is now keyword-only (`*` marker in signature).
 - DCSK `dcsk_transmit`/`efdcsk_transmit` share a `_chaos_sequence` helper, reducing ~20 duplicated lines.
 - Adaptive Lyapunov early-stop block extracted into `_adaptive_checkpoint` (shared by n12 and nN kernels), removing 30 duplicated lines per kernel.
 - CLI `comm_ideal`, `comm_fir`, `comm_order_n` share `compute_psds` and `save_or_show` via `_common`.
 - `dcsk.py` CLI uses `add_save_display_flags` for consistency.
 - `_save()` in `plotting/figures.py` now creates parent directories (like `sweep_plotting` already did).
 - `_coeffs()` removed from `test_transmitter` and `test_receiver`; replaced by shared `make_fir_coeffs`.
-- `plotly` import in `sweep_plotting_3d.py` is now lazy (`_get_go()`) — importing the package no longer crashes without plotly installed.
+- `plotly` import in `sweep_plotting_3d.py` is now lazy (`_get_go()`): importing the package no longer crashes without plotly installed.
 - `aggregate_beta_sweeps` and `plot_3d_beta_volume` removed from the top-level `__init__.py` and `analysis/__init__.py`; import directly from `chaotic_pfc.analysis.sweep_plotting_3d`.
 - `coverage.run.omit` updated from dead `*/plotting.py` to `*/plotting/*`.
 - CI test job now uses a Python version matrix `["3.10", "3.12"]`.
@@ -146,7 +146,7 @@ All notable changes to chaotic-pfc are documented in this file.
 
 ### Fixed
 - Duplicate test method names in `test_sweep_plotting.py` (3 methods copy-pasted into the wrong class).
-- `FILTER_TYPES` hardcoded 5 times in `cli/analysis.py` — now uses the constant from `analysis.sweep`.
+- `FILTER_TYPES` hardcoded 5 times in `cli/analysis.py`: now uses the constant from `analysis.sweep`.
 - Wrong expected value in `TestHenonStandard.test_first_iteration` (1.2 → 1.0).
 - Wrong fixed-point assertion in `TestLyapunov.test_henon2d_fixed_points`.
 - Flaky `TestLyapunovEnsemble.test_chaotic_average` (too few iterations; now uses `pole_radius=0.0`).
@@ -154,7 +154,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Outdated `Originally scripts/...` comments in 7 CLI modules.
 - Outdated module paths in `docs/api/index.rst`.
 
-## [0.3.0] — 2026-05-03
+## [0.3.0]: 2026-05-03
 
 ### Added
 - Kaiser beta-sweep in the Lyapunov exponent pipeline with interactive 3-D Plotly plots.
@@ -184,7 +184,7 @@ All notable changes to chaotic-pfc are documented in this file.
 - Build artifacts (`.egg-info/`, `__pycache__/`) removed from version control.
 - Leftover `run_all.py` in project root removed (superseded by CLI).
 
-## [0.2.0] — 2026-04-22
+## [0.2.0]: 2026-04-22
 
 - Initial release: Henon map variants, FIR channel models, Pecora-Carroll synchronisation.
 - Lyapunov exponent computation (single IC) and parameter sweep over `(order, cutoff)` grid.

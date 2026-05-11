@@ -1,0 +1,397 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:2
+msgid "chaotic\\_pfc.analysis.stats"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:1 of
+msgid "Statistical analysis of Lyapunov sweep results."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:3 of
+msgid ""
+"Provides quick programmatic access to the full sweep dataset: summary "
+"tables, regime classification, parameter ranking, and comparisons across "
+"windows, filter types, and Kaiser beta sweeps."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:8 of
+msgid "Return types"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:9 of
+msgid ""
+"All public functions that return ``dict`` have corresponding "
+":class:`~typing.TypedDict` definitions in this module so that IDE "
+"autocompletion and mypy can statically verify the result shape:"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:13 of
+msgid ":class:`SummaryRow` — one row of :func:`summary_table`"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:14 of
+msgid ":class:`FilterTypeAggregate` — output of :func:`compare_filter_types`"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:15 of
+msgid ":class:`OptimalParams` — one entry of :func:`optimal_parameters`"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:16 of
+msgid ":class:`LmaxDistribution` — output of :func:`lmax_distribution`"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:17 of
+msgid ":class:`CorrelationMatrix` — output of :func:`correlation_matrix`"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats:18 of
+msgid ":class:`BootstrapConfidence` — one entry of :func:`bootstrap_confidence`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`best_chaos_preserving "
+"<chaotic_pfc.analysis.stats.best_chaos_preserving>`\\ \\(\\[data\\_dir\\,"
+" top\\_n\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.best_chaos_preserving:1 of
+msgid "Rank sweeps by percentage of chaotic grid points (descending)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`beta_curve <chaotic_pfc.analysis.stats.beta_curve>`\\ "
+"\\(\\[data\\_dir\\, filter\\_type\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.beta_curve:1 of
+msgid "Return (betas, pct_chaotic) arrays for a single filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`beta_summary <chaotic_pfc.analysis.stats.beta_summary>`\\ "
+"\\(\\[data\\_dir\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.beta_summary:1 of
+msgid "Aggregate per-β statistics for each filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`bootstrap_confidence "
+"<chaotic_pfc.analysis.stats.bootstrap_confidence>`\\ \\(\\[data\\_dir\\, "
+"...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.bootstrap_confidence:1 of
+msgid "Bootstrap 95% CI for mean λ_max per filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`chaos_margin <chaotic_pfc.analysis.stats.chaos_margin>`\\ "
+"\\(\\[data\\_dir\\, window\\, filter\\_type\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.chaos_margin:1 of
+msgid "For each order, compute the width of the chaotic region in cutoff space."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`compare_filter_types "
+"<chaotic_pfc.analysis.stats.compare_filter_types>`\\ "
+"\\(\\[data\\_dir\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.compare_filter_types:1 of
+msgid "Aggregate statistics per filter type across all windows."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`correlation_matrix "
+"<chaotic_pfc.analysis.stats.correlation_matrix>`\\ \\(\\[data\\_dir\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.correlation_matrix:1 of
+msgid "Spearman correlation between (order, cutoff, λ_max) across all sweeps."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`export_summary_json "
+"<chaotic_pfc.analysis.stats.export_summary_json>`\\ \\(\\[data\\_dir\\, "
+"output\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.export_summary_json:1 of
+msgid "Write the full summary table to a JSON file."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`lmax_distribution "
+"<chaotic_pfc.analysis.stats.lmax_distribution>`\\ \\(\\[data\\_dir\\, "
+"bins\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.lmax_distribution:1 of
+msgid "Histogram of λ_max values per filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`optimal_parameters "
+"<chaotic_pfc.analysis.stats.optimal_parameters>`\\ \\(\\[data\\_dir\\, "
+"window\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.optimal_parameters:1 of
+msgid "Find the (order, cutoff) pairs with the highest λ_max."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`summary_table <chaotic_pfc.analysis.stats.summary_table>`\\ "
+"\\(\\[data\\_dir\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.summary_table:1 of
+msgid "Return one row per sweep with key statistics."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+msgid ""
+":py:obj:`transition_boundary "
+"<chaotic_pfc.analysis.stats.transition_boundary>`\\ \\(\\[data\\_dir\\, "
+"window\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:23:<autosummary>:1
+#: chaotic_pfc.analysis.stats.transition_boundary:1 of
+msgid "Find the cutoff where each order transitions from non-chaotic to chaotic."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:25
+msgid "Classes"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ""
+":py:obj:`BootstrapConfidence "
+"<chaotic_pfc.analysis.stats.BootstrapConfidence>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.BootstrapConfidence:1 of
+msgid "Bootstrap 95% CI entry for one filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ":py:obj:`CorrelationMatrix <chaotic_pfc.analysis.stats.CorrelationMatrix>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.CorrelationMatrix:1 of
+msgid "Spearman correlation results from :func:`correlation_matrix`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ""
+":py:obj:`FilterTypeAggregate "
+"<chaotic_pfc.analysis.stats.FilterTypeAggregate>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.FilterTypeAggregate:1 of
+msgid "Aggregate statistics for a single filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ":py:obj:`LmaxDistribution <chaotic_pfc.analysis.stats.LmaxDistribution>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.LmaxDistribution:1 of
+msgid "Distribution statistics for lambda_max per filter type."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ":py:obj:`OptimalParams <chaotic_pfc.analysis.stats.OptimalParams>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.OptimalParams:1 of
+msgid "One optimal (order, cutoff) pair from :func:`optimal_parameters`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+msgid ":py:obj:`SummaryRow <chaotic_pfc.analysis.stats.SummaryRow>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst:33:<autosummary>:1
+#: chaotic_pfc.analysis.stats.SummaryRow:1 of
+msgid "One row of :func:`summary_table`."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.summary_table:3 of
+msgid ""
+"Each row is a :class:`SummaryRow` with: ``window``, ``filter_type``, "
+"``n_orders``, ``n_cutoffs``, ``pct_chaotic``, ``pct_periodic``, "
+"``pct_divergent``, ``mean_lmax``, ``max_lmax``, ``beta`` (Kaiser only)."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.summary_table:7 of
+msgid ""
+"This is the foundation of all downstream analyses — every other public "
+"function in this module either calls or derives from this table."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst
+#: chaotic_pfc.analysis.stats.best_chaos_preserving
+#: chaotic_pfc.analysis.stats.beta_curve
+#: chaotic_pfc.analysis.stats.beta_summary
+#: chaotic_pfc.analysis.stats.compare_filter_types
+#: chaotic_pfc.analysis.stats.export_summary_json
+#: chaotic_pfc.analysis.stats.optimal_parameters
+#: chaotic_pfc.analysis.stats.summary_table of
+msgid "Parameters"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst
+#: chaotic_pfc.analysis.stats.best_chaos_preserving
+#: chaotic_pfc.analysis.stats.beta_curve
+#: chaotic_pfc.analysis.stats.beta_summary
+#: chaotic_pfc.analysis.stats.compare_filter_types
+#: chaotic_pfc.analysis.stats.export_summary_json
+#: chaotic_pfc.analysis.stats.optimal_parameters
+#: chaotic_pfc.analysis.stats.summary_table of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.best_chaos_preserving:3 of
+msgid "Returns the *top_n* entries with the most chaotic coverage."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.compare_filter_types:3 of
+msgid ""
+"Returns a ``dict`` keyed by filter type (``\"lowpass\"``, ...) with each "
+"value being a :class:`FilterTypeAggregate` containing mean percentages "
+"and lambda_max across all windows that use that filter type."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.optimal_parameters:3 of
+msgid "Filters results by *window* and *filter_type* if given."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.beta_summary:3 of
+#, python-brace-format
+msgid ""
+"Returns a nested dict: ``{filter_type: {beta: {pct_chaotic, mean_lmax, "
+"...}}}``"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.beta_curve:3 of
+msgid "Useful for plotting the β-dependence of chaotic coverage."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.stats.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.lmax_distribution:3 of
+#, python-brace-format
+msgid ""
+"``{filter_type: {\"hist\": counts, \"edges\": bin_edges, \"mean\": float,"
+" \"std\": float, \"skewness\": float}}``"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.transition_boundary:3 of
+msgid ""
+"For each order, returns the *first* cutoff (lowest frequency) where λ_max"
+" > 0, or NaN if no chaotic point exists."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.transition_boundary:6 of
+msgid ""
+"* **orders** (*ndarray*) -- Filter orders. * **cutoffs** (*ndarray*) -- "
+"First chaotic cutoff per order (NaN if never chaotic)."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.transition_boundary:6 of
+msgid "**orders** (*ndarray*) -- Filter orders."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.transition_boundary:7 of
+msgid ""
+"**cutoffs** (*ndarray*) -- First chaotic cutoff per order (NaN if never "
+"chaotic)."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.chaos_margin:3 of
+msgid ""
+"* **orders** (*ndarray*) * **widths** (*ndarray*) -- Fraction of cutoffs "
+"where λ_max > 0 per order."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.chaos_margin:3 of
+msgid "**orders** (*ndarray*)"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.chaos_margin:4 of
+msgid "**widths** (*ndarray*) -- Fraction of cutoffs where λ_max > 0 per order."
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.correlation_matrix:3 of
+#, python-brace-format
+msgid "``{\"order_vs_lmax\": rho, \"cutoff_vs_lmax\": rho, \"n\": int}``"
+msgstr ""
+
+#: chaotic_pfc.analysis.stats.bootstrap_confidence:3 of
+#, python-brace-format
+msgid ""
+"``{filter_type: {\"mean\": float, \"ci_low\": float, \"ci_high\": "
+"float}}``"
+msgstr ""
+

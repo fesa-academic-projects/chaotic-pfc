@@ -1,6 +1,6 @@
 # Contributing to chaotic-pfc
 
-This document describes the development workflow, project conventions, and tooling used in this repository. It applies to every contributor — human or automated — and exists to keep changes disciplined, reviewable, and traceable.
+This document describes the development workflow, project conventions, and tooling used in this repository. It applies to every contributor: human or automated: and exists to keep changes disciplined, reviewable, and traceable.
 
 The conventions here bias toward caution over speed. For trivial tasks (typo fixes, comment edits, one-line tweaks), use judgment.
 
@@ -11,7 +11,7 @@ The conventions here bias toward caution over speed. For trivial tasks (typo fix
 Before implementing anything non-trivial:
 
 - State assumptions explicitly. If something is uncertain, ask before building on it.
-- If a request admits multiple interpretations, surface them — don't pick silently.
+- If a request admits multiple interpretations, surface them: don't pick silently.
 - If a simpler approach exists than what was asked for, mention it. Push back when warranted.
 - If something in the existing code is unclear, stop and name what's confusing rather than guessing.
 
@@ -33,7 +33,7 @@ Touch only what the task requires. When editing existing code:
 - Don't "improve" adjacent code, comments, or formatting.
 - Don't refactor things that aren't broken.
 - Match existing style, even when you'd write it differently personally.
-- If you notice unrelated dead code, mention it — don't delete it as part of an unrelated change.
+- If you notice unrelated dead code, mention it: don't delete it as part of an unrelated change.
 
 When your edits create orphans (unused imports, dangling helpers, etc.), clean up only the orphans your changes produced. Leave pre-existing dead code alone unless removing it is the explicit goal of the commit.
 
@@ -61,7 +61,7 @@ Strong success criteria let work proceed independently. Weak criteria ("make it 
 
 Parts of this codebase were developed with LLM assistance, primarily for porting numerical routines from MATLAB and Jupyter notebooks into a packaged Python library, and for accelerating prototyping during structural refactors. All generated code was reviewed, tested, and integrated by the human authors listed in `AUTHORS`.
 
-The conventions in section 1 exist in part because that workflow benefits from explicit discipline: assumptions get stated, changes stay surgical, and verification happens before merge. They are not LLM-specific — they are the same conventions a careful human contributor would follow — but they were written down rather than left implicit because part of the team is a model that does not infer unwritten norms.
+The conventions in section 1 exist in part because that workflow benefits from explicit discipline: assumptions get stated, changes stay surgical, and verification happens before merge. They are not LLM-specific: they are the same conventions a careful human contributor would follow: but they were written down rather than left implicit because part of the team is a model that does not infer unwritten norms.
 
 The standard toolchain for this project is described in section 3. Whatever tools you use to write code, the output must pass that toolchain before being committed.
 
@@ -101,7 +101,7 @@ Public functions, classes, and modules use [NumPy-style docstrings](https://nump
 
 ### Tests
 
-Every new module under `src/chaotic_pfc/` ships with a corresponding test file under `tests/`. Numba-compiled kernels are tested directly (not only through their orchestrators) — see `tests/test_sweep.py` for the pattern.
+Every new module under `src/chaotic_pfc/` ships with a corresponding test file under `tests/`. Numba-compiled kernels are tested directly (not only through their orchestrators): see `tests/test_sweep.py` for the pattern.
 
 Shared test utilities live in `tests/_test_helpers.py`. When a helper (fixture, coefficient builder, assertion) is needed by more than one test module, extract it there rather than duplicating it.
 

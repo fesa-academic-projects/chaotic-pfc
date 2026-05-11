@@ -1,0 +1,190 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/index.rst:2
+msgid "API Reference"
+msgstr ""
+
+#: ../../api/index.rst:4
+msgid ""
+"This page documents every public module in the ``chaotic_pfc`` package. "
+"Each link below opens the module's reference, listing its functions, "
+"classes, and dataclasses with full signatures and NumPy-style docstrings "
+"extracted from the source."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.dynamics.maps <chaotic_pfc.dynamics.maps>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"maps.py  Hénon map variants used as chaotic oscillators throughout the "
+"communication system."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"signals.py  Generators for the information-bearing messages used "
+"throughout the chaotic communication pipeline."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"lyapunov.py  Lyapunov exponent computation for the Hénon map (2-D) and "
+"the Hénon map with a pole filter (4-D)."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"spectral.py  Power-spectral-density estimation utilities used by the "
+"plotting layer."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"transmitter.py  Chaos-based modulator. Implements the Transmitter "
+"protocol — a callable that embeds a message in the state of a Hénon "
+"oscillator."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"channel.py  Transmission-channel models sitting between the chaotic "
+"transmitter and the receiver."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"receiver.py  Chaos-synchronisation demodulator. Implements the Receiver "
+"protocol — a callable that extracts the original message from a "
+"transmitted (and possibly channel-distorted) carrier."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.comms.dcsk <chaotic_pfc.comms.dcsk>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"dcsk.py  Differential Chaos Shift Keying (DCSK) over a FIR-filtered Henon"
+" map."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.comms.protocols <chaotic_pfc.comms.protocols>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid "Structural contracts for the communication pipeline."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.analysis.sweep <chaotic_pfc.analysis.sweep>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"Parameter-sweep computation of Lyapunov exponents for the Henon map with "
+"an internal FIR filter."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.analysis.stats <chaotic_pfc.analysis.stats>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid "Statistical analysis of Lyapunov sweep results."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+":py:obj:`chaotic_pfc.analysis.sweep_plotting "
+"<chaotic_pfc.analysis.sweep_plotting>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"sweep_plotting.py  Figures for Lyapunov classification maps produced by "
+"chaotic_pfc.sweep."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+":py:obj:`chaotic_pfc.analysis.sweep_plotting_3d "
+"<chaotic_pfc.analysis.sweep_plotting_3d>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ""
+"sweep_plotting_3d.py  Plotly-based 3-D visualisation of a stack of Kaiser"
+" β-sweeps."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid "figures.py  Publication-quality SVG figures with LaTeX-style labels."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.config <chaotic_pfc.config>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid "config.py  Centralised configuration for all experiments."
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
+msgstr ""
+
+#: ../../api/index.rst:28:<autosummary>:1
+msgid "cli  Unified command-line interface for the chaotic_pfc package."
+msgstr ""
+

@@ -1,0 +1,380 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:2
+msgid "chaotic\\_pfc.dynamics.maps"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:2 of
+msgid "maps.py"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:3 of
+msgid ""
+"Hénon map variants used as chaotic oscillators throughout the "
+"communication system."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:6 of
+msgid "Four Henon map variants and one chaotic-sequence generator are provided:"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:8 of
+msgid ":func:`henon_standard` — the original Hénon (1976) map,"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:10 of
+msgid ""
+"x[n+1] &= 1 - a \\, x[n]^2 + y[n] \\\\\n"
+"y[n+1] &= b \\, x[n]"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:15 of
+msgid "chaotic at ``(a, b) = (1.4, 0.3)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:17 of
+msgid ""
+":func:`henon_generalised` — the parametric form preferred in "
+"communications literature,"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:20 of
+msgid ""
+"x_1[n+1] &= \\alpha - x_1[n]^2 + \\beta \\, x_2[n] \\\\\n"
+"x_2[n+1] &= x_1[n]"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:25 of
+msgid "equivalent to :func:`henon_standard` with rescaled variables."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:27 of
+msgid ""
+":func:`henon_filtered` — generalised Hénon whose nonlinear input is a "
+"weighted combination of two consecutive state samples:"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:30 of
+msgid ""
+"x_1[n+1] &= \\alpha - (c_0 \\, x_1[n] + c_1 \\, x_2[n])^2 + \\beta \\, "
+"x_2[n] \\\\\n"
+"x_2[n+1] &= x_1[n]"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:35 of
+msgid "This is the 2-tap case of the general filtered map."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:37 of
+msgid ""
+":func:`henon_order_n` — general case with an FIR filter of arbitrary "
+"order acting on the system's state vector. Used by the higher-order "
+"transmitter/receiver pair and by the Lyapunov sweep."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps:41 of
+msgid ""
+":func:`henon_fir_sequence` — generates a chaotic sequence from the FIR-"
+"filtered Hénon map, used by the DCSK communication schemes."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_filtered <chaotic_pfc.dynamics.maps.henon_filtered>`\\ "
+"\\(steps\\[\\, x0\\, y0\\, alpha\\, beta\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_filtered:1 of
+msgid "Iterate the 2-tap filtered Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_fir_sequence "
+"<chaotic_pfc.dynamics.maps.henon_fir_sequence>`\\ \\(N\\[\\, a\\, b\\, "
+"n\\_taps\\, wc\\, window\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:1 of
+msgid "Generate a chaotic sequence from the FIR-filtered Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_generalised "
+"<chaotic_pfc.dynamics.maps.henon_generalised>`\\ \\(steps\\[\\, x0\\, "
+"y0\\, alpha\\, beta\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_generalised:1 of
+msgid "Iterate the generalised 2-D Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_n4_step_inplace "
+"<chaotic_pfc.dynamics.maps.henon_n4_step_inplace>`\\ \\(out\\, x\\, s\\, "
+"a\\, b\\, c\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:1 of
+msgid "Single step of the N-th order filtered Hénon map, writing into *out*."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_order_n <chaotic_pfc.dynamics.maps.henon_order_n>`\\ "
+"\\(steps\\, \\*\\, fir\\_coeffs\\[\\, x0\\, a\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_order_n:1 of
+msgid "Iterate the N-th order Hénon map with an internal FIR filter."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+msgid ""
+":py:obj:`henon_standard <chaotic_pfc.dynamics.maps.henon_standard>`\\ "
+"\\(steps\\[\\, x0\\, y0\\, a\\, b\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst:16:<autosummary>:1
+#: chaotic_pfc.dynamics.maps.henon_standard:1 of
+msgid "Iterate the standard 2-D Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_standard:3 of
+msgid ""
+"Number of iterations. Each output array has length ``steps + 1`` (initial"
+" condition included)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_standard:5
+#: chaotic_pfc.dynamics.maps.henon_standard:6 of
+msgid "Initial conditions of the two state variables."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_standard:7
+#: chaotic_pfc.dynamics.maps.henon_standard:10 of
+msgid ""
+"Hénon parameters. The canonical chaotic regime is ``(a, b) = (1.4, "
+"0.3)``; smaller ``a`` yields periodic orbits, larger ``a`` yields "
+"unbounded trajectories for most ICs."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_standard:14 of
+msgid ""
+"**X, Y** -- Trajectories of ``x`` and ``y`` from ``n = 0`` (the initial "
+"condition) to ``n = steps``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_generalised:3 of
+msgid ""
+"Mathematically equivalent to :func:`henon_standard` under a change of "
+"variables, but parameterised using ``α`` and ``β`` because that is the "
+"form used in the theoretical derivations of the project."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:8
+#: chaotic_pfc.dynamics.maps.henon_generalised:7 of
+msgid "Number of iterations."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:9
+#: chaotic_pfc.dynamics.maps.henon_filtered:10
+#: chaotic_pfc.dynamics.maps.henon_generalised:8
+#: chaotic_pfc.dynamics.maps.henon_generalised:9 of
+msgid "Initial conditions of the state variables."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_generalised:10
+#: chaotic_pfc.dynamics.maps.henon_generalised:11 of
+msgid "Hénon parameters. Chaotic regime at ``(α, β) = (1.4, 0.3)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:20
+#: chaotic_pfc.dynamics.maps.henon_generalised:13 of
+msgid "**X, Y** -- Trajectories of ``x_1`` and ``x_2``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:3 of
+msgid ""
+"The quadratic nonlinearity acts on a weighted combination of the two most"
+" recent state samples, ``z = c_0 · x_1 + c_1 · x_2``, rather than on a "
+"single sample. This is the smallest non-trivial case of "
+":func:`henon_order_n`."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:11
+#: chaotic_pfc.dynamics.maps.henon_filtered:12
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:6
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:7
+#: chaotic_pfc.dynamics.maps.henon_order_n:19
+#: chaotic_pfc.dynamics.maps.henon_order_n:20 of
+msgid "Hénon parameters."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_filtered:13
+#: chaotic_pfc.dynamics.maps.henon_filtered:16 of
+msgid ""
+"FIR filter coefficients. With ``(c0, c1) = (1, 0)`` the map reduces "
+"exactly to :func:`henon_generalised` — this equivalence is exercised by "
+"``TestHenonFiltered`` in the test suite."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:3 of
+msgid "Pre-allocated output buffer, shape ``(Nc,)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:4 of
+msgid "Current state, shape ``(Nc,)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:5 of
+msgid "Current driving value."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_n4_step_inplace:8 of
+msgid "FIR coefficients, shape ``(Nc,)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:3 of
+msgid ""
+"The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``. At "
+"each step, the carrier output is the filtered state component ``x[2]``, "
+"and the next iterate is computed by :func:`henon_n4_step_inplace`."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:8 of
+msgid ""
+"The ``driving`` parameter lets callers override the nonlinear input: when"
+" ``driving=None`` the map runs autonomously (``s = x[2]``); when "
+"``driving`` is provided the map is forced by that external signal. This "
+"is used by the transmitter (self-driven) vs. the receiver (driven by the "
+"received signal)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:14 of
+msgid "Number of iterations. The output state has shape ``(Nc, steps + 1)``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:16 of
+msgid "FIR filter coefficients, shape ``(Nc,)``. Must have ``Nc >= 3``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:17 of
+msgid ""
+"Optional explicit initial state, shape ``(Nc,)``. If ``None``, a random "
+"state is drawn from ``Uniform(0, 0.5)`` per component."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:21 of
+msgid ""
+"Optional external driving signal, shape ``(steps,)``. When provided, "
+"replaces the self-driving term at each iteration."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:23 of
+msgid ""
+"RNG seed used when ``x0=None`` to pick the random initial condition. Has "
+"no effect if ``x0`` is provided."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:26 of
+msgid ""
+"* **state** (*ndarray, shape (Nc, steps + 1)*) -- Full state trajectory. "
+"Column 0 is the initial condition. * **output** (*ndarray, shape "
+"(steps,)*) -- Carrier signal ``x[2][n]`` for ``n = 0, …, steps − 1``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:26 of
+msgid ""
+"**state** (*ndarray, shape (Nc, steps + 1)*) -- Full state trajectory. "
+"Column 0 is the initial condition."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_order_n:27 of
+msgid ""
+"**output** (*ndarray, shape (steps,)*) -- Carrier signal ``x[2][n]`` for "
+"``n = 0, …, steps − 1``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:3 of
+msgid ""
+"Iterates ``x[n+1] = 1 - a * xf[n]^2 + y[n]`` where ``xf`` is the current "
+"output of an FIR filter applied to the state history."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:6 of
+msgid "Number of samples to produce."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:7
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:8 of
+msgid "Hénon map parameters (default: 1.4, 0.3)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:9 of
+msgid "FIR filter order (number of coefficients)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:10 of
+msgid "Normalised cutoff frequency in (0, 1)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:11 of
+msgid "SciPy window name (e.g. ``\"hamming\"``, ``\"kaiser\"``)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:13 of
+msgid "Chaotic samples."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.maps.rst
+msgid "Raises"
+msgstr ""
+
+#: chaotic_pfc.dynamics.maps.henon_fir_sequence:16 of
+msgid "If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf."
+msgstr ""
+

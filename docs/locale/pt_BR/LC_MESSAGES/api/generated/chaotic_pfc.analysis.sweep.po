@@ -1,0 +1,318 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep.rst:2
+msgid "chaotic\\_pfc.analysis.sweep"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:1 of
+msgid ""
+"Parameter-sweep computation of Lyapunov exponents for the Henon map with "
+"an internal FIR filter."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:4 of
+#, python-brace-format
+msgid ""
+"This module sweeps the 2-D grid of filter orders ``N_s in {2, ..., 41}`` "
+"against normalised cutoffs ``omega_c in (0, 1)`` and estimates the "
+"largest Lyapunov exponent ``lambda_max`` at each grid point."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:8 of
+msgid ""
+"All hot paths are JIT-compiled with Numba. The outer 2-D loop is "
+"flattened into a single ``prange`` so every grid point is a task "
+"available to the thread pool."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:12 of
+msgid "The public API is small:"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:14 of
+msgid ":class:`SweepResult` — container for the output of one sweep."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:15 of
+msgid ":func:`precompute_fir_bank` — builds the FIR coefficient tensor."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:16 of
+msgid ""
+":func:`run_sweep` — full end-to-end computation for a (window, filter) "
+"pair."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:17 of
+msgid ":func:`save_sweep` / :func:`load_sweep` — round-trip to ``.npz``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep:18 of
+msgid ""
+":data:`WINDOWS`, :data:`FILTER_TYPES`, :data:`WINDOW_DISPLAY_NAMES` — the"
+" catalogue of supported configurations."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:1 of
+msgid "Result of a single (window, filter) sweep."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep.rst
+#: chaotic_pfc.analysis.sweep._io.load_sweep
+#: chaotic_pfc.analysis.sweep._io.save_sweep of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:5 of
+msgid ""
+"Mean of lambda_max across ``n_initial`` random ICs, per grid point. NaN "
+"where the trajectory diverged for all ICs."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult of
+msgid "type"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:8
+#: chaotic_pfc.analysis.sweep._types.SweepResult:14 of
+msgid "ndarray, shape (Ncoef, Ncut)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:12 of
+msgid "Standard deviation of lambda_max samples at each grid point."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:18 of
+msgid "Filter orders N_s actually swept."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:20 of
+msgid "ndarray, shape (Ncoef,)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:24 of
+msgid "Normalised cutoff frequencies omega_c in (0, 1) swept."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:26 of
+msgid "ndarray, shape (Ncut,)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:30 of
+msgid "FIR window used (lower-case, e.g. ``\"hamming\"``)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:32 of
+msgid "str"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:36 of
+msgid "Filter pass-zero configuration."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:38 of
+#, python-brace-format
+msgid "{\"lowpass\", \"highpass\", \"bandpass\", \"bandstop\"}"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:42 of
+msgid ""
+"Average number of Lyapunov iterations actually used per grid point "
+"(across non-divergent ICs). In non-adaptive sweeps every finite cell "
+"equals ``Nmap``; in adaptive sweeps it ranges from ``Nmap_min`` to "
+"``Nmap``, providing a \"difficulty map\" of the parameter space. ``None``"
+" when loaded from a legacy ``.npz`` without this field."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:49 of
+msgid "ndarray, shape (Ncoef, Ncut), optional"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:53 of
+msgid "Free-form metadata (simulation parameters, timing, etc.)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._types.SweepResult:55 of
+msgid "dict"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep.SweepResult.display_name:1 of
+msgid "Human-readable name used for output directories."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._io.load_sweep:1 of
+msgid "Load a sweep from ``.npz`` produced by :func:`save_sweep`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep.rst
+#: chaotic_pfc.analysis.sweep._io.load_sweep
+#: chaotic_pfc.analysis.sweep._io.save_sweep
+#: chaotic_pfc.analysis.sweep._orchestration.quick_sweep_params of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:1 of
+msgid "Build the FIR coefficient tensor and gain matrix for a sweep."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:3 of
+msgid "Filter orders to sweep. Values will be cast to ``int``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:4 of
+msgid "Normalised cutoff frequencies in (0, 1)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:5 of
+msgid "``\"lowpass\"``, ``\"highpass\"``, ``\"bandpass\"``, or ``\"bandstop\"``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:6 of
+msgid "Window name in :data:`WINDOWS`."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:7 of
+msgid ""
+"Shape parameter of the Kaiser window. Ignored unless ``window == "
+"\"kaiser\"``. Must be ``>= 0``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:9 of
+msgid ""
+"Width of the pass/stop band when *filter_type* is ``\"bandpass\"`` or "
+"``\"bandstop\"``. Ignored for lowpass and highpass. Clamped so edges stay"
+" inside ``(0, 1)``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:13 of
+msgid ""
+"* **fir_bank** (*ndarray, shape (Ncoef, Ncut, max_order)*) -- "
+"``fir_bank[i, j, :order_i]`` holds the FIR coefficients for the   "
+"``(order_i, cutoff_j)`` pair, zero-padded on the right. * **gains** "
+"(*ndarray, shape (Ncoef, Ncut)*) -- DC gain (sum of coefficients) of each"
+" filter."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:13 of
+msgid ""
+"**fir_bank** (*ndarray, shape (Ncoef, Ncut, max_order)*) -- ``fir_bank[i,"
+" j, :order_i]`` holds the FIR coefficients for the ``(order_i, "
+"cutoff_j)`` pair, zero-padded on the right."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:15 of
+msgid ""
+"**gains** (*ndarray, shape (Ncoef, Ncut)*) -- DC gain (sum of "
+"coefficients) of each filter."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.quick_sweep_params:1 of
+msgid "Return the (orders_lp, orders_hp, cutoffs, params) for quick-sweep mode."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.quick_sweep_params:3 of
+msgid "These are small grids suitable for testing and CI smoke runs."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:1 of
+msgid "Run a full Lyapunov sweep for one (window, filter) combination."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:3
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:4 of
+msgid "FIR configuration (see :data:`WINDOWS`, :data:`FILTER_TYPES`)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:5 of
+msgid ""
+"Filter orders to sweep. Defaults to ``np.arange(2, 42)`` for lowpass and "
+"``np.arange(3, 43, 2)`` for highpass (which requires odd tap counts)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:8 of
+msgid "Cutoff frequencies. Defaults to 100 points linearly spaced in ``(0, 1)``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:10 of
+msgid ""
+"Burn-in iterations applied to the map before starting the Lyapunov "
+"accumulation."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:12 of
+msgid ""
+"Maximum number of iterations used to estimate each Lyapunov exponent. "
+"Also the exact iteration count when ``adaptive=False``."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:14 of
+msgid "Width of the pass/stop band for bandpass/bandstop filters."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:15 of
+msgid "Number of random initial conditions averaged per grid point."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:16
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:17 of
+msgid "Henon parameters (alpha, beta)."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:18 of
+msgid ""
+"Seed for the RNG used to shuffle initial conditions. ``None`` leaves the "
+"RNG state untouched."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:20 of
+msgid "Run a tiny sweep first to trigger Numba JIT compilation."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:21 of
+msgid "Shape parameter of the Kaiser window."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:22 of
+msgid "When ``True``, enable adaptive early-stop in the Lyapunov kernels."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:23 of
+msgid "Minimum iterations before the adaptive criterion may fire."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:24 of
+msgid "Convergence tolerance for the adaptive criterion."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._orchestration.run_sweep:26 of
+msgid "Full result object."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep._io.save_sweep:1 of
+msgid "Save a :class:`SweepResult` to a compressed ``.npz``."
+msgstr ""
+

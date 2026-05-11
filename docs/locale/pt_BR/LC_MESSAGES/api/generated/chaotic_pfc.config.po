@@ -1,0 +1,386 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.config.rst:2
+msgid "chaotic\\_pfc.config"
+msgstr ""
+
+#: chaotic_pfc.config:2 of
+msgid "config.py"
+msgstr ""
+
+#: chaotic_pfc.config:3 of
+msgid "Centralised configuration for all experiments."
+msgstr ""
+
+#: chaotic_pfc.config:5 of
+msgid ""
+"The module exposes a single :data:`DEFAULT_CONFIG` object of type "
+":class:`ExperimentConfig` that aggregates the per-subsystem settings "
+"(``comm``, ``channel``, ``lyapunov``, ``sweep``, …). Every experiment "
+"script imports it to obtain its default parameters, and CLI flags "
+"selectively override individual fields without having to thread a full "
+"config through the call chain."
+msgstr ""
+
+#: chaotic_pfc.config:12 of
+msgid ""
+"All configs are plain dataclasses, so they can be cheaply copied, mutated"
+" in tests, or serialised with :func:`dataclasses.asdict`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:8
+msgid "Module Attributes"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:12:<autosummary>:1
+msgid ":py:obj:`DEFAULT_CONFIG <chaotic_pfc.config.DEFAULT_CONFIG>`"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:12:<autosummary>:1
+#: chaotic_pfc.config.DEFAULT_CONFIG:1 of
+msgid "The project-wide singleton."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:14
+msgid "Classes"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`ChannelConfig <chaotic_pfc.config.ChannelConfig>`\\ "
+"\\(\\[cutoff\\, num\\_taps\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.ChannelConfig:1 of
+msgid ""
+"External FIR-channel parameters "
+"(:func:`~chaotic_pfc.comms.channel.fir_channel`)."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`CommConfig <chaotic_pfc.config.CommConfig>`\\ \\(\\[N\\, mu\\, "
+"message\\_period\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.CommConfig:1 of
+msgid "Top-level parameters of the communication pipeline."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`ExperimentConfig <chaotic_pfc.config.ExperimentConfig>`\\ "
+"\\(\\[comm\\, channel\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.ExperimentConfig:1 of
+msgid "Aggregate configuration used by every experiment script."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`HenonConfig <chaotic_pfc.config.HenonConfig>`\\ \\(\\[a\\, "
+"b\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.HenonConfig:1 of
+msgid "Parameters of the base Hénon map."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`InternalFIRConfig <chaotic_pfc.config.InternalFIRConfig>`\\ "
+"\\(\\[cutoff\\, num\\_taps\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.InternalFIRConfig:1 of
+msgid "FIR filter used inside the N-th order Hénon oscillator."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`LyapunovConfig <chaotic_pfc.config.LyapunovConfig>`\\ "
+"\\(\\[Nitera\\, Ndiscard\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.LyapunovConfig:1 of
+msgid "Parameters for Lyapunov exponent computation."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`PlotConfig <chaotic_pfc.config.PlotConfig>`\\ "
+"\\(\\[time\\_window\\_start\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.PlotConfig:1 of
+msgid "Global plotting defaults used by the experiment scripts."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`SpectralConfig <chaotic_pfc.config.SpectralConfig>`\\ "
+"\\(\\[nfft\\, window\\_length\\, fs\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.SpectralConfig:1 of
+msgid "Defaults for :func:`~chaotic_pfc.dynamics.spectral.psd_normalised`."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+msgid ""
+":py:obj:`SweepConfig <chaotic_pfc.config.SweepConfig>`\\ \\(\\[Nitera\\, "
+"Nmap\\, n\\_initial\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst:25:<autosummary>:1
+#: chaotic_pfc.config.SweepConfig:1 of
+msgid "Parameters for the 2-D (order, cutoff) Lyapunov sweep."
+msgstr ""
+
+#: chaotic_pfc.config.HenonConfig:3 of
+msgid ""
+"The default ``(a, b) = (1.4, 0.3)`` is the canonical chaotic regime. "
+"Deviating from these requires care — the communication pipeline assumes a"
+" strange attractor."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:5 of
+msgid "Default number of samples in a transmitted sequence."
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig chaotic_pfc.config.LyapunovConfig
+#: chaotic_pfc.config.SpectralConfig chaotic_pfc.config.SweepConfig of
+msgid "type"
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:7 chaotic_pfc.config.CommConfig:20
+#: chaotic_pfc.config.CommConfig:28 chaotic_pfc.config.SweepConfig:10
+#: chaotic_pfc.config.SweepConfig:16 chaotic_pfc.config.SweepConfig:22
+#: chaotic_pfc.config.SweepConfig:33 of
+msgid "int"
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:11 of
+msgid ""
+"Modulation depth used by the transmitter and receiver. Must match on both"
+" ends."
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:14 chaotic_pfc.config.LyapunovConfig:13
+#: chaotic_pfc.config.LyapunovConfig:19 chaotic_pfc.config.LyapunovConfig:26
+#: chaotic_pfc.config.LyapunovConfig:32 chaotic_pfc.config.SpectralConfig:22 of
+msgid "float"
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:18 of
+msgid "Period of the default binary message, in samples."
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:24 of
+msgid ""
+"Number of samples discarded at the start of each run before computing "
+"performance metrics (MSE, BER). Lets the local oscillator lock into "
+"synchronisation."
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:32 of
+msgid "Nested Hénon parameters (α, β)."
+msgstr ""
+
+#: chaotic_pfc.config.CommConfig:34 of
+msgid "chaotic_pfc.config.HenonConfig"
+msgstr ""
+
+#: chaotic_pfc.config.InternalFIRConfig:3 of
+msgid ""
+"Differs from :class:`ChannelConfig` in that this filter sits *inside* the"
+" chaos generator (it shapes the feedback loop), not on the transmission "
+"path. Used primarily by the order-N transmitter/receiver pair."
+msgstr ""
+
+#: chaotic_pfc.config.InternalFIRConfig.fir_coeffs:1 of
+msgid "Build the FIR coefficients for the configured cutoff and length."
+msgstr ""
+
+#: chaotic_pfc.config.InternalFIRConfig.fir_coeffs:3 of
+msgid ""
+"Uses a Hamming window with ``pass_zero=True`` and the usual ``fs=2.0`` "
+"normalisation so that ``cutoff`` is interpreted directly as ``ω_c / π``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.config.InternalFIRConfig.fir_coeffs:7 of
+msgid "Filter coefficients."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.config.rst
+#: chaotic_pfc.config.ExperimentConfig.to_namespace of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.config.SpectralConfig:5 of
+msgid "Standard Welch parameters."
+msgstr ""
+
+#: chaotic_pfc.config.SpectralConfig:9 of
+msgid ""
+"FIR window applied to each Welch segment. Currently ``\"hamming\"`` (the "
+"historical default) and ``\"kaiser\"`` are supported."
+msgstr ""
+
+#: chaotic_pfc.config.SpectralConfig:13 of
+msgid "str"
+msgstr ""
+
+#: chaotic_pfc.config.SpectralConfig:17 of
+msgid ""
+"Shape parameter of the Kaiser window. Ignored unless ``window == "
+"\"kaiser\"``. Larger values give higher stop-band attenuation at the cost"
+" of a wider main lobe; β ≈ 5 is a common ~50 dB compromise."
+msgstr ""
+
+#: chaotic_pfc.config.LyapunovConfig:5 of
+msgid ""
+"Iterations used for the estimate and the transient to discard before "
+"starting to accumulate."
+msgstr ""
+
+#: chaotic_pfc.config.LyapunovConfig:10 of
+msgid ""
+"Half-width of the IC sampling box around the fixed point, as a fraction "
+"of the coordinate (±10% by default)."
+msgstr ""
+
+#: chaotic_pfc.config.LyapunovConfig:17 of
+msgid "Filter gain term used in the 4-D pole-filtered system."
+msgstr ""
+
+#: chaotic_pfc.config.LyapunovConfig:23 of
+msgid ""
+"Pole radius ``r ∈ (0, 1)``. Larger values make the filter sharper and the"
+" dynamics more dissipative."
+msgstr ""
+
+#: chaotic_pfc.config.LyapunovConfig:30 of
+msgid "Normalised angular frequency of the pole pair (``× π``)."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:3 of
+msgid ""
+"Used by :mod:`chaotic_pfc.sweep`. The full grid is ``len(orders) × "
+"n_cutoffs`` points; at the defaults this is 4 000."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:8 of
+msgid "Burn-in iterations applied before computing the estimator."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:14 of
+msgid "Iterations accumulated into the Lyapunov estimator."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:20 of
+msgid "Number of random initial conditions averaged per grid point."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:26 of
+msgid ""
+"Filter-order range, ``order_hi`` exclusive. Defaults to ``range(2, 42)`` "
+"→ 40 orders."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:31 of
+msgid "Number of cutoff frequencies sampled linearly in ``(0, 1)``."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:37 of
+msgid "Default selections when no CLI override is given."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:41 of
+msgid ""
+"Output locations. The ``.npz`` checkpoints live under ``data/sweeps`` and"
+" are versioned; the figures under ``figures/sweeps`` are derived from "
+"those checkpoints."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:47 of
+msgid ""
+"Output formats produced by the plot script. Tuple because both PNG (quick"
+" preview, GitHub render) and SVG (paper-grade) are useful to have in "
+"parallel."
+msgstr ""
+
+#: chaotic_pfc.config.SweepConfig:51 of
+msgid "tuple[str, ...]"
+msgstr ""
+
+#: chaotic_pfc.config.ExperimentConfig:3 of
+msgid ""
+"Composing the individual subsystem configs into a single object keeps the"
+" CLI scripts simple: they import :data:`DEFAULT_CONFIG`, pick out the "
+"branches they need (e.g. ``cfg.comm``, ``cfg.lyapunov``) and only expose "
+"flags for the handful of fields that actually vary across experiments."
+msgstr ""
+
+#: chaotic_pfc.config.ExperimentConfig.to_namespace:1 of
+msgid "Build an ``argparse.Namespace`` with defaults for every CLI subcommand."
+msgstr ""
+
+#: chaotic_pfc.config.ExperimentConfig.to_namespace:3 of
+msgid ""
+"Useful for ``run all``, which forwards a single namespace to all sub-"
+"experiments."
+msgstr ""
+
+#: chaotic_pfc.config.ExperimentConfig.to_namespace:6 of
+msgid ""
+"Note: ``PlotConfig``, ``SpectralConfig``, and ``SweepConfig`` fields are "
+"intentionally omitted; CLI modules that need them read directly from "
+":data:`DEFAULT_CONFIG`."
+msgstr ""
+
+#: chaotic_pfc.config.DEFAULT_CONFIG:3 of
+msgid ""
+"Import this, do not instantiate a new one. Treat as read-only at runtime;"
+" mutating a sub-config field (e.g. ``cfg.comm.N = 100``) will affect all "
+"subsequent experiments in the same process. If a test needs a modified "
+"copy, use :func:`dataclasses.replace` on the relevant sub-dataclass."
+msgstr ""
+

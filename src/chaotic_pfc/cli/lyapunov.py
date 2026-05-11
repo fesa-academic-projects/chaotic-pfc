@@ -200,10 +200,11 @@ def run(args: argparse.Namespace) -> int:
     )
     _print_ensemble_summary(ens4d, dim=4)
 
-    expected_sum = np.log(abs(beta)) * 2.0  # 2 of the 4 exponents "feel" beta
+    r = args.pole_radius
+    expected_sum = np.log(abs(beta)) + 2.0 * np.log(abs(r))
     actual_sum = float(ens4d.mean_exponents.sum())
     print(f"     Sum of exponents (mean): {actual_sum:+.6f}")
-    print(f"     2*ln|beta| expected (dissipation): {expected_sum:+.6f}")
+    print(f"     ln|beta| + 2*ln|r| expected: {expected_sum:+.6f}")
 
     if args.save:
         out = ens4d.to_csv(data_dir / "henon4d_ensemble.csv")

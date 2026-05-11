@@ -81,7 +81,7 @@ estimator kernels. They:
    early-stop triggers).
 3. At each estimation iteration, evolve the perturbation vectors
    through the Jacobian (tangent map) and apply MGS.
-4. Return ``(best, n_used)`` — the :math:`\lambda_{\max}` estimate for
+4. Return ``(best, n_used)``: the :math:`\lambda_{\max}` estimate for
    a single initial condition and the number of iterations used. The
    aggregation across ``n_initial`` independent ICs is performed by
    ``_sweep_kernel``, which calls these kernels in sequence.
@@ -136,10 +136,10 @@ The FIR coefficient bank is the largest precomputed data structure in
 the sweep pipeline. For ``N_orders = 40`` orders and
 ``N_cutoffs = 100`` cutoffs, it contains:
 
-* Shape ``(N_coef, N_cutoffs, max_taps)`` — each ``(order, cutoff)``
+* Shape ``(N_coef, N_cutoffs, max_taps)``: each ``(order, cutoff)``
   pair produces a filter of length ``order``, zero-padded to
   ``max_taps``.
-* Shape ``(N_coef, N_cutoffs)`` — the gain matrix maps each filter's
+* Shape ``(N_coef, N_cutoffs)``: the gain matrix maps each filter's
   total gain.
 
 The bank is built by :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`,
@@ -211,7 +211,7 @@ parameter (``numpy.random.Generator``) for deterministic reproducibility:
 
 :func:`~chaotic_pfc.comms.dcsk.channel_urban`
   All-in-one urban channel model combining AWGN, multipath,
-  impulsive noise, and interferers — representing a worst-case
+  impulsive noise, and interferers: representing a worst-case
   composite propagation environment.
 
 Translation layer

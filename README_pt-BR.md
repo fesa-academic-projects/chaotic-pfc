@@ -17,10 +17,10 @@ Sistema de comunicação digital caótico baseado no mapa de Hénon.
 Projeto de PFC (*Projeto Final de Curso*).
 
 <p align="center">
-  <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Mapa de classificação de Lyapunov — Hamming lowpass">
+  <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Mapa de classificação de Lyapunov: Hamming lowpass">
 </p>
 <p align="center">
-  <em>Classificação dos expoentes de Lyapunov por ordem e cutoff — periódico (azul), caótico (vermelho), divergente (cinza).</em>
+  <em>Classificação dos expoentes de Lyapunov por ordem e cutoff: periódico (azul), caótico (vermelho), divergente (cinza).</em>
 </p>
 
 ## Sobre o projeto
@@ -31,7 +31,7 @@ no estado de um oscilador caótico; o receptor recupera a mensagem por
 sincronização de Pecora-Carroll. O projeto inclui ainda um estudo numérico
 completo dos expoentes de Lyapunov do mapa de Hénon e de variantes de ordem
 superior com filtros FIR internos, incluindo varreduras de parâmetros sobre
-ordem do filtro e frequência de corte — o que permite classificar regiões do
+ordem do filtro e frequência de corte: o que permite classificar regiões do
 espaço de parâmetros como caóticas, periódicas ou divergentes (figura acima).
 
 O projeto é organizado como um pacote Python instalável (`chaotic_pfc`)
@@ -122,7 +122,7 @@ chaotic-pfc/
 
 ### API pública
 
-O namespace `chaotic_pfc` reexporta ~65 símbolos que formam a API pública
+O namespace `chaotic_pfc` reexporta 62 símbolos que formam a API pública
 estável. Eles são importáveis diretamente de `chaotic_pfc`:
 
 ```python
@@ -155,7 +155,7 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep plot`         | Mapas de classificação a partir dos dados salvos. |
 | `chaotic-pfc run sweep beta-sweep`   | Varredura Kaiser β: agrega resultados de Lyapunov por β. |
 | `chaotic-pfc run sweep plot-3d`      | Volume 3-D interativo das varreduras Kaiser β via Plotly. |
-| `chaotic-pfc run dcsk`               | Comparação DCSK / EF-DCSK / Pecora-Carroll — BER vs SNR. |
+| `chaotic-pfc run dcsk`               | Comparação DCSK / EF-DCSK / Pecora-Carroll: BER vs SNR. |
 | `chaotic-pfc run analysis`           | Análise estatística dos resultados da varredura. |
 | `chaotic-pfc run all`                | Pipeline completo, em ordem. |
 

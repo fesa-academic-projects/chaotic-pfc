@@ -73,13 +73,13 @@ This project follows **Conventional Commits**:
 
 Types:
 
-* ``feat`` — new feature.
-* ``fix`` — bug fix.
-* ``refactor`` — code restructuring without behaviour change.
-* ``test`` — adding or updating tests.
-* ``docs`` — documentation changes.
-* ``chore`` — maintenance (dependency updates, tooling config).
-* ``ci`` — CI/CD configuration.
+* ``feat``: new feature.
+* ``fix``: bug fix.
+* ``refactor``: code restructuring without behaviour change.
+* ``test``: adding or updating tests.
+* ``docs``: documentation changes.
+* ``chore``: maintenance (dependency updates, tooling config).
+* ``ci``: CI/CD configuration.
 
 Guidelines:
 
@@ -180,7 +180,7 @@ Public API
 ----------
 
 The canonic public API is defined in
-:mod:`chaotic_pfc.__init__` via the ``__all__`` list (61 symbols).
+:mod:`chaotic_pfc.__init__` via the ``__all__`` list (62 symbols).
 All names in ``__all__`` are re-exported at the top level:
 
 .. code-block:: python
@@ -201,10 +201,10 @@ Optional dependencies
 
 The project has four optional extras:
 
-* ``[fast]`` — **numba** for JIT acceleration.
-* ``[dev]`` — **pytest**, **ruff**, **mypy**, **pre-commit**.
-* ``[docs]`` — **sphinx**, **furo**, **sphinx-copybutton**, **myst-parser**, **sphinx-intl**.
-* ``[viz3d]`` — **plotly** for 3-D visualisation.
+* ``[fast]``: **numba** for JIT acceleration.
+* ``[dev]``: **pytest**, **ruff**, **mypy**, **pre-commit**.
+* ``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **myst-parser**, **sphinx-intl**.
+* ``[viz3d]``: **plotly** for 3-D visualisation.
 
 Optional modules must be importable without their extras. Use lazy
 imports:
@@ -225,14 +225,14 @@ Versioning
 
 This project follows **Semantic Versioning** (SemVer):
 
-* **MAJOR** — incompatible API changes.
-* **MINOR** — backwards-compatible new functionality.
-* **PATCH** — backwards-compatible bug fixes.
+* **MAJOR**: incompatible API changes.
+* **MINOR**: backwards-compatible new functionality.
+* **PATCH**: backwards-compatible bug fixes.
 
 The version is stored in two places:
 
-* ``pyproject.toml`` — ``project.version`` field.
-* ``src/chaotic_pfc/_version.py`` — ``__version__`` string.
+* ``pyproject.toml``: ``project.version`` field.
+* ``src/chaotic_pfc/_version.py``: ``__version__`` string.
 
 The ``[Unreleased]`` section of ``CHANGELOG.md`` is renamed to the
 version number and date on release. See ``RELEASING.md`` in the
@@ -243,10 +243,10 @@ Issue reporting
 
 Use GitHub Issues for:
 
-* Bug reports — include reproduction steps, expected behaviour, and
+* Bug reports: include reproduction steps, expected behaviour, and
   environment details (Python version, OS, Numba version).
-* Feature requests — describe the use case and proposed solution.
-* Documentation issues — point to the specific page and section.
+* Feature requests: describe the use case and proposed solution.
+* Documentation issues: point to the specific page and section.
 
 Before opening a new issue, search existing issues to avoid
 duplicates.

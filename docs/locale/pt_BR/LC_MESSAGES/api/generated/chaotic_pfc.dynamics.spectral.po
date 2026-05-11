@@ -1,0 +1,151 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:2
+msgid "chaotic\\_pfc.dynamics.spectral"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral:2 of
+msgid "spectral.py"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral:3 of
+msgid "Power-spectral-density estimation utilities used by the plotting layer."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral:5 of
+msgid ""
+"The single public function, :func:`psd_normalised`, wraps "
+":func:`scipy.signal.welch` with the conventions adopted throughout the "
+"project: peak-normalised magnitude, and the frequency axis expressed as "
+"``ω/π ∈ [0, 1]`` rather than cycles or hertz."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:11:<autosummary>:1
+msgid ""
+":py:obj:`psd_normalised <chaotic_pfc.dynamics.spectral.psd_normalised>`\\"
+" \\(x\\[\\, nfft\\, window\\_length\\, fs\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:11:<autosummary>:1
+#: chaotic_pfc.dynamics.spectral.psd_normalised:1 of
+msgid "Estimate the normalised power-spectral density of ``x`` via Welch."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:3 of
+msgid ""
+"The PSD is one-sided, peak-normalised to ``1.0``, and the frequency axis "
+"is returned as ``ω/π`` for consistency with the notation used in the "
+"project figures (x-axis of every PSD panel)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:7 of
+msgid "Input signal, shape ``(N,)``. Can be any dtype coercible to ``float``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:9 of
+msgid ""
+"Length of the FFT. Larger values give smoother spectra at the cost of "
+"more computation. Must be ``>= window_length``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:11 of
+msgid ""
+"Length of the Welch segment (aka ``nperseg``). Controls the frequency "
+"resolution."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:13 of
+msgid ""
+"Sampling frequency. Leave at the default ``1.0`` to work in normalised "
+"units — the output axis becomes ``ω/π`` directly."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:15 of
+msgid ""
+"If ``True`` (default), the DC component of ``x`` is subtracted before the"
+" FFT to avoid a spurious spike at ``ω = 0``. Set to ``False`` only if you"
+" explicitly want to see the DC bin."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:18 of
+msgid ""
+"Welch window. Supported values: ``\"hamming\"`` (default), ``\"hann\"``, "
+"``\"blackman\"``, ``\"kaiser\"``, ``\"blackmanharris\"``, ``\"boxcar\"``,"
+" ``\"bartlett\"``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:21 of
+msgid ""
+"Shape parameter of the Kaiser window. Must be ``>= 0``; ignored when "
+"``window != \"kaiser\"``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised of
+msgid "Returns"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:24 of
+msgid ""
+"* **omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
+"frequency axis, ``ω/π ∈ [0, 1]``. * **psd** (*ndarray, shape (nfft // 2 +"
+" 1,)*) -- Peak-normalised PSD. ``psd.max() == 1.0`` unless the input is"
+"   identically zero."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:24 of
+msgid ""
+"**omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
+"frequency axis, ``ω/π ∈ [0, 1]``."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:25 of
+msgid ""
+"**psd** (*ndarray, shape (nfft // 2 + 1,)*) -- Peak-normalised PSD. "
+"``psd.max() == 1.0`` unless the input is identically zero."
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:29 of
+msgid "Notes"
+msgstr ""
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:30 of
+msgid ""
+"Welch's method divides ``x`` into overlapping segments, applies the "
+"window, takes the periodogram of each, and averages the result. This "
+"trades frequency resolution (controlled by ``window_length``) for "
+"variance reduction, which is the right trade-off for visualising the "
+"smooth broadband spectrum of a chaotic carrier."
+msgstr ""
+

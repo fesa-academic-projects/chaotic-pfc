@@ -60,8 +60,8 @@ def receive(
     ----------
     r
         Received carrier, shape ``(N,)``. Usually the output of
-        :func:`chaotic_pfc.channel.ideal_channel` or
-        :func:`chaotic_pfc.channel.fir_channel`.
+        :func:`chaotic_pfc.comms.channel.ideal_channel` or
+        :func:`chaotic_pfc.comms.channel.fir_channel`.
     mu
         Modulation depth — must match the value used at the
         transmitter, otherwise the recovered amplitude is rescaled.

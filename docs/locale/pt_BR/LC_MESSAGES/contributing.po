@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 17:18-0300\n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -139,33 +139,33 @@ msgid "Types:"
 msgstr "Tipos:"
 
 #: ../../contributing.rst:76
-msgid "``feat`` — new feature."
+msgid "``feat``: new feature."
 msgstr "``feat`` — nova funcionalidade."
 
 #: ../../contributing.rst:77
-msgid "``fix`` — bug fix."
+msgid "``fix``: bug fix."
 msgstr "``fix`` — correção de bug."
 
 #: ../../contributing.rst:78
-msgid "``refactor`` — code restructuring without behaviour change."
+msgid "``refactor``: code restructuring without behaviour change."
 msgstr "``refactor`` — reestruturação de código sem alteração de comportamento."
 
 #: ../../contributing.rst:79
-msgid "``test`` — adding or updating tests."
+msgid "``test``: adding or updating tests."
 msgstr "``test`` — adição ou atualização de testes."
 
 #: ../../contributing.rst:80
-msgid "``docs`` — documentation changes."
+msgid "``docs``: documentation changes."
 msgstr "``docs`` — alterações na documentação."
 
 #: ../../contributing.rst:81
-msgid "``chore`` — maintenance (dependency updates, tooling config)."
+msgid "``chore``: maintenance (dependency updates, tooling config)."
 msgstr ""
 "``chore`` — manutenção (atualização de dependências, configuração de "
 "ferramentas)."
 
 #: ../../contributing.rst:82
-msgid "``ci`` — CI/CD configuration."
+msgid "``ci``: CI/CD configuration."
 msgstr "``ci`` — configuração de CI/CD."
 
 #: ../../contributing.rst:84
@@ -251,14 +251,13 @@ msgid "Public API"
 msgstr "API pública"
 
 #: ../../contributing.rst:182
-#, fuzzy
 msgid ""
 "The canonic public API is defined in :mod:`chaotic_pfc.__init__` via the "
-"``__all__`` list (61 symbols). All names in ``__all__`` are re-exported "
+"``__all__`` list (62 symbols). All names in ``__all__`` are re-exported "
 "at the top level:"
 msgstr ""
 "A API pública canônica é definida em :mod:`chaotic_pfc.__init__` via a "
-"lista ``__all__`` (~70 símbolos). Todos os nomes em ``__all__`` são "
+"lista ``__all__`` (62 símbolos). Todos os nomes em ``__all__`` são "
 "reexportados no nível superior:"
 
 #: ../../contributing.rst:190
@@ -296,23 +295,23 @@ msgid "The project has four optional extras:"
 msgstr "O projeto possui quatro extras opcionais:"
 
 #: ../../contributing.rst:204
-msgid "``[fast]`` — **numba** for JIT acceleration."
+msgid "``[fast]``: **numba** for JIT acceleration."
 msgstr "``[fast]`` — **numba** para aceleração JIT."
 
 #: ../../contributing.rst:205
-msgid "``[dev]`` — **pytest**, **ruff**, **mypy**, **pre-commit**."
+msgid "``[dev]``: **pytest**, **ruff**, **mypy**, **pre-commit**."
 msgstr "``[dev]`` — **pytest**, **ruff**, **mypy**, **pre-commit**."
 
 #: ../../contributing.rst:206
 msgid ""
-"``[docs]`` — **sphinx**, **furo**, **sphinx-copybutton**, **myst-"
-"parser**, **sphinx-intl**."
+"``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **myst-parser**,"
+" **sphinx-intl**."
 msgstr ""
 "``[docs]`` — **sphinx**, **furo**, **sphinx-copybutton**, **myst-"
 "parser**, **sphinx-intl**."
 
 #: ../../contributing.rst:207
-msgid "``[viz3d]`` — **plotly** for 3-D visualisation."
+msgid "``[viz3d]``: **plotly** for 3-D visualisation."
 msgstr "``[viz3d]`` — **plotly** para visualização 3-D."
 
 #: ../../contributing.rst:209
@@ -330,15 +329,15 @@ msgid "This project follows **Semantic Versioning** (SemVer):"
 msgstr "Este projeto segue **Versionamento Semântico** (SemVer):"
 
 #: ../../contributing.rst:228
-msgid "**MAJOR** — incompatible API changes."
+msgid "**MAJOR**: incompatible API changes."
 msgstr "**MAJOR** — alterações incompatíveis na API."
 
 #: ../../contributing.rst:229
-msgid "**MINOR** — backwards-compatible new functionality."
+msgid "**MINOR**: backwards-compatible new functionality."
 msgstr "**MINOR** — nova funcionalidade compatível com versões anteriores."
 
 #: ../../contributing.rst:230
-msgid "**PATCH** — backwards-compatible bug fixes."
+msgid "**PATCH**: backwards-compatible bug fixes."
 msgstr "**PATCH** — correções de bugs compatíveis com versões anteriores."
 
 #: ../../contributing.rst:232
@@ -346,11 +345,11 @@ msgid "The version is stored in two places:"
 msgstr "A versão é armazenada em dois lugares:"
 
 #: ../../contributing.rst:234
-msgid "``pyproject.toml`` — ``project.version`` field."
+msgid "``pyproject.toml``: ``project.version`` field."
 msgstr "``pyproject.toml`` — campo ``project.version``."
 
 #: ../../contributing.rst:235
-msgid "``src/chaotic_pfc/_version.py`` — ``__version__`` string."
+msgid "``src/chaotic_pfc/_version.py``: ``__version__`` string."
 msgstr "``src/chaotic_pfc/_version.py`` — string ``__version__``."
 
 #: ../../contributing.rst:237
@@ -373,20 +372,20 @@ msgstr "Use GitHub Issues para:"
 
 #: ../../contributing.rst:246
 msgid ""
-"Bug reports — include reproduction steps, expected behaviour, and "
+"Bug reports: include reproduction steps, expected behaviour, and "
 "environment details (Python version, OS, Numba version)."
 msgstr ""
 "Relatos de bugs — inclua passos de reprodução, comportamento esperado e "
 "detalhes do ambiente (versão do Python, SO, versão do Numba)."
 
 #: ../../contributing.rst:248
-msgid "Feature requests — describe the use case and proposed solution."
+msgid "Feature requests: describe the use case and proposed solution."
 msgstr ""
 "Solicitações de funcionalidades — descreva o caso de uso e a solução "
 "proposta."
 
 #: ../../contributing.rst:249
-msgid "Documentation issues — point to the specific page and section."
+msgid "Documentation issues: point to the specific page and section."
 msgstr "Problemas de documentação — aponte para a página e seção específicas."
 
 #: ../../contributing.rst:251

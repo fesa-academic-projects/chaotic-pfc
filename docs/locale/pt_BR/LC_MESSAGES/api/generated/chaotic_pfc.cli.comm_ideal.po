@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:2
+msgid "chaotic\\_pfc.cli.comm\\_ideal"
+msgstr ""
+
+#: chaotic_pfc.cli.comm_ideal:1 of
+msgid "Full communication pipeline over an ideal (noiseless) channel."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:12:<autosummary>:1
+msgid ""
+":py:obj:`add_parser <chaotic_pfc.cli.comm_ideal.add_parser>`\\ "
+"\\(subparsers\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.comm_ideal.add_parser:1 of
+msgid "Register the ``run comm-ideal`` subcommand."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:12:<autosummary>:1
+msgid ":py:obj:`run <chaotic_pfc.cli.comm_ideal.run>`\\ \\(args\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.cli.comm_ideal.rst:12:<autosummary>:1
+#: chaotic_pfc.cli.comm_ideal.run:1 of
+msgid "Execute the ``comm-ideal`` experiment."
+msgstr ""
+
+#: chaotic_pfc.cli.comm_ideal.add_parser chaotic_pfc.cli.comm_ideal.run of
+msgid "Parameters"
+msgstr ""
+
+#: chaotic_pfc.cli.comm_ideal.add_parser chaotic_pfc.cli.comm_ideal.run of
+msgid "Return type"
+msgstr ""
+

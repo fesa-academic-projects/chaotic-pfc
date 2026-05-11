@@ -52,7 +52,7 @@ Sensitivity (SDIC)
    chaotic-pfc run sensitivity
 
 Overlays two Hénon trajectories with initial conditions separated by
-:math:`10^{-4}` to visualise exponential divergence — the hallmark
+:math:`10^{-4}` to visualise exponential divergence: the hallmark
 of chaotic dynamics.
 
 Communication pipeline
@@ -82,10 +82,10 @@ Lyapunov spectra
 
 Computes Lyapunov exponents for 2-D and 4-D systems in four parts:
 
-* **(A)** 2-D Hénon — single initial condition.
-* **(B)** 4-D pole-filtered Hénon — single IC.
-* **(C)** 2-D Hénon — ensemble protocol with :math:`N_{\text{CI}}` ICs.
-* **(D)** 4-D pole-filtered Hénon — ensemble protocol with :math:`N_{\text{CI}}` ICs.
+* **(A)** 2-D Hénon: single initial condition.
+* **(B)** 4-D pole-filtered Hénon: single IC.
+* **(C)** 2-D Hénon: ensemble protocol with :math:`N_{\text{CI}}` ICs.
+* **(D)** 4-D pole-filtered Hénon: ensemble protocol with :math:`N_{\text{CI}}` ICs.
 
 .. code-block:: bash
 
@@ -146,13 +146,13 @@ Generates classification figures from saved ``.npz`` checkpoints:
 
 Produces (per combination):
 
-* **Heatmap** — continuous :math:`\lambda_{\max}` over
+* **Heatmap**: continuous :math:`\lambda_{\max}` over
   :math:`(N_z, \omega_c / \pi)`.
-* **Classification interleaved** — discrete map: periodic (blue),
+* **Classification interleaved**: discrete map: periodic (blue),
   chaotic (red), unbounded (grey).
-* **Difficulty map** — adaptive iteration count per grid point
+* **Difficulty map**: adaptive iteration count per grid point
   (only for adaptive sweeps).
-* **Beta curves** — :math:`\lambda_{\max}` evolution across Kaiser
+* **Beta curves**: :math:`\lambda_{\max}` evolution across Kaiser
   :math:`\beta` values (only for Kaiser sweeps).
 
 Beta sweep
@@ -216,16 +216,16 @@ Statistical analysis
 Prints a comprehensive 10-section report summarising all sweep results
 found under ``data/sweeps/``:
 
-#. **Summary table** — one row per sweep with chaotic/periodic/divergent percentages.
-#. **Filter-type comparison** — aggregates per filter type (lowpass, highpass, bandpass, bandstop).
-#. **Best chaos-preserving filters** — ranked by chaotic coverage.
-#. **Lambda-max distribution** — histogram with skewness statistics.
-#. **Transition boundaries** — first chaotic cutoff per filter order.
-#. **Spectral robustness (chaos margin)** — width of the chaotic region.
-#. **Spearman correlation** — (order, cutoff) vs. :math:`\lambda_{\max}`.
-#. **Bootstrap 95% CI** — confidence intervals for chaotic proportion.
-#. **Optimal parameters** — (order, cutoff) pairs yielding the highest :math:`\lambda_{\max}`.
-#. **Kaiser beta evolution** — :math:`\lambda_{\max}` as function of :math:`\beta`.
+#. **Summary table**: one row per sweep with chaotic/periodic/divergent percentages.
+#. **Filter-type comparison**: aggregates per filter type (lowpass, highpass, bandpass, bandstop).
+#. **Best chaos-preserving filters**: ranked by chaotic coverage.
+#. **Lambda-max distribution**: histogram with skewness statistics.
+#. **Transition boundaries**: first chaotic cutoff per filter order.
+#. **Spectral robustness (chaos margin)**: width of the chaotic region.
+#. **Spearman correlation**: (order, cutoff) vs. :math:`\lambda_{\max}`.
+#. **Bootstrap 95% CI**: confidence intervals for chaotic proportion.
+#. **Optimal parameters**: (order, cutoff) pairs yielding the highest :math:`\lambda_{\max}`.
+#. **Kaiser beta evolution**: :math:`\lambda_{\max}` as function of :math:`\beta`.
 
 .. code-block:: bash
 
@@ -260,7 +260,7 @@ The flag is supported by ``attractors``, ``sensitivity``,
 Further reading
 ---------------
 
-* :doc:`architecture` — how the modules fit together.
-* :doc:`internals` — Numba kernels, MGS, adaptive early-stop.
-* :doc:`background` — complete theoretical foundations.
-* :doc:`development` — development environment and tooling.
+* :doc:`architecture`: how the modules fit together.
+* :doc:`internals`: Numba kernels, MGS, adaptive early-stop.
+* :doc:`background`: complete theoretical foundations.
+* :doc:`development`: development environment and tooling.

@@ -27,7 +27,7 @@ clean:
 	rm -rf "$(BUILDDIR)" api/generated
 
 # ─────────────────────────────────────────────────────────────────────
-# HTML builds — each language in its own subdirectory
+# HTML builds: each language in its own subdirectory
 # ─────────────────────────────────────────────────────────────────────
 
 html:

@@ -1,0 +1,241 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:2
+msgid "chaotic\\_pfc.analysis.sweep\\_plotting"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:2 of
+msgid "sweep_plotting.py"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:3 of
+msgid ""
+"Figures for Lyapunov classification maps produced by "
+":mod:`chaotic_pfc.sweep`."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:6 of
+msgid "Three plot types are provided:"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:8 of
+msgid ":func:`plot_heatmap_continuous` — raw λ_max heatmap."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:9 of
+msgid ""
+":func:`plot_classification_interleaved` — publication-style discrete "
+"classification (periodic / chaotic / unbounded) with gaps between orders."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:12 of
+msgid ""
+":func:`plot_difficulty_map` — heatmap of the number of Lyapunov "
+"iterations actually used at each grid point. Only meaningful when the "
+"sweep was run with ``adaptive=True``; shows where the spectrum converges "
+"quickly (light) vs. where it needs the full budget (dark) — a "
+"\"difficulty map\" of the parameter space."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting:18 of
+msgid ""
+"All three accept a :class:`~chaotic_pfc.sweep.SweepResult` (or its "
+"individual arrays for the first two) and optionally a ``save_path``. They"
+" return the :class:`matplotlib.figure.Figure` so callers can compose or "
+"display them. The module also re-uses the RC params from "
+":mod:`chaotic_pfc.plotting`, so sweep figures look consistent with the "
+"rest of the pipeline."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:8
+msgid "Functions"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`classify <chaotic_pfc.analysis.sweep_plotting.classify>`\\ "
+"\\(h\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+#: chaotic_pfc.analysis.sweep_plotting.classify:1 of
+msgid "Map raw λ_max values to discrete classes."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_all <chaotic_pfc.analysis.sweep_plotting.plot_all>`\\ "
+"\\(result\\, out\\_dir\\, \\*\\[\\, fmt\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+#, python-brace-format
+msgid ""
+"Generate the standard figures for a sweep and save them to "
+"``out_dir/<fig>.{fmt}``."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_classification_interleaved "
+"<chaotic_pfc.analysis.sweep_plotting.plot_classification_interleaved>`\\ "
+"\\(\\[result\\, h\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+#: chaotic_pfc.analysis.sweep_plotting.plot_classification_interleaved:1 of
+msgid "Publication-style layout with gaps between adjacent orders."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_difficulty_map "
+"<chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map>`\\ \\(result\\,"
+" \\*\\[\\, save\\_path\\, cmap\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:1 of
+msgid "Heatmap of Lyapunov iterations actually used at each grid point."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+msgid ""
+":py:obj:`plot_heatmap_continuous "
+"<chaotic_pfc.analysis.sweep_plotting.plot_heatmap_continuous>`\\ "
+"\\(\\[result\\, h\\, orders\\, ...\\]\\)"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:15:<autosummary>:1
+#: chaotic_pfc.analysis.sweep_plotting.plot_heatmap_continuous:1 of
+msgid "Continuous λ_max heatmap over the (N_z, ω_c/π) plane."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.classify:3 of
+msgid "Returns an array with the same shape as ``h`` where each entry is:"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.classify:5 of
+msgid "``-1`` — periodic orbit (λ_max ≤ 0)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.classify:6 of
+msgid "``0``  — chaotic orbit (λ_max > 0)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.classify:7 of
+msgid "``2``  — unbounded / divergent (NaN in ``h``)"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.classify:9 of
+msgid ""
+"The unusual integer codes match the "
+":class:`matplotlib.colors.BoundaryNorm` bins used below."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
+#: chaotic_pfc.analysis.sweep_plotting.classify
+#: chaotic_pfc.analysis.sweep_plotting.plot_all
+#: chaotic_pfc.analysis.sweep_plotting.plot_classification_interleaved
+#: chaotic_pfc.analysis.sweep_plotting.plot_heatmap_continuous of
+msgid "Parameters"
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
+#: chaotic_pfc.analysis.sweep_plotting.classify
+#: chaotic_pfc.analysis.sweep_plotting.plot_all
+#: chaotic_pfc.analysis.sweep_plotting.plot_classification_interleaved
+#: chaotic_pfc.analysis.sweep_plotting.plot_heatmap_continuous of
+msgid "Return type"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_classification_interleaved:3 of
+msgid ""
+"Each order occupies ``data_slots`` columns of coloured data followed by "
+"``gap_slots`` blank columns, producing the striped appearance used in "
+"Baptista et al."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:3 of
+msgid ""
+"A \"difficulty map\" of the parameter space: low values mean the spectrum"
+" estimate converged quickly (strongly chaotic or strongly stable points),"
+" high values mean the running estimate stayed within the convergence "
+"tolerance only after many iterations (typically fronteira points where "
+"\\|λ_max\\| ≈ 0). Diverged grid points are shown in the same light grey "
+"used for unbounded orbits in the classification figures, so the two "
+"layers can be visually overlaid."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:11 of
+msgid ""
+"A :class:`~chaotic_pfc.sweep.SweepResult` produced with "
+"``adaptive=True``. The function relies on ``result.n_iters_used`` and on "
+"``result.metadata['Nmap_min']`` / ``result.metadata['Nmap']`` for the "
+"colour-bar limits."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:15 of
+msgid "Optional path to write the figure to."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:16 of
+msgid ""
+"Sequential matplotlib colormap name. ``viridis`` is perceptually uniform "
+"and prints well in greyscale."
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
+msgid "Raises"
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:19 of
+msgid ""
+"If ``result`` was produced with ``adaptive=False`` (the heatmap     would"
+" be a single colour, which is misleading rather than     informative). "
+"The error message points the user to the     ``adaptive=True`` flag in "
+":func:`run_sweep`."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_all:1 of
+#, python-brace-format
+msgid ""
+"Generate the standard figures for a sweep and save them to "
+"``out_dir/<fig>.{fmt}``. Returns the list of written paths."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_all:4 of
+#, python-brace-format
+msgid ""
+"Always produces the two classification figures listed in "
+":data:`FIGURE_FILENAMES`. Additionally produces "
+"``fig3_difficulty_map.{fmt}`` (see :data:`DIFFICULTY_FIGURE_FILENAME`) "
+"when ``result`` was generated with ``adaptive=True``: the figure is "
+"silently skipped for non-adaptive sweeps because it would be "
+"monochromatic and therefore uninformative."
+msgstr ""
+
+#: chaotic_pfc.analysis.sweep_plotting.plot_all:11 of
+msgid "The output directory is created if it does not exist."
+msgstr ""
+

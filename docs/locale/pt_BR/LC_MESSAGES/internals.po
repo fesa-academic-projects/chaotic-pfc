@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 17:18-0300\n"
+"POT-Creation-Date: 2026-05-10 22:11-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -217,9 +217,8 @@ msgstr ""
 "do Jacobiano (mapa tangente) e aplicam MGS."
 
 #: ../../internals.rst:84
-#, python-brace-format
 msgid ""
-"Return ``(best, n_used)`` — the :math:`\\lambda_{\\max}` estimate for a "
+"Return ``(best, n_used)``: the :math:`\\lambda_{\\max}` estimate for a "
 "single initial condition and the number of iterations used. The "
 "aggregation across ``n_initial`` independent ICs is performed by "
 "``_sweep_kernel``, which calls these kernels in sequence."
@@ -303,7 +302,6 @@ msgstr ""
 "dimensão :math:`K'` no ponto fixo."
 
 #: ../../internals.rst:119
-#, fuzzy, python-brace-format
 msgid "Compute the eigenvalues of :math:`\\mathbf{J}` via"
 msgstr ""
 "Calcula os autovalores de :math:`\\mathbf{J}` via "
@@ -356,7 +354,7 @@ msgstr ""
 
 #: ../../internals.rst:139
 msgid ""
-"Shape ``(N_coef, N_cutoffs, max_taps)`` — each ``(order, cutoff)`` pair "
+"Shape ``(N_coef, N_cutoffs, max_taps)``: each ``(order, cutoff)`` pair "
 "produces a filter of length ``order``, zero-padded to ``max_taps``."
 msgstr ""
 "Formato ``(N_coef, N_cutoffs, max_taps)`` — cada par ``(ordem, corte)`` "
@@ -365,7 +363,7 @@ msgstr ""
 
 #: ../../internals.rst:142
 msgid ""
-"Shape ``(N_coef, N_cutoffs)`` — the gain matrix maps each filter's total "
+"Shape ``(N_coef, N_cutoffs)``: the gain matrix maps each filter's total "
 "gain."
 msgstr ""
 "Formato ``(N_coef, N_cutoffs)`` — a matriz de ganho mapeia o ganho total "
@@ -502,18 +500,16 @@ msgstr ""
 "determinística:"
 
 #: ../../internals.rst:195
-#, fuzzy
 msgid ":func:`~chaotic_pfc.comms.channel.awgn`"
-msgstr ":func:`~chaotic_pfc.comms.dcsk.awgn`"
+msgstr ":func:`~chaotic_pfc.comms.channel.awgn`"
 
 #: ../../internals.rst:196
 msgid "Additive white Gaussian noise with configurable SNR (dB)."
 msgstr "Ruído gaussiano branco aditivo com SNR configurável (dB)."
 
 #: ../../internals.rst:198
-#, fuzzy
 msgid ":func:`~chaotic_pfc.comms.channel.channel_impulsive`"
-msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_impulsive`"
+msgstr ":func:`~chaotic_pfc.comms.channel.channel_impulsive`"
 
 #: ../../internals.rst:199
 msgid ""
@@ -524,9 +520,8 @@ msgstr ""
 "interferência de alta amplitude sobrepostas ao AWGN."
 
 #: ../../internals.rst:202
-#, fuzzy
 msgid ":func:`~chaotic_pfc.comms.channel.channel_multipath`"
-msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_multipath`"
+msgstr ":func:`~chaotic_pfc.comms.channel.channel_multipath`"
 
 #: ../../internals.rst:203
 msgid ""
@@ -557,7 +552,7 @@ msgstr ":func:`~chaotic_pfc.comms.dcsk.channel_urban`"
 #: ../../internals.rst:213
 msgid ""
 "All-in-one urban channel model combining AWGN, multipath, impulsive "
-"noise, and interferers — representing a worst-case composite propagation "
+"noise, and interferers: representing a worst-case composite propagation "
 "environment."
 msgstr ""
 "Modelo de canal urbano tudo-em-um combinando AWGN, multipercurso, ruído "
@@ -577,7 +572,6 @@ msgstr ""
 " inglês) sem exigir ``gettext`` em tempo de execução. Características:"
 
 #: ../../internals.rst:223
-#, fuzzy
 msgid "Simple dictionary-based lookup via chaotic_pfc._i18n.t."
 msgstr "Busca simples baseada em dicionário via :func:`chaotic_pfc._i18n.t`."
 

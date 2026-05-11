@@ -17,10 +17,10 @@ Chaotic digital communication system based on the Hénon map.
 Undergraduate final project (*Trabalho de Conclusão de Curso*).
 
 <p align="center">
-  <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Lyapunov classification map — Hamming lowpass">
+  <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Lyapunov classification map: Hamming lowpass">
 </p>
 <p align="center">
-  <em>Lyapunov exponent classification across filter orders and cutoffs — periodic (blue), chaotic (red), unbounded (grey).</em>
+  <em>Lyapunov exponent classification across filter orders and cutoffs: periodic (blue), chaotic (red), unbounded (grey).</em>
 </p>
 
 ## Overview
@@ -31,7 +31,7 @@ state of a Hénon map; the receiver recovers the message via chaos
 synchronisation. The pipeline also includes a full numerical study of the
 Lyapunov exponents of the Hénon map and of higher-order variants with
 internal FIR filters, including a 2-D parameter sweep over filter order and
-cutoff frequency — classifying regions of the parameter space as chaotic,
+cutoff frequency: classifying regions of the parameter space as chaotic,
 periodic, or divergent (figure above).
 
 The project is organised as an installable Python package (`chaotic_pfc`)
@@ -122,7 +122,7 @@ chaotic-pfc/
 
 ### Public API
 
-The top-level `chaotic_pfc` namespace reexports ~65 symbols that form the
+The top-level `chaotic_pfc` namespace reexports 62 symbols that form the
 stable public API. They are importable from `chaotic_pfc` directly:
 
 ```python
