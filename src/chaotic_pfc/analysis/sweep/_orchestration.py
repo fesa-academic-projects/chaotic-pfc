@@ -37,7 +37,7 @@ def precompute_fir_bank(
     window: str,
     *,
     kaiser_beta: float = _KAISER_BETA,
-    bandwidth: float = 0.2,
+    bandwidth: float = 0.05,
 ) -> tuple[NDArray, NDArray]:
     """Build the FIR coefficient tensor and gain matrix for a sweep.
 
@@ -119,7 +119,7 @@ def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | i
         np.arange(2, 8),
         np.arange(3, 9, 2),
         np.linspace(0.1, 0.9, 10),
-        dict(Nitera=50, Nmap=200, n_initial=3, bandwidth=0.15),
+        dict(Nitera=50, Nmap=200, n_initial=3, bandwidth=0.0375),
     )
 
 
@@ -137,7 +137,7 @@ def run_sweep(
     seed: int | None = 42,
     warmup: bool = True,
     kaiser_beta: float = _KAISER_BETA,
-    bandwidth: float = 0.2,
+    bandwidth: float = 0.05,
     adaptive: bool = False,
     Nmap_min: int = 500,
     tol: float = 1e-3,

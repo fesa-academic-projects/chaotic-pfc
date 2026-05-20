@@ -32,8 +32,8 @@ def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument(
         "--bandwidth",
         type=float,
-        default=0.2,
-        help="Band width for bandpass/bandstop filters, as fraction of Nyquist (default: 0.2)",
+        default=0.05,
+        help="Band width for bandpass/bandstop filters, as fraction of Nyquist (default: 0.05)",
     )
     p.add_argument(
         "--quick",
@@ -136,7 +136,7 @@ def run_compute(args: argparse.Namespace) -> int:
         orders_hp = None  # → run_sweep default: np.arange(3, 43, 2)
         cutoffs = None  # → module default: 100 points
         params = dict(Nitera=500, Nmap=3000, n_initial=25)
-    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.2))
+    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.05))
 
     # Adaptive parameters propagated only when the user opted in. Passing
     # adaptive=False here makes Nmap_min/tol irrelevant in run_sweep

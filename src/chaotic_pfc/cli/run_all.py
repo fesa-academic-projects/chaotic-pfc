@@ -165,7 +165,7 @@ def _run_all_sweeps(
         orders_lp = None  # → run_sweep default (np.arange(2, 42))
         orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
         cutoffs = None
-        params = dict(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.2)
+        params = dict(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.05)
 
     # Adaptive parameters propagated only when the user opted in.
     adaptive_kwargs: dict = {"adaptive": adaptive}
