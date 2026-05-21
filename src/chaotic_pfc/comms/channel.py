@@ -4,7 +4,7 @@ channel.py
 Transmission-channel models sitting between the chaotic transmitter and
 the receiver.
 
-Eight channels are provided:
+Six channels are provided:
 
 * :func:`ideal_channel` — noiseless pass-through used to establish a
   best-case baseline for chaos synchronisation.
@@ -15,10 +15,6 @@ Eight channels are provided:
 * :func:`channel_impulsive` — AWGN with Middleton Class-A impulsive noise.
 * :func:`channel_multipath` — multipath channel with configurable tap
   delays and gains.
-* :func:`channel_interferers` — composite channel (AWGN + DCSK interferer
-  + narrow-band WiFi-like interferer), lives in :mod:`chaotic_pfc.comms.dcsk`.
-* :func:`channel_urban` — combined urban channel with impulsive noise,
-  multipath, and interferers, lives in :mod:`chaotic_pfc.comms.dcsk`.
 
 All accept the transmitted signal ``s`` as a 1-D array and return the
 received signal ``r`` of the same length. The FIR channel additionally

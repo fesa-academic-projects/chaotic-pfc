@@ -1,4 +1,4 @@
-"""Chaotic communication: transmitter, channel, receiver, and DCSK schemes."""
+"""Chaotic communication: transmitter, channel, and receiver."""
 
 from ..dynamics.maps import henon_fir_sequence
 from .channel import awgn, channel_impulsive, channel_multipath, fir_channel, ideal_channel

@@ -40,7 +40,7 @@ Four Henon map variants and one chaotic-sequence generator are provided:
   transmitter/receiver pair and by the Lyapunov sweep.
 
 * :func:`henon_fir_sequence` — generates a chaotic sequence from the
-  FIR-filtered Hénon map, used by the DCSK communication schemes.
+  FIR-filtered Hénon map.
 """
 
 import numpy as np
