@@ -105,7 +105,7 @@ chaotic-pfc/
 ├── pyproject.toml                 Metadados e dependências do pacote
 ├── src/chaotic_pfc/               Biblioteca instalável
 │   ├── dynamics/                  Mapas de Hénon, expoentes de Lyapunov, sinais, análise espectral
-│   ├── comms/                     Transmissor, modelos de canal, receptor, esquemas DCSK
+│   ├── comms/                     Transmissor, modelos de canal, receptor
 │   ├── analysis/                  Varreduras de parâmetros, pós-processamento estatístico, gráficos
 │   │   └── sweep/                 Kernel JIT com Numba, pré-computação FIR, E/S
 │   ├── plotting/                  Figuras com qualidade de publicação (atratores, sensibilidade, comunicação)
@@ -155,7 +155,6 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep plot`         | Mapas de classificação a partir dos dados salvos. |
 | `chaotic-pfc run sweep beta-sweep`   | Varredura Kaiser β: agrega resultados de Lyapunov por β. |
 | `chaotic-pfc run sweep plot-3d`      | Volume 3-D interativo das varreduras Kaiser β via Plotly. |
-| `chaotic-pfc run dcsk`               | Comparação DCSK / EF-DCSK / Pecora-Carroll: BER vs SNR. |
 | `chaotic-pfc run analysis`           | Análise estatística dos resultados da varredura. |
 | `chaotic-pfc run all`                | Pipeline completo, em ordem. |
 

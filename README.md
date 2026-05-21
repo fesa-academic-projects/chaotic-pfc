@@ -105,7 +105,7 @@ chaotic-pfc/
 ├── pyproject.toml                 Package metadata and dependencies
 ├── src/chaotic_pfc/               Installable library
 │   ├── dynamics/                  Henon maps, Lyapunov exponents, signals, spectral analysis
-│   ├── comms/                     Transmitter, channel models, receiver, DCSK schemes
+│   ├── comms/                     Transmitter, channel models, receiver
 │   ├── analysis/                  Parameter sweeps, statistical post-processing, sweep plotting
 │   │   └── sweep/                 Numba-JIT kernel, FIR precomputation, I/O
 │   ├── plotting/                  Publication-quality figures (attractors, sensitivity, comms)
@@ -122,7 +122,7 @@ chaotic-pfc/
 
 ### Public API
 
-The top-level `chaotic_pfc` namespace reexports 62 symbols that form the
+The top-level `chaotic_pfc` namespace reexports 42 symbols that form the
 stable public API. They are importable from `chaotic_pfc` directly:
 
 ```python
@@ -155,7 +155,6 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep plot`         | Classification maps from saved sweep data. |
 | `chaotic-pfc run sweep beta-sweep`   | Kaiser β-sweep: aggregate per-β Lyapunov results. |
 | `chaotic-pfc run sweep plot-3d`      | Interactive 3-D volume of Kaiser β-sweeps via Plotly. |
-| `chaotic-pfc run dcsk`               | DCSK / EF-DCSK / Pecora-Carroll BER vs SNR comparison. |
 | `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
 
