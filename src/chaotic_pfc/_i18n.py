@@ -62,31 +62,6 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": r"PSD Normalizada (Welch)",
         "en": r"Normalised PSD (Welch)",
     },
-    # ── DCSK ───────────────────────────────────────────────────────
-    "dcsk.pecora_carroll": {
-        "pt": "Pecora-Carroll (sincronização)",
-        "en": "Pecora-Carroll (synchronisation)",
-    },
-    "dcsk.classic": {
-        "pt": "DCSK clássico",
-        "en": "Classical DCSK",
-    },
-    "dcsk.efficient": {
-        "pt": "EF-DCSK (eficiente)",
-        "en": "EF-DCSK (efficient)",
-    },
-    "dcsk.ber_1pct": {
-        "pt": "BER = 1%",
-        "en": "BER = 1%",
-    },
-    "dcsk.ber_50pct": {
-        "pt": r"BER = 50% (colapso)",
-        "en": r"BER = 50% (collapse)",
-    },
-    "dcsk.comparison_title": {
-        "pt": "Comparação de Esquemas de Comunicação Caótica",
-        "en": "Comparison of Chaotic Communication Schemes",
-    },
     "sweep.legend.periodic": {
         "pt": "Órbitas periódicas",
         "en": "Periodic orbits",

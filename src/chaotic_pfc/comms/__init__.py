@@ -2,15 +2,6 @@
 
 from ..dynamics.maps import henon_fir_sequence
 from .channel import awgn, channel_impulsive, channel_multipath, fir_channel, ideal_channel
-from .dcsk import (
-    ber,
-    channel_interferers,
-    channel_urban,
-    dcsk_receive,
-    dcsk_transmit,
-    efdcsk_receive,
-    efdcsk_transmit,
-)
 from .protocols import Channel, Receiver, Transmitter
 from .receiver import receive, receive_order_n
 from .transmitter import transmit, transmit_order_n
@@ -20,15 +11,8 @@ __all__ = [
     "Receiver",
     "Transmitter",
     "awgn",
-    "ber",
     "channel_impulsive",
-    "channel_interferers",
     "channel_multipath",
-    "channel_urban",
-    "dcsk_receive",
-    "dcsk_transmit",
-    "efdcsk_receive",
-    "efdcsk_transmit",
     "fir_channel",
     "henon_fir_sequence",
     "ideal_channel",

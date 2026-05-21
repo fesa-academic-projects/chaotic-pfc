@@ -44,16 +44,6 @@ from chaotic_pfc.comms.channel import (
     fir_channel,
     ideal_channel,
 )
-from chaotic_pfc.comms.dcsk import (
-    DCSK_DEFAULT_WC,
-    ber,
-    channel_interferers,
-    channel_urban,
-    dcsk_receive,
-    dcsk_transmit,
-    efdcsk_receive,
-    efdcsk_transmit,
-)
 from chaotic_pfc.comms.protocols import Channel, Receiver, Transmitter
 from chaotic_pfc.comms.receiver import receive, receive_order_n
 from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
@@ -77,7 +67,6 @@ from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
 from chaotic_pfc.dynamics.spectral import psd_normalised
 
 __all__ = [
-    "DCSK_DEFAULT_WC",
     "FILTER_TYPES",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
@@ -89,24 +78,17 @@ __all__ = [
     "Transmitter",
     "__version__",
     "awgn",
-    "ber",
     "best_chaos_preserving",
     "beta_curve",
     "beta_summary",
     "binary_message",
     "bootstrap_confidence",
     "channel_impulsive",
-    "channel_interferers",
     "channel_multipath",
-    "channel_urban",
     "chaos_margin",
     "classify",
     "compare_filter_types",
     "correlation_matrix",
-    "dcsk_receive",
-    "dcsk_transmit",
-    "efdcsk_receive",
-    "efdcsk_transmit",
     "export_summary_json",
     "fir_channel",
     "fixed_point_stability",

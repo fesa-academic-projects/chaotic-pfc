@@ -340,12 +340,6 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
         self.assertEqual(captured["tol"], 5e-4)
 
 
-class TestDCSKSmoke(_IsolatedCwdMixin, unittest.TestCase):
-    def test_run_dcsk_no_display(self):
-        code = main(["run", "dcsk", "--no-display"])
-        self.assertEqual(code, 0)
-
-
 class TestSweepPlotSmoke(_IsolatedCwdMixin, unittest.TestCase):
     @pytest.mark.slow
     def test_run_sweep_plot_hamming_lowpass(self):

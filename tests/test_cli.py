@@ -43,7 +43,6 @@ class TestExperimentsRegistered(unittest.TestCase):
         "comm-fir",
         "comm-order-n",
         "lyapunov",
-        "dcsk",
         "analysis",
         "all",
     )

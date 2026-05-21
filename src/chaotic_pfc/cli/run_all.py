@@ -55,10 +55,9 @@ from chaotic_pfc.analysis.sweep import (
     save_sweep,
 )
 from chaotic_pfc.cli.sweep import _beta_values
-from chaotic_pfc.comms.dcsk import DCSK_DEFAULT_WC
 from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
-from . import attractors, comm_fir, comm_ideal, comm_order_n, dcsk, lyapunov, sensitivity
+from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
 from . import sweep as sweep_mod
 from ._common import add_lang_flag
 
@@ -271,24 +270,6 @@ def run(args: argparse.Namespace) -> int:
         if tag == "02":
             step_args.steps = 50
         experiment_run(step_args)
-
-    # ── 1b) DCSK comparison (06b) ───────────────────────────────────────
-    _banner("06b")
-    dcsk.run(
-        argparse.Namespace(
-            no_display=shared["no_display"],
-            save=shared["save"],
-            N=600,  # demo-friendly; the CLI default matches
-            beta=64,
-            n_taps=5,
-            wc=DCSK_DEFAULT_WC,
-            mu=cfg.comm.mu,
-            snr_min=-6,
-            snr_max=28,
-            snr_step=2,
-            lang=getattr(args, "lang", "pt"),
-        )
-    )
 
     # ── 2) Sweep compute (07) ─────────────────────────────────────────────
     if args.skip_sweep:
