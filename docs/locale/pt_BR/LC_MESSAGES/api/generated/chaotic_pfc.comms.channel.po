@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -35,7 +35,7 @@ msgid ""
 msgstr ""
 
 #: chaotic_pfc.comms.channel:6 of
-msgid "Eight channels are provided:"
+msgid "Six channels are provided:"
 msgstr ""
 
 #: chaotic_pfc.comms.channel:8 of
@@ -64,20 +64,7 @@ msgid ""
 "delays and gains."
 msgstr ""
 
-#: chaotic_pfc.comms.channel:17 of
-msgid ""
-":func:`channel_interferers` — composite channel (AWGN + DCSK interferer +"
-" narrow-band WiFi-like interferer), lives in "
-":mod:`chaotic_pfc.comms.dcsk`."
-msgstr ""
-
-#: chaotic_pfc.comms.channel:19 of
-msgid ""
-":func:`channel_urban` — combined urban channel with impulsive noise, "
-"multipath, and interferers, lives in :mod:`chaotic_pfc.comms.dcsk`."
-msgstr ""
-
-#: chaotic_pfc.comms.channel:22 of
+#: chaotic_pfc.comms.channel:18 of
 msgid ""
 "All accept the transmitted signal ``s`` as a 1-D array and return the "
 "received signal ``r`` of the same length. The FIR channel additionally "
@@ -262,4 +249,7 @@ msgstr ""
 #: chaotic_pfc.comms.channel.channel_multipath:4 of
 msgid "Attenuation per path (default: ``[1.0, 0.6, 0.4, 0.2]``)."
 msgstr ""
+
+
+
 

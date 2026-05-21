@@ -434,5 +434,3 @@ msgstr "CHANGELOG.md é atualizado em ``[Unreleased]``."
 msgid "Commit messages follow Conventional Commits."
 msgstr "Mensagens de commit seguem Conventional Commits."
 
-#~ msgid "Table of Contents"
-#~ msgstr "Índice"

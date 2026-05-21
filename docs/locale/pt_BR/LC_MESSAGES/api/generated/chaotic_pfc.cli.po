@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -125,85 +125,77 @@ msgstr ""
 msgid "Modules"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`analysis <chaotic_pfc.cli.analysis>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Statistical analysis of sweep data."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`attractors <chaotic_pfc.cli.attractors>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Phase-space attractors for three Hénon variants."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`comm_fir <chaotic_pfc.cli.comm_fir>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Chaotic communication through FIR low-pass channel."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`comm_ideal <chaotic_pfc.cli.comm_ideal>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Full communication pipeline over an ideal (noiseless) channel."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`comm_order_n <chaotic_pfc.cli.comm_order_n>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Communication using N-th order Henon with internal FIR filter."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
-msgid ":py:obj:`dcsk <chaotic_pfc.cli.dcsk>`"
-msgstr ""
-
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
-msgid ""
-"DCSK communication experiment — BER vs SNR across chaotic modulation "
-"schemes."
-msgstr ""
-
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`lyapunov <chaotic_pfc.cli.lyapunov>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Lyapunov exponent computation (text output + optional CSV)."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`run_all <chaotic_pfc.cli.run_all>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Run every experiment in sequence."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`sensitivity <chaotic_pfc.cli.sensitivity>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Sensitive Dependence on Initial Conditions (SDIC)."
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid ":py:obj:`sweep <chaotic_pfc.cli.sweep>`"
 msgstr ""
 
-#: ../../api/generated/chaotic_pfc.cli.rst:29:<autosummary>:1
+#: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Sweep Lyapunov exponents across (order, cutoff) grid."
 msgstr ""
+
+
 

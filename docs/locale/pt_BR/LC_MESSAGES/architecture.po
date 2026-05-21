@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -37,19 +37,19 @@ msgstr ""
 msgid "Package layout"
 msgstr "Estrutura do Pacote"
 
-#: ../../architecture.rst:57
+#: ../../architecture.rst:55
 msgid "Data flow"
 msgstr "Fluxo de Dados"
 
-#: ../../architecture.rst:60
+#: ../../architecture.rst:58
 msgid "Communication pipeline"
 msgstr "Pipeline de Comunicação"
 
-#: ../../architecture.rst:62
+#: ../../architecture.rst:60
 msgid "The full end-to-end communication chain:"
 msgstr "A cadeia completa de comunicação ponta a ponta:"
 
-#: ../../architecture.rst:98
+#: ../../architecture.rst:92
 #, python-brace-format
 msgid ""
 "The transmitter embeds a binary message into the chaotic carrier via "
@@ -66,11 +66,11 @@ msgstr ""
 "portadora e recupera a estimativa da mensagem :math:`\\hat{m}[n] \\approx"
 " m[n]`."
 
-#: ../../architecture.rst:106
+#: ../../architecture.rst:100
 msgid "Parameter sweep pipeline"
 msgstr "Pipeline de varredura de parâmetros"
 
-#: ../../architecture.rst:108
+#: ../../architecture.rst:102
 msgid ""
 "The sweep framework is the computational core of the project. Its design "
 "balances raw throughput, deterministic reproducibility, and optional "
@@ -80,7 +80,7 @@ msgstr ""
 "equilibra vazão bruta, reprodutibilidade determinística e dependência "
 "opcional de Numba:"
 
-#: ../../architecture.rst:131
+#: ../../architecture.rst:125
 msgid ""
 "Every hot loop is Numba-JIT compiled. The outer loop is a single "
 "``prange`` where tasks are **interleaved** (not chunked) via the permuted"
@@ -93,11 +93,11 @@ msgstr ""
 " ao longo dos pontos heterogêneos da grade (corte alto = muitos taps = "
 "lento, corte baixo = poucos taps = rápido)."
 
-#: ../../architecture.rst:138
+#: ../../architecture.rst:132
 msgid "Key design decisions"
 msgstr "Decisões de Design"
 
-#: ../../architecture.rst:140
+#: ../../architecture.rst:134
 msgid ""
 "**Numba as an optional accelerator.** The package imports and runs "
 "correctly without Numba installed. All JIT-compiled kernels fall back to "
@@ -113,7 +113,7 @@ msgstr ""
 "``prange`` para ``range`` e retorna ``1`` para ``get_num_threads()``. "
 "Instale o extra ``[fast]`` para um ganho de 20–50× na varredura."
 
-#: ../../architecture.rst:147
+#: ../../architecture.rst:141
 msgid ""
 "**Deterministic reproducibility.** Perturbation vectors are pre-generated"
 " on the Python side using ``default_rng(seed)`` and passed as NumPy "
@@ -127,7 +127,7 @@ msgstr ""
 "thread do Numba não respeita a semente global. Cada execução com a mesma "
 "semente produz resultados bit a bit idênticos."
 
-#: ../../architecture.rst:153
+#: ../../architecture.rst:147
 msgid ""
 "**Lazy optional imports.** 3-D visualisation requires ``plotly`` "
 "installed via the ``[viz3d]`` extra. The import is deferred until "
@@ -142,7 +142,7 @@ msgstr ""
 " às importações de :samp:`scipy.signal.firwin` dentro dos métodos das "
 "dataclasses."
 
-#: ../../architecture.rst:159
+#: ../../architecture.rst:153
 msgid ""
 "**Structural protocols.** :mod:`chaotic_pfc.comms.protocols` defines "
 "``typing.Protocol`` classes: ``Transmitter``, ``Channel``, ``Receiver``: "
@@ -158,7 +158,7 @@ msgstr ""
 "duck typing. Isso fornece documentação em nível mypy da interface do "
 "pipeline de comunicação sem custo em tempo de execução."
 
-#: ../../architecture.rst:166
+#: ../../architecture.rst:160
 msgid ""
 "**Shallow config hierarchy.** All defaults reside in "
 ":mod:`chaotic_pfc.config` as dataclasses. The hierarchy is intentionally "
@@ -173,7 +173,7 @@ msgstr ""
 "trivial (``dataclasses.replace``), isolamento para testes e serialização "
 "(``dataclasses.asdict``)."
 
-#: ../../architecture.rst:173
+#: ../../architecture.rst:167
 #, python-brace-format
 msgid ""
 "**Single ``prange`` with load balancing.** The sweep kernel uses a single"
@@ -191,7 +191,7 @@ msgstr ""
 "blocos deixaria threads ociosas. O intercalamento garante que cada thread"
 " receba uma mistura balanceada de tarefas leves e pesadas."
 
-#: ../../architecture.rst:181
+#: ../../architecture.rst:175
 #, python-brace-format, python-format
 msgid ""
 "**Adaptive early-stop.** The Lyapunov estimator implements an optional "
@@ -209,17 +209,17 @@ msgstr ""
 "fixas, com perda desprezível de precisão (< 0,1% em "
 ":math:`\\lambda_{\\max}`)."
 
-#: ../../architecture.rst:189
+#: ../../architecture.rst:183
 msgid "Configuration"
 msgstr "Configuração"
 
-#: ../../architecture.rst:191
+#: ../../architecture.rst:185
 msgid "All default values live in :mod:`chaotic_pfc.config` as dataclasses:"
 msgstr ""
 "Todos os valores padrão residem em :mod:`chaotic_pfc.config` como "
 "dataclasses:"
 
-#: ../../architecture.rst:214
+#: ../../architecture.rst:208
 msgid ""
 "Experiment scripts import ``DEFAULT_CONFIG`` and override only the fields"
 " exposed as CLI flags. The "
@@ -233,23 +233,23 @@ msgstr ""
 "``argparse.Namespace`` para ``run all``, encaminhando um único namespace "
 "para todos os sub-experimentos."
 
-#: ../../architecture.rst:220
+#: ../../architecture.rst:214
 msgid "Subpackages and their responsibilities"
 msgstr "Subpacotes e suas responsabilidades"
 
-#: ../../architecture.rst:226
+#: ../../architecture.rst:220
 msgid "Subpackage"
 msgstr "Subpacote"
 
-#: ../../architecture.rst:227
+#: ../../architecture.rst:221
 msgid "Responsibility"
 msgstr "Responsabilidade"
 
-#: ../../architecture.rst:228
+#: ../../architecture.rst:222
 msgid "``dynamics``"
 msgstr "``dynamics``"
 
-#: ../../architecture.rst:229
+#: ../../architecture.rst:223
 msgid ""
 "Hénon map variants, Lyapunov exponents (2-D and 4-D), PSD estimation "
 "(Welch), binary/sinusoidal message generators"
@@ -257,25 +257,27 @@ msgstr ""
 "Variantes do mapa de Hénon, expoentes de Lyapunov (2-D e 4-D), estimação "
 "de DEP (Welch), geradores de mensagem binária/senoidal"
 
-#: ../../architecture.rst:231
+#: ../../architecture.rst:225
 msgid "``comms``"
 msgstr "``comms``"
 
-#: ../../architecture.rst:232
-msgid ""
-"Chaotic modulation (transmitter), synchronised demodulation (receiver), "
-"channel models (ideal, FIR low-pass), DCSK/EF-DCSK with AWGN and "
-"multipath"
+#: ../../architecture.rst:226
+msgid "Chaotic modulation (transmitter), synchronised demodulation"
+msgstr ""
+
+#: ../../architecture.rst:227
+#, fuzzy
+msgid "(receiver), channel models (ideal, FIR low-pass) with AWGN and multipath"
 msgstr ""
 "Modulação caótica (transmissor), demodulação sincronizada (receptor), "
-"modelos de canal (ideal, FIR passa-baixas), DCSK/EF-DCSK com AWGN e "
+"modelos de canal (ideal, FIR passa-baixas) com AWGN e "
 "multipercurso"
 
-#: ../../architecture.rst:235
+#: ../../architecture.rst:229
 msgid "``analysis``"
 msgstr "``analysis``"
 
-#: ../../architecture.rst:236
+#: ../../architecture.rst:230
 msgid ""
 "Parameter sweep orchestration, Numba JIT kernels, statistical post-"
 "processing (ranking, correlation, bootstrap CI), 2-D/3-D plotting"
@@ -284,11 +286,11 @@ msgstr ""
 "processamento estatístico (ranqueamento, correlação, IC bootstrap), "
 "plotagem 2-D/3-D"
 
-#: ../../architecture.rst:239
+#: ../../architecture.rst:233
 msgid "``plotting``"
 msgstr "``plotting``"
 
-#: ../../architecture.rst:240
+#: ../../architecture.rst:234
 msgid ""
 "Publication-quality SVG figures with STIX fonts: attractor portraits, "
 "SDIC overlays, 4×2 communication grids"
@@ -296,11 +298,11 @@ msgstr ""
 "Figuras SVG com qualidade de publicação usando fontes STIX: retratos de "
 "atratores, sobreposições SDIC, grades de comunicação 4×2"
 
-#: ../../architecture.rst:242
+#: ../../architecture.rst:236
 msgid "``cli``"
 msgstr "``cli``"
 
-#: ../../architecture.rst:243
+#: ../../architecture.rst:237
 msgid ""
 "Unified argparse-based CLI with hierarchical subcommands, shared helpers "
 "(PSD computation, save/show logic)"
@@ -308,48 +310,15 @@ msgstr ""
 "CLI unificada baseada em argparse com subcomandos hierárquicos, funções "
 "auxiliares compartilhadas (cálculo de DEP, lógica de salvar/exibir)"
 
-#: ../../architecture.rst:245
+#: ../../architecture.rst:239
 msgid "``config``"
 msgstr "``config``"
 
-#: ../../architecture.rst:246
+#: ../../architecture.rst:240
 msgid "Centralised dataclass configuration, default singleton"
 msgstr "Configuração centralizada em dataclasses, singleton padrão"
 
-#~ msgid ""
-#~ "All hot loops are Numba-JIT "
-#~ "compiled. The outer loop is a "
-#~ "single ``prange`` where tasks are "
-#~ "interleaved to balance thread load."
-#~ msgstr ""
-#~ "Todos os laços críticos são compilados"
-#~ " via Numba-JIT. O laço externo "
-#~ "é um único ``prange`` onde as "
-#~ "tarefas são intercaladas para balancear "
-#~ "a carga entre threads."
 
-#~ msgid ""
-#~ "**Lazy plotly import.** 3-D visualisation "
-#~ "requires ``plotly`` installed via the "
-#~ "``[viz3d]`` extra. Importing ``chaotic_pfc`` "
-#~ "must succeed without it."
-#~ msgstr ""
-#~ "**Importação tardia do plotly.** A "
-#~ "visualização 3-D requer ``plotly`` instalado"
-#~ " via o extra ``[viz3d]``. A "
-#~ "importação de ``chaotic_pfc`` deve funcionar"
-#~ " sem ele."
 
-#~ msgid ""
-#~ "**Protocols.** :mod:`chaotic_pfc.comms.protocols` defines"
-#~ " structural contracts (``Transmitter``, "
-#~ "``Channel``, ``Receiver``) that concrete "
-#~ "implementations satisfy."
-#~ msgstr ""
-#~ "**Protocolos.** :mod:`chaotic_pfc.comms.protocols` definem"
-#~ " contratos estruturais (``Transmitter``, "
-#~ "``Channel``, ``Receiver``) que as "
-#~ "implementações concretas satisfazem."
 
-#~ msgid "Table of Contents"
-#~ msgstr "Índice"
+

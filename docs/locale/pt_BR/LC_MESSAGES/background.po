@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -454,20 +454,19 @@ msgstr ""
 "mapa, podendo induzir:"
 
 #: ../../background.rst:200
-msgid "**Bifurcation cascades**: sequences of period-doubling transitions"
+#, fuzzy
+msgid ""
+"**Bifurcation cascades**: sequences of period-doubling transitions that "
+"accumulate toward chaos from a periodic state."
 msgstr ""
 "**Cascatas de bifurcação** — sequências de transições de duplicação de "
 "período conforme os parâmetros do filtro variam."
 
-#: ../../background.rst:201
+#: ../../background.rst:202
+#, fuzzy
 msgid ""
-"that accumulate toward chaos from a periodic state. * **\"Shrimps\"**: "
-"islands of periodicity immersed within chaotic"
-msgstr ""
-
-#: ../../background.rst:203
-msgid ""
-"regions of the parameter space. Named for their characteristic shape in "
+"**\"Shrimps\"**: islands of periodicity immersed within chaotic regions "
+"of the parameter space. Named for their characteristic shape in "
 "parameter-space diagrams."
 msgstr ""
 "**\"Shrimps\"** — ilhas de periodicidade imersas em regiões caóticas do "
@@ -872,135 +871,10 @@ msgstr ""
 "pequena, tipicamente 0,01)."
 
 #: ../../background.rst:383
-msgid "Modulation schemes"
-msgstr "Esquemas de modulação"
-
-#: ../../background.rst:385
-msgid "The package implements three modulation techniques:"
-msgstr "O pacote implementa três técnicas de modulação:"
-
-#: ../../background.rst:387
-msgid ""
-"**CSK: Chaos Shift Keying.** Sistematised by Williams (2001) "
-"[Williams01]_. Each binary symbol corresponds to a distinct set of "
-"parameters or initial conditions of the chaotic generator: the message is"
-" encoded in the selection between two different chaotic attractors. The "
-"receiver performs detection by correlation or energy comparison, "
-"identifying which attractor the received signal belongs to. CSK requires "
-"a synchronisation period before each symbol, reducing spectral "
-"efficiency."
-msgstr ""
-"**CSK — Chaos Shift Keying.** Sistematizado por Williams (2001) "
-"[Williams01]_. Cada símbolo binário corresponde a um conjunto distinto de"
-" parâmetros ou condições iniciais do gerador caótico: a mensagem é "
-"codificada na seleção entre dois atratores caóticos diferentes. O "
-"receptor realiza a detecção por correlação ou comparação de energia, "
-"identificando a qual atrator o sinal recebido pertence. O CSK requer um "
-"período de sincronização antes de cada símbolo, reduzindo a eficiência "
-"espectral."
-
-#: ../../background.rst:396
-msgid ""
-"**DCSK: Differential Chaos Shift Keying.** Introduced by Kolumban et al. "
-"(1996) [Kolumban96]_. Each bit period is split into two equal halves: a "
-"reference slot transmitting a chaotic reference sequence, followed by a "
-"data slot transmitting the same reference (bit 0) or its negated version "
-"(bit 1). The receiver correlates the two slots to recover the bit. DCSK "
-"does **not** require chaos synchronisation, making it inherently robust "
-"to channel variations. The cost is a 50% reduction in bit rate (one "
-"information bit per two transmitted chaotic sequences)."
-msgstr ""
-"**DCSK — Differential Chaos Shift Keying.** Introduzido por Kolumban et "
-"al. (1996) [Kolumban96]_. Cada período de bit é dividido em duas metades "
-"iguais: um slot de referência transmitindo uma sequência caótica de "
-"referência, seguido por um slot de dados transmitindo a mesma referência "
-"(bit 0) ou sua versão negada (bit 1). O receptor correlaciona os dois "
-"slots para recuperar o bit. O DCSK **não** requer sincronização de caos, "
-"tornando-o inerentemente robusto a variações do canal. O custo é uma "
-"redução de 50% na taxa de bits (um bit de informação para cada duas "
-"sequências caóticas transmitidas)."
-
-#: ../../background.rst:406
-msgid ""
-"**EF-DCSK: Efficient DCSK.** Proposed by Kaddoum et al. (2013) "
-"[Kaddoum13]_. Improves the data rate by using a single slot per bit: the "
-"reference and its time-reversed copy are superposed in the same slot. The"
-" decoder correlates the received signal with its own time-reverse to "
-"recover the bit. This doubles the throughput of classical DCSK with "
-"minimal BER degradation."
-msgstr ""
-"**EF-DCSK — Efficient DCSK.** Proposto por Kaddoum et al. (2013) "
-"[Kaddoum13]_. Melhora a taxa de dados usando um único slot por bit: a "
-"referência e sua cópia com reversão temporal são sobrepostas no mesmo "
-"slot. O decodificador correlaciona o sinal recebido com sua própria "
-"reversão temporal para recuperar o bit. Isso dobra a vazão do DCSK "
-"clássico com degradação mínima de BER."
-
-#: ../../background.rst:414
-msgid "Performance metrics"
-msgstr "Métricas de desempenho"
-
-#: ../../background.rst:416
-msgid ""
-"Quantitative evaluation of digital communication performance relies on "
-"two standard metrics [Haykin01]_ [LathiDing09]_:"
-msgstr ""
-"A avaliação quantitativa do desempenho de comunicação digital apoia-se em"
-" duas métricas padronizadas [Haykin01]_ [LathiDing09]_:"
-
-#: ../../background.rst:419
-msgid ""
-"**BER: Bit Error Rate.** The ratio of incorrectly received bits to the "
-"total number of transmitted bits. In chaotic systems, BER integrates the "
-"combined effects of channel AWGN (additive white Gaussian noise), "
-"synchronisation imperfections, quantisation errors, and transient "
-"settling before receiver convergence."
-msgstr ""
-"**BER — Taxa de Erro de Bit.** A razão entre o número de bits recebidos "
-"incorretamente e o número total de bits transmitidos. Em sistemas "
-"caóticos, a BER integra os efeitos combinados do ruído AWGN (ruído "
-"gaussiano branco aditivo) do canal, das imperfeições de sincronização, "
-"dos erros de quantização e do assentamento transitório antes da "
-"convergência do receptor."
-
-#: ../../background.rst:425
-msgid ""
-"**SNR: Signal-to-Noise Ratio.** The ratio of average signal power to "
-"noise power, expressed in dB:"
-msgstr ""
-"**SNR — Relação Sinal-Ruído.** A razão entre a potência média do sinal e "
-"a potência do ruído, expressa em dB:"
-
-#: ../../background.rst:428
-msgid "\\text{SNR}_{\\text{dB}} = 10 \\log_{10} \\frac{P_s}{P_n}"
-msgstr "\\text{SNR}_{\\text{dB}} = 10 \\log_{10} \\frac{P_s}{P_n}"
-
-#: ../../background.rst:432
-#, python-brace-format
-msgid ""
-"The **BER-vs-SNR curve** is the primary comparison tool between "
-"modulation schemes, identifying the SNR threshold required for acceptable"
-" operation (commonly :math:`\\text{BER} \\leq 10^{-3}`)."
-msgstr ""
-"A **curva BER×SNR** é a principal ferramenta de comparação entre esquemas"
-" de modulação, identificando o limiar de SNR necessário para operação "
-"aceitável (comumente :math:`\\text{BER} \\leq 10^{-3}`)."
-
-#: ../../background.rst:436
-msgid ""
-"The ``chaotic-pfc run dcsk`` command produces exactly this curve for "
-"Pecora-Carroll synchronisation, classical DCSK, and EF-DCSK over an FIR-"
-"filtered Hénon map with AWGN."
-msgstr ""
-"O comando ``chaotic-pfc run dcsk`` produz exatamente essa curva para "
-"sincronização de Pecora-Carroll, DCSK clássico e EF-DCSK sobre um mapa de"
-" Hénon filtrado por FIR com AWGN."
-
-#: ../../background.rst:441
 msgid "References"
 msgstr "Referências"
 
-#: ../../background.rst:443
+#: ../../background.rst:385
 msgid ""
 "M. S. Baptista. \"Chaos-based communication systems: Current trends and "
 "challenges.\" Springer, 2021."
@@ -1008,7 +882,7 @@ msgstr ""
 "M. S. Baptista. \"Chaos-based communication systems: Current trends and "
 "challenges.\" Springer, 2021."
 
-#: ../../background.rst:447
+#: ../../background.rst:389
 msgid ""
 "V. S. Borges, M. Eisencraft. \"A filtered Hénon map.\" Chaos, Solitons "
 "and Fractals, vol. 165, 2022."
@@ -1016,7 +890,7 @@ msgstr ""
 "V. S. Borges, M. Eisencraft. \"A filtered Hénon map.\" Chaos, Solitons "
 "and Fractals, vol. 165, 2022."
 
-#: ../../background.rst:451
+#: ../../background.rst:393
 msgid ""
 "V. S. Borges, R. Silva, M. Eisencraft. \"Stability analysis of the "
 "filtered Hénon map.\" (preprint), 2024."
@@ -1024,7 +898,7 @@ msgstr ""
 "V. S. Borges, R. Silva, M. Eisencraft. \"Stability analysis of the "
 "filtered Hénon map.\" (preprint), 2024."
 
-#: ../../background.rst:455
+#: ../../background.rst:397
 msgid ""
 "R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
 "system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374--385, "
@@ -1034,11 +908,7 @@ msgstr ""
 "system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374--385, "
 "2016."
 
-#: ../../background.rst:459
-msgid "S. Haykin. \"Communication Systems.\" 4th ed., Wiley, 2001."
-msgstr "S. Haykin. \"Communication Systems.\" 4th ed., Wiley, 2001."
-
-#: ../../background.rst:462
+#: ../../background.rst:402
 msgid ""
 "M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
 " Math. Phys., vol. 50, pp. 69--77, 1976."
@@ -1046,29 +916,7 @@ msgstr ""
 "M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
 " Math. Phys., vol. 50, pp. 69--77, 1976."
 
-#: ../../background.rst:468
-msgid ""
-"B. P. Lathi, Z. Ding. \"Modern Digital and Analog Communication "
-"Systems.\" 4th ed., Oxford University Press, 2009."
-msgstr ""
-"B. P. Lathi, Z. Ding. \"Modern Digital and Analog Communication "
-"Systems.\" 4th ed., Oxford University Press, 2009."
-
-#: ../../background.rst:472
-msgid ""
-"G. Kolumban, M. P. Kennedy, G. Kis. \"Performance evaluation of FM-"
-"DCSK.\" Proc. IEEE ISSSTA, pp. 686--690, 1996."
-msgstr ""
-
-#: ../../background.rst:476
-msgid ""
-"G. Kaddoum, E. Soujeri, C. Arcila, K. Eshteiwi. \"Design and performance "
-"analysis of a multiuser OFDM based differential chaos shift keying "
-"communication system.\" IEEE Trans. Commun., v. 61, n. 12, pp. 4908--"
-"4920, 2013."
-msgstr ""
-
-#: ../../background.rst:481
+#: ../../background.rst:407
 msgid ""
 "E. V. Oliveira, R. Filgueiras. \"A importância da segurança da informação"
 " para as organizações.\" Revista Alomorfia, v. 6, n. 1, pp. 438--447, "
@@ -1078,7 +926,7 @@ msgstr ""
 " para as organizações.\" Revista Alomorfia, v. 6, n. 1, pp. 438--447, "
 "2022."
 
-#: ../../background.rst:485
+#: ../../background.rst:411
 msgid ""
 "A. V. Oppenheim, R. W. Schafer. \"Discrete-Time Signal Processing.\" 3rd "
 "ed., Pearson, 2009."
@@ -1086,7 +934,7 @@ msgstr ""
 "A. V. Oppenheim, R. W. Schafer. \"Discrete-Time Signal Processing.\" 3rd "
 "ed., Pearson, 2009."
 
-#: ../../background.rst:488
+#: ../../background.rst:414
 msgid ""
 "L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
 "Physical Review Letters, v. 64, n. 8, p. 821, 1990."
@@ -1094,7 +942,7 @@ msgstr ""
 "L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
 "Physical Review Letters, v. 64, n. 8, p. 821, 1990."
 
-#: ../../background.rst:492
+#: ../../background.rst:418
 msgid ""
 "A. Sapinski. \"The Importance and Challenges of Information Security in "
 "the Digital Age.\" Scientific Journal of Bielsko-Biala School of Finance "
@@ -1104,7 +952,7 @@ msgstr ""
 "the Digital Age.\" Scientific Journal of Bielsko-Biala School of Finance "
 "and Law, v. 1, pp. 52--55, 2023."
 
-#: ../../background.rst:497
+#: ../../background.rst:423
 msgid ""
 "C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
 "Circuits Syst. I, v. 48, n. 12, pp. 1394--1404, 2001."
@@ -1112,5 +960,21 @@ msgstr ""
 "C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
 "Circuits Syst. I, v. 48, n. 12, pp. 1394--1404, 2001."
 
-#~ msgid "Table of Contents"
-#~ msgstr "Sumário"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

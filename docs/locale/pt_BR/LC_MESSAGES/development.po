@@ -326,5 +326,3 @@ msgstr "Idioma"
 msgid "Code and docstrings in English; figure labels bilingual (pt / en)"
 msgstr "Código e docstrings em inglês; rótulos de figuras bilíngues (pt / en)"
 
-#~ msgid "Table of Contents"
-#~ msgstr "Índice"

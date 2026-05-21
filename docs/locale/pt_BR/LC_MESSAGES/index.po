@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../index.rst:99
+#: ../../index.rst:97
 msgid "Contents"
 msgstr "Conteúdo"
 
@@ -97,15 +97,15 @@ msgstr ""
 ":mod:`chaotic_pfc.comms.receiver`)."
 
 #: ../../index.rst:33
+#, fuzzy
 msgid ""
 "**Channel models**: ideal pass-through, FIR band-limited channels, AWGN, "
-"multipath propagation, impulsive noise, and urban composite channels "
-"(:mod:`chaotic_pfc.comms.channel`, :mod:`chaotic_pfc.comms.dcsk`)."
+"multipath propagation, and impulsive noise "
+"(:mod:`chaotic_pfc.comms.channel`)."
 msgstr ""
 "**Modelos de canal** — passagem ideal, canais FIR com banda limitada, "
 "AWGN, propagação multipercurso, ruído impulsivo e canais compostos "
-"urbanos (:mod:`chaotic_pfc.comms.channel`, "
-":mod:`chaotic_pfc.comms.dcsk`)."
+"urbanos (:mod:`chaotic_pfc.comms.channel`)."
 
 #: ../../index.rst:36
 msgid ""
@@ -128,14 +128,18 @@ msgstr ""
 "corte) via compilação Numba JIT (:mod:`chaotic_pfc.analysis.sweep`)."
 
 #: ../../index.rst:42
+#, fuzzy
 msgid ""
-"**Modulation schemes**: DCSK, EF-DCSK, and Pecora-Carroll modulation with"
-" BER-vs-SNR comparison (:mod:`chaotic_pfc.comms.dcsk`)."
+"**Modulation**: Pecora-Carroll chaos-based modulation via "
+"transmitter/receiver synchronisation "
+"(:mod:`chaotic_pfc.comms.transmitter`, "
+":mod:`chaotic_pfc.comms.receiver`)."
 msgstr ""
-"**Esquemas de modulação** — modulação DCSK, EF-DCSK e Pecora-Carroll com "
-"comparação BER×SNR (:mod:`chaotic_pfc.comms.dcsk`)."
+"**Comunicação baseada em caos** — par transmissor/receptor via "
+"sincronização de Pecora-Carroll (:mod:`chaotic_pfc.comms.transmitter`, "
+":mod:`chaotic_pfc.comms.receiver`)."
 
-#: ../../index.rst:44
+#: ../../index.rst:45
 msgid ""
 "**Statistical analysis suite**: summary tables, filter-type comparison, "
 "transition boundaries, Spearman correlation, bootstrap confidence "
@@ -147,7 +151,7 @@ msgstr ""
 "de confiança bootstrap e identificação de parâmetros ótimos "
 "(:mod:`chaotic_pfc.analysis.stats`)."
 
-#: ../../index.rst:47
+#: ../../index.rst:48
 msgid ""
 "**Publication-quality figures**: SVG outputs with STIX fonts, attractor "
 "portraits, SDIC visualisation, 4×2 communication grids, and 3-D Plotly "
@@ -157,7 +161,7 @@ msgstr ""
 "retratos de atratores, visualização SDIC, grades de comunicação 4×2 e "
 "volumes 3-D com Plotly (:mod:`chaotic_pfc.plotting.figures`)."
 
-#: ../../index.rst:50
+#: ../../index.rst:51
 msgid ""
 "**Unified CLI**: ``chaotic-pfc run <experiment>`` backed by importable "
 "submodules under :mod:`chaotic_pfc.cli`."
@@ -165,15 +169,15 @@ msgstr ""
 "**CLI unificada** — ``chaotic-pfc run <experimento>`` respaldada por "
 "submódulos importáveis em :mod:`chaotic_pfc.cli`."
 
-#: ../../index.rst:54
+#: ../../index.rst:55
 msgid "Installation"
 msgstr "Instalação"
 
-#: ../../index.rst:56
+#: ../../index.rst:57
 msgid "Requires **Python 3.11+**."
 msgstr "Requer **Python 3.11+**."
 
-#: ../../index.rst:64
+#: ../../index.rst:65
 msgid ""
 "The package imports and runs *without* Numba installed: kernels fall back"
 " to pure Python via :mod:`chaotic_pfc._compat`. Install the ``[fast]`` "
@@ -183,11 +187,11 @@ msgstr ""
 "fallback para Python puro via :mod:`chaotic_pfc._compat`. Instale o extra"
 " ``[fast]`` para um ganho de 20–50× na varredura de parâmetros."
 
-#: ../../index.rst:69
+#: ../../index.rst:70
 msgid "Quick start"
 msgstr "Início Rápido"
 
-#: ../../index.rst:75
+#: ../../index.rst:76
 msgid ""
 "The ``--quick-sweep`` flag runs the full pipeline with a reduced Lyapunov"
 " grid: seconds of compute time rather than hours: sufficient to smoke-"
@@ -198,15 +202,15 @@ msgstr ""
 " para um smoke-test de todos os componentes. Remova-a para executar a "
 "varredura em resolução completa."
 
-#: ../../index.rst:80
+#: ../../index.rst:81
 msgid "Key experiments"
 msgstr "Experimentos principais"
 
-#: ../../index.rst:86
+#: ../../index.rst:87
 msgid "**Attractors**"
 msgstr "**Atratores**"
 
-#: ../../index.rst:87
+#: ../../index.rst:88
 msgid ""
 "Phase-space portraits of three Hénon variants: ``chaotic-pfc run "
 "attractors``"
@@ -214,54 +218,40 @@ msgstr ""
 "Retratos no espaço de fase de três variantes do mapa de Hénon: ``chaotic-"
 "pfc run attractors``"
 
-#: ../../index.rst:88
+#: ../../index.rst:89
 msgid "**Sensitivity (SDIC)**"
 msgstr "**Sensibilidade (SDIC)**"
 
-#: ../../index.rst:89
+#: ../../index.rst:90
 msgid "Exponential divergence visualisation: ``chaotic-pfc run sensitivity``"
 msgstr "Visualização da divergência exponencial: ``chaotic-pfc run sensitivity``"
 
-#: ../../index.rst:90
+#: ../../index.rst:91
 msgid "**Communication**"
 msgstr "**Comunicação**"
 
-#: ../../index.rst:91
+#: ../../index.rst:92
 msgid "Full pipeline over ideal/FIR channels: ``chaotic-pfc run comm-ideal``"
 msgstr "Pipeline completo sobre canais ideais/FIR: ``chaotic-pfc run comm-ideal``"
 
-#: ../../index.rst:92
+#: ../../index.rst:93
 msgid "**Lyapunov Spectra**"
 msgstr "**Espectros de Lyapunov**"
 
-#: ../../index.rst:93
+#: ../../index.rst:94
 msgid "Single-IC and ensemble protocols: ``chaotic-pfc run lyapunov``"
 msgstr "Protocolos de CI única e ensemble: ``chaotic-pfc run lyapunov``"
 
-#: ../../index.rst:94
+#: ../../index.rst:95
 msgid "**Parameter Sweep**"
 msgstr "**Varredura de Parâmetros**"
 
-#: ../../index.rst:95
+#: ../../index.rst:96
 msgid "High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``"
 msgstr "Grade de alta resolução (ordem × corte): ``chaotic-pfc run sweep compute``"
 
-#: ../../index.rst:96
-msgid "**BER Comparison**"
-msgstr "**Comparação de BER**"
 
-#: ../../index.rst:97
-msgid "DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``"
-msgstr "DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``"
 
-#~ msgid "Undergraduate final project (PFC) in Engineering at FESA, Brazil."
-#~ msgstr "Projeto Final de Curso (PFC) em Engenharia na FESA, Brasil."
 
-#~ msgid ""
-#~ "Ideal and FIR band-limited channels "
-#~ "with AWGN and multipath "
-#~ "(:mod:`chaotic_pfc.comms.channel`)."
-#~ msgstr ""
-#~ "Canais com banda limitada ideal e "
-#~ "FIR com AWGN e multipercurso "
-#~ "(:mod:`chaotic_pfc.comms.channel`)."
+
+

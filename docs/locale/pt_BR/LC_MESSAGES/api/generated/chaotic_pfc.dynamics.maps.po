@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-05-21 20:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -95,7 +95,7 @@ msgstr ""
 #: chaotic_pfc.dynamics.maps:41 of
 msgid ""
 ":func:`henon_fir_sequence` — generates a chaotic sequence from the FIR-"
-"filtered Hénon map, used by the DCSK communication schemes."
+"filtered Hénon map."
 msgstr ""
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst:8
@@ -377,4 +377,5 @@ msgstr ""
 #: chaotic_pfc.dynamics.maps.henon_fir_sequence:16 of
 msgid "If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf."
 msgstr ""
+
 
