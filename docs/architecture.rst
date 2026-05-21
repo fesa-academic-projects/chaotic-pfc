@@ -26,8 +26,7 @@ Package layout
     │   ├── protocols.py                 # structural contracts (Transmitter, Channel, Receiver)
     │   ├── transmitter.py               # chaos-based modulator (Pecora-Carroll)
     │   ├── receiver.py                  # chaos-synchronisation demodulator
-    │   ├── channel.py                   # transmission models (ideal, FIR)
-    │   └── dcsk.py                      # DCSK / EF-DCSK + channel impairments
+    │   └── channel.py                   # transmission models (ideal, FIR)
     ├── analysis/                        # parameter sweeps and statistical post-processing
     │   ├── sweep/                       # Lyapunov sweep framework
     │   │   ├── _types.py                # SweepResult dataclass, filter/window catalogues
@@ -49,7 +48,6 @@ Package layout
         ├── comm_fir.py                  # FIR low-pass channel
         ├── comm_order_n.py              # order-N Hénon + FIR channel
         ├── lyapunov.py                  # Lyapunov spectra
-        ├── dcsk.py                      # BER-vs-SNR comparison
         ├── sweep/                       # sweep compute / plot / beta-sweep / plot-3d
         └── analysis.py                  # statistical report
 
@@ -90,10 +88,6 @@ The full end-to-end communication chain:
                             +--------+---------+
                                      |  m_hat[n]
                                      v
-                            +------------------+
-                            |       BER        |  <- comms.dcsk
-                            |    (if DCSK)     |
-                            +------------------+
 
 The transmitter embeds a binary message into the chaotic carrier via
 Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \mu \cdot m[n]`.
@@ -230,8 +224,8 @@ Subpackages and their responsibilities
        estimation (Welch), binary/sinusoidal message generators
    * - ``comms``
      - Chaotic modulation (transmitter), synchronised demodulation
-       (receiver), channel models (ideal, FIR low-pass), DCSK/EF-DCSK
-       with AWGN and multipath
+        (receiver), channel models (ideal, FIR low-pass)
+        with AWGN and multipath
    * - ``analysis``
      - Parameter sweep orchestration, Numba JIT kernels, statistical
        post-processing (ranking, correlation, bootstrap CI),

@@ -31,16 +31,17 @@ Features
   synchronisation (:mod:`chaotic_pfc.comms.transmitter`,
   :mod:`chaotic_pfc.comms.receiver`).
 * **Channel models**: ideal pass-through, FIR band-limited channels, AWGN,
-  multipath propagation, impulsive noise, and urban composite channels
-  (:mod:`chaotic_pfc.comms.channel`, :mod:`chaotic_pfc.comms.dcsk`).
+  multipath propagation, and impulsive noise
+  (:mod:`chaotic_pfc.comms.channel`).
 * **Lyapunov exponent computation**: single-IC and N-IC ensemble protocol
   using tangent-map method with Modified Gram-Schmidt re-orthonormalisation
   (:mod:`chaotic_pfc.dynamics.lyapunov`).
 * **High-performance parameter sweep**: deterministic parallel Lyapunov sweep
   across the (filter order, cutoff frequency) grid via Numba JIT compilation
   (:mod:`chaotic_pfc.analysis.sweep`).
-* **Modulation schemes**: DCSK, EF-DCSK, and Pecora-Carroll modulation with
-  BER-vs-SNR comparison (:mod:`chaotic_pfc.comms.dcsk`).
+* **Modulation**: Pecora-Carroll chaos-based modulation via
+  transmitter/receiver synchronisation (:mod:`chaotic_pfc.comms.transmitter`,
+  :mod:`chaotic_pfc.comms.receiver`).
 * **Statistical analysis suite**: summary tables, filter-type comparison,
   transition boundaries, Spearman correlation, bootstrap confidence intervals,
   and optimal-parameter identification (:mod:`chaotic_pfc.analysis.stats`).
@@ -93,9 +94,6 @@ Key experiments
      - Single-IC and ensemble protocols: ``chaotic-pfc run lyapunov``
    * - **Parameter Sweep**
      - High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``
-   * - **BER Comparison**
-     - DCSK, EF-DCSK, Pecora-Carroll: ``chaotic-pfc run dcsk``
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents

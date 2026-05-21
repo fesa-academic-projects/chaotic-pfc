@@ -188,9 +188,7 @@ Channel models
 --------------
 
 Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and
-:func:`~chaotic_pfc.comms.channel.fir_channel`, the DCSK module
-provides four composite channel models. All accept an optional ``rng``
-parameter (``numpy.random.Generator``) for deterministic reproducibility:
+:func:`~chaotic_pfc.comms.channel.fir_channel`.
 
 :func:`~chaotic_pfc.comms.channel.awgn`
   Additive white Gaussian noise with configurable SNR (dB).
@@ -204,16 +202,6 @@ parameter (``numpy.random.Generator``) for deterministic reproducibility:
   (samples) and gain factors (linear). Models frequency-selective
   fading.
 
-:func:`~chaotic_pfc.comms.dcsk.channel_interferers`
-  Composite channel combining AWGN, a DCSK interferer (simulating
-  co-channel chaotic transmissions), and a WiFi-like narrowband
-  interferer.
-
-:func:`~chaotic_pfc.comms.dcsk.channel_urban`
-  All-in-one urban channel model combining AWGN, multipath,
-  impulsive noise, and interferers: representing a worst-case
-  composite propagation environment.
-
 Translation layer
 -----------------
 
@@ -224,7 +212,7 @@ and English) without requiring ``gettext`` at runtime. Features:
 * Default language controllable via ``CHAOTIC_PFC_LANG`` environment
   variable or ``--lang`` CLI flag.
 * Covers attractor titles, sensitivity axis labels, communication
-  grid subplot titles, and DCSK plotting strings.
+  grid subplot titles.
 * Falls back to the raw key if a translation is missing.
 
 Configuration model

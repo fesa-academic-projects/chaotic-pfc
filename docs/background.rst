@@ -198,7 +198,7 @@ filtering introduces unexpected dynamical complexity
 with the map's nonlinearity, potentially inducing:
 
 * **Bifurcation cascades**: sequences of period-doubling transitions
-that accumulate toward chaos from a periodic state.
+  that accumulate toward chaos from a periodic state.
 * **"Shrimps"**: islands of periodicity immersed within chaotic
   regions of the parameter space. Named for their characteristic
   shape in parameter-space diagrams.
@@ -379,64 +379,6 @@ recovered by subtracting the local estimate:
 where :math:`\mu` is the modulation depth (a small positive constant,
 typically 0.01).
 
-Modulation schemes
-------------------
-
-The package implements three modulation techniques:
-
-**CSK: Chaos Shift Keying.** Sistematised by Williams (2001)
-[Williams01]_. Each binary symbol corresponds to a distinct set of
-parameters or initial conditions of the chaotic generator: the message
-is encoded in the selection between two different chaotic attractors.
-The receiver performs detection by correlation or energy comparison,
-identifying which attractor the received signal belongs to. CSK requires
-a synchronisation period before each symbol, reducing spectral
-efficiency.
-
-**DCSK: Differential Chaos Shift Keying.** Introduced by Kolumban et
-al. (1996) [Kolumban96]_. Each bit period is split into two equal
-halves: a reference slot transmitting a chaotic reference sequence,
-followed by a data slot transmitting the same reference (bit 0) or its
-negated version (bit 1). The receiver correlates the two slots to
-recover the bit. DCSK does **not** require chaos synchronisation,
-making it inherently robust to channel variations. The cost is a 50%
-reduction in bit rate (one information bit per two transmitted chaotic
-sequences).
-
-**EF-DCSK: Efficient DCSK.** Proposed by Kaddoum et al. (2013)
-[Kaddoum13]_. Improves the data rate by using a single slot per bit:
-the reference and its time-reversed copy are superposed in the same
-slot. The decoder correlates the received signal with its own
-time-reverse to recover the bit. This doubles the throughput of
-classical DCSK with minimal BER degradation.
-
-Performance metrics
--------------------
-
-Quantitative evaluation of digital communication performance relies on
-two standard metrics [Haykin01]_ [LathiDing09]_:
-
-**BER: Bit Error Rate.** The ratio of incorrectly received bits to the
-total number of transmitted bits. In chaotic systems, BER integrates
-the combined effects of channel AWGN (additive white Gaussian noise),
-synchronisation imperfections, quantisation errors, and transient
-settling before receiver convergence.
-
-**SNR: Signal-to-Noise Ratio.** The ratio of average signal power to
-noise power, expressed in dB:
-
-.. math::
-
-    \text{SNR}_{\text{dB}} = 10 \log_{10} \frac{P_s}{P_n}
-
-The **BER-vs-SNR curve** is the primary comparison tool between
-modulation schemes, identifying the SNR threshold required for
-acceptable operation (commonly :math:`\text{BER} \leq 10^{-3}`).
-
-The ``chaotic-pfc run dcsk`` command produces exactly this curve for
-Pecora-Carroll synchronisation, classical DCSK, and EF-DCSK over an
-FIR-filtered Hénon map with AWGN.
-
 References
 ----------
 
@@ -456,27 +398,11 @@ References
    "A digital bandlimited chaotic communication system."
    Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374--385, 2016.
 
-.. [Haykin01] S. Haykin.
-   "Communication Systems." 4th ed., Wiley, 2001.
 
 .. [Henon76] M. Hénon.
    "A two-dimensional mapping with a strange attractor."
    Commun. Math. Phys., vol. 50, pp. 69--77, 1976.
 
-
-
-.. [LathiDing09] B. P. Lathi, Z. Ding.
-   "Modern Digital and Analog Communication Systems."
-   4th ed., Oxford University Press, 2009.
-
-.. [Kolumban96] G. Kolumban, M. P. Kennedy, G. Kis.
-   "Performance evaluation of FM-DCSK."
-   Proc. IEEE ISSSTA, pp. 686--690, 1996.
-
-.. [Kaddoum13] G. Kaddoum, E. Soujeri, C. Arcila, K. Eshteiwi.
-   "Design and performance analysis of a multiuser OFDM based
-   differential chaos shift keying communication system."
-   IEEE Trans. Commun., v. 61, n. 12, pp. 4908--4920, 2013.
 
 .. [OliveiraFilgueiras22] E. V. Oliveira, R. Filgueiras.
    "A importância da segurança da informação para as organizações."

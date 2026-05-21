@@ -184,28 +184,6 @@ type under the Kaiser window. Results go to ``data/sweeps/kaiser/``.
 Opens an interactive 3-D Plotly volume stacking all :math:`\beta`
 surfaces, with configurable camera angle and colour scale.
 
-DCSK comparison
-~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   chaotic-pfc run dcsk
-
-Generates a BER-vs-SNR plot comparing three modulation schemes over an
-FIR-filtered Hénon map with AWGN:
-
-* Pecora-Carroll synchronisation (coherent)
-* Classical DCSK (non-coherent, half bit rate)
-* EF-DCSK (non-coherent, full bit rate)
-
-Options:
-
-.. code-block:: bash
-
-   chaotic-pfc run dcsk --snr-min -10 --snr-max 20 --snr-step 2
-   chaotic-pfc run dcsk --save --no-display
-   chaotic-pfc run dcsk --lang pt  # Portuguese labels
-
 Statistical analysis
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -254,7 +232,7 @@ The CLI supports bilingual figure labels via the ``--lang`` flag or the
    chaotic-pfc run attractors
 
 The flag is supported by ``attractors``, ``sensitivity``,
-``comm-ideal``, ``comm-fir``, ``comm-order-n``, ``dcsk``, and
+``comm-ideal``, ``comm-fir``, ``comm-order-n``, and
 ``run all``.
 
 Further reading
