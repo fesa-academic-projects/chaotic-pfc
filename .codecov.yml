@@ -6,7 +6,7 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 5%   # warn at -2%, fail at -5%
+        threshold: 2%   # warn at -0.5%, fail at -2%
         base: auto
     patch:
       default:
