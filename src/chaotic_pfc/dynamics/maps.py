@@ -187,7 +187,7 @@ def henon_filtered(
 # ── N-th order map (vectorised state) ──────────────────────────────────────
 
 
-def henon_n4_step_inplace(
+def _henon_n4_step_inplace(
     out: NDArray,
     x: NDArray,
     s: float,
@@ -243,7 +243,7 @@ def henon_order_n(
     The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``.
     At each step, the carrier output is the filtered state component
     ``x[2]``, and the next iterate is computed by
-    :func:`henon_n4_step_inplace`.
+    :func:`_henon_n4_step_inplace`.
 
     The ``driving`` parameter lets callers override the nonlinear
     input: when ``driving=None`` the map runs autonomously (``s = x[2]``);
@@ -290,7 +290,7 @@ def henon_order_n(
     for i in range(steps):
         s_i = float(driving[i]) if driving is not None else state[2, i]
         output[i] = state[2, i]
-        henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
+        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
     return state, output
 
 
