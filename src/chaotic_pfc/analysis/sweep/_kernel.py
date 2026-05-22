@@ -175,7 +175,7 @@ def _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
     x_out = xx[1 - tick]
 
     c0 = c[0]
-    c1 = c[1] if Ns >= 2 else 0.0
+    c1 = c[1] if len(c) >= 2 else 0.0
     z_lin = c0 * x_in[0] + c1 * x_in[1]
     a = -2.0 * c0 * z_lin
     b_val = -2.0 * c1 * z_lin + beta
@@ -305,7 +305,7 @@ def _sweep_kernel(
         p1 = 0.0
         p2 = 0.0
         p3 = 0.0
-        if Ns >= 2 and gain != 0.0:
+        if abs(gain) > 1e-15:
             disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
             p1 = (-(1.0 - beta) + disc**0.5) / (2.0 * gain**2)
             p2 = p1
@@ -330,7 +330,7 @@ def _sweep_kernel(
 
             if Ns <= 2:
                 if Ns == 1:
-                    xx[0, 0] = 0.1 * noise[0]
+                    xx[0, 0] = 0.1 * noise[0] + p1
                     xx[0, 1] = 0.0
                 else:
                     xx[0, 0] = 0.1 * noise[0] + p1

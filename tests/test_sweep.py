@@ -614,6 +614,23 @@ class TestKernelFunctions(unittest.TestCase):
         self.assertEqual(len(task), len(orders) * 5)
         self.assertEqual(len(set(task)), len(task))  # all unique
 
+    def test_ns1_sweep_produces_finite_lyapunov(self):
+        """Ns=1 should produce a finite Lyapunov exponent, not NaN/Inf."""
+        from chaotic_pfc.analysis.sweep import run_sweep
+
+        result = run_sweep(
+            window="hamming",
+            filter_type="lowpass",
+            orders=[1],
+            cutoffs=np.linspace(0.1, 0.9, 3),
+            Nitera=50,
+            Nmap=100,
+            n_initial=2,
+            seed=42,
+        )
+        self.assertTrue(np.all(np.isfinite(result.h)), "Ns=1 produced NaN/Inf Lyapunov")
+        self.assertTrue(np.all(np.isfinite(result.n_iters_used)))
+
 
 if __name__ == "__main__":
     unittest.main()
