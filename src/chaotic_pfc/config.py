@@ -53,7 +53,7 @@ class CommConfig:
         computing the MSE metric. Lets the local oscillator lock into
         synchronisation.
     henon
-        Nested Hénon parameters (α, β).
+        Nested Hénon parameters (a, b).
     """
 
     N: int = 1_000_000
@@ -152,6 +152,10 @@ class LyapunovConfig:
         sharper and the dynamics more dissipative.
     w0
         Normalised angular frequency of the pole pair (``× π``).
+    n_ci
+        Number of initial conditions for the ensemble protocol.
+    data_dir
+        Directory for ensemble CSV output.
     """
 
     Nitera: int = 2000
@@ -206,6 +210,9 @@ class SweepConfig:
         Output formats produced by the plot script. Tuple because both
         PNG (quick preview, GitHub render) and SVG (paper-grade) are
         useful to have in parallel.
+    bandwidth
+        Pass-band width as a fraction of the Nyquist frequency
+        (used for bandpass/bandstop filter types).
     """
 
     Nitera: int = 500
