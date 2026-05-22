@@ -2,6 +2,10 @@
 
 import unittest
 
+import matplotlib
+
+matplotlib.use("Agg")
+
 import numpy as np
 
 from chaotic_pfc._i18n import t
