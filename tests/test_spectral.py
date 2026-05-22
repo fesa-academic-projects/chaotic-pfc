@@ -20,7 +20,7 @@ matplotlib.use("Agg")
 import numpy as np
 
 from chaotic_pfc.analysis.sweep import precompute_fir_bank, run_sweep, save_sweep
-from chaotic_pfc.cli.sweep import _beta_values
+from chaotic_pfc.cli.sweep import beta_values
 from chaotic_pfc.config import DEFAULT_CONFIG
 from chaotic_pfc.dynamics.spectral import _WINDOWS, psd_normalised
 
@@ -148,25 +148,25 @@ class TestSweepKaiserBeta(unittest.TestCase):
 
 class TestBetaValues(unittest.TestCase):
     def test_default_range_gives_25_values(self):
-        betas = _beta_values(2.0, 14.0, 0.5)
+        betas = beta_values(2.0, 14.0, 0.5)
         self.assertEqual(len(betas), 25)
         self.assertEqual(betas[0], 2.0)
         self.assertEqual(betas[-1], 14.0)
 
     def test_step_must_be_positive(self):
         with self.assertRaises(ValueError):
-            _beta_values(0.0, 1.0, 0.0)
+            beta_values(0.0, 1.0, 0.0)
 
     def test_negative_min_raises(self):
         with self.assertRaises(ValueError):
-            _beta_values(-0.1, 1.0, 0.05)
+            beta_values(-0.1, 1.0, 0.05)
 
     def test_max_below_min_raises(self):
         with self.assertRaises(ValueError):
-            _beta_values(1.0, 0.5, 0.05)
+            beta_values(1.0, 0.5, 0.05)
 
     def test_custom_range(self):
-        betas = _beta_values(0.0, 1.0, 0.05)
+        betas = beta_values(0.0, 1.0, 0.05)
         self.assertEqual(len(betas), 21)
 
 
