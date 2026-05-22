@@ -17,7 +17,6 @@ _WINDOWS = {
     "hamming": windows.hamming,
     "hann": windows.hann,
     "blackman": windows.blackman,
-    "kaiser": windows.kaiser,
     "blackmanharris": windows.blackmanharris,
     "boxcar": windows.boxcar,
     "bartlett": windows.bartlett,
@@ -84,8 +83,8 @@ def psd_normalised(
     """
     if remove_dc:
         x = x - np.mean(x)
-    if window not in _WINDOWS:
-        raise ValueError(f"window must be one of {sorted(_WINDOWS)}, got {window!r}")
+    if window not in _WINDOWS and window != "kaiser":
+        raise ValueError(f"window must be one of {sorted(_WINDOWS) + ['kaiser']}, got {window!r}")
     if window == "kaiser":
         if kaiser_beta < 0:
             raise ValueError(f"kaiser_beta must be >= 0, got {kaiser_beta!r}")
