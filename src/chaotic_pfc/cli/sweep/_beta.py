@@ -63,7 +63,7 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction) -> None:
     p.set_defaults(_run=run_beta_sweep)
 
 
-def _beta_values(beta_min: float, beta_max: float, beta_step: float) -> list[float]:
+def beta_values(beta_min: float, beta_max: float, beta_step: float) -> list[float]:
     """Build the inclusive β grid, validating the range."""
     import numpy as np
 
@@ -84,7 +84,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
 
     from chaotic_pfc.analysis.sweep import quick_sweep_params, run_sweep, save_sweep
 
-    betas = _beta_values(args.beta_min, args.beta_max, args.beta_step)
+    betas = beta_values(args.beta_min, args.beta_max, args.beta_step)
     data_dir = Path(args.data_dir)
 
     if args.quick:

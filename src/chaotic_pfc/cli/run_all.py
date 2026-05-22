@@ -54,7 +54,7 @@ from chaotic_pfc.analysis.sweep import (
     run_sweep,
     save_sweep,
 )
-from chaotic_pfc.cli.sweep import _beta_values
+from chaotic_pfc.cli.sweep import beta_values
 from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 
 from . import attractors, comm_fir, comm_ideal, comm_order_n, lyapunov, sensitivity
@@ -177,7 +177,7 @@ def _run_all_sweeps(
     total_start = time.perf_counter()
 
     # Build the full sweep list: (window, filter_type, beta_or_None)
-    betas = _beta_values(2.0, 14.0, 0.5)
+    betas = beta_values(2.0, 14.0, 0.5)
     kaiser_dir = Path("data/sweeps/kaiser")
     sweeps: list[tuple[str, str, float | None]] = []
     for window in WINDOWS:

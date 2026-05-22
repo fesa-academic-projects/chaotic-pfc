@@ -21,7 +21,7 @@ from __future__ import annotations
 import argparse
 
 from ._beta import _add_beta_sweep_parser
-from ._beta import _beta_values as _beta_values
+from ._beta import beta_values as beta_values
 from ._beta import run_beta_sweep as run_beta_sweep
 from ._compute import _add_compute_parser
 from ._compute import run_compute as run_compute
