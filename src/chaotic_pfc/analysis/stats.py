@@ -106,7 +106,12 @@ def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
 
 
 def _safe_stats(h: NDArray) -> tuple[float, float]:
-    """Mean and max of *h* ignoring NaN and Inf."""
+    """Mean and max of *h* ignoring NaN and Inf.
+
+    Returns ``(NaN, NaN)`` when all entries of *h* are non-finite
+    (e.g. a fully-divergent sweep).  Callers are expected to handle
+    this gracefully when formatting output.
+    """
     finite = h[np.isfinite(h)]
     if finite.size == 0:
         return float("nan"), float("nan")
@@ -281,6 +286,7 @@ def beta_curve(
     """Return (betas, pct_chaotic) arrays for a single filter type.
 
     Useful for plotting the β-dependence of chaotic coverage.
+    Returns empty arrays when *filter_type* is absent from the data.
     """
     summary = beta_summary(data_dir)
     if filter_type not in summary:
