@@ -22,8 +22,6 @@ returns its filter coefficients so they can be overlaid on the PSD
 plots produced by :mod:`chaotic_pfc.plotting`.
 """
 
-from functools import lru_cache
-
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin, lfilter
@@ -215,20 +213,3 @@ def channel_multipath(
             out[d:] += g * sig[: N - d]
     out *= float(np.sqrt(np.mean(sig**2))) / (float(np.std(out)) + 1e-12)
     return awgn(out, snr_db, rng)
-
-
-def _wifi_interferer(
-    N: int, fc: float = 0.2, bw: float = 0.08, rng: np.random.Generator | None = None
-) -> NDArray:
-    """Synthetic narrow-band interferer (noise filtered in a sub-band)."""
-    if rng is None:
-        rng = np.random.default_rng()
-    noise = rng.normal(0, 1, N)
-    h_bp = _wifi_fir(fc, bw)
-    return lfilter(h_bp, 1.0, noise)
-
-
-@lru_cache(maxsize=4)
-def _wifi_fir(fc: float, bw: float) -> NDArray:
-    """Cached FIR band-pass filter for the WiFi-like interferer."""
-    return firwin(101, [fc - bw / 2, fc + bw / 2], pass_zero=False)
