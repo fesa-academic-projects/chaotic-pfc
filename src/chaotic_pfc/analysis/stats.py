@@ -130,7 +130,7 @@ def summary_table(
     This is the foundation of all downstream analyses — every other
     public function in this module either calls or derives from this table.
     """
-    rows: list[dict] = []
+    rows: list[dict] = []  # type: ignore[var-annotated]
     for result in _discover_all(data_dir):
         h = result.h
         chaotic = np.sum((~np.isnan(h)) & (h > 0))

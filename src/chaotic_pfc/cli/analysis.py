@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from chaotic_pfc.analysis.stats import OptimalParams
 from chaotic_pfc.analysis.sweep import FILTER_TYPES
 
 
@@ -157,8 +158,9 @@ def run(args: argparse.Namespace) -> int:
 
     _hr("OPTIMAL PARAMETERS (highest finite λ_max)")
     for rank, row in enumerate(optimal_parameters(data_dir, top_n=5), start=1):
+        row_opt: OptimalParams = row  # type narrowing
         print(
-            f"  {rank}. {row['window']:<15} / {row['filter_type']:<10}  order={row['order']:>3}  ωc={row['cutoff']:.4f}  λ_max={row['lmax']:.6f}"
+            f"  {rank}. {row_opt['window']:<15} / {row_opt['filter_type']:<10}  order={row_opt['order']:>3}  ωc={row_opt['cutoff']:.4f}  λ_max={row_opt['lmax']:.6f}"
         )
 
     # ── 9. Beta sweep ──────────────────────────────────────────────────
