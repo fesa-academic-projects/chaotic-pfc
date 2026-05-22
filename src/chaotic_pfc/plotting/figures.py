@@ -230,7 +230,47 @@ def plot_comm_grid(
     If h_channel is provided, its frequency response is overlaid on PSD_s.
 
     The *opts* dataclass overrides individual keyword arguments when both
-    are provided.
+    are provided.  See :class:`PlotGridOptions` for grouped defaults.
+
+    Parameters
+    ----------
+    n
+        Sample indices, shape ``(N,)``.
+    m
+        Original message, shape ``(N,)``.
+    s
+        Transmitted (modulated) signal, shape ``(N,)``.
+    r
+        Received signal after the channel, shape ``(N,)``.
+    m_hat
+        Recovered message estimate, shape ``(N,)``.
+    omega
+        Normalised frequency axis from :func:`psd_normalised`.
+    psd_m, psd_s, psd_r, psd_mhat
+        PSD of each signal (same length as *omega*).
+    opts
+        :class:`PlotGridOptions` dataclass with default axis limits,
+        time window, and title.  Individual keyword arguments override
+        the corresponding *opts* fields.
+    time_window
+        Python ``slice`` selecting which sample range to plot in the
+        time-domain panels.
+    suptitle
+        Figure-level title.  Overrides ``opts.suptitle`` unless empty.
+    y_lim_msg, y_lim_sig, y_lim_mhat
+        Y-axis limits for the time-domain panels.  *y_lim_mhat* defaults
+        to *y_lim_msg* unless explicitly set.
+    h_channel
+        FIR coefficients for overlaying the channel frequency response
+        on PSD_s.
+    save_path
+        If provided, the figure is saved to this path via ``_save()``.
+    lang
+        Language for axis labels (``"pt"`` or ``"en"``).
+
+    Returns
+    -------
+    matplotlib.figure.Figure
     """
     if opts is not None:
         if time_window is None or time_window == slice(0, 300):
