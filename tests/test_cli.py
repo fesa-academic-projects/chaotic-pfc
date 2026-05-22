@@ -4,6 +4,8 @@ import io
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 
+import pytest
+
 from chaotic_pfc.cli import build_parser, main
 
 
@@ -109,6 +111,7 @@ class TestSweepComputeSmokeTest(unittest.TestCase):
     works without shelling out to subprocess.
     """
 
+    @pytest.mark.slow
     def test_sweep_compute_quick_creates_npz(self):
         import shutil
         import tempfile
