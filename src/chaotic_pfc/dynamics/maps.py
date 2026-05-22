@@ -81,8 +81,14 @@ def henon_standard(
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
     for i in range(steps):
-        X[i + 1] = 1.0 - a * X[i] ** 2 + Y[i]
-        Y[i + 1] = b * X[i]
+        xn = 1.0 - a * X[i] ** 2 + Y[i]
+        yn = b * X[i]
+        if not (np.isfinite(xn) and np.isfinite(yn)):
+            X[i + 1 :] = np.nan
+            Y[i + 1 :] = np.nan
+            break
+        X[i + 1] = xn
+        Y[i + 1] = yn
     return X, Y
 
 
@@ -117,8 +123,14 @@ def henon_generalised(
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
     for i in range(steps):
-        X[i + 1] = alpha - X[i] ** 2 + beta * Y[i]
-        Y[i + 1] = X[i]
+        xn = alpha - X[i] ** 2 + beta * Y[i]
+        yn = X[i]
+        if not (np.isfinite(xn) and np.isfinite(yn)):
+            X[i + 1 :] = np.nan
+            Y[i + 1 :] = np.nan
+            break
+        X[i + 1] = xn
+        Y[i + 1] = yn
     return X, Y
 
 
@@ -161,8 +173,14 @@ def henon_filtered(
     X[0], Y[0] = x0, y0
     for i in range(steps):
         z = c0 * X[i] + c1 * Y[i]
-        X[i + 1] = alpha - z**2 + beta * Y[i]
-        Y[i + 1] = X[i]
+        xn = alpha - z**2 + beta * Y[i]
+        yn = X[i]
+        if not (np.isfinite(xn) and np.isfinite(yn)):
+            X[i + 1 :] = np.nan
+            Y[i + 1 :] = np.nan
+            break
+        X[i + 1] = xn
+        Y[i + 1] = yn
     return X, Y
 
 
