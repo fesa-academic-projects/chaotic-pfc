@@ -41,7 +41,7 @@ else:
 
     def prange(stop: int, *args, **kwargs) -> range:
         """Fallback for ``numba.prange`` — behaves like ``builtins.range``."""
-        return builtins.range(stop)
+        return builtins.range(stop, *args)
 
     def get_num_threads() -> int:
         """Fallback for ``numba.get_num_threads`` — single-threaded."""
