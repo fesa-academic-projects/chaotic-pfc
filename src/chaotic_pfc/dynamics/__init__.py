@@ -1,5 +1,7 @@
 """Chaotic dynamics: maps, Lyapunov exponents, signals, and spectral analysis."""
 
+from __future__ import annotations
+
 from .lyapunov import (
     EnsembleResult,
     LyapunovResult,

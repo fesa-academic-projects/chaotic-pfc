@@ -27,6 +27,8 @@ initial condition is needed (``transmit_order_n`` with ``x0=None``), a
 ``seed`` parameter exposes the RNG so callers can reproduce results.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 

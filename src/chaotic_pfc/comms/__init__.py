@@ -1,5 +1,7 @@
 """Chaotic communication: transmitter, channel, and receiver."""
 
+from __future__ import annotations
+
 from ..dynamics.maps import henon_fir_sequence
 from .channel import awgn, channel_impulsive, channel_multipath, fir_channel, ideal_channel
 from .protocols import Channel, Receiver, Transmitter

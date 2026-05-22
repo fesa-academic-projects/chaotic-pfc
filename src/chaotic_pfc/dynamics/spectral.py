@@ -9,6 +9,8 @@ project: peak-normalised magnitude, and the frequency axis expressed as
 ``ω/π ∈ [0, 1]`` rather than cycles or hertz.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import welch, windows

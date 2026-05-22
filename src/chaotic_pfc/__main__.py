@@ -10,6 +10,8 @@ minimal avoids any temptation to grow a second, divergent command
 hierarchy here.
 """
 
+from __future__ import annotations
+
 import sys
 
 from .cli import main

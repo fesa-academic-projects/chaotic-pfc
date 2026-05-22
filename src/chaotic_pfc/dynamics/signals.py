@@ -15,6 +15,8 @@ Both functions return NumPy arrays of length ``N`` so they can be fed
 directly to :func:`chaotic_pfc.comms.transmitter.transmit`.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 

@@ -4,6 +4,8 @@ chaotic_pfc
 Chaotic communication system based on the Henon map.
 """
 
+from __future__ import annotations
+
 from chaotic_pfc._version import __version__
 from chaotic_pfc.analysis.stats import (
     best_chaos_preserving,

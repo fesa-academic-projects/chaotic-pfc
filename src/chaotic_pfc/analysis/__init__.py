@@ -1,5 +1,7 @@
 """Sweep analysis and statistical post-processing."""
 
+from __future__ import annotations
+
 from .stats import (
     best_chaos_preserving,
     beta_curve,

@@ -43,6 +43,8 @@ Four Henon map variants and one chaotic-sequence generator are provided:
   FIR-filtered Hénon map.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin

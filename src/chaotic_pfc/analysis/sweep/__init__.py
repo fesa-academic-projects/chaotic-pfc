@@ -20,6 +20,8 @@ The public API is small:
   — the catalogue of supported configurations.
 """
 
+from __future__ import annotations
+
 from ._io import _infer_config_from_path, load_sweep, save_sweep
 from ._kernel import _build_task_order
 from ._orchestration import (

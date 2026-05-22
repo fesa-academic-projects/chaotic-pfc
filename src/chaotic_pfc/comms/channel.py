@@ -22,6 +22,8 @@ returns its filter coefficients so they can be overlaid on the PSD
 plots produced by :mod:`chaotic_pfc.plotting`.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin, lfilter

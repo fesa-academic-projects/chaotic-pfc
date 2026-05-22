@@ -29,6 +29,8 @@ Two receivers are provided, mirroring
   with ``y_1`` replaced by ``v = y[2]``.
 """
 
+from __future__ import annotations
+
 import numpy as np
 from numpy.typing import NDArray
 
