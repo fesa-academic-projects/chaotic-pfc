@@ -47,7 +47,7 @@ def transmit(
     ----------
     message
         Message samples ``m[n]``, shape ``(N,)``. Typically produced by
-        :func:`chaotic_pfc.signals.binary_message`.
+        :func:`chaotic_pfc.dynamics.signals.binary_message`.
     mu
         Modulation depth. Small values (≪ 1) keep the Hénon dynamics
         near their autonomous regime, which is important for reliable

@@ -103,7 +103,7 @@ msgstr ""
 #: chaotic_pfc.comms.transmitter.transmit:3 of
 msgid ""
 "Message samples ``m[n]``, shape ``(N,)``. Typically produced by "
-":func:`chaotic_pfc.signals.binary_message`."
+":func:`chaotic_pfc.dynamics.signals.binary_message`."
 msgstr ""
 
 #: chaotic_pfc.comms.transmitter.transmit:5 of
