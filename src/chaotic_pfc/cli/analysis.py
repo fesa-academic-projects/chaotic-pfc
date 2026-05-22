@@ -145,7 +145,9 @@ def run(args: argparse.Namespace) -> int:
         d_ci = ci[ft]
         if "mean" not in d_ci:
             continue
-        print(f"  {ft:<12} {d_ci['mean']:>8.4f} {d_ci['ci_low']:>9.4f} {d_ci['ci_high']:>9.4f} {d_ci['n']:>7,}")
+        print(
+            f"  {ft:<12} {d_ci['mean']:>8.4f} {d_ci['ci_low']:>9.4f} {d_ci['ci_high']:>9.4f} {d_ci['n']:>7,}"
+        )
 
     # ── 8. Best and optimal ────────────────────────────────────────────
     _hr("TOP 5 — HIGHEST % CHAOTIC")
