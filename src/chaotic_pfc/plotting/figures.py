@@ -217,9 +217,9 @@ def plot_comm_grid(
     opts: PlotGridOptions | None = None,
     time_window: slice = slice(0, 300),
     suptitle: str = "",
-    y_lim_msg: tuple[float, float] = _UNSET,
-    y_lim_sig: tuple[float, float] = _UNSET,
-    y_lim_mhat: tuple[float, float] | None = _UNSET,
+    y_lim_msg: tuple[float, float] = _UNSET,  # type: ignore[assignment]
+    y_lim_sig: tuple[float, float] = _UNSET,  # type: ignore[assignment]
+    y_lim_mhat: tuple[float, float] | None = _UNSET,  # type: ignore[assignment]
     h_channel: NDArray | None = None,
     save_path: str | None = None,
     lang: str = "pt",

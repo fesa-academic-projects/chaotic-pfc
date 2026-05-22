@@ -130,7 +130,7 @@ def summary_table(
     This is the foundation of all downstream analyses — every other
     public function in this module either calls or derives from this table.
     """
-    rows: list[dict] = []  # type: ignore[var-annotated]
+    rows: list[dict] = []
     for result in _discover_all(data_dir):
         h = result.h
         chaotic = np.sum((~np.isnan(h)) & (h > 0))
@@ -153,7 +153,7 @@ def summary_table(
             "beta": result.metadata.get("kaiser_beta"),
         }
         rows.append(row)
-    return rows
+    return rows  # type: ignore[return-value]
 
 
 def best_chaos_preserving(
@@ -179,11 +179,11 @@ def compare_filter_types(
     percentages and lambda_max across all windows that use that filter type.
     """
     rows = summary_table(data_dir)
-    agg: dict[str, list[dict]] = {ft: [] for ft in FILTER_TYPES}
+    agg: dict[str, list[SummaryRow]] = {ft: [] for ft in FILTER_TYPES}
     for row in rows:
         agg[row["filter_type"]].append(row)
 
-    out: dict[str, dict] = {}
+    out: dict[str, FilterTypeAggregate] = {}
     for ft, entries in agg.items():
         if not entries:
             out[ft] = {}
@@ -232,7 +232,7 @@ def optimal_parameters(
                 )
 
     best.sort(key=lambda x: x["lmax"], reverse=True)
-    return best[:top_n]
+    return best[:top_n]  # type: ignore[return-value]
 
 
 def export_summary_json(
@@ -489,4 +489,4 @@ def bootstrap_confidence(
             "ci_high": round(float(np.percentile(means, 97.5)), 4),
             "n": len(arr),
         }
-    return out
+    return out  # type: ignore[return-value]

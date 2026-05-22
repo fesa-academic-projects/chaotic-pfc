@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from chaotic_pfc.analysis.stats import OptimalParams
+from chaotic_pfc.analysis.stats import SummaryRow
 from chaotic_pfc.analysis.sweep import FILTER_TYPES
 
 
@@ -71,7 +71,7 @@ def run(args: argparse.Namespace) -> int:
     print("  " + "-" * 62)
     from chaotic_pfc.analysis.stats import summary_table
 
-    agg: dict[str, list[dict]] = {}
+    agg: dict[str, list[SummaryRow]] = {}
     for row in summary_table(data_dir):
         agg.setdefault(row["filter_type"], []).append(row)
 
@@ -92,9 +92,7 @@ def run(args: argparse.Namespace) -> int:
     _hr("λ_max DISTRIBUTION BY FILTER")
     dist = lmax_distribution(data_dir)
     for ft in FILTER_TYPES:
-        d = dist.get(ft, {})
-        if not d:
-            continue
+        d = dist[ft]
         print(
             f"  {ft:<12}  n={d['n']:>7,}  μ={d['mean']:>8.4f}  σ={d['std']:>7.4f}  "
             f"skewness={d['skewness']:>7.4f}"
@@ -144,10 +142,10 @@ def run(args: argparse.Namespace) -> int:
     print(f"  {'Filter':<12} {'Mean':>8} {'CI 2.5%':>9} {'CI 97.5%':>9} {'n':>7}")
     print("  " + "-" * 48)
     for ft in FILTER_TYPES:
-        d = ci.get(ft, {})
-        if not d:
+        d_ci = ci[ft]
+        if "mean" not in d_ci:
             continue
-        print(f"  {ft:<12} {d['mean']:>8.4f} {d['ci_low']:>9.4f} {d['ci_high']:>9.4f} {d['n']:>7,}")
+        print(f"  {ft:<12} {d_ci['mean']:>8.4f} {d_ci['ci_low']:>9.4f} {d_ci['ci_high']:>9.4f} {d_ci['n']:>7,}")
 
     # ── 8. Best and optimal ────────────────────────────────────────────
     _hr("TOP 5 — HIGHEST % CHAOTIC")
@@ -157,10 +155,9 @@ def run(args: argparse.Namespace) -> int:
         )
 
     _hr("OPTIMAL PARAMETERS (highest finite λ_max)")
-    for rank, row in enumerate(optimal_parameters(data_dir, top_n=5), start=1):
-        row_opt: OptimalParams = row  # type narrowing
+    for rank, opt_row in enumerate(optimal_parameters(data_dir, top_n=5), start=1):
         print(
-            f"  {rank}. {row_opt['window']:<15} / {row_opt['filter_type']:<10}  order={row_opt['order']:>3}  ωc={row_opt['cutoff']:.4f}  λ_max={row_opt['lmax']:.6f}"
+            f"  {rank}. {opt_row['window']:<15} / {opt_row['filter_type']:<10}  order={opt_row['order']:>3}  ωc={opt_row['cutoff']:.4f}  λ_max={opt_row['lmax']:.6f}"
         )
 
     # ── 9. Beta sweep ──────────────────────────────────────────────────
