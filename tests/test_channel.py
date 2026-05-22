@@ -35,14 +35,16 @@ class TestIdealChannel(unittest.TestCase):
         self.assertEqual(s[0], 1.0)
 
     def test_preserves_length(self):
+        rng = np.random.default_rng(42)
         for N in (0, 1, 10, 1000):
-            s = np.random.randn(N)
+            s = rng.standard_normal(N)
             self.assertEqual(len(ideal_channel(s)), N)
 
 
 class TestFirChannel(unittest.TestCase):
     def test_output_shape(self):
-        s = np.random.randn(500)
+        rng = np.random.default_rng(42)
+        s = rng.standard_normal(500)
         r, h = fir_channel(s, cutoff=0.5, num_taps=21)
         self.assertEqual(r.shape, (500,))
         self.assertEqual(h.shape, (21,))

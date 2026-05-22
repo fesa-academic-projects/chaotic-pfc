@@ -16,8 +16,9 @@ from chaotic_pfc.plotting.figures import (
 
 class TestPlottingSmoke(unittest.TestCase):
     def test_plot_attractor_returns_figure(self):
-        X = np.random.randn(100)
-        Y = np.random.randn(100)
+        rng = np.random.default_rng(42)
+        X = rng.standard_normal(100)
+        Y = rng.standard_normal(100)
         fig = plot_attractor(X, Y)
         self.assertIsNotNone(fig)
         import matplotlib.pyplot as plt
@@ -26,8 +27,9 @@ class TestPlottingSmoke(unittest.TestCase):
 
     def test_plot_sensitivity_returns_figure(self):
         n = np.arange(50)
-        X1 = np.random.randn(50)
-        X2 = np.random.randn(50)
+        rng = np.random.default_rng(42)
+        X1 = rng.standard_normal(50)
+        X2 = rng.standard_normal(50)
         fig = plot_sensitivity(n, X1, X2)
         self.assertIsNotNone(fig)
         import matplotlib.pyplot as plt
@@ -37,10 +39,11 @@ class TestPlottingSmoke(unittest.TestCase):
     def test_plot_comm_grid_returns_figure(self):
         N = 5000
         n = np.arange(N)
-        m = np.random.randn(N)
-        s = np.random.randn(N)
-        r = np.random.randn(N)
-        m_hat = np.random.randn(N)
+        rng = np.random.default_rng(42)
+        m = rng.standard_normal(N)
+        s = rng.standard_normal(N)
+        r = rng.standard_normal(N)
+        m_hat = rng.standard_normal(N)
         omega, psd_m = psd_normalised(m)
         _, psd_s = psd_normalised(s)
         _, psd_r = psd_normalised(r)
@@ -54,10 +57,11 @@ class TestPlottingSmoke(unittest.TestCase):
     def test_plot_comm_grid_i18n_lang(self):
         N = 5000
         n = np.arange(N)
-        m = np.random.randn(N)
-        s = np.random.randn(N)
-        r = np.random.randn(N)
-        m_hat = np.random.randn(N)
+        rng = np.random.default_rng(42)
+        m = rng.standard_normal(N)
+        s = rng.standard_normal(N)
+        r = rng.standard_normal(N)
+        m_hat = rng.standard_normal(N)
         omega, psd_m = psd_normalised(m)
         _, psd_s = psd_normalised(s)
         _, psd_r = psd_normalised(r)
