@@ -5,7 +5,7 @@
 # Regenerate with:
 #
 #   python -m venv /tmp/lock-venv
-#   /tmp/lock-venv/bin/pip install -e ".[dev]"
+#   /tmp/lock-venv/bin/pip install -e ".[dev,fast]"
 #   /tmp/lock-venv/bin/pip freeze --exclude-editable > requirements-lock.txt
 #
 # Install with:
