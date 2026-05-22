@@ -12,7 +12,7 @@ Two waveforms are provided:
   spectral-response measurements.
 
 Both functions return NumPy arrays of length ``N`` so they can be fed
-directly to :func:`chaotic_pfc.transmitter.transmit`.
+directly to :func:`chaotic_pfc.comms.transmitter.transmit`.
 """
 
 import numpy as np
@@ -24,7 +24,7 @@ def binary_message(N: int, period: int = 20) -> NDArray:
 
     The output takes values in ``{+1, -1}``, with the first half of each
     period at ``+1`` and the second half at ``-1``. This is the standard
-    BPSK-style message used by :func:`chaotic_pfc.transmitter.transmit`.
+    BPSK-style message used by :func:`chaotic_pfc.comms.transmitter.transmit`.
 
     Parameters
     ----------
