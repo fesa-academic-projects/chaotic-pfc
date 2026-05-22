@@ -257,7 +257,7 @@ def run_sweep(
         )
 
     h, h_std, n_iters_used = _sweep_kernel(
-        orders_arr.astype(np.float64),
+        orders_arr,
         cutoffs_arr,
         fir_bank,
         gains,
