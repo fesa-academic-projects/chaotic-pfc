@@ -313,6 +313,19 @@ def run(args: argparse.Namespace) -> int:
             )
         )
 
+    # ── 5) Chaotic union figures (10) ─────────────────────────────────────
+    _banner("10")
+    from chaotic_pfc.analysis.sweep_plotting import plot_chaotic_all
+
+    chaotic_paths = plot_chaotic_all(
+        "data/sweeps",
+        out_dir="figures/sweeps",
+        close_figures=True,
+        lang=getattr(args, "lang", "pt"),
+    )
+    for p in chaotic_paths:
+        print(f"    Saved -> {p}")
+
     print("\nAll experiments completed successfully.")
     return 0
 

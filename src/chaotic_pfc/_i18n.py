@@ -74,6 +74,18 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": "Órbitas não-limitadas",
         "en": "Unbounded orbits",
     },
+    "sweep.chaotic_map.title": {
+        "pt": "Mapa de Regiões Caóticas — União entre Todas as Configurações",
+        "en": "Chaotic Regions Map — Union across All Configurations",
+    },
+    "sweep.chaotic_density.title": {
+        "pt": "Densidade de Caos — Concordância entre Configurações",
+        "en": "Chaos Density — Agreement across Configurations",
+    },
+    "sweep.chaotic_density.cbar": {
+        "pt": "Número de configurações caóticas",
+        "en": "Number of chaotic configurations",
+    },
 }
 
 

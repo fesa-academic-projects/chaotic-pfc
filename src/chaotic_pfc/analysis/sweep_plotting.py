@@ -37,7 +37,7 @@ from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
 from chaotic_pfc._i18n import t
-from chaotic_pfc.analysis.sweep import SweepResult
+from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
 
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
 from chaotic_pfc.plotting.figures import _save as _figures_save
@@ -272,13 +272,13 @@ def plot_classification_interleaved(
             tick_labels.append(str(nz_val))
 
     ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_labels, fontsize=11)
-    ax.tick_params(labelsize=11)
+    ax.set_xticklabels(tick_labels, fontsize=12)
+    ax.tick_params(labelsize=12)
     ax.set_xlim(-0.5, total_slots - 0.5)
 
     ax.legend(
         handles=_build_legend_handles(lang),
-        fontsize=9,
+        fontsize=10,
         loc="upper right",
         framealpha=0.95,
         edgecolor="gray",
@@ -401,6 +401,356 @@ def plot_difficulty_map(
     fig.tight_layout()
     _save(fig, save_path)
     return fig
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 4. Chaotic-region union & density maps — all windows × filters overlaid
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArray]:
+    """Load all sweeps under *sweep_dir* and unify to the finest grid.
+
+    Returns (sweeps, Nz, cutoffs) where every sweep has been resampled
+    (nearest-neighbour for orders) to match the largest grid found.
+    """
+    raw: list[SweepResult] = []
+    for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
+        try:
+            raw.append(load_sweep(npz_path))
+        except Exception:
+            continue
+    if not raw:
+        raise FileNotFoundError(
+            f"No sweeps found under {sweep_dir}. "
+            f"Expected subdirectories like '<Window> (<ft>)/variables_lyapunov.npz'."
+        )
+
+    # Determine finest grid (largest number of orders)
+    ref = max(raw, key=lambda sr: len(sr.orders))
+    Nz_fine = np.asarray(ref.orders) - 1
+    cutoffs = np.asarray(ref.cutoffs)
+
+    unified: list[SweepResult] = []
+    for sr in raw:
+        if sr.orders.shape == ref.orders.shape and np.array_equal(sr.orders, ref.orders):
+            unified.append(sr)
+        else:
+            # Resample to fine grid via nearest-neighbour in order space
+            Nz_coarse = np.asarray(sr.orders) - 1
+            h_coarse = np.asarray(sr.h, dtype=np.float64)
+            h_fine = np.full((len(Nz_fine), len(cutoffs)), np.nan, dtype=np.float64)
+            for j, nz in enumerate(Nz_fine):
+                idx = np.argmin(np.abs(Nz_coarse - nz))
+                h_fine[j, :] = h_coarse[idx, :]
+            unified.append(
+                SweepResult(
+                    h=h_fine,
+                    h_std=np.full_like(h_fine, np.nan),
+                    orders=ref.orders.copy(),
+                    cutoffs=cutoffs.copy(),
+                    window=sr.window,
+                    filter_type=sr.filter_type,
+                    metadata=sr.metadata,
+                )
+            )
+    return unified, Nz_fine, cutoffs
+
+
+def _interleaved_expand(
+    data_2d: NDArray,
+    data_slots: int = 3,
+    gap_slots: int = 1,
+) -> NDArray:
+    """Expand (Ncoef, Ncut) into (total_slots, Ncut) with gap-NaN columns."""
+    Ncoef = data_2d.shape[0]
+    Ncut = data_2d.shape[1]
+    slot_total = data_slots + gap_slots
+    total_slots = Ncoef * slot_total
+    expanded = np.full((total_slots, Ncut), np.nan)
+    for i in range(Ncoef):
+        start = i * slot_total
+        for s in range(data_slots):
+            expanded[start + s, :] = data_2d[i, :]
+    return expanded
+
+
+def _setup_interleaved_axes(
+    ax: plt.Axes,
+    Nz: NDArray,
+    cutoffs: NDArray,
+    data_slots: int = 3,
+    gap_slots: int = 1,
+) -> None:
+    """Apply tick marks, vlines, and hlines for an interleaved heatmap."""
+    Ncoef = len(Nz)
+    slot_total = data_slots + gap_slots
+    total_slots = Ncoef * slot_total
+
+    ax.set_xlabel(r"$N_z$", fontsize=16)
+    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=16)
+    ax.set_yticks(_YTICKS)
+    ax.set_ylim(0.0, 1.0)
+    for yt in _YTICKS:
+        ax.axhline(y=yt, color="black", linewidth=0.4)
+
+    ax.grid(False)
+    for i in range(Ncoef + 1):
+        ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
+
+    tick_vals: Iterable[int] = [1, *list(range(5, int(Nz[-1]) + 1, 5))]
+    tick_positions: list[float] = []
+    tick_labels: list[str] = []
+    for nz_val in tick_vals:
+        idx = np.where(Nz == nz_val)[0]
+        if len(idx) > 0:
+            center = idx[0] * slot_total + (data_slots - 1) / 2.0
+            tick_positions.append(center)
+            tick_labels.append(str(nz_val))
+
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(tick_labels, fontsize=12)
+    ax.tick_params(labelsize=12)
+    ax.set_xlim(-0.5, total_slots - 0.5)
+
+
+def _save_both(fig: Figure, stem: Path) -> None:
+    """Save *fig* as both SVG and PNG from *stem*."""
+    _save(fig, stem.with_suffix(".svg"))
+    _save(fig, stem.with_suffix(".png"))
+
+
+def plot_chaotic_map(
+    sweep_dir: str | Path = "data/sweeps",
+    *,
+    save_path: str | Path | None = None,
+    color: str = COLOR_CHAOTIC,
+    data_slots: int = 3,
+    gap_slots: int = 1,
+    lang: str = "pt",
+) -> Figure:
+    """Binary union of chaotic regions across all window × filter sweeps.
+
+    At each grid point, if **any** sweep has λ_max > 0 the cell is
+    coloured; otherwise it is white.  The result is a single-colour
+    silhouette of the full chaotic envelope.  The interleaved-column
+    layout matches :func:`plot_classification_interleaved`.
+
+    Parameters
+    ----------
+    sweep_dir
+        Root directory with ``<Window> (<ft>)/variables_lyapunov.npz``
+        subdirectories.
+    save_path
+        If provided, saved as both ``.svg`` and ``.png`` (bare stem).
+    color
+        Matplotlib colour for chaotic cells (default: project red).
+    data_slots, gap_slots
+        Interleaved-column parameters.
+    lang
+        Language for labels (``"pt"`` or ``"en"``).
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+
+    See Also
+    --------
+    plot_chaotic_density
+        How many configurations agree on chaos at each grid point.
+    plot_classification_interleaved
+        Discrete-classification counterpart for a single sweep.
+    """
+    sweep_dir = Path(sweep_dir)
+    loaded, Nz, cutoffs = _discover_sweeps(sweep_dir)
+
+    # Binary union: 1 where any sweep is chaotic, NaN elsewhere
+    binary = np.zeros_like(loaded[0].h, dtype=np.float64)
+    for sr in loaded:
+        h_arr = np.asarray(sr.h, dtype=np.float64)
+        binary = np.where(h_arr > 0.0, 1.0, binary)
+    binary = np.where(binary > 0.0, binary, np.nan)
+
+    h_expanded = _interleaved_expand(binary, data_slots, gap_slots)
+    x_exp = np.arange(h_expanded.shape[0])
+
+    cmap_obj = mcolors.ListedColormap([color])
+    cmap_obj.set_bad("white")
+
+    fig, ax = plt.subplots(figsize=(12, 5))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
+    ax.pcolormesh(
+        x_exp,
+        cutoffs,
+        h_expanded.T,
+        cmap=cmap_obj,
+        shading="nearest",
+    )
+
+    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
+    ax.set_title(t("sweep.chaotic_map.title", lang=lang), fontsize=16, pad=14)
+
+    fig.tight_layout()
+    if save_path is not None:
+        _save_both(fig, Path(save_path))
+    return fig
+
+
+def plot_chaotic_density(
+    sweep_dir: str | Path = "data/sweeps",
+    *,
+    save_path: str | Path | None = None,
+    cmap: str = "viridis",
+    data_slots: int = 3,
+    gap_slots: int = 1,
+    lang: str = "pt",
+) -> Figure:
+    """Density map: how many window × filter configurations are chaotic.
+
+    At each grid point counts the number of sweeps (across all
+    windows, filter types, and Kaiser β values) for which
+    λ_max > 0.  Darker colours mean more configurations agree on
+    chaos; white means none do.  The interleaved-column layout matches
+    :func:`plot_classification_interleaved`.
+
+    Parameters
+    ----------
+    sweep_dir
+        Root directory with ``<Window> (<ft>)/variables_lyapunov.npz``
+        subdirectories.
+    save_path
+        If provided, saved as both ``.svg`` and ``.png`` (bare stem).
+    cmap
+        Sequential matplotlib colormap (default ``"viridis"``).
+    data_slots, gap_slots
+        Interleaved-column parameters.
+    lang
+        Language for labels (``"pt"`` or ``"en"``).
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+
+    See Also
+    --------
+    plot_chaotic_map
+        Binary union map (chaotic or not).
+    """
+    sweep_dir = Path(sweep_dir)
+    loaded, Nz, cutoffs = _discover_sweeps(sweep_dir)
+
+    # Count how many sweeps are chaotic at each grid point
+    count = np.zeros_like(loaded[0].h, dtype=np.float64)
+    for sr in loaded:
+        h_arr = np.asarray(sr.h, dtype=np.float64)
+        count += (h_arr > 0.0).astype(np.float64)
+
+    # Where count == 0 → white (NaN so set_bad kicks in)
+    density = np.where(count > 0, count, np.nan)
+    max_density = float(np.nanmax(density))
+    idx_flat = np.nanargmax(density)
+    idx_order, idx_cutoff = np.unravel_index(idx_flat, density.shape)
+
+    h_expanded = _interleaved_expand(density, data_slots, gap_slots)
+    x_exp = np.arange(h_expanded.shape[0])
+
+    cmap_obj = plt.get_cmap(cmap).copy()
+    cmap_obj.set_bad("white")
+
+    fig, ax = plt.subplots(figsize=(12, 5))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
+    pcm = ax.pcolormesh(
+        x_exp,
+        cutoffs,
+        h_expanded.T,
+        cmap=cmap_obj,
+        vmin=0.0,
+        vmax=max_density,
+        shading="nearest",
+    )
+    cbar = fig.colorbar(pcm, ax=ax)
+    cbar.set_label(t("sweep.chaotic_density.cbar", lang=lang), fontsize=13)
+    cbar.ax.tick_params(labelsize=11)
+
+    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
+    ax.set_title(t("sweep.chaotic_density.title", lang=lang), fontsize=16, pad=14)
+
+    # Mark point of maximum density
+    slot_total = data_slots + gap_slots
+    x_max = idx_order * slot_total + (data_slots - 1) / 2.0
+    y_max = cutoffs[idx_cutoff]
+    ax.plot(
+        x_max,
+        y_max,
+        marker="o",
+        markersize=10,
+        markerfacecolor="none",
+        markeredgecolor="black",
+        markeredgewidth=2.0,
+        linestyle="none",
+        zorder=10,
+    )
+
+    fig.tight_layout()
+    if save_path is not None:
+        _save_both(fig, Path(save_path))
+    return fig
+
+
+CHAOTIC_MAP_FILENAME: str = "fig_chaotic_map"
+CHAOTIC_DENSITY_FILENAME: str = "fig_chaotic_density"
+
+
+def plot_chaotic_all(
+    sweep_dir: str | Path = "data/sweeps",
+    *,
+    out_dir: str | Path = "figures/sweeps",
+    close_figures: bool = True,
+    lang: str = "pt",
+) -> list[Path]:
+    """Generate both cross-sweep chaotic figures and save to *out_dir*.
+
+    Produces :data:`CHAOTIC_MAP_FILENAME` and
+    :data:`CHAOTIC_DENSITY_FILENAME` as both ``.svg`` and ``.png``.
+    Returns the list of written paths.
+
+    Parameters
+    ----------
+    sweep_dir
+        Root directory with ``<Window> (<ft>)/variables_lyapunov.npz``
+        subdirectories.
+    out_dir
+        Output directory (created if missing).
+    close_figures
+        If True, close each figure after saving.
+    lang
+        Language for labels (``"pt"`` or ``"en"``).
+
+    Returns
+    -------
+    list[Path]
+    """
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+
+    for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME):
+        for ext in (".svg", ".png"):
+            paths.append(out_dir / f"{stem}{ext}")
+
+    fig = plot_chaotic_map(sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang)
+    if close_figures:
+        plt.close(fig)
+
+    fig = plot_chaotic_density(sweep_dir, save_path=out_dir / CHAOTIC_DENSITY_FILENAME, lang=lang)
+    if close_figures:
+        plt.close(fig)
+
+    return paths
 
 
 # ═══════════════════════════════════════════════════════════════════════════

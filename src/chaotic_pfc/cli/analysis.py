@@ -1,4 +1,4 @@
-"""Statistical analysis of sweep data."""
+"""Statistical analysis of sweep data and chaotic-region plotting."""
 
 from __future__ import annotations
 
@@ -10,12 +10,23 @@ from chaotic_pfc.analysis.sweep import FILTER_TYPES
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
-    """Register the ``run analysis`` subcommand."""
+    """Register the ``run analysis`` group with sub-subcommands."""
     p = subparsers.add_parser(
         "analysis",
-        help="Statistical analysis of Lyapunov sweep results.",
-        description="Summarise and rank sweep data: best filters, optimal parameters, beta curves.",
+        help="Statistical analysis of Lyapunov sweep results and chaotic-region figures.",
+        description="Summarise and rank sweep data or plot chaotic-region union/density maps.",
     )
+
+    # Optional sub-subcommands (plot-chaotic-regions, plot-chaotic-density)
+    analysis_sub = p.add_subparsers(
+        dest="analysis_action",
+        title="actions",
+        metavar="<action>",
+    )
+
+    _add_chaotic_plot_parsers(analysis_sub)
+
+    # Default: run statistical analysis (backward compatible)
     p.add_argument(
         "--data-dir", default="data/sweeps", help="Root sweep directory (default: data/sweeps)"
     )
@@ -28,6 +39,84 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Output JSON path (default: data/analysis_summary.json)",
     )
     p.set_defaults(_run=run)
+
+
+def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction) -> None:
+    """Register ``plot-chaotic-map`` and ``plot-chaotic-density``."""
+
+    p_cm = sub.add_parser(
+        "plot-chaotic-map",
+        help="Binary union of chaotic regions across all window × filter sweeps.",
+    )
+    p_cm.add_argument(
+        "--sweep-dir",
+        default="data/sweeps",
+        help="Root sweep directory (default: data/sweeps)",
+    )
+    p_cm.add_argument(
+        "--output",
+        default="figures/sweeps/fig_chaotic_map",
+        help="Output stem (default: figures/sweeps/fig_chaotic_map)",
+    )
+    p_cm.add_argument("--color", default="red", help="Colour for chaotic cells (default: red)")
+    p_cm.add_argument("--lang", default="pt", choices=["pt", "en"], help="Language (default: pt)")
+    p_cm.set_defaults(_run=_run_chaotic_map)
+
+    p_cd = sub.add_parser(
+        "plot-chaotic-density",
+        help="Chaos density — how many configurations agree at each grid point.",
+    )
+    p_cd.add_argument(
+        "--sweep-dir",
+        default="data/sweeps",
+        help="Root sweep directory (default: data/sweeps)",
+    )
+    p_cd.add_argument(
+        "--output",
+        default="figures/sweeps/fig_chaotic_density",
+        help="Output stem (default: figures/sweeps/fig_chaotic_density)",
+    )
+    p_cd.add_argument("--cmap", default="viridis", help="Colormap (default: viridis)")
+    p_cd.add_argument("--lang", default="pt", choices=["pt", "en"], help="Language (default: pt)")
+    p_cd.set_defaults(_run=_run_chaotic_density)
+
+
+def _run_chaotic_map(args: argparse.Namespace) -> int:
+    """Invoke :func:`~chaotic_pfc.analysis.sweep_plotting.plot_chaotic_map`."""
+    import matplotlib.pyplot as plt
+
+    from chaotic_pfc.analysis.sweep_plotting import plot_chaotic_map
+
+    fig = plot_chaotic_map(
+        args.sweep_dir,
+        save_path=args.output,
+        color=args.color,
+        lang=args.lang,
+    )
+    plt.close(fig)
+    stem = Path(args.output)
+    print(f"  Saved → {stem.with_suffix('.svg')}")
+    print(f"  Saved → {stem.with_suffix('.png')}")
+    return 0
+
+
+def _run_chaotic_density(args: argparse.Namespace) -> int:
+    """Invoke :func:`~chaotic_pfc.analysis.sweep_plotting.plot_chaotic_density`."""
+    import matplotlib.pyplot as plt
+
+    from chaotic_pfc.analysis.sweep_plotting import plot_chaotic_density
+
+    fig = plot_chaotic_density(
+        args.sweep_dir,
+        save_path=args.output,
+        cmap=args.cmap,
+        lang=args.lang,
+    )
+    plt.close(fig)
+    stem = Path(args.output)
+    print(f"  Saved → {stem.with_suffix('.svg')}")
+    print(f"  Saved → {stem.with_suffix('.png')}")
+    return 0
 
 
 def _hr(title: str = "", width: int = 68) -> None:

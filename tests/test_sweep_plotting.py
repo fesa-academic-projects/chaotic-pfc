@@ -11,12 +11,17 @@ matplotlib.use("Agg")  # must come before pyplot is imported anywhere
 import numpy as np
 
 from chaotic_pfc.analysis.sweep import SweepResult
+from chaotic_pfc.analysis.sweep._io import save_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
     DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
+    _discover_sweeps,
+    _interleaved_expand,
     _unpack,
     classify,
     plot_all,
+    plot_chaotic_density,
+    plot_chaotic_map,
     plot_classification_interleaved,
     plot_difficulty_map,
     plot_heatmap_continuous,
@@ -285,6 +290,99 @@ class TestUnpack(unittest.TestCase):
         np.testing.assert_array_equal(h_out, h_in)
         np.testing.assert_array_equal(Nz, np.array([1, 2]))
         np.testing.assert_array_equal(cutoffs, np.array([0.1, 0.9]))
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Chaotic-region union & density maps
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestChaoticRegions(unittest.TestCase):
+    """Tests for :func:`plot_chaotic_map` and :func:`plot_chaotic_density`."""
+
+    @staticmethod
+    def _make_sweep_dir(base: Path) -> Path:
+        """Create a minimal sweep directory with 2 windows × 2 filters."""
+        rng = np.random.default_rng(42)
+        for w_key, w_display in [("hamming", "Hamming"), ("hann", "Hann")]:
+            for ft in ("lowpass", "highpass"):
+                h = rng.uniform(-0.5, 0.5, size=(4, 6))
+                h[0, 0] = np.nan  # one divergent
+                sr = SweepResult(
+                    h=h,
+                    h_std=np.abs(h) * 0.1,
+                    orders=np.arange(2, 6, dtype=np.float64),
+                    cutoffs=np.linspace(0.1, 0.9, 6, dtype=np.float64),
+                    window=w_key,
+                    filter_type=ft,
+                    metadata={"Nitera": 10, "Nmap": 50},
+                )
+                out_dir = base / f"{w_display} ({ft})"
+                out_dir.mkdir(parents=True)
+                save_sweep(sr, out_dir / "variables_lyapunov.npz")
+        return base
+
+    def test_chaotic_map_saves_svg_and_png(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            stem = base / "fig_chaotic_map"
+            fig = plot_chaotic_map(sweep_dir, save_path=stem)
+            self.assertTrue(stem.with_suffix(".svg").exists())
+            self.assertTrue(stem.with_suffix(".png").exists())
+            self.assertGreater(stem.with_suffix(".svg").stat().st_size, 0)
+            self.assertGreater(stem.with_suffix(".png").stat().st_size, 0)
+            fig.clear()
+
+    def test_chaotic_density_saves_svg_and_png(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            stem = base / "fig_chaotic_density"
+            fig = plot_chaotic_density(sweep_dir, save_path=stem)
+            self.assertTrue(stem.with_suffix(".svg").exists())
+            self.assertTrue(stem.with_suffix(".png").exists())
+            self.assertGreater(stem.with_suffix(".svg").stat().st_size, 0)
+            self.assertGreater(stem.with_suffix(".png").stat().st_size, 0)
+            fig.clear()
+
+    def test_chaotic_map_raises_on_empty_dir(self):
+        with TemporaryDirectory() as td:
+            empty = Path(td) / "empty"
+            empty.mkdir()
+            with self.assertRaises(FileNotFoundError):
+                plot_chaotic_map(empty)
+
+    def test_chaotic_density_raises_on_empty_dir(self):
+        with TemporaryDirectory() as td:
+            empty = Path(td) / "empty"
+            empty.mkdir()
+            with self.assertRaises(FileNotFoundError):
+                plot_chaotic_density(empty)
+
+    def test_chaotic_map_returns_figure(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            fig = plot_chaotic_map(sweep_dir)
+            self.assertGreaterEqual(len(fig.axes), 1)  # ax (no cbar for binary)
+            fig.clear()
+
+    def test_chaotic_density_returns_figure(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            fig = plot_chaotic_density(sweep_dir)
+            self.assertGreaterEqual(len(fig.axes), 2)  # ax + cbar
+            fig.clear()
+
+    def test_interleaved_expand_shape(self):
+        data = np.arange(12, dtype=np.float64).reshape(3, 4)
+        expanded = _interleaved_expand(data, data_slots=2, gap_slots=1)
+        self.assertEqual(expanded.shape, (9, 4))
+        np.testing.assert_array_equal(expanded[0, :], data[0, :])
+        np.testing.assert_array_equal(expanded[1, :], data[0, :])
+        self.assertTrue(np.all(np.isnan(expanded[2, :])))
 
 
 if __name__ == "__main__":
