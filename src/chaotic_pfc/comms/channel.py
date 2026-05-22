@@ -133,14 +133,14 @@ def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) ->
 def channel_impulsive(
     sig: NDArray,
     snr_db: float,
-    prob_impulso: float = 0.01,
-    amp_fator: float = 10.0,
+    prob_impulse: float = 0.01,
+    amp_factor: float = 10.0,
     rng: np.random.Generator | None = None,
 ) -> NDArray:
     """AWGN channel with Middleton Class-A impulsive noise.
 
-    A fraction *prob_impulso* of samples receive an additional impulse
-    of randomised sign and amplitude *amp_fator* × ``std(sig)`` on top
+    A fraction *prob_impulse* of samples receive an additional impulse
+    of randomised sign and amplitude *amp_factor* × ``std(sig)`` on top
     of the AWGN background.
 
     Parameters
@@ -149,9 +149,9 @@ def channel_impulsive(
         Signal samples, shape ``(N,)``.
     snr_db
         Background AWGN signal-to-noise ratio in dB.
-    prob_impulso
+    prob_impulse
         Probability a sample is hit by an impulse (e.g. 0.01 = 1 %).
-    amp_fator
+    amp_factor
         Impulse amplitude in multiples of the signal std.
     rng
         Random generator.  ``None`` creates a fresh ``default_rng()``.
@@ -165,8 +165,8 @@ def channel_impulsive(
         rng = np.random.default_rng()
     rx = awgn(sig, snr_db, rng)
     std = float(np.std(sig))
-    mask = rng.random(len(sig)) < prob_impulso
-    rx[mask] += amp_fator * std * rng.choice(np.array([-1.0, 1.0]), mask.sum())
+    mask = rng.random(len(sig)) < prob_impulse
+    rx[mask] += amp_factor * std * rng.choice(np.array([-1.0, 1.0]), mask.sum())
     return rx
 
 

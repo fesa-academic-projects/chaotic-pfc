@@ -116,7 +116,7 @@ class TestChannelImpulsive(unittest.TestCase):
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         sig = np.ones(200)
-        out = channel_impulsive(sig, snr_db=30, prob_impulso=0.01, rng=rng)
+        out = channel_impulsive(sig, snr_db=30, prob_impulse=0.01, rng=rng)
         self.assertEqual(out.shape, (200,))
 
     def test_all_finite(self):
@@ -129,7 +129,7 @@ class TestChannelImpulsive(unittest.TestCase):
         rng = np.random.default_rng(42)
         sig = np.ones(100)
         rng_copy = np.random.default_rng(42)
-        out_imp = channel_impulsive(sig, snr_db=20, prob_impulso=0.0, rng=rng)
+        out_imp = channel_impulsive(sig, snr_db=20, prob_impulse=0.0, rng=rng)
         out_awgn = awgn(sig, snr_db=20, rng=rng_copy)
         np.testing.assert_array_equal(out_imp, out_awgn)
 
