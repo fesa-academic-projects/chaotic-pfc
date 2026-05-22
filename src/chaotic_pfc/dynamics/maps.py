@@ -278,6 +278,8 @@ def henon_order_n(
         Carrier signal ``x[2][n]`` for ``n = 0, …, steps − 1``.
     """
     Nc = len(fir_coeffs)
+    if Nc < 3:
+        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)
 

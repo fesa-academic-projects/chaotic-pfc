@@ -44,14 +44,13 @@ class TestSinusoidalMessage(unittest.TestCase):
         expected_bin = round(f * N)
         self.assertEqual(peak_idx, expected_bin)
 
-    def test_dc_frequency(self):
-        m = sinusoidal_message(100, normalised_freq=0.0)
-        np.testing.assert_array_equal(m, np.zeros(100))
+    def test_dc_frequency_raises(self):
+        with self.assertRaises(ValueError):
+            sinusoidal_message(100, normalised_freq=0.0)
 
-    def test_nyquist_frequency(self):
-        m = sinusoidal_message(6, normalised_freq=0.5)
-        expected = np.sin(np.pi * np.arange(6))
-        np.testing.assert_allclose(m, expected, atol=1e-15)
+    def test_nyquist_frequency_raises(self):
+        with self.assertRaises(ValueError):
+            sinusoidal_message(6, normalised_freq=0.5)
 
 
 if __name__ == "__main__":

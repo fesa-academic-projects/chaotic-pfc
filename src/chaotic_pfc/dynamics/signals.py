@@ -78,6 +78,13 @@ def sinusoidal_message(N: int, normalised_freq: float = 0.1) -> NDArray:
     ndarray, shape (N,)
         The samples ``sin(2π · normalised_freq · n)`` for
         ``n = 0, 1, …, N − 1``.
+
+    Raises
+    ------
+    ValueError
+        If *normalised_freq* is not strictly between 0 and 0.5.
     """
+    if not (0 < normalised_freq < 0.5):
+        raise ValueError(f"normalised_freq must be in (0, 0.5), got {normalised_freq}")
     n = np.arange(N)
     return np.sin(2.0 * np.pi * normalised_freq * n)

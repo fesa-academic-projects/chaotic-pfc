@@ -258,6 +258,9 @@ def lyapunov_max(
     dim = 4
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
+    if perturbation <= 0:
+        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
     eigs = np.linalg.eigvals(J_fp)
