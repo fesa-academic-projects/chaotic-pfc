@@ -37,10 +37,10 @@ from matplotlib.patches import Patch
 from numpy.typing import NDArray
 
 from chaotic_pfc._i18n import t
+from chaotic_pfc.analysis.sweep import SweepResult
 
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
-from ..plotting.figures import _save as _figures_save
-from .sweep import SweepResult
+from chaotic_pfc.plotting.figures import _save as _figures_save
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Palette and discrete classification
