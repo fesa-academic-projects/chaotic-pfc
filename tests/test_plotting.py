@@ -87,3 +87,24 @@ class TestPlottingSmoke(unittest.TestCase):
         self.assertEqual(opts.time_window, slice(0, 300))
         self.assertEqual(opts.suptitle, "")
         self.assertIsNone(opts.save_path)
+
+    def test_comm_grid_explicit_default_not_overridden_by_opts(self):
+        """Passing y_lim_msg explicitly with the same value as the
+        default must NOT be treated as an omission — the explicit
+        value must take precedence over opts."""
+        N = 2048
+        n = np.arange(N)
+        z = np.zeros(N)
+        omega, psd = psd_normalised(z)
+        opts = PlotGridOptions(y_lim_msg=(-3.0, 3.0))
+        fig = plot_comm_grid(
+            n, z, z, z, z, omega, psd, psd, psd, psd,
+            opts=opts,
+            y_lim_msg=(-1.5, 1.5),
+        )
+        # Explicit arg (-1.5, 1.5) must win over opts (-3, 3)
+        for ax in fig.axes:
+            if ax.get_ylabel() and "m[" in ax.get_ylabel():
+                self.assertEqual(ax.get_ylim(), (-1.5, 1.5))
+        import matplotlib.pyplot as plt
+        plt.close(fig)

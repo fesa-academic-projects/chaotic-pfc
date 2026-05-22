@@ -199,6 +199,9 @@ class PlotGridOptions:
     save_path: str | None = None
 
 
+_UNSET = object()
+
+
 def plot_comm_grid(
     n: NDArray,
     m: NDArray,
@@ -214,9 +217,9 @@ def plot_comm_grid(
     opts: PlotGridOptions | None = None,
     time_window: slice = slice(0, 300),
     suptitle: str = "",
-    y_lim_msg: tuple = (-1.5, 1.5),
-    y_lim_sig: tuple = (-2.5, 2.5),
-    y_lim_mhat: tuple | None = None,
+    y_lim_msg: tuple = _UNSET,
+    y_lim_sig: tuple = _UNSET,
+    y_lim_mhat: tuple | None = _UNSET,
     h_channel: NDArray | None = None,
     save_path: str | None = None,
     lang: str = "pt",
@@ -234,15 +237,21 @@ def plot_comm_grid(
             time_window = opts.time_window
         if not suptitle:
             suptitle = opts.suptitle
-        y_lim_msg = opts.y_lim_msg if y_lim_msg == (-1.5, 1.5) else y_lim_msg
-        y_lim_sig = opts.y_lim_sig if y_lim_sig == (-2.5, 2.5) else y_lim_sig
-        if y_lim_mhat is None:
+        if y_lim_msg is _UNSET:
+            y_lim_msg = opts.y_lim_msg
+        if y_lim_sig is _UNSET:
+            y_lim_sig = opts.y_lim_sig
+        if y_lim_mhat is _UNSET:
             y_lim_mhat = opts.y_lim_mhat
         if h_channel is None:
             h_channel = opts.h_channel
         if save_path is None:
             save_path = opts.save_path
-    if y_lim_mhat is None:
+    if y_lim_msg is _UNSET:
+        y_lim_msg = (-1.5, 1.5)
+    if y_lim_sig is _UNSET:
+        y_lim_sig = (-2.5, 2.5)
+    if y_lim_mhat is _UNSET or y_lim_mhat is None:
         y_lim_mhat = y_lim_msg
 
     fig, axes = plt.subplots(4, 2, figsize=(14, 12))
