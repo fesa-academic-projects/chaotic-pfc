@@ -177,6 +177,3 @@ msgstr ""
 #: ../../api/index.rst:27:<autosummary>:1
 msgid "cli  Unified command-line interface for the chaotic_pfc package."
 msgstr ""
-
-
-

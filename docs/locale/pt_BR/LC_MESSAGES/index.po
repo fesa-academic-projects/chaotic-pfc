@@ -249,9 +249,3 @@ msgstr "**Varredura de Parâmetros**"
 #: ../../index.rst:96
 msgid "High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``"
 msgstr "Grade de alta resolução (ordem × corte): ``chaotic-pfc run sweep compute``"
-
-
-
-
-
-

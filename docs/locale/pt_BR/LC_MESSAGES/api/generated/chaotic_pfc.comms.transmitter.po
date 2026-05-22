@@ -248,4 +248,3 @@ msgstr ""
 #: chaotic_pfc.comms.transmitter.transmit_order_n:27 of
 msgid "*Transmitter protocol.*"
 msgstr ""
-

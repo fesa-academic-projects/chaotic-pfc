@@ -196,6 +196,3 @@ msgstr ""
 #: ../../api/generated/chaotic_pfc.cli.rst:28:<autosummary>:1
 msgid "Sweep Lyapunov exponents across (order, cutoff) grid."
 msgstr ""
-
-
-

@@ -192,4 +192,3 @@ msgid ""
 "The *opts* dataclass overrides individual keyword arguments when both are"
 " provided."
 msgstr ""
-

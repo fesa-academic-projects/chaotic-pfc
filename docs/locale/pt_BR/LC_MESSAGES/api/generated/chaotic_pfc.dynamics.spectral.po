@@ -148,4 +148,3 @@ msgid ""
 "variance reduction, which is the right trade-off for visualising the "
 "smooth broadband spectrum of a chaotic carrier."
 msgstr ""
-

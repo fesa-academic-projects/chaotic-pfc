@@ -154,4 +154,3 @@ msgstr ""
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:12 of
 msgid "The samples ``sin(2π · normalised_freq · n)`` for ``n = 0, 1, …, N − 1``."
 msgstr ""
-

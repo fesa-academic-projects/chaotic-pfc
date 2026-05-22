@@ -257,4 +257,3 @@ msgstr ""
 #: chaotic_pfc.comms.receiver.receive_order_n:30 of
 msgid "*Receiver protocol.*"
 msgstr ""
-

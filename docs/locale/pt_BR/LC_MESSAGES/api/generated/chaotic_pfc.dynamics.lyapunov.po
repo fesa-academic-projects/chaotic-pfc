@@ -336,4 +336,3 @@ msgid ""
 "strange attractor basin for α = 1.4, β = 0.3). See "
 ":class:`EnsembleResult` for the output schema."
 msgstr ""
-

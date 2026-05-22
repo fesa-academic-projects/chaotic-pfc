@@ -377,5 +377,3 @@ msgstr ""
 #: chaotic_pfc.dynamics.maps.henon_fir_sequence:16 of
 msgid "If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf."
 msgstr ""
-
-

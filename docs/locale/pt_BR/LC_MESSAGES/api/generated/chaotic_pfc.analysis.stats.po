@@ -394,4 +394,3 @@ msgid ""
 "``{filter_type: {\"mean\": float, \"ci_low\": float, \"ci_high\": "
 "float}}``"
 msgstr ""
-

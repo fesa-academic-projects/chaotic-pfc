@@ -433,4 +433,3 @@ msgstr "CHANGELOG.md é atualizado em ``[Unreleased]``."
 #: ../../contributing.rst:265
 msgid "Commit messages follow Conventional Commits."
 msgstr "Mensagens de commit seguem Conventional Commits."
-

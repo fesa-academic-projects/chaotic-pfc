@@ -315,4 +315,3 @@ msgstr ""
 #: chaotic_pfc.analysis.sweep._io.save_sweep:1 of
 msgid "Save a :class:`SweepResult` to a compressed ``.npz``."
 msgstr ""
-

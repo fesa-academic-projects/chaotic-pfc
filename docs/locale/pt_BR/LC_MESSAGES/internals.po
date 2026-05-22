@@ -606,11 +606,3 @@ msgid ""
 msgstr ""
 "Propriedade clara: cada campo de configuração pertence a exatamente um "
 "subsistema."
-
-
-
-
-
-
-
-

@@ -317,8 +317,3 @@ msgstr "``config``"
 #: ../../architecture.rst:240
 msgid "Centralised dataclass configuration, default singleton"
 msgstr "Configuração centralizada em dataclasses, singleton padrão"
-
-
-
-
-

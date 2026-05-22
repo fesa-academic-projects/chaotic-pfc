@@ -86,4 +86,3 @@ msgstr ""
 #: chaotic_pfc.comms.protocols.Transmitter:1 of
 msgid "Any callable that encodes a message into a chaotic carrier signal."
 msgstr ""
-

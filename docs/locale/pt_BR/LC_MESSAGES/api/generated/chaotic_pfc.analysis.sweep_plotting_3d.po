@@ -154,4 +154,3 @@ msgid ""
 "Optional ``.html`` path. If given, the figure is also written to disk via"
 " ``write_html``."
 msgstr ""
-

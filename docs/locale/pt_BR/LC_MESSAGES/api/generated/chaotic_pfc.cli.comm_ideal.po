@@ -59,4 +59,3 @@ msgstr ""
 #: chaotic_pfc.cli.comm_ideal.add_parser chaotic_pfc.cli.comm_ideal.run of
 msgid "Return type"
 msgstr ""
-
