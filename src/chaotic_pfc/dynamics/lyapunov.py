@@ -69,6 +69,16 @@ def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
     H = np.sum(a[1:])  # sum of a coeffs (excluding a[0])
     G = np.sum(b)  # sum of b coeffs
 
+    if abs(1.0 - H) < 1e-12:
+        raise ValueError(
+            f"degenerate filter: 1 - sum(a[1:]) ≈ 0 (got {1.0 - H:.3e}); "
+            f"pole on unit circle or near-DC integrator"
+        )
+    if abs(G) < 1e-12:
+        raise ValueError(
+            f"degenerate gain: sum(b) ≈ 0 (got {G:.3e}); the filter output is identically zero"
+        )
+
     ratio = G / (1.0 - H)
     denom = ratio**2
 

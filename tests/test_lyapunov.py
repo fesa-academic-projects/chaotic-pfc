@@ -8,6 +8,8 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from chaotic_pfc.dynamics.lyapunov import (
+    _fixed_point,
+    _pole_filter_coeffs,
     fixed_point_stability,
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
@@ -42,6 +44,16 @@ class TestLyapunov(unittest.TestCase):
         self.assertIsNotNone(res.fixed_point_n)
         self.assertAlmostEqual(res.fixed_point_p[0], 0.8838962679253065, places=4)
         self.assertAlmostEqual(res.fixed_point_n[0], -1.5838962679253065, places=4)
+
+    def test_fixed_point_rejects_pole_on_unit_circle(self):
+        b, a = _pole_filter_coeffs(Gz=1.0, pole_radius=1.0, w0=0.0)
+        with self.assertRaises(ValueError):
+            _fixed_point(1.4, 0.3, b, a)
+
+    def test_fixed_point_rejects_zero_gain(self):
+        b, a = _pole_filter_coeffs(Gz=0.0, pole_radius=0.975, w0=0.0)
+        with self.assertRaises(ValueError):
+            _fixed_point(1.4, 0.3, b, a)
 
 
 class TestLyapunovEnsemble(unittest.TestCase):
