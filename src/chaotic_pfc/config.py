@@ -50,8 +50,8 @@ class CommConfig:
         Period of the default binary message, in samples.
     transient
         Number of samples discarded at the start of each run before
-        computing performance metrics (MSE, BER). Lets the local
-        oscillator lock into synchronisation.
+        computing the MSE metric. Lets the local oscillator lock into
+        synchronisation.
     henon
         Nested Hénon parameters (α, β).
     """
