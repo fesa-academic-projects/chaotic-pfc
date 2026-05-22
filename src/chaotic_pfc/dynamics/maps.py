@@ -219,7 +219,8 @@ def _henon_n4_step_inplace(
 
     v = c[0] * x1_new + c[1] * x[0] + c[2] * x[1]
     if Nc > 3:
-        v += float(np.dot(c[3:], x[3:]))
+        c_tail = c[3:]
+        v += float(np.dot(c_tail, x[3:]))
 
     out[0] = x1_new
     out[1] = x2_new
