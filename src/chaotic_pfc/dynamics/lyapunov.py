@@ -153,14 +153,14 @@ class LyapunovResult:
     """
 
     lyapunov_max: float
-    all_exponents: np.ndarray
-    fixed_point: np.ndarray | None = None
-    eigenvalues: np.ndarray | None = None
+    all_exponents: NDArray
+    fixed_point: NDArray | None = None
+    eigenvalues: NDArray | None = None
     stable: bool | None = None
-    fixed_point_p: np.ndarray | None = None
-    fixed_point_n: np.ndarray | None = None
-    eigenvalues_p: np.ndarray | None = None
-    eigenvalues_n: np.ndarray | None = None
+    fixed_point_p: NDArray | None = None
+    fixed_point_n: NDArray | None = None
+    eigenvalues_p: NDArray | None = None
+    eigenvalues_n: NDArray | None = None
     stable_p: bool | None = None
     stable_n: bool | None = None
 
