@@ -67,17 +67,17 @@ class OptimalParams(TypedDict):
 
 
 class LmaxDistribution(TypedDict):
-    """Distribution statistics for lambda_max per filter type."""
+    """Distribution statistics for lambda_max per filter type.
 
-    n: int
+    Returned by :func:`lmax_distribution`.
+    """
+
+    hist: list[float]
+    edges: list[float]
     mean: float
     std: float
     skewness: float
-    min: float
-    max: float
-    p25: float
-    p50: float
-    p75: float
+    n: int
 
 
 class CorrelationMatrix(TypedDict):
@@ -296,13 +296,14 @@ def beta_curve(
 def lmax_distribution(
     data_dir: str | Path = "data/sweeps",
     bins: int = 50,
-) -> dict[str, dict]:
+) -> dict[str, LmaxDistribution]:
     """Histogram of λ_max values per filter type.
 
     Returns
     -------
     dict
-        ``{filter_type: {"hist": counts, "edges": bin_edges, "mean": float, "std": float, "skewness": float}}``
+        ``{filter_type: {"hist": counts, "edges": bin_edges, "mean": float,
+        "std": float, "skewness": float, "n": int}}``
     """
     from scipy.stats import skew
 
@@ -312,11 +313,11 @@ def lmax_distribution(
         vals = vals[np.isfinite(vals)]
         all_vals[result.filter_type].extend(vals.tolist())
 
-    out: dict[str, dict] = {}
+    out: dict[str, LmaxDistribution] = {}
     for ft, val_list in all_vals.items():
         arr = np.array(val_list)
         if len(arr) == 0:
-            out[ft] = {}
+            out[ft] = {"hist": [], "edges": [], "mean": 0.0, "std": 0.0, "skewness": 0.0, "n": 0}
             continue
         hist, edges = np.histogram(arr, bins=bins)
         out[ft] = {

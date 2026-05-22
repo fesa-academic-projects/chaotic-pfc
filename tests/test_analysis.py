@@ -7,6 +7,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from chaotic_pfc.analysis.stats import (
+    LmaxDistribution,
     best_chaos_preserving,
     beta_curve,
     beta_summary,
@@ -93,8 +94,14 @@ class TestAnalysis(unittest.TestCase):
     def test_lmax_distribution(self):
         dist = lmax_distribution(self.root)
         self.assertIsInstance(dist, dict)
+        expected_keys = {"hist", "edges", "mean", "std", "skewness", "n"}
         for ft in FILTER_TYPES:
             self.assertIn(ft, dist)
+            if dist[ft]:
+                self.assertEqual(set(dist[ft].keys()), expected_keys)
+                self.assertIsInstance(dist[ft]["hist"], list)
+                self.assertIsInstance(dist[ft]["edges"], list)
+                self.assertIsInstance(dist[ft]["n"], int)
 
     def test_transition_boundary(self):
         orders, cutoffs = transition_boundary(self.root, filter_type="lowpass")
