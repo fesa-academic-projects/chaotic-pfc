@@ -50,7 +50,7 @@ repos:
 
   # ── Ruff — lint and format (fast, runs in milliseconds) ───────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.15.14
     hooks:
       - id: ruff
         args: [--fix]
@@ -68,6 +68,6 @@ repos:
 
   # ── pyproject.toml validation ──────────────────────────────────────────
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.27
+    rev: v0.25
     hooks:
       - id: validate-pyproject
