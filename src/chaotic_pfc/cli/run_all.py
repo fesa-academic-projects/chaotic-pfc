@@ -266,6 +266,9 @@ def run(args: argparse.Namespace) -> int:
         # them to defaults earlier when the individual subcommand was built.
         step_args = _build_step_args(shared)
         step_args.lang = getattr(args, "lang", "pt")
+        # Attractors need the full 50k steps for dense phase portraits
+        if tag == "01":
+            step_args.steps = 50_000
         # Sensitivity keeps fewer steps to avoid unreadable point overlay
         if tag == "02":
             step_args.steps = 50
