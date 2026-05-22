@@ -88,7 +88,12 @@ def fir_channel(
         Filter coefficients, useful for overlaying the channel response
         on PSD plots.
 
-    Implements: :class:`~chaotic_pfc.comms.protocols.Channel`."""
+    Notes
+    -----
+    Unlike :func:`ideal_channel`, this function returns the filter
+    taps alongside the filtered signal.  It therefore does **not**
+    satisfy :class:`~chaotic_pfc.comms.protocols.Channel` (which
+    expects a single ``NDArray`` return)."""
     h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
     r = lfilter(h, [1.0], s)
     return r, h
