@@ -9,6 +9,15 @@ description = "Chaotic communication system based on the Hénon map"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
 requires-python = ">=3.11"
+keywords = [
+    "chaos",
+    "henon-map",
+    "lyapunov-exponents",
+    "dynamical-systems",
+    "nonlinear-dynamics",
+    "scientific-computing",
+    "digital-communication",
+]
 authors = [
     { name = "Roger Freitas Pereira", email = "roger_freitas@live.com" },
     { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
