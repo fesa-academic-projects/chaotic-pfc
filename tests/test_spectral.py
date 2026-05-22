@@ -42,10 +42,6 @@ class TestPsdNormalised(unittest.TestCase):
         _, psd = psd_normalised(x)
         self.assertAlmostEqual(float(psd.max()), 1.0, places=6)
 
-    def test_zero_signal_produces_zero_psd(self):
-        _, psd = psd_normalised(np.zeros(2048))
-        np.testing.assert_array_equal(psd, np.zeros_like(psd))
-
     def test_remove_dc_subtracts_mean(self):
         x = np.ones(1024) * 5.0 + np.random.default_rng(1).standard_normal(1024) * 0.01
         _, psd_with_dc = psd_normalised(x, remove_dc=False)
@@ -53,11 +49,14 @@ class TestPsdNormalised(unittest.TestCase):
         self.assertGreater(psd_with_dc[0], psd_no_dc[0])
 
     def test_output_shape_matches_nfft(self):
-        _, psd = psd_normalised(np.zeros(1024), nfft=2048)
+        rng = np.random.default_rng(42)
+        x = rng.standard_normal(2048)
+        _, psd = psd_normalised(x, nfft=2048)
         self.assertEqual(psd.shape[0], 2048 // 2 + 1)
 
     def test_frequency_axis_range(self):
-        omega, _ = psd_normalised(np.zeros(1024))
+        rng = np.random.default_rng(42)
+        omega, _ = psd_normalised(rng.standard_normal(1024))
         self.assertAlmostEqual(omega[0], 0.0, places=6)
         self.assertAlmostEqual(omega[-1], 1.0, places=6)
 
@@ -89,6 +88,11 @@ class TestPsdNormalised(unittest.TestCase):
         x = np.sin(2 * np.pi * 0.125 * n)
         omega, psd = psd_normalised(x)
         self.assertAlmostEqual(omega[psd.argmax()], 0.25, places=2)
+
+    def test_zero_signal_raises(self):
+        x = np.zeros(1024)
+        with self.assertRaises(ValueError):
+            psd_normalised(x)
 
 
 # ════════════════════════════════════════════════════════════════════════════

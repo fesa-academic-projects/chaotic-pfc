@@ -71,8 +71,8 @@ def psd_normalised(
     omega_norm : ndarray, shape (nfft // 2 + 1,)
         Normalised frequency axis, ``ω/π ∈ [0, 1]``.
     psd : ndarray, shape (nfft // 2 + 1,)
-        Peak-normalised PSD. ``psd.max() == 1.0`` unless the input is
-        identically zero.
+        Peak-normalised PSD. ``psd.max() == 1.0``.  Raises ``ValueError``
+        when the input is identically zero.
 
     Notes
     -----
@@ -105,5 +105,9 @@ def psd_normalised(
     peak = Pxx.max()
     if peak > 0:
         Pxx = Pxx / peak
+    else:
+        raise ValueError(
+            f"input signal has zero power (peak={peak}); cannot normalise PSD to max=1"
+        )
     omega_norm = 2.0 * f / fs  # Convert Welch f (cycles/sample) to ω/π: ω = 2πf, so ω/π = 2f/fs
     return omega_norm, Pxx

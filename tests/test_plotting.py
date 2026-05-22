@@ -94,11 +94,21 @@ class TestPlottingSmoke(unittest.TestCase):
         value must take precedence over opts."""
         N = 2048
         n = np.arange(N)
-        z = np.zeros(N)
+        rng = np.random.default_rng(42)
+        z = rng.standard_normal(N)
         omega, psd = psd_normalised(z)
         opts = PlotGridOptions(y_lim_msg=(-3.0, 3.0))
         fig = plot_comm_grid(
-            n, z, z, z, z, omega, psd, psd, psd, psd,
+            n,
+            z,
+            z,
+            z,
+            z,
+            omega,
+            psd,
+            psd,
+            psd,
+            psd,
             opts=opts,
             y_lim_msg=(-1.5, 1.5),
         )
@@ -107,4 +117,5 @@ class TestPlottingSmoke(unittest.TestCase):
             if ax.get_ylabel() and "m[" in ax.get_ylabel():
                 self.assertEqual(ax.get_ylim(), (-1.5, 1.5))
         import matplotlib.pyplot as plt
+
         plt.close(fig)
