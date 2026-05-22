@@ -120,7 +120,7 @@ def _safe_stats(h: NDArray) -> tuple[float, float]:
 
 def summary_table(
     data_dir: str | Path = "data/sweeps",
-) -> list[dict]:
+) -> list[SummaryRow]:
     """Return one row per sweep with key statistics.
 
     Each row is a :class:`SummaryRow` with: ``window``, ``filter_type``,
@@ -159,7 +159,7 @@ def summary_table(
 def best_chaos_preserving(
     data_dir: str | Path = "data/sweeps",
     top_n: int = 5,
-) -> list[dict]:
+) -> list[SummaryRow]:
     """Rank sweeps by percentage of chaotic grid points (descending).
 
     Returns the *top_n* entries with the most chaotic coverage.
@@ -171,7 +171,7 @@ def best_chaos_preserving(
 
 def compare_filter_types(
     data_dir: str | Path = "data/sweeps",
-) -> dict[str, dict]:
+) -> dict[str, FilterTypeAggregate]:
     """Aggregate statistics per filter type across all windows.
 
     Returns a ``dict`` keyed by filter type (``"lowpass"``, ...) with
@@ -203,7 +203,7 @@ def optimal_parameters(
     window: str | None = None,
     filter_type: str | None = None,
     top_n: int = 3,
-) -> list[dict]:
+) -> list[OptimalParams]:
     """Find the (order, cutoff) pairs with the highest λ_max.
 
     Filters results by *window* and *filter_type* if given.
@@ -418,7 +418,7 @@ def chaos_margin(
 
 def correlation_matrix(
     data_dir: str | Path = "data/sweeps",
-) -> dict:
+) -> CorrelationMatrix:
     """Spearman correlation between (order, cutoff, λ_max) across all sweeps.
 
     Returns
@@ -459,7 +459,7 @@ def bootstrap_confidence(
     data_dir: str | Path = "data/sweeps",
     n_bootstrap: int = 1000,
     seed: int = 42,
-) -> dict[str, dict]:
+) -> dict[str, BootstrapConfidence]:
     """Bootstrap 95% CI for mean λ_max per filter type.
 
     Returns
