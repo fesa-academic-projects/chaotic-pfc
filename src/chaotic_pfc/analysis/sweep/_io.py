@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -37,14 +38,26 @@ def load_sweep(path: str | Path) -> SweepResult:
         window = str(data["window"])
         filter_type = str(data["filter_type"])
     else:
-        window, filter_type = _infer_config_from_path(path)
+        try:
+            window, filter_type = _infer_config_from_path(path)
+        except ValueError:
+            raise ValueError(
+                f"cannot determine window/filter_type for {path}; "
+                f"the .npz file has no 'window'/'filter_type' entries "
+                f"and the parent directory name does not match any known "
+                f"<(filter_type)> pattern"
+            ) from None
 
     metadata: dict = {}
     if "metadata" in data.files:
         try:
             metadata = dict(data["metadata"].tolist())
         except (TypeError, ValueError):
-            metadata = {}
+            warnings.warn(
+                f"corrupted metadata in {path} — using empty dict",
+                RuntimeWarning,
+                stacklevel=2,
+            )
 
     n_iters_used = data["n_iters_used"] if "n_iters_used" in data.files else None
 
@@ -61,10 +74,20 @@ def load_sweep(path: str | Path) -> SweepResult:
 
 
 def _infer_config_from_path(path: Path) -> tuple[str, str]:
-    """Infer (window, filter_type) from a directory name like ``Hamming (lowpass)``."""
+    """Infer (window, filter_type) from a directory name like ``Hamming (lowpass)``.
+
+    Raises
+    ------
+    ValueError
+        If the parent directory name does not match any known
+        ``<display_name> (<filter_type>)`` pattern.
+    """
     name = path.parent.name
     for key, pretty in WINDOW_DISPLAY_NAMES.items():
         for ft in FILTER_TYPES:
             if name == f"{pretty} ({ft})":
                 return key, ft
-    return "unknown", "lowpass"
+    raise ValueError(
+        f"cannot infer (window, filter_type) from directory name {name!r}; "
+        f"expected pattern '<display_name> (<filter_type>)'"
+    )

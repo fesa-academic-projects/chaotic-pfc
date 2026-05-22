@@ -520,9 +520,8 @@ class TestHelpers(unittest.TestCase):
 
     def test_infer_config_from_path_unexpected_format(self):
         path = Path("kaiser/bandpass/beta_5.00/variables_lyapunov.npz")
-        filt, cutoff = _infer_config_from_path(path)
-        self.assertEqual(filt, "unknown")
-        self.assertEqual(cutoff, "lowpass")
+        with self.assertRaises(ValueError):
+            _infer_config_from_path(path)
 
     def test_display_name_all_filter_types(self):
         for ft in FILTER_TYPES:
