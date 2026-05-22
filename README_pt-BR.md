@@ -122,7 +122,7 @@ chaotic-pfc/
 
 ### API pública
 
-O namespace `chaotic_pfc` reexporta 62 símbolos que formam a API pública
+O namespace `chaotic_pfc` reexporta 54 símbolos que formam a API pública
 estável. Eles são importáveis diretamente de `chaotic_pfc`:
 
 ```python

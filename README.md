@@ -122,7 +122,7 @@ chaotic-pfc/
 
 ### Public API
 
-The top-level `chaotic_pfc` namespace reexports 42 symbols that form the
+The top-level `chaotic_pfc` namespace reexports 54 symbols that form the
 stable public API. They are importable from `chaotic_pfc` directly:
 
 ```python
