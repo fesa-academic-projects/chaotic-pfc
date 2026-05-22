@@ -98,9 +98,9 @@ def _mgs_accumulate(z, Ns, lyap_sum):
         nrm = 0.0
         for row in range(Ns):
             nrm += z[row, k] * z[row, k]
-        nrm = nrm**0.5
-        if nrm > 0.0:
-            lyap_sum[k] += np.log(nrm)
+        nrm = max(nrm**0.5, 1e-300)
+        lyap_sum[k] += np.log(nrm)
+        if nrm > 1e-300:
             inv = 1.0 / nrm
             for row in range(Ns):
                 z[row, k] *= inv
