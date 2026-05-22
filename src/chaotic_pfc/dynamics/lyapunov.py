@@ -223,6 +223,33 @@ def lyapunov_max(
     """
     Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map.
 
+    Parameters
+    ----------
+    alpha
+        Hénon :math:`\\alpha` parameter.
+    beta
+        Hénon :math:`\\beta` parameter.
+    Gz
+        Pole-filter input gain. Governs the filter's DC gain and the
+        fixed-point location.
+    pole_radius
+        Radius ``r`` of the pole in the ``z``-domain. Must satisfy
+        ``0 ≤ r < 1`` for a stable filter.
+    w0
+        Angular frequency ``ω₀`` of the pole in radians/sample.
+        ``w0 = 0`` places both poles on the real axis.
+    Nitera
+        Number of QR iterations (post-transient) over which the log-norm
+        is accumulated.
+    Ndiscard
+        Number of burn-in iterations discarded before the QR loop starts.
+    perturbation
+        Half-width of the uniform sampling box around the fixed point,
+        used to generate the initial condition.  ``IC = xf · (1 + p · U)``
+        with ``U ∈ [-1, 1]`` per component.
+    seed
+        RNG seed for the initial-condition perturbation.
+
     Returns
     -------
     LyapunovResult
@@ -264,7 +291,27 @@ def fixed_point_stability(
     pole_radius: float = 0.975,
     w0: float = 0.0,
 ) -> FixedPointInfo:
-    """Quick check: fixed point, eigenvalues, stability (4-D filtered)."""
+    """Quick check: fixed point, eigenvalues, stability (4-D filtered).
+
+    Parameters
+    ----------
+    alpha
+        Hénon :math:`\\alpha` parameter.
+    beta
+        Hénon :math:`\\beta` parameter.
+    Gz
+        Pole-filter input gain.
+    pole_radius
+        Pole radius ``r``.  Must satisfy ``0 ≤ r < 1``.
+    w0
+        Pole angular frequency ``ω₀`` in radians/sample.
+
+    Returns
+    -------
+    FixedPointInfo
+        A dict with keys ``"fixed_point"``, ``"eigenvalues"``,
+        ``"stable"``.
+    """
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
@@ -323,6 +370,22 @@ def lyapunov_henon2d(
     seed: int = 42,
 ) -> LyapunovResult:
     """Compute Lyapunov exponents for the standard 2-D Hénon map.
+
+    Parameters
+    ----------
+    alpha
+        Hénon :math:`\\alpha` parameter.
+    beta
+        Hénon :math:`\\beta` parameter.
+    Nitera
+        Number of QR iterations (post-transient).
+    Ndiscard
+        Number of burn-in iterations discarded before the QR loop.
+    perturbation
+        Half-width of the uniform box around the positive fixed point
+        used to generate the initial condition.
+    seed
+        RNG seed for the IC perturbation.
 
     Returns
     -------
@@ -553,6 +616,30 @@ def lyapunov_max_ensemble(
 ) -> EnsembleResult:
     """Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map.
 
+    Parameters
+    ----------
+    alpha
+        Hénon :math:`\\alpha` parameter.
+    beta
+        Hénon :math:`\\beta` parameter.
+    Gz
+        Pole-filter input gain.
+    pole_radius
+        Pole radius ``r``.  Must satisfy ``0 ≤ r < 1``.
+    w0
+        Pole angular frequency ``ω₀`` in radians/sample.
+    Nitera
+        Number of QR iterations per initial condition.
+    Ndiscard
+        Number of burn-in iterations discarded per IC.
+    perturbation
+        Half-width of the uniform box around the fixed point from which
+        initial conditions are drawn.
+    n_initial
+        Number of independent initial conditions to sample.
+    seed
+        RNG seed for IC sampling.  ``None`` uses the global unseeded RNG.
+
     See :class:`EnsembleResult` for the output schema. Samples
     ``n_initial`` initial conditions uniformly in a box of half-width
     ``perturbation`` around the fixed point, then runs the single-IC
@@ -605,6 +692,24 @@ def lyapunov_henon2d_ensemble(
     seed: int | None = 42,
 ) -> EnsembleResult:
     """Ensemble Lyapunov protocol for the standard 2-D Hénon map.
+
+    Parameters
+    ----------
+    alpha
+        Hénon :math:`\\alpha` parameter.
+    beta
+        Hénon :math:`\\beta` parameter.
+    Nitera
+        Number of QR iterations per initial condition.
+    Ndiscard
+        Number of burn-in iterations discarded per IC.
+    perturbation
+        Half-width of the uniform box around the positive fixed point
+        from which initial conditions are drawn.
+    n_initial
+        Number of independent initial conditions to sample.
+    seed
+        RNG seed for IC sampling.  ``None`` uses the global unseeded RNG.
 
     Samples around the *positive* fixed point (the one usually found in
     the strange attractor basin for α = 1.4, β = 0.3). See
