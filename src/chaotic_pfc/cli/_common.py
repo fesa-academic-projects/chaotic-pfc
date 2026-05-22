@@ -86,7 +86,7 @@ def compute_psds(
 
 
 def save_or_show(fig, headless: bool, save_path: str | None, args) -> None:
-    """Save figure if requested, show otherwise. Close after saving in headless mode."""
+    """Save figure if *save_path* is given, otherwise display it."""
     import matplotlib.pyplot as plt
 
     if headless:
