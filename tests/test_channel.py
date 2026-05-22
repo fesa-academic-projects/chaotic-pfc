@@ -5,7 +5,13 @@ import unittest
 import numpy as np
 from scipy.signal import firwin, lfilter
 
-from chaotic_pfc.comms.channel import fir_channel, ideal_channel
+from chaotic_pfc.comms.channel import (
+    awgn,
+    channel_impulsive,
+    channel_multipath,
+    fir_channel,
+    ideal_channel,
+)
 
 
 class TestIdealChannel(unittest.TestCase):
@@ -78,6 +84,73 @@ class TestFirChannel(unittest.TestCase):
         _, h_hamming = fir_channel(s, num_taps=21, window="hamming")
         _, h_blackman = fir_channel(s, num_taps=21, window="blackman")
         self.assertFalse(np.allclose(h_hamming, h_blackman))
+
+
+class TestAWGN(unittest.TestCase):
+    def test_output_shape(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(100)
+        out = awgn(sig, snr_db=30, rng=rng)
+        self.assertEqual(out.shape, (100,))
+
+    def test_high_snr_nearly_unchanged(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(1000)
+        out = awgn(sig, snr_db=100, rng=rng)
+        mse = float(np.mean((sig - out) ** 2))
+        self.assertLess(mse, 1e-6)
+
+    def test_deterministic_with_fixed_rng(self):
+        sig = np.ones(50)
+        rng1 = np.random.default_rng(42)
+        rng2 = np.random.default_rng(42)
+        np.testing.assert_array_equal(
+            awgn(sig, snr_db=10, rng=rng1),
+            awgn(sig, snr_db=10, rng=rng2),
+        )
+
+
+class TestChannelImpulsive(unittest.TestCase):
+    def test_output_shape(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(200)
+        out = channel_impulsive(sig, snr_db=30, prob_impulso=0.01, rng=rng)
+        self.assertEqual(out.shape, (200,))
+
+    def test_all_finite(self):
+        rng = np.random.default_rng(42)
+        sig = np.arange(50, dtype=float)
+        out = channel_impulsive(sig, snr_db=10, rng=rng)
+        self.assertTrue(np.all(np.isfinite(out)))
+
+    def test_no_impulse_is_just_awgn(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(100)
+        rng_copy = np.random.default_rng(42)
+        out_imp = channel_impulsive(sig, snr_db=20, prob_impulso=0.0, rng=rng)
+        out_awgn = awgn(sig, snr_db=20, rng=rng_copy)
+        np.testing.assert_array_equal(out_imp, out_awgn)
+
+
+class TestChannelMultipath(unittest.TestCase):
+    def test_output_shape(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(300)
+        out = channel_multipath(sig, snr_db=30, rng=rng)
+        self.assertEqual(out.shape, (300,))
+
+    def test_all_finite(self):
+        rng = np.random.default_rng(42)
+        sig = np.arange(100, dtype=float)
+        out = channel_multipath(sig, snr_db=10, rng=rng)
+        self.assertTrue(np.all(np.isfinite(out)))
+
+    def test_single_path_is_finite(self):
+        rng = np.random.default_rng(42)
+        sig = np.ones(200)
+        out = channel_multipath(sig, snr_db=60, delays=[0], gains=[1.0], rng=rng)
+        self.assertTrue(np.all(np.isfinite(out)))
+        self.assertEqual(out.shape, (200,))
 
 
 if __name__ == "__main__":

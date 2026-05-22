@@ -105,14 +105,24 @@ def fir_channel(
 def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) -> NDArray:
     """Add white Gaussian noise to *sig* for a given SNR in dB.
 
+    The noise power is ``E[|sig|²] / 10^(SNR/10)``, so a higher SNR
+    means less noise.
+
     Parameters
     ----------
     sig
-        Signal samples.
+        Signal samples, shape ``(N,)``.
     snr_db
-        Signal-to-noise ratio in dB.
+        Signal-to-noise ratio in dB.  ``snr_db → ∞`` gives the
+        original signal; ``snr_db = 0`` gives equal-power noise.
     rng
-        Random generator (uses ``np.random.default_rng`` if None).
+        NumPy ``Generator``.  ``None`` (default) creates a fresh
+        ``default_rng()``.
+
+    Returns
+    -------
+    ndarray, shape (N,)
+        Signal with additive white Gaussian noise.
     """
     if rng is None:
         rng = np.random.default_rng()
@@ -129,12 +139,27 @@ def channel_impulsive(
 ) -> NDArray:
     """AWGN channel with Middleton Class-A impulsive noise.
 
+    A fraction *prob_impulso* of samples receive an additional impulse
+    of randomised sign and amplitude *amp_fator* × ``std(sig)`` on top
+    of the AWGN background.
+
     Parameters
     ----------
+    sig
+        Signal samples, shape ``(N,)``.
+    snr_db
+        Background AWGN signal-to-noise ratio in dB.
     prob_impulso
         Probability a sample is hit by an impulse (e.g. 0.01 = 1 %).
     amp_fator
         Impulse amplitude in multiples of the signal std.
+    rng
+        Random generator.  ``None`` creates a fresh ``default_rng()``.
+
+    Returns
+    -------
+    ndarray, shape (N,)
+        Signal with AWGN + Middleton Class-A impulsive noise.
     """
     if rng is None:
         rng = np.random.default_rng()
@@ -154,12 +179,27 @@ def channel_multipath(
 ) -> NDArray:
     """Multipath channel with configurable tap delays and gains.
 
+    Simulates a frequency-selective channel by summing delayed copies
+    of the input.  Output power is normalised to the input power, then
+    AWGN is added at the requested SNR.
+
     Parameters
     ----------
+    sig
+        Signal samples, shape ``(N,)``.
+    snr_db
+        AWGN signal-to-noise ratio after multipath combining, in dB.
     delays
         Delay of each path in samples (default: ``[0, 3, 7, 15]``).
     gains
         Attenuation per path (default: ``[1.0, 0.6, 0.4, 0.2]``).
+    rng
+        Random generator.  ``None`` creates a fresh ``default_rng()``.
+
+    Returns
+    -------
+    ndarray, shape (N,)
+        Multipath-combined signal with AWGN.
     """
     if delays is None:
         delays = [0, 3, 7, 15]
