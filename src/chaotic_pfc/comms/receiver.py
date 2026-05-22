@@ -82,6 +82,11 @@ def receive(
         rejection window.
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`."""
+    if mu == 0:
+        raise ValueError(
+            "mu must be non-zero; received mu=0 which would cause "
+            "division by zero in the demodulation step"
+        )
     N = len(r)
     y1 = np.empty(N + 1)
     y2 = np.empty(N + 1)
@@ -144,6 +149,11 @@ def receive_order_n(
     ``(recovered, state)`` tuple instead of a single ndarray. Use
     :func:`receive` (the 2-D variant) for code that types against the
     Receiver protocol."""
+    if mu == 0:
+        raise ValueError(
+            "mu must be non-zero; received mu=0 which would cause "
+            "division by zero in the demodulation step"
+        )
     N = len(r)
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)

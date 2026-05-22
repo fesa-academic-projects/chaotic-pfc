@@ -64,6 +64,10 @@ class TestReceiveStandard(unittest.TestCase):
         mse = float(np.mean((m[transient:] - m_hat[transient:]) ** 2))
         self.assertLess(mse, 1e-3)
 
+    def test_mu_zero_raises(self):
+        with self.assertRaises(ValueError):
+            receive(np.zeros(10), mu=0)
+
 
 class TestReceiveOrderN(unittest.TestCase):
     def test_output_shapes(self):
@@ -122,6 +126,11 @@ class TestReceiveOrderN(unittest.TestCase):
         r = ideal_channel(s)
         m_hat, _ = receive_order_n(r, c, seed=None)
         self.assertEqual(len(m_hat), len(r))
+
+    def test_order_n_mu_zero_raises(self):
+        c = make_fir_coeffs(4)
+        with self.assertRaises(ValueError):
+            receive_order_n(np.zeros(10), c, mu=0)
 
 
 if __name__ == "__main__":
