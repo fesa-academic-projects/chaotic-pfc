@@ -65,3 +65,9 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
+
+  # ── pyproject.toml validation ──────────────────────────────────────────
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.27
+    hooks:
+      - id: validate-pyproject
