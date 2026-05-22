@@ -142,7 +142,26 @@ def plot_heatmap_continuous(
     cutoffs: NDArray | None = None,
     save_path: str | Path | None = None,
 ) -> Figure:
-    """Continuous λ_max heatmap over the (N_z, ω_c/π) plane."""
+    """Continuous λ_max heatmap over the (N_z, ω_c/π) plane.
+
+    Parameters
+    ----------
+    result
+        :class:`SweepResult` to plot.  Mutually exclusive with the
+        ``(h, orders, cutoffs)`` triple.
+    h
+        Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
+    orders
+        Filter orders (x-axis), shape ``(len(orders),)``.
+    cutoffs
+        Cutoff frequencies (y-axis), shape ``(len(cutoffs),)``.
+    save_path
+        If provided, the figure is saved to this path via ``_save()``.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
     h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
 
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -177,6 +196,30 @@ def plot_classification_interleaved(
     Each order occupies ``data_slots`` columns of coloured data followed
     by ``gap_slots`` blank columns, producing the striped appearance
     used in Baptista et al.
+
+    Parameters
+    ----------
+    result
+        :class:`SweepResult` to plot.  Mutually exclusive with the
+        ``(h, orders, cutoffs)`` triple.
+    h
+        Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
+    orders
+        Filter orders (x-axis), shape ``(len(orders),)``.
+    cutoffs
+        Cutoff frequencies (y-axis), shape ``(len(cutoffs),)``.
+    save_path
+        If provided, the figure is saved to this path via ``_save()``.
+    data_slots
+        Number of colormap quantisation levels for chaotic/periodic.
+    gap_slots
+        Number of white/yellow slots interleaved between classes.
+    lang
+        Language for axis labels (``"pt"`` or ``"en"``).
+
+    Returns
+    -------
+    matplotlib.figure.Figure
     """
     h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
     h_color = classify(h)
