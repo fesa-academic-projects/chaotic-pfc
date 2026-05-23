@@ -25,6 +25,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     )
 
     _add_chaotic_plot_parsers(analysis_sub)
+    _add_export_tables_parser(analysis_sub)
 
     # Default: run statistical analysis (backward compatible)
     p.add_argument(
@@ -79,6 +80,104 @@ def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction) -> None:
     p_cd.add_argument("--cmap", default="viridis", help="Colormap (default: viridis)")
     p_cd.add_argument("--lang", default="pt", choices=["pt", "en"], help="Language (default: pt)")
     p_cd.set_defaults(_run=_run_chaotic_density)
+
+
+def _add_export_tables_parser(sub: argparse._SubParsersAction) -> None:
+    """Register ``export-tables`` sub-subcommand."""
+    p_et = sub.add_parser(
+        "export-tables",
+        help="Export analysis tables as LaTeX (.tex) files ready for TCC.",
+    )
+    p_et.add_argument(
+        "--sweep-dir",
+        default="data/sweeps",
+        help="Root sweep directory (default: data/sweeps)",
+    )
+    p_et.add_argument(
+        "--output-dir",
+        default="analysis_output/tables",
+        help="Output directory for .tex files (default: analysis_output/tables)",
+    )
+    p_et.add_argument(
+        "--lang",
+        default="all",
+        choices=["all", "pt_BR", "en"],
+        help="Language(s) to generate: all (default), pt_BR, en",
+    )
+    p_et.add_argument(
+        "--format",
+        default="latex",
+        choices=["latex"],
+        help="Output format (default: latex; csv/json reserved for future)",
+    )
+    p_et.add_argument(
+        "--bootstrap-seed",
+        type=int,
+        default=42,
+        help="RNG seed for bootstrap CI (default: 42)",
+    )
+    p_et.set_defaults(_run=_run_export_tables)
+
+
+def _run_export_tables(args: argparse.Namespace) -> int:
+    """Generate the four LaTeX analysis tables."""
+    from pathlib import Path
+
+    from chaotic_pfc.analysis.latex_export import (
+        export_extended_top_k_table,
+        export_full_ranking_table,
+        export_sweet_spots_table,
+        export_top_k_table,
+    )
+    from chaotic_pfc.analysis.stats import (
+        load_all_sweeps,
+        rank_configurations,
+        sweet_spot_per_filter,
+        top_k_per_filter,
+    )
+
+    sweep_dir = Path(args.sweep_dir)
+    output_dir = Path(args.output_dir)
+
+    if not sweep_dir.is_dir():
+        print(f"ERROR: sweep directory not found: {sweep_dir}")
+        return 1
+
+    langs = ["pt_BR", "en"] if args.lang == "all" else [args.lang]
+
+    # Load data once
+    print(f"Loading sweeps from {sweep_dir} ...")
+    sweeps = load_all_sweeps(sweep_dir)
+    print(f"  {len(sweeps)} sweeps loaded")
+
+    # Compute structures once
+    top_k = top_k_per_filter(sweeps, k=3, bootstrap_seed=args.bootstrap_seed)
+    ranking = rank_configurations(sweeps, bootstrap_seed=args.bootstrap_seed)
+    sweet = sweet_spot_per_filter(sweeps)
+
+    # i18n lang mapping: pt_BR -> pt
+    _lang_map = {"pt_BR": "pt", "en": "en"}
+
+    for lang_dir in langs:
+        i18n_lang = _lang_map.get(lang_dir, lang_dir)
+        out = output_dir / lang_dir
+        out.mkdir(parents=True, exist_ok=True)
+
+        paths: list[Path] = [
+            export_top_k_table(top_k, out / "tab_top_k.tex", lang=i18n_lang),
+            export_extended_top_k_table(top_k, out / "tab_top_k_extended.tex", lang=i18n_lang),
+            export_full_ranking_table(ranking, out / "tab_full_ranking.tex", lang=i18n_lang),
+            export_sweet_spots_table(sweet, out / "tab_sweet_spots.tex", lang=i18n_lang),
+        ]
+
+        print(f"\n[{lang_dir}]")
+        for p in paths:
+            lines = p.read_text(encoding="utf-8").count("\n")
+            size = p.stat().st_size
+            print(f"  {p.name:<30} {lines:>5} lines  {size:>7} bytes")
+
+    print(f"\nDone. Files in {output_dir.resolve()}/")
+    return 0
 
 
 def _run_chaotic_map(args: argparse.Namespace) -> int:

@@ -1,6 +1,7 @@
 """tests/test_cli.py — Smoke tests for the unified CLI parser."""
 
 import io
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 
@@ -114,7 +115,6 @@ class TestSweepComputeSmokeTest(unittest.TestCase):
     @pytest.mark.slow
     def test_sweep_compute_quick_creates_npz(self):
         import shutil
-        import tempfile
         from pathlib import Path
 
         with tempfile.TemporaryDirectory() as tmp:
@@ -135,6 +135,115 @@ class TestSweepComputeSmokeTest(unittest.TestCase):
             self.assertGreater(npz_files[0].stat().st_size, 0)
             # Explicit cleanup belt-and-suspenders; tempfile handles it too.
             shutil.rmtree(tmp, ignore_errors=True)
+
+
+class TestExportTablesSmokeTest(unittest.TestCase):
+    """Minimal end-to-end: CLI export-tables with a synthetic sweep."""
+
+    def test_export_tables_creates_tex_files(self):
+        from pathlib import Path
+
+        import numpy as np
+
+        from chaotic_pfc.analysis.sweep import SweepResult, save_sweep
+
+        with tempfile.TemporaryDirectory() as sweep_tmp, tempfile.TemporaryDirectory() as out_tmp:
+            # Create one synthetic sweep
+            rng = np.random.default_rng(0)
+            h = rng.uniform(-0.5, 0.5, size=(3, 4))
+            h[0, 0] = np.nan
+            result = SweepResult(
+                h=h,
+                h_std=np.abs(h) * 0.1,
+                orders=np.arange(2, 5),
+                cutoffs=np.linspace(0.1, 0.9, 4),
+                window="hamming",
+                filter_type="lowpass",
+                metadata={"n_initial": 50},
+            )
+            save_sweep(result, Path(sweep_tmp) / "Hamming (lowpass)" / "variables_lyapunov.npz")
+
+            code = main(
+                [
+                    "run",
+                    "analysis",
+                    "export-tables",
+                    "--sweep-dir",
+                    sweep_tmp,
+                    "--output-dir",
+                    out_tmp,
+                    "--lang",
+                    "en",
+                ]
+            )
+            self.assertEqual(code, 0)
+
+            tex_files = sorted(Path(out_tmp).rglob("*.tex"))
+            self.assertEqual(len(tex_files), 4)
+            for f in tex_files:
+                content = f.read_text(encoding="utf-8")
+                self.assertIn(
+                    r"\begin{tabular}" if "longtable" not in content else r"\begin{longtable}",
+                    content,
+                )
+
+    def test_export_tables_all_lang_generates_both(self):
+        from pathlib import Path
+
+        import numpy as np
+
+        from chaotic_pfc.analysis.sweep import SweepResult, save_sweep
+
+        with tempfile.TemporaryDirectory() as sweep_tmp, tempfile.TemporaryDirectory() as out_tmp:
+            rng = np.random.default_rng(0)
+            h = rng.uniform(-0.5, 0.5, size=(3, 4))
+            result = SweepResult(
+                h=h,
+                h_std=np.abs(h) * 0.1,
+                orders=np.arange(2, 5),
+                cutoffs=np.linspace(0.1, 0.9, 4),
+                window="hamming",
+                filter_type="lowpass",
+                metadata={"n_initial": 50},
+            )
+            save_sweep(result, Path(sweep_tmp) / "Hamming (lowpass)" / "variables_lyapunov.npz")
+
+            code = main(
+                [
+                    "run",
+                    "analysis",
+                    "export-tables",
+                    "--sweep-dir",
+                    sweep_tmp,
+                    "--output-dir",
+                    out_tmp,
+                    "--lang",
+                    "all",
+                ]
+            )
+            self.assertEqual(code, 0)
+
+            en_dir = Path(out_tmp) / "en"
+            pt_dir = Path(out_tmp) / "pt_BR"
+            self.assertTrue(en_dir.is_dir())
+            self.assertTrue(pt_dir.is_dir())
+            self.assertEqual(len(list(en_dir.rglob("*.tex"))), 4)
+            self.assertEqual(len(list(pt_dir.rglob("*.tex"))), 4)
+
+    def test_export_tables_missing_dir(self):
+        with tempfile.TemporaryDirectory() as out_tmp:
+            code = main(
+                [
+                    "run",
+                    "analysis",
+                    "export-tables",
+                    "--sweep-dir",
+                    "/nonexistent_sweep_dir_xyz",
+                    "--output-dir",
+                    out_tmp,
+                ]
+            )
+            self.assertEqual(code, 1)
 
 
 if __name__ == "__main__":
