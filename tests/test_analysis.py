@@ -9,6 +9,7 @@ import numpy as np
 from chaotic_pfc.analysis.stats import (
     AreaSummary,
     LmaxDistribution,
+    LmaxStats,
     area_summary,
     best_chaos_preserving,
     beta_curve,
@@ -19,6 +20,7 @@ from chaotic_pfc.analysis.stats import (
     correlation_matrix,
     export_summary_json,
     lmax_distribution,
+    lmax_statistics,
     optimal_parameters,
     summary_table,
     transition_boundary,
@@ -87,6 +89,90 @@ class TestAnalysis(unittest.TestCase):
         self.assertEqual(s["n_divergent"], 6)
         self.assertAlmostEqual(s["pct_chaotic"], 0.0)
         self.assertAlmostEqual(s["pct_chaotic_finite"], 0.0)
+
+    def test_lmax_statistics_chaotic(self):
+        """Verify mean/std match known distribution and CI contains mean."""
+        rng = np.random.default_rng(42)
+        # 50 chaotic (positive), 30 periodic (negative), 20 NaN
+        chaotic_vals = rng.uniform(0.01, 0.5, size=50)
+        periodic_vals = rng.uniform(-0.5, -0.01, size=30)
+        h = np.concatenate([chaotic_vals, periodic_vals, np.full(20, np.nan)])
+        rng.shuffle(h)
+        h = h.reshape(10, 10)
+
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 12),
+            cutoffs=np.linspace(0.1, 0.9, 10),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        stats = lmax_statistics(result, region="chaotic", n_bootstrap=200, seed=42)
+        self.assertEqual(stats["n_used"], 50)
+        self.assertAlmostEqual(stats["mean"], 0.255, delta=0.1)
+        self.assertAlmostEqual(stats["std"], 0.14, delta=0.1)
+        self.assertGreater(stats["max"], stats["mean"])
+        self.assertLess(stats["min"], stats["mean"])
+        # CI should contain mean
+        self.assertLessEqual(stats["ci_95_low"], stats["mean"])
+        self.assertGreaterEqual(stats["ci_95_high"], stats["mean"])
+
+    def test_lmax_statistics_all_finite(self):
+        h = np.array([[0.1, -0.2], [np.nan, 0.5]], dtype=float)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.1, 0.9, 2),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        stats = lmax_statistics(result, region="all_finite", n_bootstrap=50, seed=42)
+        self.assertEqual(stats["n_used"], 3)
+
+    def test_lmax_statistics_periodic(self):
+        h = np.array([[0.1, -0.2, -0.3], [np.nan, -0.5, -0.1]], dtype=float)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.1, 0.9, 3),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        stats = lmax_statistics(result, region="periodic", n_bootstrap=50, seed=42)
+        self.assertEqual(stats["n_used"], 4)
+        self.assertAlmostEqual(stats["max"], -0.1, delta=0.01)
+        self.assertAlmostEqual(stats["min"], -0.5, delta=0.01)
+
+    def test_lmax_statistics_few_points(self):
+        """When fewer than 3 points, CI returns NaN."""
+        h = np.array([[0.1, np.nan], [np.nan, np.nan]], dtype=float)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.1, 0.9, 2),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        stats = lmax_statistics(result, region="chaotic", seed=42)
+        self.assertEqual(stats["n_used"], 1)
+        self.assertTrue(np.isnan(stats["ci_95_low"]))
+
+    def test_lmax_statistics_invalid_region(self):
+        h = np.array([[0.1]], dtype=float)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.array([2]),
+            cutoffs=np.array([0.5]),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        with self.assertRaises(ValueError):
+            lmax_statistics(result, region="invalid")
 
     def test_summary_table(self):
         rows = summary_table(self.root)

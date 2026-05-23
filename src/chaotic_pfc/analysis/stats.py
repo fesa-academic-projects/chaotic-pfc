@@ -111,6 +111,22 @@ class AreaSummary(TypedDict):
     pct_chaotic_finite: float
 
 
+class LmaxStats(TypedDict):
+    """Descriptive statistics of :math:`\\lambda_{\\max}` for a subset of points.
+
+    Returned by :func:`lmax_statistics`.
+    """
+
+    mean: float
+    median: float
+    std: float
+    min: float
+    max: float
+    ci_95_low: float
+    ci_95_high: float
+    n_used: int
+
+
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
     results: list[SweepResult] = []
@@ -210,6 +226,89 @@ def area_summary(sweep_result: SweepResult) -> AreaSummary:
         "n_total": int(total),
         "pct_chaotic": pct_chaotic,
         "pct_chaotic_finite": pct_chaotic_finite,
+    }
+
+
+def lmax_statistics(
+    sweep_result: SweepResult,
+    region: str = "chaotic",
+    n_bootstrap: int = 1000,
+    seed: int = 42,
+) -> LmaxStats:
+    """Compute descriptive statistics of :math:`\\lambda_{\\max}` for a subset of grid points.
+
+    Filters the sweep grid by dynamical regime then computes mean,
+    median, standard deviation, min, max, and a bootstrap 95%
+    confidence interval for the mean.
+
+    Parameters
+    ----------
+    sweep_result : SweepResult
+    region : {"chaotic", "all_finite", "periodic"}
+        Subset of grid points to include:
+        * ``"chaotic"`` — only points with :math:`\\lambda_{\\max} > 0` (finite)
+        * ``"all_finite"`` — all finite points (excludes NaN/Inf)
+        * ``"periodic"`` — only points with :math:`\\lambda_{\\max} \\le 0` (finite)
+    n_bootstrap : int
+        Number of bootstrap resamples (default 1000).
+    seed : int
+        RNG seed for reproducibility (default 42).
+
+    Returns
+    -------
+    LmaxStats
+        Descriptive statistics including bootstrap 95% CI.
+        When fewer than 3 valid points exist, the CI fields are NaN.
+    """
+    from scipy.stats import bootstrap as scipy_bootstrap
+
+    h = sweep_result.h.ravel()
+    finite = np.isfinite(h)
+
+    if region == "chaotic":
+        mask = finite & (h > 0)
+    elif region == "periodic":
+        mask = finite & (h <= 0)
+    elif region == "all_finite":
+        mask = finite
+    else:
+        raise ValueError(
+            f"Unknown region {region!r}; expected 'chaotic', 'all_finite', or 'periodic'"
+        )
+
+    vals = h[mask]
+    n_used = len(vals)
+
+    if n_used < 3:
+        return {
+            "mean": 0.0,
+            "median": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "ci_95_low": float("nan"),
+            "ci_95_high": float("nan"),
+            "n_used": n_used,
+        }
+
+    ci_result = scipy_bootstrap(
+        (vals,),
+        np.mean,
+        n_resamples=n_bootstrap,
+        confidence_level=0.95,
+        random_state=seed,
+        method="BCa",
+    )
+
+    return {
+        "mean": round(float(np.mean(vals)), 6),
+        "median": round(float(np.median(vals)), 6),
+        "std": round(float(np.std(vals, ddof=1)), 6),
+        "min": round(float(np.min(vals)), 6),
+        "max": round(float(np.max(vals)), 6),
+        "ci_95_low": round(float(ci_result.confidence_interval.low), 6),
+        "ci_95_high": round(float(ci_result.confidence_interval.high), 6),
+        "n_used": n_used,
     }
 
 

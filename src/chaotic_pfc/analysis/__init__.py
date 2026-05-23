@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .stats import (
     AreaSummary,
+    LmaxStats,
     area_summary,
     best_chaos_preserving,
     beta_curve,
@@ -14,6 +15,7 @@ from .stats import (
     correlation_matrix,
     export_summary_json,
     lmax_distribution,
+    lmax_statistics,
     optimal_parameters,
     summary_table,
     transition_boundary,
@@ -45,6 +47,7 @@ __all__ = [
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
     "AreaSummary",
+    "LmaxStats",
     "SweepResult",
     "area_summary",
     "best_chaos_preserving",
@@ -57,6 +60,7 @@ __all__ = [
     "correlation_matrix",
     "export_summary_json",
     "lmax_distribution",
+    "lmax_statistics",
     "load_sweep",
     "optimal_parameters",
     "plot_all",
