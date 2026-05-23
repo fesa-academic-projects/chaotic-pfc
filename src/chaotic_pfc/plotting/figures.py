@@ -3,12 +3,26 @@ figures.py
 ==========
 Publication-quality SVG figures with LaTeX-style labels.
 
-All text uses matplotlib's mathtext engine (no external LaTeX needed).
-Figures are saved as .svg by default for vector-quality output.
+Typography is configured via :func:`setup_rc`, which auto-detects
+whether a full LaTeX installation is available on the system:
+
+* If ``latex`` is found on ``$PATH``, real LaTeX rendering is used
+  (``usetex=True``, Computer Modern Roman).
+* Otherwise, mathtext with STIX fonts is used as a fallback that
+  visually matches LaTeX output without any external dependency.
+
+The detection can be overridden via the environment variable
+``CHAOTIC_PFC_FORCE_LATEX`` (``0`` forces fallback, ``1`` forces
+real LaTeX).  This is useful in CI environments or for debugging.
+
+All text is converted to vector paths in SVG output so that figures
+render identically on any system.
 """
 
 from __future__ import annotations
 
+import os
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -21,40 +35,97 @@ from scipy.signal import freqz
 
 from chaotic_pfc._i18n import t
 
+# ── LaTeX availability (cached at import time) ──────────────────────────────
+
+_force_var = os.environ.get("CHAOTIC_PFC_FORCE_LATEX")
+if _force_var == "1":
+    _LATEX_AVAILABLE = True
+elif _force_var == "0":
+    _LATEX_AVAILABLE = False
+else:
+    _LATEX_AVAILABLE = shutil.which("latex") is not None
+
+
+def latex_available() -> bool:
+    """Return ``True`` if LaTeX is available for figure rendering.
+
+    The return value is determined at import time by checking
+    ``$PATH`` for the ``latex`` executable.  Set the environment
+    variable ``CHAOTIC_PFC_FORCE_LATEX=0`` or ``1`` to override.
+    """
+    return _LATEX_AVAILABLE
+
+
 # ── Global RC params for LaTeX-like rendering ───────────────────────────────
 
 
 def setup_rc():
     """Configure matplotlib for publication-quality LaTeX-style SVG output.
 
-    Uses STIX fonts (the standard for scientific publishing, very close
-    to Computer Modern) and converts all text to vector paths so that
-    SVGs render identically on any system without requiring font installation.
+    Auto-detects whether a full LaTeX installation is available:
+
+    * If ``latex`` is found on ``$PATH``, uses real LaTeX rendering
+      (``usetex=True``, Computer Modern Roman, ``amsmath`` +
+      ``amssymb`` preamble).
+    * Otherwise, falls back to mathtext with STIX fonts, which
+      visually match LaTeX without external dependencies.
+
+    The detection can be overridden via ``CHAOTIC_PFC_FORCE_LATEX=0``
+    or ``=1``.
+
+    All text is converted to vector paths in SVG output.
     """
-    plt.rcParams.update(
-        {
-            "text.usetex": False,
-            "mathtext.fontset": "stix",  # STIX ≈ Computer Modern
-            "font.family": "STIXGeneral",  # matching text font
-            "svg.fonttype": "path",  # text → vector paths (portable)
-            "axes.unicode_minus": False,
-            "axes.formatter.use_mathtext": True,
-            "font.size": 12,
-            "axes.labelsize": 14,
-            "axes.titlesize": 14,
-            "xtick.labelsize": 11,
-            "ytick.labelsize": 11,
-            "legend.fontsize": 11,
-            "figure.dpi": 150,
-            "savefig.dpi": 150,
-            "savefig.bbox": "tight",
-            "savefig.pad_inches": 0.05,
-            "axes.linewidth": 1.2,
-            "xtick.major.width": 1.0,
-            "ytick.major.width": 1.0,
-            "lines.linewidth": 1.5,
-        }
-    )
+    if _LATEX_AVAILABLE:
+        plt.rcParams.update(
+            {
+                "text.usetex": True,
+                "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
+                "font.family": "serif",
+                "font.serif": ["Computer Modern Roman"],
+                "svg.fonttype": "path",
+                "axes.unicode_minus": False,
+                "axes.formatter.use_mathtext": False,
+                "font.size": 12,
+                "axes.labelsize": 14,
+                "axes.titlesize": 14,
+                "xtick.labelsize": 11,
+                "ytick.labelsize": 11,
+                "legend.fontsize": 11,
+                "figure.dpi": 150,
+                "savefig.dpi": 150,
+                "savefig.bbox": "tight",
+                "savefig.pad_inches": 0.05,
+                "axes.linewidth": 1.2,
+                "xtick.major.width": 1.0,
+                "ytick.major.width": 1.0,
+                "lines.linewidth": 1.5,
+            }
+        )
+    else:
+        plt.rcParams.update(
+            {
+                "text.usetex": False,
+                "mathtext.fontset": "stix",
+                "font.family": "STIXGeneral",
+                "svg.fonttype": "path",
+                "axes.unicode_minus": False,
+                "axes.formatter.use_mathtext": True,
+                "font.size": 12,
+                "axes.labelsize": 14,
+                "axes.titlesize": 14,
+                "xtick.labelsize": 11,
+                "ytick.labelsize": 11,
+                "legend.fontsize": 11,
+                "figure.dpi": 150,
+                "savefig.dpi": 150,
+                "savefig.bbox": "tight",
+                "savefig.pad_inches": 0.05,
+                "axes.linewidth": 1.2,
+                "xtick.major.width": 1.0,
+                "ytick.major.width": 1.0,
+                "lines.linewidth": 1.5,
+            }
+        )
 
 
 # ── Colour palette ──────────────────────────────────────────────────────────

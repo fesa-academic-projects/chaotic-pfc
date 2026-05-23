@@ -6,15 +6,18 @@ import matplotlib
 
 matplotlib.use("Agg")
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from chaotic_pfc._i18n import t
 from chaotic_pfc.dynamics.spectral import psd_normalised
 from chaotic_pfc.plotting.figures import (
     PlotGridOptions,
+    latex_available,
     plot_attractor,
     plot_comm_grid,
     plot_sensitivity,
+    setup_rc,
 )
 
 
@@ -127,3 +130,20 @@ class TestPlottingSmoke(unittest.TestCase):
         import matplotlib.pyplot as plt
 
         plt.close(fig)
+
+
+class TestSetupRc(unittest.TestCase):
+    def test_setup_rc_idempotent(self):
+        setup_rc()
+        setup_rc()
+
+    def test_setup_rc_sets_font_family(self):
+        setup_rc()
+        family = plt.rcParams["font.family"]
+        if isinstance(family, list):
+            family = family[0]
+        self.assertIn(family, {"STIXGeneral", "serif"})
+
+    def test_latex_available_returns_bool(self):
+        result = latex_available()
+        self.assertIsInstance(result, bool)
