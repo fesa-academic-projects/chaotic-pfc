@@ -103,6 +103,7 @@ Key experiments
    tutorial
    architecture
    internals
+   testing
    usage
    validation
    development
