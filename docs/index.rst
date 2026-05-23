@@ -108,4 +108,7 @@ Key experiments
    validation
    development
    contributing
+   source/algorithms/lyapunov
+   source/algorithms/sweep
+   source/algorithms/fir_design
    api/index

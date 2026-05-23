@@ -1,0 +1,221 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 16:00-0300\n"
+"PO-Revision-Date: 2026-05-23 16:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/algorithms/lyapunov.rst:4
+msgid "Lyapunov exponent computation"
+msgstr "Cálculo de expoentes de Lyapunov"
+
+#: ../../source/algorithms/lyapunov.rst:7
+msgid "Motivation"
+msgstr "Motivação"
+
+#: ../../source/algorithms/lyapunov.rst:9
+msgid ""
+"In chaotic dynamics, the **largest Lyapunov exponent** :math:`\\lambda_{\\max}` "
+"quantifies how quickly two initially nearby trajectories diverge from each "
+"other.  If :math:`\\lambda_{\\max} > 0`, the system is chaotic — a tiny "
+"perturbation in the initial condition grows exponentially and the long-term "
+"behaviour becomes unpredictable.  If :math:`\\lambda_{\\max} \\le 0`, the "
+"system is periodic or stable."
+msgstr ""
+"Em dinâmica caótica, o **maior expoente de Lyapunov** :math:`\\lambda_{\\max}` "
+"quantifica a rapidez com que duas trajetórias inicialmente próximas divergem.  "
+"Se :math:`\\lambda_{\\max} > 0`, o sistema é caótico — uma perturbação "
+"infinitesimal na condição inicial cresce exponencialmente e o comportamento "
+"de longo prazo torna-se imprevisível.  Se :math:`\\lambda_{\\max} \\le 0`, o "
+"sistema é periódico ou estável."
+
+#: ../../source/algorithms/lyapunov.rst:17
+msgid ""
+"For chaotic communication, :math:`\\lambda_{\\max}` is the single most "
+"important diagnostic: it tells us whether the Hénon map with a given "
+"FIR filter still preserves chaos, or whether the filter *killed* the "
+"chaos (making the scheme useless for physical-layer security)."
+msgstr ""
+"Para comunicação caótica, :math:`\\lambda_{\\max}` é o diagnóstico mais "
+"importante: ele indica se o mapa de Hénon com um dado filtro FIR ainda "
+"preserva o caos, ou se o filtro *matou* o caos (tornando o esquema inútil "
+"para segurança de camada física)."
+
+#: ../../source/algorithms/lyapunov.rst:23
+msgid "Mathematical definition"
+msgstr "Definição matemática"
+
+#: ../../source/algorithms/lyapunov.rst:25
+msgid ""
+"For a discrete-time dynamical system :math:`\\mathbf{x}_{n+1} = f(\\mathbf{x}_n)`, "
+"the largest Lyapunov exponent is defined as the time-averaged exponential "
+"divergence rate:"
+msgstr ""
+"Para um sistema dinâmico de tempo discreto :math:`\\mathbf{x}_{n+1} = f(\\mathbf{x}_n)`, "
+"o maior expoente de Lyapunov é definido como a taxa de divergência exponencial "
+"média temporal:"
+
+#: ../../source/algorithms/lyapunov.rst:36
+msgid ""
+"where :math:`\\delta \\mathbf{x}_k` is the evolved tangent vector at step "
+":math:`k`, obtained by applying the Jacobian :math:`J(\\mathbf{x}_k)` and "
+"re-normalising."
+msgstr ""
+"onde :math:`\\delta \\mathbf{x}_k` é o vetor tangente evoluído no passo "
+":math:`k`, obtido aplicando o Jacobiano :math:`J(\\mathbf{x}_k)` e "
+"re-normalizando."
+
+#: ../../source/algorithms/lyapunov.rst:41
+msgid ""
+"In the code, this is the **\"Gram-Schmidt\"** (more precisely, **Modified "
+"Gram-Schmidt — MGS**) approach to Lyapunov spectra.  The MGS variant is "
+"more stable numerically than classical Gram-Schmidt, especially when "
+"the tangent vectors become nearly parallel after many iterations."
+msgstr ""
+"No código, esta é a abordagem **\"Gram-Schmidt\"** (mais precisamente, "
+"**Gram-Schmidt Modificado — MGS**) para espectros de Lyapunov.  A variante "
+"MGS é mais estável numericamente que o Gram-Schmidt clássico, especialmente "
+"quando os vetores tangentes se tornam quase paralelos após muitas iterações."
+
+#: ../../source/algorithms/lyapunov.rst:48
+msgid "Wolf et al. method"
+msgstr "Método de Wolf et al."
+
+#: ../../source/algorithms/lyapunov.rst:50
+msgid ""
+"Alan Wolf, Jack Swift, Harry Swinney, and John Vastano published the "
+"canonical algorithm in 1985 [Wolf1985]_.  For a known map (as opposed "
+"to a time series), the procedure is:"
+msgstr ""
+"Alan Wolf, Jack Swift, Harry Swinney e John Vastano publicaram o "
+"algoritmo canônico em 1985 [Wolf1985]_.  Para um mapa conhecido (em "
+"oposição a uma série temporal), o procedimento é:"
+
+#: ../../source/algorithms/lyapunov.rst:67
+msgid "Pseudocode"
+msgstr "Pseudocódigo"
+
+#: ../../source/algorithms/lyapunov.rst:97
+msgid "Adaptations in ``chaotic-pfc``"
+msgstr "Adaptações no ``chaotic-pfc``"
+
+#: ../../source/algorithms/lyapunov.rst:100
+msgid ""
+"**Modified Gram-Schmidt, not classical.**  Classical Gram-Schmidt projects "
+"each vector against *all* preceding vectors at once; MGS projects against "
+"one at a time and is more resistant to round-off error.  This is critical "
+"when the orbit visits regions where the Jacobian is ill-conditioned."
+msgstr ""
+"**Gram-Schmidt Modificado, não clássico.**  O Gram-Schmidt clássico projeta "
+"cada vetor contra *todos* os vetores anteriores de uma vez; o MGS projeta "
+"contra um de cada vez e é mais resistente a erro de arredondamento.  Isso é "
+"crítico quando a órbita visita regiões onde o Jacobiano é mal condicionado."
+
+#: ../../source/algorithms/lyapunov.rst:106
+msgid ""
+"**Underflow guard.**  The ``log(max(norm, 1e-300))`` clamp prevents "
+"``log(0)`` (which would produce NaN) while being indistinguishable from "
+"zero for any physically meaningful norm.  The constant :math:`10^{-300}` "
+"was chosen well below machine underflow for ``float64`` "
+"(:math:`\\approx 10^{-308}` in subnormal range)."
+msgstr ""
+"**Guarda contra underflow.**  A proteção ``log(max(norm, 1e-300))`` evita "
+"``log(0)`` (que produziria NaN) sendo indistinguível de zero para qualquer "
+"norma fisicamente significativa.  A constante :math:`10^{-300}` foi escolhida "
+"bem abaixo do underflow de máquina para ``float64`` "
+"(:math:`\\approx 10^{-308}` na faixa subnormal)."
+
+#: ../../source/algorithms/lyapunov.rst:113
+msgid ""
+"**Ensemble protocol.**  A single initial condition samples one trajectory. "
+"To assess the **statistical robustness** of the Lyapunov estimate, "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble` draws "
+":math:`N_{\\text{CI}}` independent initial conditions from a uniform box "
+"around the positive fixed point and computes the spectrum for each.  The "
+"output (:class:`~chaotic_pfc.dynamics.lyapunov.EnsembleResult`) reports "
+"the mean, maximum, and per-IC values, plus a count of how many ICs yield "
+"positive :math:`\\lambda_{\\max}` (chaotic) versus non-positive (periodic)."
+msgstr ""
+"**Protocolo ensemble.**  Uma única condição inicial amostra uma trajetória. "
+"Para avaliar a **robustez estatística** da estimativa de Lyapunov, "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble` sorteia "
+":math:`N_{\\text{CI}}` condições iniciais independentes de uma caixa uniforme "
+"ao redor do ponto fixo positivo e calcula o espectro para cada uma.  A "
+"saída (:class:`~chaotic_pfc.dynamics.lyapunov.EnsembleResult`) reporta "
+"a média, o máximo e os valores por CI, além da contagem de quantas CIs "
+"produzem :math:`\\lambda_{\\max}` positivo (caótico) versus não-positivo "
+"(periódico)."
+
+#: ../../source/algorithms/lyapunov.rst:128
+msgid "Validation"
+msgstr "Validação"
+
+#: ../../source/algorithms/lyapunov.rst:130
+msgid ""
+"The implementation has been validated against published reference values "
+"from Wolf et al. (1985) and Sprott (2003).  For the standard Hénon map "
+":math:`(a = 1.4, b = 0.3)`, our code with :math:`N_{\\text{itera}} = 20\\,000` "
+"yields :math:`\\lambda_1 = 0.417567` (Wolf reports :math:`0.418`, error "
+":math:`0.10\\%`).  See :doc:`/validation` for the full validation report."
+msgstr ""
+"A implementação foi validada contra valores de referência publicados "
+"por Wolf et al. (1985) e Sprott (2003).  Para o mapa de Hénon padrão "
+":math:`(a = 1.4, b = 0.3)`, nosso código com :math:`N_{\\text{itera}} = 20\\,000` "
+"produz :math:`\\lambda_1 = 0.417567` (Wolf reporta :math:`0.418`, erro "
+":math:`0.10\\%`).  Veja :doc:`/validation` para o relatório completo."
+
+#: ../../source/algorithms/lyapunov.rst:138
+msgid ""
+"A mathematical identity — :math:`\\lambda_1 + \\lambda_2 = \\ln|b|` — is also "
+"verified routinely in the test suite (:ref:`validation`), confirming "
+"correctness at machine precision independently of any published reference."
+msgstr ""
+"Uma identidade matemática — :math:`\\lambda_1 + \\lambda_2 = \\ln|b|` — também "
+"é verificada rotineiramente na suíte de testes (:ref:`validation`), confirmando "
+"a exatidão em precisão de máquina independentemente de qualquer referência "
+"publicada."
+
+#: ../../source/algorithms/lyapunov.rst:145
+msgid "Known limitations"
+msgstr "Limitações conhecidas"
+
+#: ../../source/algorithms/lyapunov.rst:147
+msgid ""
+"**Finite-time convergence.**  Published values correspond to "
+":math:`N \\to \\infty`.  With the sweep default of :math:`N = 500`, the "
+"estimate can deviate by ~2–3% from the asymptotic value.  The sum "
+"identity :math:`\\lambda_1 + \\lambda_2 = \\ln|b|` remains exact at any "
+":math:`N`, confirming that the bias is a convergence-rate issue, not a bug."
+msgstr ""
+"**Convergência em tempo finito.**  Valores publicados correspondem a "
+":math:`N \\to \\infty`.  Com o padrão de varredura de :math:`N = 500`, a "
+"estimativa pode desviar ~2–3% do valor assintótico.  A identidade de soma "
+":math:`\\lambda_1 + \\lambda_2 = \\ln|b|` permanece exata para qualquer "
+":math:`N`, confirmando que o viés é uma questão de taxa de convergência, "
+"não um bug."
+
+#: ../../source/algorithms/lyapunov.rst:155
+msgid "**Orbit divergence.**"
+msgstr "**Divergência de órbita.**"
+
+#: ../../source/algorithms/lyapunov.rst:163
+msgid "**QR cost.**"
+msgstr "**Custo QR.**"
+
+#: ../../source/algorithms/lyapunov.rst:168
+msgid "References"
+msgstr "Referências"

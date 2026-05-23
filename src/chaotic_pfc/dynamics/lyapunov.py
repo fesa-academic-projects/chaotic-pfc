@@ -254,6 +254,11 @@ def lyapunov_max(
     -------
     LyapunovResult
         With fields: lyapunov_max, all_exponents, fixed_point, eigenvalues, stable.
+
+    See Also
+    --------
+    lyapunov_henon2d : Standard 2‑D Hénon (no filter).
+    :doc:`/source/algorithms/lyapunov` : Algorithm overview and validation.
     """
     dim = 4
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
@@ -395,6 +400,12 @@ def lyapunov_henon2d(
     LyapunovResult
         With fields: lyapunov_max, all_exponents, fixed_point_p,
         fixed_point_n, eigenvalues_p, eigenvalues_n, stable_p, stable_n.
+
+    See Also
+    --------
+    lyapunov_henon2d_ensemble : Multi-IC protocol.
+    lyapunov_max : 4‑D pole‑filtered variant.
+    :doc:`/source/algorithms/lyapunov` : Algorithm overview and validation.
     """
     dim = 2
 
@@ -716,6 +727,11 @@ def lyapunov_henon2d_ensemble(
     Returns
     -------
     EnsembleResult
+
+    See Also
+    --------
+    lyapunov_henon2d : Single‑IC version.
+    :doc:`/source/algorithms/lyapunov` : Algorithm overview and ensemble motivation.
     """
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 

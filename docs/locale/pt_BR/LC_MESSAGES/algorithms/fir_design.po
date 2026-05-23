@@ -1,0 +1,130 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 16:00-0300\n"
+"PO-Revision-Date: 2026-05-23 16:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/algorithms/fir_design.rst:4
+msgid "FIR filter design"
+msgstr "Projeto de filtros FIR"
+
+#: ../../source/algorithms/fir_design.rst:7
+msgid "Motivation"
+msgstr "Motivação"
+
+#: ../../source/algorithms/fir_design.rst:9
+msgid ""
+"In the chaotic communication scheme, a finite impulse response (FIR) "
+"filter is inserted **inside the Hénon feedback loop**.  This turns the "
+"standard 2‑D map into a higher‑dimensional system whose dynamics are "
+"shaped by the filter coefficients."
+msgstr ""
+"No esquema de comunicação caótica, um filtro de resposta finita ao impulso "
+"(FIR) é inserido **dentro do laço de realimentação do Hénon**.  Isso "
+"transforma o mapa 2‑D padrão em um sistema de dimensão maior cuja dinâmica "
+"é moldada pelos coeficientes do filtro."
+
+#: ../../source/algorithms/fir_design.rst:25
+msgid "``firwin`` vs. MATLAB ``fir1``"
+msgstr "``firwin`` vs. MATLAB ``fir1``"
+
+#: ../../source/algorithms/fir_design.rst:27
+msgid ""
+"The project uses :func:`scipy.signal.firwin` rather than implementing "
+"its own FIR design.  There is a documented off‑by‑one difference "
+"relative to MATLAB's ``fir1``:"
+msgstr ""
+"O projeto usa :func:`scipy.signal.firwin` em vez de implementar seu "
+"próprio projeto FIR.  Há uma diferença documentada de off‑by‑one em "
+"relação ao ``fir1`` do MATLAB:"
+
+#: ../../source/algorithms/fir_design.rst:33
+msgid "MATLAB: ``fir1(N, wc)`` produces ``N+1`` coefficients."
+msgstr "MATLAB: ``fir1(N, wc)`` produz ``N+1`` coeficientes."
+
+#: ../../source/algorithms/fir_design.rst:34
+msgid "SciPy: ``firwin(N, wc)`` produces ``N`` coefficients."
+msgstr "SciPy: ``firwin(N, wc)`` produz ``N`` coeficientes."
+
+#: ../../source/algorithms/fir_design.rst:49
+msgid "Filter types"
+msgstr "Tipos de filtro"
+
+#: ../../source/algorithms/fir_design.rst:51
+msgid "Four pass‑zero configurations are supported:"
+msgstr "Quatro configurações de passa‑zero são suportadas:"
+
+#: ../../source/algorithms/fir_design.rst:77
+msgid "Windows"
+msgstr "Janelas"
+
+#: ../../source/algorithms/fir_design.rst:79
+msgid ""
+"The FIR design uses one of seven window functions to shape the filter's "
+"frequency response:"
+msgstr ""
+"O projeto FIR usa uma de sete funções de janela para moldar a resposta "
+"em frequência do filtro:"
+
+#: ../../source/algorithms/fir_design.rst:112
+msgid ""
+"**Kaiser window** deserves special attention.  The shape parameter "
+":math:`\\beta` controls the trade‑off between main‑lobe width and "
+"sidelobe level.  The project includes a dedicated :math:`\\beta`-sweep "
+"(``chaotic-pfc run sweep beta-sweep``) that evaluates Lyapunov exponents "
+"across :math:`\\beta \\in [2, 14]` in steps of :math:`0.5` for each filter "
+"type."
+msgstr ""
+"**Janela de Kaiser** merece atenção especial.  O parâmetro de forma "
+":math:`\\beta` controla o compromisso entre largura do lóbulo principal "
+"e nível dos lóbulos laterais.  O projeto inclui uma varredura :math:`\\beta` "
+"dedicada (``chaotic-pfc run sweep beta-sweep``) que avalia expoentes de "
+"Lyapunov ao longo de :math:`\\beta \\in [2, 14]` em passos de :math:`0.5` "
+"para cada tipo de filtro."
+
+#: ../../source/algorithms/fir_design.rst:122
+msgid "Stability and the fixed point"
+msgstr "Estabilidade e o ponto fixo"
+
+#: ../../source/algorithms/fir_design.rst:124
+msgid ""
+"When an FIR filter is inserted into the Hénon feedback loop, the "
+"Jacobian matrix grows from :math:`2 \\times 2` to :math:`(2 + N_c) "
+"\\times (2 + N_c)`, where :math:`N_c` is the number of filter "
+"coefficients that feed back into the dynamics."
+msgstr ""
+"Quando um filtro FIR é inserido no laço de realimentação do Hénon, a "
+"matriz Jacobiana cresce de :math:`2 \\times 2` para :math:`(2 + N_c) "
+"\\times (2 + N_c)`, onde :math:`N_c` é o número de coeficientes do filtro "
+"que realimentam a dinâmica."
+
+#: ../../source/algorithms/fir_design.rst:140
+msgid "Known limitations"
+msgstr "Limitações conhecidas"
+
+#: ../../source/algorithms/fir_design.rst:142
+msgid "**Cutoff extremes.**"
+msgstr "**Extremos de corte.**"
+
+#: ../../source/algorithms/fir_design.rst:149
+msgid "**Order limits.**"
+msgstr "**Limites de ordem.**"
+
+#: ../../source/algorithms/fir_design.rst:153
+msgid "**DC gain.**"
+msgstr "**Ganho DC.**"

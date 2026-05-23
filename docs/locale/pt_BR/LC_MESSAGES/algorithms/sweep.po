@@ -1,0 +1,165 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 16:00-0300\n"
+"PO-Revision-Date: 2026-05-23 16:00-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/algorithms/sweep.rst:4
+msgid "Parameter sweep architecture"
+msgstr "Arquitetura de varredura de parâmetros"
+
+#: ../../source/algorithms/sweep.rst:7
+msgid "Motivation"
+msgstr "Motivação"
+
+#: ../../source/algorithms/sweep.rst:9
+msgid ""
+"The Hénon map has two parameters :math:`(a, b)`; the FIR-filtered version "
+"adds the filter order :math:`N_z` and the normalised cutoff frequency "
+":math:`\\omega_c`.  The central question of the project is: **for which "
+":math:`(N_z, \\omega_c)` combinations does the map remain chaotic?**"
+msgstr ""
+"O mapa de Hénon tem dois parâmetros :math:`(a, b)`; a versão com filtro FIR "
+"adiciona a ordem do filtro :math:`N_z` e a frequência de corte normalizada "
+":math:`\\omega_c`.  A questão central do projeto é: **para quais combinações "
+"de :math:`(N_z, \\omega_c)` o mapa permanece caótico?**"
+
+#: ../../source/algorithms/sweep.rst:16
+msgid ""
+"A single Lyapunov computation answers this for one grid point.  The "
+"**parameter sweep** answers it for the entire 2‑D grid, producing the "
+"classification maps that form the empirical backbone of the TCC."
+msgstr ""
+"Um único cálculo de Lyapunov responde isso para um ponto da grade.  A "
+"**varredura de parâmetros** responde para toda a grade 2‑D, produzindo "
+"os mapas de classificação que formam a espinha dorsal empírica do TCC."
+
+#: ../../source/algorithms/sweep.rst:22
+msgid "Grid structure"
+msgstr "Estrutura da grade"
+
+#: ../../source/algorithms/sweep.rst:24
+msgid "The sweep runs over:"
+msgstr "A varredura percorre:"
+
+#: ../../source/algorithms/sweep.rst:32
+msgid "For each grid point :math:`(N_z, \\omega_c)`:"
+msgstr "Para cada ponto da grade :math:`(N_z, \\omega_c)`:"
+
+#: ../../source/algorithms/sweep.rst:43
+msgid "Parallel architecture"
+msgstr "Arquitetura paralela"
+
+#: ../../source/algorithms/sweep.rst:46
+msgid "The sweep is a two-level parallel problem:"
+msgstr "A varredura é um problema paralelo de dois níveis:"
+
+#: ../../source/algorithms/sweep.rst:48
+msgid "**Outer level — joblib with loky backend.**"
+msgstr "**Nível externo — joblib com backend loky.**"
+
+#: ../../source/algorithms/sweep.rst:55
+msgid "Each worker receives a sub‑block of grid points."
+msgstr "Cada worker recebe um sub‑bloco de pontos da grade."
+
+#: ../../source/algorithms/sweep.rst:57
+msgid "**Inner level — Numba prange.**"
+msgstr "**Nível interno — Numba prange.**"
+
+#: ../../source/algorithms/sweep.rst:63
+msgid "**Why pre‑generated perturbations?**"
+msgstr "**Por que perturbações pré‑geradas?**"
+
+#: ../../source/algorithms/sweep.rst:72
+msgid "Adaptive early-stop"
+msgstr "Parada antecipada adaptativa"
+
+#: ../../source/algorithms/sweep.rst:74
+msgid ""
+"Computing :math:`\\lambda_{\\max}` with :math:`N_{\\text{itera}} = 3000` "
+"iterations gives a precise estimate; doing that for every grid point "
+"is slow.  **Adaptive early‑stop** monitors the running estimate of "
+":math:`\\lambda_{\\max}` at checkpoints (every :math:`K = 100` iterations) "
+"and exits early when the estimate stabilises."
+msgstr ""
+"Calcular :math:`\\lambda_{\\max}` com :math:`N_{\\text{itera}} = 3000` "
+"iterações fornece uma estimativa precisa; fazer isso para cada ponto da "
+"grade é lento.  A **parada antecipada adaptativa** monitora a estimativa "
+"corrente de :math:`\\lambda_{\\max}` em checkpoints (a cada :math:`K = 100` "
+"iterações) e encerra antecipadamente quando a estimativa se estabiliza."
+
+#: ../../source/algorithms/sweep.rst:89
+msgid ""
+"In practice this provides a 3–4× speedup on typical sweeps with negligible "
+"accuracy loss (the exponent estimate is already converged long before "
+":math:`N_{\\text{itera}} = 3000` for stable orbits)."
+msgstr ""
+"Na prática isso proporciona um ganho de 3–4× em varreduras típicas com "
+"perda de precisão desprezível (a estimativa do expoente já converge muito "
+"antes de :math:`N_{\\text{itera}} = 3000` para órbitas estáveis)."
+
+#: ../../source/algorithms/sweep.rst:95
+msgid "Divergence handling (Opção B)"
+msgstr "Tratamento de divergência (Opção B)"
+
+#: ../../source/algorithms/sweep.rst:97
+msgid ""
+"The original implementation used a sentinel value :math:`-1 \\times 10^{30}` "
+"to mark grid points where the orbit diverged.  This was problematic: the "
+"sentinel leaked into downstream statistics, producing spurious "
+"classifications and biasing aggregate numbers."
+msgstr ""
+"A implementação original usava um valor sentinela :math:`-1 \\times 10^{30}` "
+"para marcar pontos da grade onde a órbita divergia.  Isso era problemático: "
+"o sentinela vazava para as estatísticas posteriores, produzindo classificações "
+"espúrias e enviesando números agregados."
+
+#: ../../source/algorithms/sweep.rst:114
+msgid "Reproducibility"
+msgstr "Reprodutibilidade"
+
+#: ../../source/algorithms/sweep.rst:116
+msgid "Every sweep is **deterministic** given the same seed:"
+msgstr "Toda varredura é **determinística** dada a mesma seed:"
+
+#: ../../source/algorithms/sweep.rst:126
+msgid ""
+"Running the same sweep twice with the same seed produces byte‑identical "
+"``.npz`` files.  This is critical for scientific reproducibility and "
+"for the CI pipeline (the smoke test checks exact file size equality)."
+msgstr ""
+"Executar a mesma varredura duas vezes com a mesma seed produz arquivos "
+"``.npz`` byte‑idênticos.  Isso é crítico para reprodutibilidade científica "
+"e para o pipeline de CI (o teste de fumaça verifica igualdade exata de "
+"tamanho de arquivo)."
+
+#: ../../source/algorithms/sweep.rst:132
+msgid "Known limitations"
+msgstr "Limitações conhecidas"
+
+#: ../../source/algorithms/sweep.rst:134
+msgid "**Sweep duration.**"
+msgstr "**Duração da varredura.**"
+
+#: ../../source/algorithms/sweep.rst:140
+msgid "**Memory.**"
+msgstr "**Memória.**"
+
+#: ../../source/algorithms/sweep.rst:144
+msgid "**joblib loky overhead.**"
+msgstr "**Overhead do joblib loky.**"

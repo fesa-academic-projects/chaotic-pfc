@@ -185,6 +185,10 @@ def run_sweep(
     -------
     SweepResult
         Full result object.
+
+    See Also
+    --------
+    :doc:`/source/algorithms/sweep` : Parallel architecture and divergence handling.
     """
     if adaptive:
         if Nmap_min < 1:
