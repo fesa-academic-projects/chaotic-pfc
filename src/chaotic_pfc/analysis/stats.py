@@ -97,6 +97,20 @@ class BootstrapConfidence(TypedDict, total=False):
     n: int
 
 
+class AreaSummary(TypedDict):
+    """Chaotic-area breakdown for a single :class:`~.sweep.SweepResult`.
+
+    Returned by :func:`area_summary`.
+    """
+
+    n_chaotic: int
+    n_periodic: int
+    n_divergent: int
+    n_total: int
+    pct_chaotic: float
+    pct_chaotic_finite: float
+
+
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
     results: list[SweepResult] = []
@@ -154,6 +168,49 @@ def summary_table(
         }
         rows.append(row)
     return rows  # type: ignore[return-value]
+
+
+def area_summary(sweep_result: SweepResult) -> AreaSummary:
+    """Compute chaotic-area coverage for a single sweep.
+
+    Classifies each grid point (order, cutoff) as chaotic
+    (:math:`\\lambda_{\\max} > 0`, finite), periodic
+    (:math:`\\lambda_{\\max} \\le 0`, finite), or divergent
+    (NaN or Inf). Returns absolute counts and two complementary
+    percentages: one over the full grid, another excluding
+    divergent points so the chaotic proportion is not
+    artificially deflated by parameter regions where the
+    FIR filter itself becomes ill-conditioned.
+
+    Parameters
+    ----------
+    sweep_result : SweepResult
+        A loaded sweep.
+
+    Returns
+    -------
+    AreaSummary
+        Counts and percentages for the three dynamical regimes.
+    """
+    h = sweep_result.h
+    finite = np.isfinite(h)
+    chaotic = np.sum(finite & (h > 0))
+    periodic = np.sum(finite & (h <= 0))
+    divergent = np.sum(~finite)
+    total = h.size
+
+    pct_chaotic = round(100 * chaotic / total, 1) if total > 0 else 0.0
+    n_finite = total - divergent
+    pct_chaotic_finite = round(100 * chaotic / n_finite, 1) if n_finite > 0 else 0.0
+
+    return {
+        "n_chaotic": int(chaotic),
+        "n_periodic": int(periodic),
+        "n_divergent": int(divergent),
+        "n_total": int(total),
+        "pct_chaotic": pct_chaotic,
+        "pct_chaotic_finite": pct_chaotic_finite,
+    }
 
 
 def best_chaos_preserving(

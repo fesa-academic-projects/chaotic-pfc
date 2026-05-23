@@ -7,7 +7,9 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from chaotic_pfc.analysis.stats import (
+    AreaSummary,
     LmaxDistribution,
+    area_summary,
     best_chaos_preserving,
     beta_curve,
     beta_summary,
@@ -49,6 +51,42 @@ class TestAnalysis(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.tmp.cleanup()
+
+    def test_area_summary(self):
+        """Validate every field of AreaSummary with known data."""
+        h = np.array([[0.1, -0.2, np.nan], [np.nan, 0.0, 0.5]], dtype=float)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.1, 0.9, 3),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        s = area_summary(result)
+        self.assertEqual(s["n_total"], 6)
+        self.assertEqual(s["n_chaotic"], 2)  # 0.1, 0.5
+        self.assertEqual(s["n_periodic"], 2)  # -0.2, 0.0
+        self.assertEqual(s["n_divergent"], 2)  # two NaN
+        self.assertAlmostEqual(s["pct_chaotic"], 100 * 2 / 6, delta=0.15)
+        self.assertAlmostEqual(s["pct_chaotic_finite"], 100 * 2 / 4, delta=0.15)
+
+    def test_area_summary_all_divergent(self):
+        h = np.full((2, 3), np.nan)
+        result = SweepResult(
+            h=h,
+            h_std=np.zeros_like(h),
+            orders=np.arange(2, 4),
+            cutoffs=np.linspace(0.1, 0.9, 3),
+            window="hamming",
+            filter_type="lowpass",
+        )
+        s = area_summary(result)
+        self.assertEqual(s["n_chaotic"], 0)
+        self.assertEqual(s["n_periodic"], 0)
+        self.assertEqual(s["n_divergent"], 6)
+        self.assertAlmostEqual(s["pct_chaotic"], 0.0)
+        self.assertAlmostEqual(s["pct_chaotic_finite"], 0.0)
 
     def test_summary_table(self):
         rows = summary_table(self.root)

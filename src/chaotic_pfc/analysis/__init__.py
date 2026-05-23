@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from .stats import (
+    AreaSummary,
+    area_summary,
     best_chaos_preserving,
     beta_curve,
     beta_summary,
@@ -42,7 +44,9 @@ __all__ = [
     "FILTER_TYPES",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
+    "AreaSummary",
     "SweepResult",
+    "area_summary",
     "best_chaos_preserving",
     "beta_curve",
     "beta_summary",
