@@ -127,6 +127,27 @@ class LmaxStats(TypedDict):
     n_used: int
 
 
+class ConfigRank(TypedDict):
+    """One entry of :func:`rank_configurations`.
+
+    Ranks a (filter_type, window) combination by chaotic-area coverage.
+    Kaiser-beta sweeps include the beta value and a synthetic window key.
+    """
+
+    rank: int
+    filter_type: str
+    window: str
+    n_chaotic: int
+    pct_chaotic: float
+    pct_chaotic_finite: float
+    lmax_mean: float
+    lmax_max: float
+    lmax_std: float
+    lmax_ci_95_low: float
+    lmax_ci_95_high: float
+    beta: float | None
+
+
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
     results: list[SweepResult] = []
@@ -310,6 +331,97 @@ def lmax_statistics(
         "ci_95_high": round(float(ci_result.confidence_interval.high), 6),
         "n_used": n_used,
     }
+
+
+# ── Ranking helpers ─────────────────────────────────────────────────────────
+
+_LOADED_SWEEPS_CACHE: dict[Path, dict[tuple[str, str], SweepResult]] = {}
+
+
+def load_all_sweeps(
+    sweep_dir: str | Path = "data/sweeps",
+) -> dict[tuple[str, str], SweepResult]:
+    """Load every ``variables_lyapunov.npz`` under *sweep_dir*.
+
+    Returns a dict keyed by ``(filter_type, window)`` for non-Kaiser
+    sweeps or ``(filter_type, "kaiser_<beta>")`` for Kaiser  beta-sweeps.
+    Results are cached in memory so repeated calls are free.
+
+    Parameters
+    ----------
+    sweep_dir
+        Root directory containing per-configuration subdirectories
+        and an optional ``kaiser/<filter_type>/beta_<N>`` subtree.
+
+    Returns
+    -------
+    dict
+        Mapping from ``(filter_type, window_key)`` to :class:`SweepResult`.
+    """
+    sweep_dir = Path(sweep_dir).resolve()
+    if sweep_dir in _LOADED_SWEEPS_CACHE:
+        return _LOADED_SWEEPS_CACHE[sweep_dir]
+
+    loaded: dict[tuple[str, str], SweepResult] = {}
+    for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
+        result = load_sweep(path)
+        beta = result.metadata.get("kaiser_beta")
+        if beta is not None:
+            key = (result.filter_type, f"kaiser_{float(beta):.2f}")
+        else:
+            key = (result.filter_type, result.window)
+        loaded[key] = result
+
+    _LOADED_SWEEPS_CACHE[sweep_dir] = loaded
+    return loaded
+
+
+def rank_configurations(
+    sweep_results: dict[tuple[str, str], SweepResult],
+    bootstrap_seed: int = 42,
+) -> list[ConfigRank]:
+    """Rank every (filter_type, window) combination by chaotic grid-point count.
+
+    Parameters
+    ----------
+    sweep_results
+        Mapping from ``(filter_type, window_key)`` to a loaded sweep.
+        Typically obtained via :func:`load_all_sweeps`.
+    bootstrap_seed
+        RNG seed forwarded to :func:`lmax_statistics` (default 42).
+
+    Returns
+    -------
+    list of ConfigRank
+        Descending by ``n_chaotic``. Rank is 1-indexed.
+    """
+    entries: list[ConfigRank] = []
+    for (ft, win), result in sweep_results.items():
+        area = area_summary(result)
+        lmax = lmax_statistics(result, region="chaotic", seed=bootstrap_seed)
+        beta_raw = result.metadata.get("kaiser_beta")
+        beta = round(float(beta_raw), 2) if beta_raw is not None else None
+        entries.append(
+            {
+                "rank": 0,
+                "filter_type": ft,
+                "window": win,
+                "n_chaotic": area["n_chaotic"],
+                "pct_chaotic": area["pct_chaotic"],
+                "pct_chaotic_finite": area["pct_chaotic_finite"],
+                "lmax_mean": lmax["mean"],
+                "lmax_max": lmax["max"],
+                "lmax_std": lmax["std"],
+                "lmax_ci_95_low": lmax["ci_95_low"],
+                "lmax_ci_95_high": lmax["ci_95_high"],
+                "beta": beta,
+            }
+        )
+
+    entries.sort(key=lambda e: e["n_chaotic"], reverse=True)
+    for i, e in enumerate(entries):
+        e["rank"] = i + 1
+    return entries
 
 
 def best_chaos_preserving(

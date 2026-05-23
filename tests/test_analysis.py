@@ -8,6 +8,7 @@ import numpy as np
 
 from chaotic_pfc.analysis.stats import (
     AreaSummary,
+    ConfigRank,
     LmaxDistribution,
     LmaxStats,
     area_summary,
@@ -21,7 +22,9 @@ from chaotic_pfc.analysis.stats import (
     export_summary_json,
     lmax_distribution,
     lmax_statistics,
+    load_all_sweeps,
     optimal_parameters,
+    rank_configurations,
     summary_table,
     transition_boundary,
 )
@@ -257,6 +260,62 @@ class TestAnalysis(unittest.TestCase):
         self.assertIsInstance(ci, dict)
         for ft in FILTER_TYPES:
             self.assertIn(ft, ci)
+
+    def test_load_all_sweeps(self):
+        loaded = load_all_sweeps(self.root)
+        self.assertGreaterEqual(len(loaded), 3)
+
+    def test_rank_configurations(self):
+        """Ranking with known chaotic counts should be in correct order."""
+        rng = np.random.default_rng(0)
+        results: dict[tuple[str, str], SweepResult] = {}
+        for w, ft, n_chaotic in [
+            ("hamming", "lowpass", 8),
+            ("hann", "lowpass", 4),
+            ("boxcar", "lowpass", 2),
+        ]:
+            n_total = 12
+            h_pos = np.linspace(0.1, 0.5, n_chaotic)
+            h_neg = np.linspace(-0.5, -0.01, n_total - n_chaotic)
+            h_vals = np.concatenate([h_pos, h_neg])
+            rng.shuffle(h_vals)
+            h = h_vals.reshape(3, 4)
+            results[(ft, w)] = SweepResult(
+                h=h,
+                h_std=np.abs(h) * 0.1,
+                orders=np.arange(2, 5),
+                cutoffs=np.linspace(0.1, 0.9, 4),
+                window=w,
+                filter_type=ft,
+            )
+        ranking = rank_configurations(results, bootstrap_seed=0)
+        self.assertEqual(len(ranking), 3)
+        self.assertEqual(ranking[0]["window"], "hamming")
+        self.assertEqual(ranking[0]["rank"], 1)
+        self.assertEqual(ranking[1]["rank"], 2)
+        self.assertEqual(ranking[2]["rank"], 3)
+        self.assertGreaterEqual(ranking[0]["n_chaotic"], ranking[1]["n_chaotic"])
+        self.assertGreaterEqual(ranking[1]["n_chaotic"], ranking[2]["n_chaotic"])
+
+    def test_rank_configurations_with_kaiser(self):
+        """Kaiser sweeps get synthetic window key and beta field."""
+        rng = np.random.default_rng(0)
+        h_vals = np.concatenate([np.full(5, 0.2), np.full(7, -0.3)])
+        rng.shuffle(h_vals)
+        h = h_vals.reshape(3, 4)
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.1, 0.9, 4),
+            window="kaiser",
+            filter_type="lowpass",
+            metadata={"kaiser_beta": 3.5},
+        )
+        ranking = rank_configurations({("lowpass", "kaiser_3.50"): result}, bootstrap_seed=0)
+        self.assertEqual(len(ranking), 1)
+        self.assertEqual(ranking[0]["window"], "kaiser_3.50")
+        self.assertAlmostEqual(ranking[0]["beta"], 3.5)
 
     def test_bootstrap_confidence_empty(self):
         with TemporaryDirectory() as td:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .stats import (
     AreaSummary,
+    ConfigRank,
     LmaxStats,
     area_summary,
     best_chaos_preserving,
@@ -16,7 +17,9 @@ from .stats import (
     export_summary_json,
     lmax_distribution,
     lmax_statistics,
+    load_all_sweeps,
     optimal_parameters,
+    rank_configurations,
     summary_table,
     transition_boundary,
 )
@@ -47,6 +50,7 @@ __all__ = [
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
     "AreaSummary",
+    "ConfigRank",
     "LmaxStats",
     "SweepResult",
     "area_summary",
@@ -61,6 +65,7 @@ __all__ = [
     "export_summary_json",
     "lmax_distribution",
     "lmax_statistics",
+    "load_all_sweeps",
     "load_sweep",
     "optimal_parameters",
     "plot_all",
@@ -72,6 +77,7 @@ __all__ = [
     "plot_heatmap_continuous",
     "precompute_fir_bank",
     "quick_sweep_params",
+    "rank_configurations",
     "run_sweep",
     "save_sweep",
     "summary_table",
