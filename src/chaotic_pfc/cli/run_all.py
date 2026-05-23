@@ -326,6 +326,53 @@ def run(args: argparse.Namespace) -> int:
     for p in chaotic_paths:
         print(f"    Saved -> {p}")
 
+    # ── 6) Export analysis tables (11) ──────────────────────────────────────
+    _banner("11")
+    from chaotic_pfc.analysis.latex_export import (
+        export_consolidated_extended_table,
+        export_consolidated_full_ranking,
+        export_consolidated_top_k_table,
+        export_extended_top_k_table,
+        export_full_ranking_table,
+        export_kaiser_beta_optimal_table,
+        export_sweet_spots_table,
+        export_top_k_table,
+    )
+    from chaotic_pfc.analysis.stats import (
+        consolidate_kaiser,
+        kaiser_beta_optimal,
+        load_all_sweeps,
+        rank_configurations,
+        sweet_spot_per_filter,
+        top_k_per_filter,
+    )
+
+    sweeps = load_all_sweeps("data/sweeps")
+    top_k = top_k_per_filter(sweeps)
+    ranking = rank_configurations(sweeps)
+    sweet = sweet_spot_per_filter(sweeps)
+    consolidated = consolidate_kaiser(sweeps)
+    cons_top_k = top_k_per_filter(consolidated)
+    cons_ranking = rank_configurations(consolidated)
+    beta_opt = kaiser_beta_optimal(sweeps)
+
+    out = Path("data/analysis_output/tables") / getattr(args, "lang", "pt")
+    out.mkdir(parents=True, exist_ok=True)
+    lang_i18n = getattr(args, "lang", "pt")
+
+    tables = [
+        export_top_k_table(top_k, out / "tab_top_k.tex", lang=lang_i18n),
+        export_extended_top_k_table(top_k, out / "tab_top_k_extended.tex", lang=lang_i18n),
+        export_full_ranking_table(ranking, out / "tab_full_ranking.tex", lang=lang_i18n),
+        export_sweet_spots_table(sweet, out / "tab_sweet_spots.tex", lang=lang_i18n),
+        export_consolidated_top_k_table(cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang_i18n),
+        export_consolidated_extended_table(cons_top_k, out / "tab_consolidated_extended.tex", lang=lang_i18n),
+        export_consolidated_full_ranking(cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang_i18n),
+        export_kaiser_beta_optimal_table(beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang_i18n),
+    ]
+    for t in tables:
+        print(f"    Saved -> {t}")
+
     print("\nAll experiments completed successfully.")
     return 0
 
