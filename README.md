@@ -156,6 +156,7 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep beta-sweep`   | Kaiser β-sweep: aggregate per-β Lyapunov results. |
 | `chaotic-pfc run sweep plot-3d`      | Interactive 3-D volume of Kaiser β-sweeps via Plotly. |
 | `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
+| `chaotic-pfc run analysis export-tables` | Export bilingual LaTeX tables (top-k, rankings, sweet spots, consolidated Kaiser) for TCC/publication. |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
 
 ## Tests

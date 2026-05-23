@@ -156,6 +156,7 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep beta-sweep`   | Varredura Kaiser β: agrega resultados de Lyapunov por β. |
 | `chaotic-pfc run sweep plot-3d`      | Volume 3-D interativo das varreduras Kaiser β via Plotly. |
 | `chaotic-pfc run analysis`           | Análise estatística dos resultados da varredura. |
+| `chaotic-pfc run analysis export-tables` | Exporta tabelas LaTeX bilíngues (top-k, rankings, sweet spots, Kaiser consolidado) para TCC/publicação. |
 | `chaotic-pfc run all`                | Pipeline completo, em ordem. |
 
 ## Testes

@@ -211,7 +211,43 @@ found under ``data/sweeps/``:
    chaotic-pfc run analysis --json data/analysis_summary.json
 
    # Analyse a specific sweep directory
-   chaotic-pfc run analysis --data-dir data/sweeps
+    chaotic-pfc run analysis --data-dir data/sweeps
+
+Export tables for TCC/article
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Generate publication-ready LaTeX tables with bilingual support:
+
+.. code-block:: bash
+
+    chaotic-pfc run analysis export-tables
+
+Produces 8 ``.tex`` files per language under ``analysis_output/tables/{pt_BR,en}/``:
+
+* **tab_top_k.tex** — Top-3 windows per filter type (chaotic area).
+* **tab_top_k_extended.tex** — Top-3 with :math:`\lambda_{\max}` statistics and 95% CI.
+* **tab_full_ranking.tex** — Full 124-entry ranking (longtable).
+* **tab_sweet_spots.tex** — Grid point with highest :math:`\lambda_{\max}` per filter.
+* **tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\beta`.
+* **tab_consolidated_extended.tex** — Extended stats, Kaiser consolidated.
+* **tab_consolidated_full_ranking.tex** — Full ranking (28 entries), balanced.
+* **tab_kaiser_beta_optimal.tex** — Optimal :math:`\beta` per filter type.
+
+.. code-block:: bash
+
+   # Single language
+   chaotic-pfc run analysis export-tables --lang en
+
+   # Custom directories
+   chaotic-pfc run analysis export-tables \
+       --sweep-dir data/sweeps \
+       --output-dir tables_for_overleaf
+
+   # Reproducible bootstrap seed
+   chaotic-pfc run analysis export-tables --bootstrap-seed 42
+
+All tables use ``booktabs`` rules and inline LaTeX math. Captions, column
+headers, and filter names are resolved via the i18n system.
 
 Language support
 ----------------

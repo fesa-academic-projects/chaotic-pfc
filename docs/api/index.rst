@@ -20,6 +20,7 @@ NumPy-style docstrings extracted from the source.
    chaotic_pfc.comms.protocols
    chaotic_pfc.analysis.sweep
    chaotic_pfc.analysis.stats
+   chaotic_pfc.analysis.latex_export
    chaotic_pfc.analysis.sweep_plotting
    chaotic_pfc.analysis.sweep_plotting_3d
    chaotic_pfc.plotting.figures
