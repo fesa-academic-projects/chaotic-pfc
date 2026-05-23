@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+  \centering
+  \caption{Top-3 janelas por tipo de filtro com estatísticas (Kaiser consolidado).}
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    Filtro & Rank & Janela & Pontos caóticos & $\%$ caótico (finitos) & $\overline{\lambda}_{\max}$ & $\lambda_{\max}$ máx & $\sigma(\lambda_{\max})$ & IC 95\% \\
+    \midrule
+    Passa-baixa & 1 & Kaiser($\beta=13.50$) & 979 & 77.6\% & 0.0239 & 0.1086 & 0.0231 & [0.0223, 0.0254] \\
+    Passa-baixa & 2 & Blackman-Harris & 961 & 74.8\% & 0.0211 & 0.1062 & 0.0232 & [0.0197, 0.0227] \\
+    Passa-baixa & 3 & Blackman & 801 & 61.8\% & 0.0176 & 0.1047 & 0.0239 & [0.016, 0.0193] \\
+    Passa-alta & 1 & Kaiser($\beta=11.50$) & 149 & 8.1\% & 0.0178 & 0.1062 & 0.0263 & [0.0138, 0.0219] \\
+    Passa-alta & 2 & Blackman-Harris & 144 & 7.9\% & 0.019 & 0.1064 & 0.0269 & [0.0151, 0.0237] \\
+    Passa-alta & 3 & Blackman & 97 & 5.2\% & 0.0216 & 0.1036 & 0.0279 & [0.017, 0.0277] \\
+    Passa-faixa & 1 & Kaiser($\beta=13.50$) & 434 & 13.0\% & 0.0286 & 0.1954 & 0.0297 & [0.0258, 0.0315] \\
+    Passa-faixa & 2 & Blackman-Harris & 418 & 12.3\% & 0.0261 & 0.1954 & 0.0301 & [0.0235, 0.0293] \\
+    Passa-faixa & 3 & Blackman & 394 & 11.1\% & 0.0252 & 0.1954 & 0.0338 & [0.0218, 0.029] \\
+    Rejeita-faixa & 1 & Rectangular & 118 & 65.2\% & 0.0709 & 0.1737 & 0.0491 & [0.0627, 0.08] \\
+    Rejeita-faixa & 2 & Kaiser($\beta=4.00$) & 58 & 39.2\% & 0.0726 & 0.0996 & 0.0336 & [0.0626, 0.0798] \\
+    Rejeita-faixa & 3 & Hamming & 55 & 35.5\% & 0.0874 & 0.1012 & 0.0071 & [0.0854, 0.0892] \\
+    \bottomrule
+  \end{tabular}
+\end{table}

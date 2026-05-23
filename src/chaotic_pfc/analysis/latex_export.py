@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 from chaotic_pfc._i18n import t
 
 if TYPE_CHECKING:
-    from .stats import ConfigRank, SweetSpot
+    from .stats import ConfigRank, KaiserBetaOptimal, SweetSpot
 
 
 def _fmt(v: float | int, decimals: int = 3) -> str:
@@ -353,6 +353,260 @@ def export_sweet_spots_table(
         )
 
     tex = _render_tex(columns, rows, caption, label)
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(tex, encoding="utf-8")
+    return output
+
+
+def export_kaiser_beta_optimal_table(
+    beta_data: dict[str, KaiserBetaOptimal],
+    output_path: str | Path,
+    caption_key: str | None = None,
+    label: str | None = None,
+    lang: str | None = None,
+) -> Path:
+    """Export optimal Kaiser β per filter type.
+
+    Parameters
+    ----------
+    beta_data
+        ``{filter_type: KaiserBetaOptimal}`` from :func:`~.stats.kaiser_beta_optimal`.
+    output_path
+        Destination ``.tex`` file.
+    caption_key
+        i18n key. Defaults to ``analysis.tables.kaiser_beta_optimal.caption``.
+    label
+        LaTeX label.
+    lang
+        ``"pt"`` or ``"en"``.
+
+    Returns
+    -------
+    Path
+    """
+    if caption_key is None:
+        caption_key = "analysis.tables.kaiser_beta_optimal.caption"
+    caption = t(caption_key, lang=lang)
+
+    columns = [
+        t("analysis.tables.col.filter", lang=lang),
+        t("analysis.tables.col.beta", lang=lang),
+        t("analysis.tables.col.n_chaotic", lang=lang),
+        t("analysis.tables.col.pct_chaotic_finite", lang=lang),
+        t("analysis.tables.col.lmax_mean", lang=lang),
+        t("analysis.tables.col.lmax_max", lang=lang),
+    ]
+
+    rows: list[list[str]] = []
+    for ft in ["lowpass", "highpass", "bandpass", "bandstop"]:
+        entry = beta_data.get(ft)
+        if entry is None:
+            continue
+        rows.append(
+            [
+                _filter_label(ft, lang or "pt"),
+                _fmt(entry["beta"], 2),
+                str(entry["n_chaotic"]),
+                f"{entry['pct_chaotic_finite']:.1f}\\%",
+                _fmt(entry["lmax_mean"], 4),
+                _fmt(entry["lmax_max"], 4),
+            ]
+        )
+
+    tex = _render_tex(columns, rows, caption, label)
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(tex, encoding="utf-8")
+    return output
+
+
+def export_consolidated_top_k_table(
+    consolidated_top_k: dict[str, list[ConfigRank]],
+    output_path: str | Path,
+    caption_key: str | None = None,
+    label: str | None = None,
+    lang: str | None = None,
+) -> Path:
+    """Export consolidated top-k (Categoria A, Kaiser collapsed to best β).
+
+    Parameters
+    ----------
+    consolidated_top_k
+        ``{filter_type: [ConfigRank, ...]}`` from :func:`~.stats.top_k_per_filter`
+        run on consolidated sweeps.
+    output_path
+        Destination ``.tex`` file.
+    caption_key
+        i18n key. Defaults to ``analysis.tables.consolidated_top_k.caption``.
+    label
+        LaTeX label.
+    lang
+        ``"pt"`` or ``"en"``.
+
+    Returns
+    -------
+    Path
+    """
+    if caption_key is None:
+        caption_key = "analysis.tables.consolidated_top_k.caption"
+    caption = t(caption_key, lang=lang)
+
+    columns = [
+        t("analysis.tables.col.filter", lang=lang),
+        t("analysis.tables.col.rank", lang=lang),
+        t("analysis.tables.col.window", lang=lang),
+        t("analysis.tables.col.n_chaotic", lang=lang),
+        t("analysis.tables.col.pct_chaotic", lang=lang),
+    ]
+
+    rows: list[list[str]] = []
+    for ft in ["lowpass", "highpass", "bandpass", "bandstop"]:
+        entries = consolidated_top_k.get(ft, [])
+        for entry in entries:
+            rows.append(
+                [
+                    _filter_label(ft, lang or "pt"),
+                    str(entry["rank"]),
+                    _window_label(entry, lang or "pt"),
+                    str(entry["n_chaotic"]),
+                    f"{entry['pct_chaotic']:.1f}\\%",
+                ]
+            )
+
+    tex = _render_tex(columns, rows, caption, label)
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(tex, encoding="utf-8")
+    return output
+
+
+def export_consolidated_extended_table(
+    consolidated_top_k: dict[str, list[ConfigRank]],
+    output_path: str | Path,
+    caption_key: str | None = None,
+    label: str | None = None,
+    lang: str | None = None,
+) -> Path:
+    """Export consolidated extended top-k (Categoria B).
+
+    Parameters
+    ----------
+    consolidated_top_k
+        From :func:`~.stats.top_k_per_filter` on consolidated sweeps.
+    output_path
+        Destination ``.tex`` file.
+    caption_key
+        i18n key. Defaults to ``analysis.tables.consolidated_extended.caption``.
+    label
+        LaTeX label.
+    lang
+        ``"pt"`` or ``"en"``.
+
+    Returns
+    -------
+    Path
+    """
+    if caption_key is None:
+        caption_key = "analysis.tables.consolidated_extended.caption"
+    caption = t(caption_key, lang=lang)
+
+    columns = [
+        t("analysis.tables.col.filter", lang=lang),
+        t("analysis.tables.col.rank", lang=lang),
+        t("analysis.tables.col.window", lang=lang),
+        t("analysis.tables.col.n_chaotic", lang=lang),
+        t("analysis.tables.col.pct_chaotic_finite", lang=lang),
+        t("analysis.tables.col.lmax_mean", lang=lang),
+        t("analysis.tables.col.lmax_max", lang=lang),
+        t("analysis.tables.col.lmax_std", lang=lang),
+        t("analysis.tables.col.lmax_ci95", lang=lang),
+    ]
+
+    rows: list[list[str]] = []
+    for ft in ["lowpass", "highpass", "bandpass", "bandstop"]:
+        entries = consolidated_top_k.get(ft, [])
+        for entry in entries:
+            rows.append(
+                [
+                    _filter_label(ft, lang or "pt"),
+                    str(entry["rank"]),
+                    _window_label(entry, lang or "pt"),
+                    str(entry["n_chaotic"]),
+                    f"{entry['pct_chaotic_finite']:.1f}\\%",
+                    _fmt(entry["lmax_mean"], 4),
+                    _fmt(entry["lmax_max"], 4),
+                    _fmt(entry["lmax_std"], 4),
+                    _ci_str(entry["lmax_ci_95_low"], entry["lmax_ci_95_high"]),
+                ]
+            )
+
+    tex = _render_tex(columns, rows, caption, label)
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(tex, encoding="utf-8")
+    return output
+
+
+def export_consolidated_full_ranking(
+    consolidated_rank: list[ConfigRank],
+    output_path: str | Path,
+    caption_key: str | None = None,
+    label: str | None = None,
+    lang: str | None = None,
+) -> Path:
+    """Export consolidated full ranking (Categoria C.1, longtable).
+
+    Parameters
+    ----------
+    consolidated_rank
+        From :func:`~.stats.rank_configurations` on consolidated sweeps.
+    output_path
+        Destination ``.tex`` file.
+    caption_key
+        i18n key. Defaults to ``analysis.tables.consolidated_full_ranking.caption``.
+    label
+        LaTeX label.
+    lang
+        ``"pt"`` or ``"en"``.
+
+    Returns
+    -------
+    Path
+    """
+    if caption_key is None:
+        caption_key = "analysis.tables.consolidated_full_ranking.caption"
+    caption = t(caption_key, lang=lang)
+
+    columns = [
+        t("analysis.tables.col.rank", lang=lang),
+        t("analysis.tables.col.filter", lang=lang),
+        t("analysis.tables.col.window", lang=lang),
+        t("analysis.tables.col.n_chaotic", lang=lang),
+        t("analysis.tables.col.pct_chaotic_finite", lang=lang),
+        t("analysis.tables.col.lmax_mean", lang=lang),
+        t("analysis.tables.col.lmax_max", lang=lang),
+        t("analysis.tables.col.lmax_std", lang=lang),
+        t("analysis.tables.col.lmax_ci95", lang=lang),
+    ]
+
+    rows: list[list[str]] = []
+    for entry in consolidated_rank:
+        rows.append(
+            [
+                str(entry["rank"]),
+                _filter_label(entry["filter_type"], lang or "pt"),
+                _window_label(entry, lang or "pt"),
+                str(entry["n_chaotic"]),
+                f"{entry['pct_chaotic_finite']:.1f}\\%",
+                _fmt(entry["lmax_mean"], 4),
+                _fmt(entry["lmax_max"], 4),
+                _fmt(entry["lmax_std"], 4),
+                _ci_str(entry["lmax_ci_95_low"], entry["lmax_ci_95_high"]),
+            ]
+        )
+
+    tex = _render_tex(columns, rows, caption, label, use_longtable=True)
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(tex, encoding="utf-8")

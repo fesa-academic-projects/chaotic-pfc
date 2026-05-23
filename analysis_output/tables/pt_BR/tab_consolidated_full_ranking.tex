@@ -1,0 +1,35 @@
+  \caption{Ranking completo — janelas fixas + melhor Kaiser por filtro.}
+  \begin{longtable}
+    \toprule
+    Rank & Filtro & Janela & Pontos caóticos & $\%$ caótico (finitos) & $\overline{\lambda}_{\max}$ & $\lambda_{\max}$ máx & $\sigma(\lambda_{\max})$ & IC 95\% \\
+    \midrule
+    1 & Passa-baixa & Kaiser($\beta=13.50$) & 979 & 77.6\% & 0.0239 & 0.1086 & 0.0231 & [0.0223, 0.0254] \\
+    2 & Passa-baixa & Blackman-Harris & 961 & 74.8\% & 0.0211 & 0.1062 & 0.0232 & [0.0197, 0.0227] \\
+    3 & Passa-baixa & Blackman & 801 & 61.8\% & 0.0176 & 0.1047 & 0.0239 & [0.016, 0.0193] \\
+    4 & Passa-baixa & Hann & 606 & 51.2\% & 0.019 & 0.1042 & 0.0251 & [0.017, 0.0208] \\
+    5 & Passa-baixa & Bartlett & 458 & 41.3\% & 0.0198 & 0.1042 & 0.0273 & [0.0174, 0.0226] \\
+    6 & Passa-baixa & Hamming & 450 & 35.9\% & 0.0263 & 0.1089 & 0.0283 & [0.024, 0.029] \\
+    7 & Passa-faixa & Kaiser($\beta=13.50$) & 434 & 13.0\% & 0.0286 & 0.1954 & 0.0297 & [0.0258, 0.0315] \\
+    8 & Passa-faixa & Blackman-Harris & 418 & 12.3\% & 0.0261 & 0.1954 & 0.0301 & [0.0235, 0.0293] \\
+    9 & Passa-faixa & Blackman & 394 & 11.1\% & 0.0252 & 0.1954 & 0.0338 & [0.0218, 0.029] \\
+    10 & Passa-faixa & Hamming & 294 & 7.9\% & 0.0273 & 0.1954 & 0.0338 & [0.0235, 0.0315] \\
+    11 & Passa-faixa & Hann & 288 & 8.0\% & 0.0267 & 0.1282 & 0.0344 & [0.0231, 0.0311] \\
+    12 & Passa-faixa & Bartlett & 249 & 6.9\% & 0.0293 & 0.1247 & 0.0359 & [0.0254, 0.0337] \\
+    13 & Passa-baixa & Rectangular & 204 & 19.5\% & 0.0354 & 0.1373 & 0.0324 & [0.0314, 0.0396] \\
+    14 & Passa-alta & Kaiser($\beta=11.50$) & 149 & 8.1\% & 0.0178 & 0.1062 & 0.0263 & [0.0138, 0.0219] \\
+    15 & Passa-alta & Blackman-Harris & 144 & 7.9\% & 0.019 & 0.1064 & 0.0269 & [0.0151, 0.0237] \\
+    16 & Passa-faixa & Rectangular & 141 & 3.7\% & 0.0153 & 0.1954 & 0.0302 & [0.0113, 0.0211] \\
+    17 & Rejeita-faixa & Rectangular & 118 & 65.2\% & 0.0709 & 0.1737 & 0.0491 & [0.0627, 0.08] \\
+    18 & Passa-alta & Blackman & 97 & 5.2\% & 0.0216 & 0.1036 & 0.0279 & [0.017, 0.0277] \\
+    19 & Passa-alta & Bartlett & 86 & 4.6\% & 0.0237 & 0.1029 & 0.0282 & [0.0186, 0.0299] \\
+    20 & Passa-alta & Hann & 79 & 4.2\% & 0.0233 & 0.1034 & 0.0284 & [0.0173, 0.031] \\
+    21 & Passa-alta & Hamming & 72 & 3.8\% & 0.0234 & 0.1054 & 0.0282 & [0.0175, 0.03] \\
+    22 & Rejeita-faixa & Kaiser($\beta=4.00$) & 58 & 39.2\% & 0.0726 & 0.0996 & 0.0336 & [0.0626, 0.0798] \\
+    23 & Rejeita-faixa & Hamming & 55 & 35.5\% & 0.0874 & 0.1012 & 0.0071 & [0.0854, 0.0892] \\
+    24 & Rejeita-faixa & Blackman & 50 & 33.3\% & 0.0888 & 0.1064 & 0.0089 & [0.0865, 0.0912] \\
+    25 & Rejeita-faixa & Hann & 49 & 32.9\% & 0.0877 & 0.1051 & 0.0066 & [0.086, 0.0896] \\
+    26 & Rejeita-faixa & Blackman-Harris & 47 & 32.0\% & 0.0929 & 0.1057 & 0.0068 & [0.0909, 0.0946] \\
+    27 & Rejeita-faixa & Bartlett & 43 & 30.1\% & 0.0896 & 0.1018 & 0.0049 & [0.0882, 0.0911] \\
+    28 & Passa-alta & Rectangular & 25 & 1.3\% & 0.0269 & 0.0957 & 0.0299 & [0.0171, 0.0398] \\
+    \bottomrule
+  \end{longtable}

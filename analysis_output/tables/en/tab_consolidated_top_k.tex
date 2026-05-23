@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+  \centering
+  \caption{Top-3 windows per filter type (Kaiser consolidated at best $\beta$).}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Filter & Rank & Window & Chaotic points & $\%$ chaotic \\
+    \midrule
+    Lowpass & 1 & Kaiser($\beta=13.50$) & 979 & 24.5\% \\
+    Lowpass & 2 & Blackman-Harris & 961 & 24.0\% \\
+    Lowpass & 3 & Blackman & 801 & 20.0\% \\
+    Highpass & 1 & Kaiser($\beta=11.50$) & 149 & 7.4\% \\
+    Highpass & 2 & Blackman-Harris & 144 & 7.2\% \\
+    Highpass & 3 & Blackman & 97 & 4.8\% \\
+    Bandpass & 1 & Kaiser($\beta=13.50$) & 434 & 10.8\% \\
+    Bandpass & 2 & Blackman-Harris & 418 & 10.4\% \\
+    Bandpass & 3 & Blackman & 394 & 9.8\% \\
+    Bandstop & 1 & Rectangular & 118 & 5.9\% \\
+    Bandstop & 2 & Kaiser($\beta=4.00$) & 58 & 2.9\% \\
+    Bandstop & 3 & Hamming & 55 & 2.8\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}

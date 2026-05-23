@@ -124,12 +124,18 @@ def _run_export_tables(args: argparse.Namespace) -> int:
     from pathlib import Path
 
     from chaotic_pfc.analysis.latex_export import (
+        export_consolidated_extended_table,
+        export_consolidated_full_ranking,
+        export_consolidated_top_k_table,
         export_extended_top_k_table,
         export_full_ranking_table,
+        export_kaiser_beta_optimal_table,
         export_sweet_spots_table,
         export_top_k_table,
     )
     from chaotic_pfc.analysis.stats import (
+        consolidate_kaiser,
+        kaiser_beta_optimal,
         load_all_sweeps,
         rank_configurations,
         sweet_spot_per_filter,
@@ -172,6 +178,33 @@ def _run_export_tables(args: argparse.Namespace) -> int:
 
         print(f"\n[{lang_dir}]")
         for p in paths:
+            lines = p.read_text(encoding="utf-8").count("\n")
+            size = p.stat().st_size
+            print(f"  {p.name:<30} {lines:>5} lines  {size:>7} bytes")
+
+        # ── Consolidated (Kaiser best-β only) ──────────────────────────
+        consolidated = consolidate_kaiser(sweeps)
+        cons_top_k = top_k_per_filter(consolidated, k=3, bootstrap_seed=args.bootstrap_seed)
+        cons_ranking = rank_configurations(consolidated, bootstrap_seed=args.bootstrap_seed)
+        beta_opt = kaiser_beta_optimal(sweeps, bootstrap_seed=args.bootstrap_seed)
+
+        cons_paths: list[Path] = [
+            export_consolidated_top_k_table(
+                cons_top_k, out / "tab_consolidated_top_k.tex", lang=i18n_lang
+            ),
+            export_consolidated_extended_table(
+                cons_top_k, out / "tab_consolidated_extended.tex", lang=i18n_lang
+            ),
+            export_consolidated_full_ranking(
+                cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=i18n_lang
+            ),
+            export_kaiser_beta_optimal_table(
+                beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=i18n_lang
+            ),
+        ]
+
+        print("  [consolidated — Kaiser best-β only]")
+        for p in cons_paths:
             lines = p.read_text(encoding="utf-8").count("\n")
             size = p.stat().st_size
             print(f"  {p.name:<30} {lines:>5} lines  {size:>7} bytes")

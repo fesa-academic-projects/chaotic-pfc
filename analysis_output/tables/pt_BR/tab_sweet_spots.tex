@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+  \centering
+  \caption{Ponto de $\lambda_{\max}$ máximo por tipo de filtro.}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Filtro & Janela & $N_z$ & $\omega_c/\pi$ & $\lambda_{\max}$ máx & IC 95\% \\
+    \midrule
+    Passa-baixa & Rectangular & 5 & 0.6768 & 0.13727 & [0.1344, 0.1402] \\
+    Passa-alta & Blackman-Harris & 7 & 0.0101 & 0.106409 & [0.105, 0.1079] \\
+    Passa-faixa & Kaiser($\beta=11.50$) & 2 & 0.5657 & 0.196548 & [0.1925, 0.2006] \\
+    Rejeita-faixa & Rectangular & 3 & 0.0303 & 0.173726 & [0.1719, 0.1755] \\
+    \bottomrule
+  \end{tabular}
+\end{table}

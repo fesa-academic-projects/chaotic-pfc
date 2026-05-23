@@ -179,7 +179,7 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             self.assertEqual(code, 0)
 
             tex_files = sorted(Path(out_tmp).rglob("*.tex"))
-            self.assertEqual(len(tex_files), 4)
+            self.assertEqual(len(tex_files), 8)  # 4 regular + 4 consolidated
             for f in tex_files:
                 content = f.read_text(encoding="utf-8")
                 self.assertIn(
@@ -227,8 +227,8 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             pt_dir = Path(out_tmp) / "pt_BR"
             self.assertTrue(en_dir.is_dir())
             self.assertTrue(pt_dir.is_dir())
-            self.assertEqual(len(list(en_dir.rglob("*.tex"))), 4)
-            self.assertEqual(len(list(pt_dir.rglob("*.tex"))), 4)
+            self.assertEqual(len(list(en_dir.rglob("*.tex"))), 8)
+            self.assertEqual(len(list(pt_dir.rglob("*.tex"))), 8)
 
     def test_export_tables_missing_dir(self):
         with tempfile.TemporaryDirectory() as out_tmp:

@@ -163,6 +163,20 @@ class SweetSpot(TypedDict):
     lmax_ci_95_high: float | None
 
 
+class KaiserBetaOptimal(TypedDict):
+    """Best Kaiser β per filter type (by chaotic area).
+
+    Returned by :func:`kaiser_beta_optimal`.
+    """
+
+    filter_type: str
+    beta: float
+    n_chaotic: int
+    pct_chaotic_finite: float
+    lmax_mean: float
+    lmax_max: float
+
+
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
     results: list[SweepResult] = []
@@ -380,8 +394,8 @@ def load_all_sweeps(
     loaded: dict[tuple[str, str], SweepResult] = {}
     for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         result = load_sweep(path)
-        beta = result.metadata.get("kaiser_beta")
-        if beta is not None:
+        if result.window == "kaiser":
+            beta = result.metadata.get("kaiser_beta", 0.0)
             key = (result.filter_type, f"kaiser_{float(beta):.2f}")
         else:
             key = (result.filter_type, result.window)
@@ -471,8 +485,85 @@ def top_k_per_filter(
     for entry in ranking:
         ft = entry["filter_type"]
         out.setdefault(ft, []).append(entry)
-    for ft in out:
-        out[ft] = out[ft][:k]
+    for ft in list(out):
+        entries = out[ft][:k]
+        for i, e in enumerate(entries):
+            e["rank"] = i + 1
+        out[ft] = entries
+    return out
+
+
+def consolidate_kaiser(
+    sweep_results: dict[tuple[str, str], SweepResult],
+) -> dict[tuple[str, str], SweepResult]:
+    """Keep only the best Kaiser β per filter type, by chaotic point count.
+
+    Non-Kaiser windows are passed through unchanged. This produces a
+    balanced dataset where each window family appears once per filter
+    type, making window-to-window comparisons fair.
+
+    Parameters
+    ----------
+    sweep_results
+        Mapping from :func:`load_all_sweeps`.
+
+    Returns
+    -------
+    dict
+        Same shape as *sweep_results*, but with at most one Kaiser
+        entry per ``filter_type`` (the β with the most chaotic points).
+    """
+    consolidated: dict[tuple[str, str], SweepResult] = {}
+    best_kaiser: dict[str, tuple[str, int]] = {}
+
+    for (ft, win), result in sweep_results.items():
+        if result.window == "kaiser":
+            area = area_summary(result)
+            n_chaotic = area["n_chaotic"]
+            if ft not in best_kaiser or n_chaotic > best_kaiser[ft][1]:
+                best_kaiser[ft] = (win, n_chaotic)
+        else:
+            consolidated[(ft, win)] = result
+
+    for ft, (win, _) in best_kaiser.items():
+        consolidated[(ft, win)] = sweep_results[(ft, win)]
+
+    return consolidated
+
+
+def kaiser_beta_optimal(
+    sweep_results: dict[tuple[str, str], SweepResult],
+    bootstrap_seed: int = 42,
+) -> dict[str, KaiserBetaOptimal]:
+    """Report the best Kaiser β per filter type with extended statistics.
+
+    Parameters
+    ----------
+    sweep_results
+        Mapping from :func:`load_all_sweeps`.
+    bootstrap_seed
+        Forwarded to :func:`lmax_statistics`.
+
+    Returns
+    -------
+    dict of str → KaiserBetaOptimal
+    """
+    out: dict[str, KaiserBetaOptimal] = {}
+    for (ft, _win), result in sweep_results.items():
+        if result.window != "kaiser":
+            continue
+        beta = float(result.metadata.get("kaiser_beta", 0.0))
+        area = area_summary(result)
+        lmax = lmax_statistics(result, region="chaotic", seed=bootstrap_seed)
+        if ft not in out or area["n_chaotic"] > out[ft]["n_chaotic"]:
+            out[ft] = {
+                "filter_type": ft,
+                "beta": beta,
+                "n_chaotic": area["n_chaotic"],
+                "pct_chaotic_finite": area["pct_chaotic_finite"],
+                "lmax_mean": lmax["mean"],
+                "lmax_max": lmax["max"],
+            }
     return out
 
 

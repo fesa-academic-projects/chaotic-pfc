@@ -171,6 +171,26 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": "Kaiser",
         "en": "Kaiser",
     },
+    "analysis.tables.kaiser_beta_optimal.caption": {
+        "pt": "$\\beta$ ótimo de Kaiser por tipo de filtro.",
+        "en": "Optimal Kaiser $\\beta$ per filter type.",
+    },
+    "analysis.tables.consolidated_top_k.caption": {
+        "pt": "Top-3 janelas por tipo de filtro (Kaiser consolidado no melhor $\\beta$).",
+        "en": "Top-3 windows per filter type (Kaiser consolidated at best $\\beta$).",
+    },
+    "analysis.tables.consolidated_extended.caption": {
+        "pt": "Top-3 janelas por tipo de filtro com estatísticas (Kaiser consolidado).",
+        "en": "Top-3 windows per filter type with statistics (Kaiser consolidated).",
+    },
+    "analysis.tables.consolidated_full_ranking.caption": {
+        "pt": "Ranking completo — janelas fixas + melhor Kaiser por filtro.",
+        "en": "Full ranking — fixed windows + best Kaiser per filter.",
+    },
+    "analysis.tables.col.beta": {
+        "pt": "$\\beta$",
+        "en": "$\\beta$",
+    },
 }
 
 
