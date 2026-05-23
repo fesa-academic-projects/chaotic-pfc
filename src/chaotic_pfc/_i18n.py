@@ -86,6 +86,91 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": "Número de configurações caóticas",
         "en": "Number of chaotic configurations",
     },
+    # ── Analysis tables ────────────────────────────────────────────────
+    "analysis.tables.top_k.caption": {
+        "pt": "Top-3 janelas por tipo de filtro (área caótica).",
+        "en": "Top-3 windows per filter type (chaotic area).",
+    },
+    "analysis.tables.top_k_extended.caption": {
+        "pt": "Top-3 janelas por tipo de filtro com estatísticas de $\\lambda_{\\max}$.",
+        "en": "Top-3 windows per filter type with $\\lambda_{\\max}$ statistics.",
+    },
+    "analysis.tables.full_ranking.caption": {
+        "pt": "Ranking completo de todas as combinações filtro $\\times$ janela.",
+        "en": "Full ranking of all filter $\\times$ window combinations.",
+    },
+    "analysis.tables.sweet_spots.caption": {
+        "pt": "Ponto de $\\lambda_{\\max}$ máximo por tipo de filtro.",
+        "en": "Maximum $\\lambda_{\\max}$ point per filter type.",
+    },
+    "analysis.tables.col.filter": {
+        "pt": "Filtro",
+        "en": "Filter",
+    },
+    "analysis.tables.col.window": {
+        "pt": "Janela",
+        "en": "Window",
+    },
+    "analysis.tables.col.rank": {
+        "pt": "Rank",
+        "en": "Rank",
+    },
+    "analysis.tables.col.n_chaotic": {
+        "pt": "Pontos caóticos",
+        "en": "Chaotic points",
+    },
+    "analysis.tables.col.pct_chaotic": {
+        "pt": "$\\%$ caótico",
+        "en": "$\\%$ chaotic",
+    },
+    "analysis.tables.col.pct_chaotic_finite": {
+        "pt": "$\\%$ caótico (finitos)",
+        "en": "$\\%$ chaotic (finite)",
+    },
+    "analysis.tables.col.lmax_mean": {
+        "pt": "$\\overline{\\lambda}_{\\max}$",
+        "en": "$\\overline{\\lambda}_{\\max}$",
+    },
+    "analysis.tables.col.lmax_max": {
+        "pt": "$\\lambda_{\\max}$ máx",
+        "en": "$\\lambda_{\\max}$ max",
+    },
+    "analysis.tables.col.lmax_std": {
+        "pt": "$\\sigma(\\lambda_{\\max})$",
+        "en": "$\\sigma(\\lambda_{\\max})$",
+    },
+    "analysis.tables.col.lmax_ci95": {
+        "pt": "IC 95\\%",
+        "en": "95\\% CI",
+    },
+    "analysis.tables.col.n_z": {
+        "pt": "$N_z$",
+        "en": "$N_z$",
+    },
+    "analysis.tables.col.omega_c": {
+        "pt": "$\\omega_c/\\pi$",
+        "en": "$\\omega_c/\\pi$",
+    },
+    "analysis.filter.lowpass": {
+        "pt": "Passa-baixa",
+        "en": "Lowpass",
+    },
+    "analysis.filter.highpass": {
+        "pt": "Passa-alta",
+        "en": "Highpass",
+    },
+    "analysis.filter.bandpass": {
+        "pt": "Passa-faixa",
+        "en": "Bandpass",
+    },
+    "analysis.filter.bandstop": {
+        "pt": "Rejeita-faixa",
+        "en": "Bandstop",
+    },
+    "analysis.window.kaiser": {
+        "pt": "Kaiser",
+        "en": "Kaiser",
+    },
 }
 
 

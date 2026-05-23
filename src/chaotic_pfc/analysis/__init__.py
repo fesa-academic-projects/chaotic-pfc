@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from .latex_export import (
+    export_extended_top_k_table,
+    export_full_ranking_table,
+    export_sweet_spots_table,
+    export_top_k_table,
+)
 from .stats import (
     AreaSummary,
     ConfigRank,
@@ -64,7 +70,11 @@ __all__ = [
     "classify",
     "compare_filter_types",
     "correlation_matrix",
+    "export_extended_top_k_table",
+    "export_full_ranking_table",
     "export_summary_json",
+    "export_sweet_spots_table",
+    "export_top_k_table",
     "lmax_distribution",
     "lmax_statistics",
     "load_all_sweeps",
