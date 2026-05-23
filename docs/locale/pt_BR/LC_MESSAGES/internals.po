@@ -307,7 +307,7 @@ msgstr ""
 msgid "Compute the eigenvalues of :math:`\\mathbf{J}` via"
 msgstr ""
 "Calcula os autovalores de :math:`\\mathbf{J}` via "
-":func:`scipy.linalg.eig`."
+"``scipy.linalg.eig``."
 
 #: ../../internals.rst:120
 msgid ":func:`numpy.linalg.eigvals`."
@@ -541,7 +541,7 @@ msgstr ""
 
 #: ../../internals.rst:211
 msgid "Simple dictionary-based lookup via chaotic_pfc._i18n.t."
-msgstr "Busca simples baseada em dicionário via :func:`chaotic_pfc._i18n.t`."
+msgstr "Busca simples baseada em dicionário via ``chaotic_pfc._i18n.t``."
 
 #: ../../internals.rst:212
 msgid ""

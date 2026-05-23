@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────
 # requirements-lock.txt
 # ─────────────────────────────────────────────────────────────────────────
-# Exact versions against which the CI currently runs green on Python 3.12.
+# Exact versions against which the CI currently runs green on Python 3.11–3.14.
 # Regenerate with:
 #
 #   python -m venv /tmp/lock-venv

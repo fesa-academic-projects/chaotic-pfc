@@ -126,3 +126,5 @@ logs/
 data/analysis_summary.json
 *.mo
 .benchmarks/
+# Large Plotly 3D HTML exports — regenerable via `chaotic-pfc run sweep plot-3d`
+figures/sweeps/beta_sweep_3d_*.html
