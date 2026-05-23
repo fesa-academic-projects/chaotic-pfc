@@ -103,6 +103,7 @@ Key experiments
    architecture
    internals
    usage
+   validation
    development
    contributing
    api/index

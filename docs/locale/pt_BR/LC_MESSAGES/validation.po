@@ -1,0 +1,151 @@
+# Portuguese (Brazil) translation for chaotic-pfc documentation.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# Roger Freitas Pereira <roger_freitas@live.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 15:30-0300\n"
+"PO-Revision-Date: 2026-05-23 15:30-0300\n"
+"Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../validation.rst:4
+msgid "Scientific validation"
+msgstr "Validação científica"
+
+#: ../../validation.rst:6
+msgid ""
+"The Lyapunov exponent computation in ``chaotic_pfc`` has been numerically "
+"validated against published reference values from the scientific literature "
+"and against an analytical mathematical identity."
+msgstr ""
+"O cálculo de expoentes de Lyapunov do ``chaotic_pfc`` foi validado "
+"numericamente contra valores de referência publicados na literatura "
+"científica e contra uma identidade matemática analítica."
+
+#: ../../validation.rst:11
+msgid "Reference values"
+msgstr "Valores de referência"
+
+#: ../../validation.rst:13
+msgid ""
+"The following table summarises the Lyapunov spectrum of the standard "
+"Hénon map (:math:`a = 1.4`, :math:`b = 0.3`) as reported by independent "
+"sources, alongside the value computed by "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` with "
+":math:`N_{\\text{itera}} = 20\\,000` and seed 42."
+msgstr ""
+"A tabela a seguir resume o espectro de Lyapunov do mapa de Hénon padrão "
+"(:math:`a = 1.4`, :math:`b = 0.3`) conforme reportado por fontes "
+"independentes, junto ao valor calculado por "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` com "
+":math:`N_{\\text{itera}} = 20\\,000` e seed 42."
+
+#: ../../validation.rst:18
+msgid "Source"
+msgstr "Fonte"
+
+#: ../../validation.rst:43
+msgid ""
+"Relative error of ``chaotic-pfc`` vs. each reference"
+msgstr ""
+"Erro relativo do ``chaotic-pfc`` vs. cada referência"
+
+#: ../../validation.rst:48
+msgid "Comparison"
+msgstr "Comparação"
+
+#: ../../validation.rst:49
+msgid "Relative error"
+msgstr "Erro relativo"
+
+#: ../../validation.rst:65
+msgid "Analytical identity"
+msgstr "Identidade analítica"
+
+#: ../../validation.rst:67
+msgid ""
+"For the Hénon map, the Jacobian determinant is constant: "
+":math:`\\det J = -b`.  Consequently, the sum of the Lyapunov exponents "
+"must satisfy"
+msgstr ""
+"Para o mapa de Hénon, o determinante Jacobiano é constante: "
+":math:`\\det J = -b`.  Consequentemente, a soma dos expoentes de "
+"Lyapunov deve satisfazer"
+
+#: ../../validation.rst:77
+msgid ""
+"This identity holds for **any** dissipative parameter pair "
+":math:`(a, b)` for which the orbit remains bounded.  It does **not** "
+"depend on any external reference — it is a mathematical theorem."
+msgstr ""
+"Esta identidade é válida para **qualquer** par de parâmetros dissipativos "
+":math:`(a, b)` para o qual a órbita permanece limitada.  Ela **não** "
+"depende de nenhuma referência externa — é um teorema matemático."
+
+#: ../../validation.rst:82
+msgid "The test suite verifies this identity at three parameter sets:"
+msgstr "A suíte de testes verifica esta identidade em três conjuntos de parâmetros:"
+
+#: ../../validation.rst:90
+msgid "How to run the validation tests"
+msgstr "Como executar os testes de validação"
+
+#: ../../validation.rst:96
+msgid ""
+"All nine tests pass (≈ 4 s on a modern CPU).  The Wolf and Sprott "
+"comparisons use :math:`N_{\\text{itera}} = 20\\,000`; the analytical "
+"identity tests use :math:`10\\,000`."
+msgstr ""
+"Todos os nove testes passam (≈ 4 s em uma CPU moderna).  As comparações "
+"com Wolf e Sprott usam :math:`N_{\\text{itera}} = 20\\,000`; os testes de "
+"identidade analítica usam :math:`10\\,000`."
+
+#: ../../validation.rst:101
+msgid "Known limitations"
+msgstr "Limitações conhecidas"
+
+#: ../../validation.rst:103
+msgid ""
+"**Finite-time convergence.**  Published Lyapunov values correspond to the "
+"asymptotic limit :math:`N_{\\text{itera}} \\to \\infty`.  Our code with "
+":math:`N_{\\text{itera}} = 2\\,000` (the default for sweeps) produces "
+":math:`\\lambda_1 \\approx 0.408` — a 2.4 % deviation from Wolf.  The "
+"error decreases to 0.10 % at :math:`20\\,000` iterations.  The default "
+"iteration count is a conscious trade-off between sweep throughput and "
+"per-point accuracy; the analytical identity confirms the implementation "
+"is correct at *any* iteration count."
+msgstr ""
+"**Convergência em tempo finito.**  Os valores de Lyapunov publicados "
+"correspondem ao limite assintótico :math:`N_{\\text{itera}} \\to "
+"\\infty`.  Nosso código com :math:`N_{\\text{itera}} = 2\\,000` (o "
+"padrão para varreduras) produz :math:`\\lambda_1 \\approx 0.408` — um "
+"desvio de 2,4 % em relação a Wolf.  O erro cai para 0,10 % com "
+":math:`20\\,000` iterações.  A contagem padrão de iterações é uma "
+"troca consciente entre vazão da varredura e precisão por ponto; a "
+"identidade analítica confirma que a implementação está correta em "
+"*qualquer* contagem de iterações."
+
+#: ../../validation.rst:112
+msgid ""
+"**Orbit divergence.**  Not every :math:`(a, b)` pair yields a bounded "
+"attractor.  The test suite uses only parameter sets known to produce "
+"bounded orbits in the long-time limit."
+msgstr ""
+"**Divergência de órbita.**  Nem todo par :math:`(a, b)` produz um "
+"atrator limitado.  A suíte de testes usa apenas conjuntos de parâmetros "
+"conhecidos por produzir órbitas limitadas no limite de tempo longo."
+
+#: ../../validation.rst:118
+msgid "References"
+msgstr "Referências"

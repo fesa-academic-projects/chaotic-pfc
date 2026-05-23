@@ -98,6 +98,12 @@ so plots can be regenerated at any time without rerunning the compute step.
 Browse all available commands with `chaotic-pfc run --help` and each
 subcommand's flags with `chaotic-pfc run <name> --help`.
 
+The Lyapunov exponent computation has been validated against published
+reference values from Wolf et al. (1985) and Sprott (2003), with relative
+errors below 0.35% for the standard Hénon map. An analytical identity
+(λ₁ + λ₂ = ln|b|) confirms correctness at machine precision.
+See `docs/validation.rst` for details.
+
 ## Project structure
 
 ```

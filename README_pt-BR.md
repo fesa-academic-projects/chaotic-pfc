@@ -98,6 +98,12 @@ os gráficos podem ser regenerados a qualquer momento sem reexecutar a varredura
 Explore todos os comandos com `chaotic-pfc run --help` e as flags de cada
 subcomando com `chaotic-pfc run <nome> --help`.
 
+O cálculo de expoentes de Lyapunov foi validado contra valores de
+referência publicados por Wolf et al. (1985) e Sprott (2003), com erros
+relativos inferiores a 0,35% para o mapa de Hénon padrão. Uma identidade
+analítica (λ₁ + λ₂ = ln|b|) confirma a exatidão em precisão de máquina.
+Consulte `docs/validation.rst` para detalhes.
+
 ## Estrutura do projeto
 
 ```
