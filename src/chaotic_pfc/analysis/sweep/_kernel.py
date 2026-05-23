@@ -148,6 +148,31 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
         else:
             tick = _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta)
 
+        # Detect divergence during Lyapunov phase.
+        # Overflow in the tangent vectors (Inf → NaN via Inf×0) or in
+        # the map state would otherwise poison lyap_sum via the
+        # unconditional log(max(nrm**0.5, 1e-300)) in _mgs_accumulate,
+        # leaking the sentinel -1e30 into sweep averages.
+        if not np.isfinite(xx[tick, 0]):
+            for k in range(Ns):
+                lyap_sum[k] = np.nan
+            n_used = it + 1
+            break
+        w_diverged = False
+        w_slab = ww[tick]
+        for w_i in range(Ns):
+            for w_j in range(Ns):
+                if not np.isfinite(w_slab[w_i, w_j]):
+                    w_diverged = True
+                    break
+            if w_diverged:
+                break
+        if w_diverged:
+            for k in range(Ns):
+                lyap_sum[k] = np.nan
+            n_used = it + 1
+            break
+
         if adaptive:
             n_done = it + 1
             if n_done >= Nitera_min and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0:
@@ -157,11 +182,18 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
                 if should_break:
                     break
 
-    best = -1e30
+    best = np.nan
     for k in range(Ns):
-        val = lyap_sum[k] / n_used
-        if val > best:
-            best = val
+        if np.isnan(lyap_sum[k]):
+            break
+    else:
+        best = -1e30
+        for k in range(Ns):
+            val = lyap_sum[k] / n_used
+            if val > best:
+                best = val
+        if not np.isfinite(best):
+            best = np.nan
     return best, n_used
 
 

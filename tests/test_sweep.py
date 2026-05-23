@@ -630,6 +630,76 @@ class TestKernelFunctions(unittest.TestCase):
         self.assertTrue(np.all(np.isfinite(result.h)), "Ns=1 produced NaN/Inf Lyapunov")
         self.assertTrue(np.all(np.isfinite(result.n_iters_used)))
 
+    def test_divergent_orbit_produces_nan_not_sentinel(self):
+        """Pathological point (Nz=8, ωc=0.2828, Hann bandpass) must be NaN.
+
+        Confirms the fix: divergence during the Lyapunov phase is caught and
+        marked NaN instead of leaking the sentinel -1e30 into sweep averages.
+        """
+        from chaotic_pfc.analysis.sweep import run_sweep
+
+        result = run_sweep(
+            window="hann",
+            filter_type="bandpass",
+            orders=[8],
+            cutoffs=np.array([0.2828326263]),
+            Nitera=500,
+            Nmap=3000,
+            n_initial=25,
+            seed=42,
+        )
+        val = float(result.h[0, 0])
+        self.assertTrue(
+            np.isnan(val),
+            f"Expected NaN for divergent orbit, got {val:.6e}. "
+            "The sentinel -1e30 or Inf should not leak through.",
+        )
+
+    def test_healthy_orbit_produces_finite_lyapunov(self):
+        """Known-healthy point (Nz=8, ωc=0.5, Hann bandpass) must be finite."""
+        from chaotic_pfc.analysis.sweep import run_sweep
+
+        result = run_sweep(
+            window="hann",
+            filter_type="bandpass",
+            orders=[8],
+            cutoffs=np.array([0.5]),
+            Nitera=500,
+            Nmap=3000,
+            n_initial=25,
+            seed=42,
+        )
+        val = float(result.h[0, 0])
+        self.assertTrue(
+            np.isfinite(val),
+            f"Expected finite Lyapunov for healthy orbit, got {val:.6e}",
+        )
+
+    def test_borderline_orbit_produces_finite_lyapunov(self):
+        """Point near the pathological one must remain finite.
+
+        Nz=8, ωc=0.35 (bandpass Hann) is between the pathological 0.283 and
+        the clearly healthy 0.5. If the fix is too aggressive, this could be
+        falsely flagged as divergent.
+        """
+        from chaotic_pfc.analysis.sweep import run_sweep
+
+        result = run_sweep(
+            window="hann",
+            filter_type="bandpass",
+            orders=[8],
+            cutoffs=np.array([0.35]),
+            Nitera=500,
+            Nmap=3000,
+            n_initial=25,
+            seed=42,
+        )
+        val = float(result.h[0, 0])
+        self.assertTrue(
+            np.isfinite(val),
+            f"Expected finite Lyapunov for borderline orbit, got {val:.6e}",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
