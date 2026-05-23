@@ -6,6 +6,7 @@ from .stats import (
     AreaSummary,
     ConfigRank,
     LmaxStats,
+    SweetSpot,
     area_summary,
     best_chaos_preserving,
     beta_curve,
@@ -20,6 +21,7 @@ from .stats import (
     load_all_sweeps,
     optimal_parameters,
     rank_configurations,
+    sweet_spot_per_filter,
     top_k_per_filter,
 )
 from .sweep import (
@@ -52,6 +54,7 @@ __all__ = [
     "ConfigRank",
     "LmaxStats",
     "SweepResult",
+    "SweetSpot",
     "area_summary",
     "best_chaos_preserving",
     "beta_curve",
@@ -80,6 +83,7 @@ __all__ = [
     "run_sweep",
     "save_sweep",
     "summary_table",
+    "sweet_spot_per_filter",
     "top_k_per_filter",
     "transition_boundary",
 ]

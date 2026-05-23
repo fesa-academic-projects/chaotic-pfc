@@ -11,6 +11,7 @@ from chaotic_pfc.analysis.stats import (
     ConfigRank,
     LmaxDistribution,
     LmaxStats,
+    SweetSpot,
     area_summary,
     best_chaos_preserving,
     beta_curve,
@@ -26,6 +27,7 @@ from chaotic_pfc.analysis.stats import (
     optimal_parameters,
     rank_configurations,
     summary_table,
+    sweet_spot_per_filter,
     top_k_per_filter,
     transition_boundary,
 )
@@ -371,6 +373,44 @@ class TestAnalysis(unittest.TestCase):
         )
         top = top_k_per_filter(results, k=5, bootstrap_seed=0)
         self.assertEqual(len(top["bandpass"]), 1)
+
+    def test_sweet_spot_per_filter(self):
+        """Sweet spot finds the grid point with highest lambda_max."""
+        h = np.array([[0.1, 0.9, np.nan], [0.3, 0.2, 0.8]], dtype=float)
+        h_std = np.full_like(h, 0.05)
+        result = SweepResult(
+            h=h,
+            h_std=h_std,
+            orders=np.arange(3, 5),
+            cutoffs=np.array([0.1, 0.3, 0.5]),
+            window="hamming",
+            filter_type="lowpass",
+            metadata={"n_initial": 50},
+        )
+        ss = sweet_spot_per_filter({("lowpass", "hamming"): result})
+        self.assertIn("lowpass", ss)
+        spot = ss["lowpass"]
+        self.assertEqual(spot["n_z"], 3)
+        self.assertAlmostEqual(spot["omega_c"], 0.3, delta=0.01)
+        self.assertAlmostEqual(spot["lmax"], 0.9, delta=0.001)
+        self.assertIsNotNone(spot["lmax_ci_95_low"])
+        self.assertIsNotNone(spot["lmax_ci_95_high"])
+
+    def test_sweet_spot_ci_none_when_no_metadata(self):
+        """CI is None when n_initial is missing."""
+        h = np.array([[0.5]], dtype=float)
+        h_std = np.array([[0.1]])
+        result = SweepResult(
+            h=h,
+            h_std=h_std,
+            orders=np.array([5]),
+            cutoffs=np.array([0.3]),
+            window="hann",
+            filter_type="lowpass",
+        )
+        ss = sweet_spot_per_filter({("lowpass", "hann"): result})
+        self.assertIsNone(ss["lowpass"]["lmax_ci_95_low"])
+        self.assertIsNone(ss["lowpass"]["lmax_ci_95_high"])
 
     def test_bootstrap_confidence_empty(self):
         with TemporaryDirectory() as td:

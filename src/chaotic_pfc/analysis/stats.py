@@ -148,6 +148,21 @@ class ConfigRank(TypedDict):
     beta: float | None
 
 
+class SweetSpot(TypedDict):
+    """Single grid point with the highest :math:`\\lambda_{\\max}` for one filter type.
+
+    Returned per filter type by :func:`sweet_spot_per_filter`.
+    """
+
+    filter_type: str
+    window: str
+    n_z: int
+    omega_c: float
+    lmax: float
+    lmax_ci_95_low: float | None
+    lmax_ci_95_high: float | None
+
+
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
     results: list[SweepResult] = []
@@ -459,6 +474,69 @@ def top_k_per_filter(
     for ft in out:
         out[ft] = out[ft][:k]
     return out
+
+
+def sweet_spot_per_filter(
+    sweep_results: dict[tuple[str, str], SweepResult],
+) -> dict[str, SweetSpot]:
+    """Identify the grid point with the highest :math:`\\lambda_{\\max}` per filter type.
+
+    For each filter type, scans all available window sweeps and returns
+    the exact ``(N_z, omega_c, window)`` where ``lambda_max`` is
+    globally maximal.
+
+    The 95% confidence interval is computed from the per-point standard
+    deviation ``h_std`` and ``n_initial`` metadata via the
+    t-distribution. If ``h_std`` is NaN or ``n_initial`` is unavailable,
+    the CI fields are ``None``.
+
+    Parameters
+    ----------
+    sweep_results
+        Mapping from ``(filter_type, window_key)`` to loaded sweeps.
+
+    Returns
+    -------
+    dict of str → SweetSpot
+        One entry per filter type that has at least one finite point.
+    """
+    from scipy.stats import t as t_dist
+
+    best: dict[str, SweetSpot] = {}
+
+    for (ft, win), result in sweep_results.items():
+        h, h_std, orders, cutoffs = result.h, result.h_std, result.orders, result.cutoffs
+        n_initial = result.metadata.get("n_initial", None)
+        for i in range(len(orders)):
+            for j in range(len(cutoffs)):
+                val = h[i, j]
+                if not np.isfinite(val):
+                    continue
+                if ft not in best or val > best[ft]["lmax"]:
+                    std_val = h_std[i, j]
+                    if (
+                        n_initial is not None
+                        and n_initial > 1
+                        and np.isfinite(std_val)
+                        and std_val > 0
+                    ):
+                        se = std_val / np.sqrt(n_initial)
+                        t_crit = t_dist.ppf(0.975, n_initial - 1)
+                        ci_low = round(float(val - t_crit * se), 6)
+                        ci_high = round(float(val + t_crit * se), 6)
+                    else:
+                        ci_low = None
+                        ci_high = None
+                    best[ft] = {
+                        "filter_type": ft,
+                        "window": win,
+                        "n_z": int(orders[i]),
+                        "omega_c": round(float(cutoffs[j]), 4),
+                        "lmax": round(float(val), 6),
+                        "lmax_ci_95_low": ci_low,
+                        "lmax_ci_95_high": ci_high,
+                    }
+    return best
 
 
 def best_chaos_preserving(
