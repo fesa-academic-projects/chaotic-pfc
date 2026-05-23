@@ -141,8 +141,14 @@ def plot_heatmap_continuous(
     orders: NDArray | None = None,
     cutoffs: NDArray | None = None,
     save_path: str | Path | None = None,
+    data_slots: int = 3,
+    gap_slots: int = 1,
 ) -> Figure:
     """Continuous λ_max heatmap over the (N_z, ω_c/π) plane.
+
+    Uses the same interleaved-column layout as
+    :func:`plot_classification_interleaved` for visual consistency
+    across the full figure set.
 
     Parameters
     ----------
@@ -157,6 +163,8 @@ def plot_heatmap_continuous(
         Cutoff frequencies (y-axis), shape ``(len(cutoffs),)``.
     save_path
         If provided, the figure is saved to this path via ``_save()``.
+    data_slots, gap_slots
+        Interleaved-column parameters.
 
     Returns
     -------
@@ -164,12 +172,16 @@ def plot_heatmap_continuous(
     """
     h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    pcm = ax.pcolormesh(Nz, cutoffs, h.T, shading="nearest")
+    h_expanded = _interleaved_expand(h, data_slots, gap_slots)
+    x_exp = np.arange(h_expanded.shape[0])
+
+    fig, ax = plt.subplots(figsize=(12, 5))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
+    pcm = ax.pcolormesh(x_exp, cutoffs, h_expanded.T, shading="nearest")
     fig.colorbar(pcm, ax=ax, label=r"$\lambda_{\max}$")
-    _axis_cosmetics(ax)
-    ax.grid(True, axis="x", color="gray", linewidth=0.3)
-    ax.tick_params(labelsize=18)
+    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
     fig.tight_layout()
     _save(fig, save_path)
     return fig
@@ -309,6 +321,8 @@ def plot_difficulty_map(
     *,
     save_path: str | Path | None = None,
     cmap: str = "viridis",
+    data_slots: int = 3,
+    gap_slots: int = 1,
 ) -> Figure:
     """Heatmap of Lyapunov iterations actually used at each grid point.
 
@@ -319,6 +333,9 @@ def plot_difficulty_map(
     fronteira points where \\|λ_max\\| ≈ 0). Diverged grid points are shown
     in the same light grey used for unbounded orbits in the
     classification figures, so the two layers can be visually overlaid.
+
+    Uses the same interleaved-column layout as
+    :func:`plot_classification_interleaved`.
 
     Parameters
     ----------
@@ -332,6 +349,8 @@ def plot_difficulty_map(
     cmap
         Sequential matplotlib colormap name. ``viridis`` is
         perceptually uniform and prints well in greyscale.
+    data_slots, gap_slots
+        Interleaved-column parameters.
 
     Raises
     ------
@@ -376,17 +395,24 @@ def plot_difficulty_map(
         vmin = float(Nmap_min)
         vmax = float(Nmap)
 
-    # Render diverged cells (NaN) in the same light grey used by the
-    # classification plots for unbounded orbits, so the two figures
-    # stay visually consistent.
+    # Render diverged cells (NaN) in grey; gap columns get a sentinel
+    # below *vmin* so they render in white via ``set_under``.
+    sentinel = vmin - 1.0
+    n_expanded = _interleaved_expand(n_iters, data_slots, gap_slots, fill_value=sentinel)
+    x_exp = np.arange(n_expanded.shape[0])
+
     cmap_obj = plt.get_cmap(cmap).copy()
     cmap_obj.set_bad(COLOR_UNBOUNDED)
+    cmap_obj.set_under("white")
 
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(12, 5))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
     pcm = ax.pcolormesh(
-        Nz,
+        x_exp,
         cutoffs,
-        n_iters.T,
+        n_expanded.T,
         cmap=cmap_obj,
         vmin=vmin,
         vmax=vmax,
@@ -395,9 +421,7 @@ def plot_difficulty_map(
     cbar = fig.colorbar(pcm, ax=ax, label="Lyapunov iterations used")
     cbar.ax.tick_params(labelsize=12)
 
-    _axis_cosmetics(ax)
-    ax.grid(True, axis="x", color="gray", linewidth=0.3)
-    ax.tick_params(labelsize=18)
+    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
     fig.tight_layout()
     _save(fig, save_path)
     return fig
@@ -461,13 +485,19 @@ def _interleaved_expand(
     data_2d: NDArray,
     data_slots: int = 3,
     gap_slots: int = 1,
+    fill_value: float = np.nan,
 ) -> NDArray:
-    """Expand (Ncoef, Ncut) into (total_slots, Ncut) with gap-NaN columns."""
+    """Expand (Ncoef, Ncut) into (total_slots, Ncut) with gap columns.
+
+    Gap slots are filled with *fill_value* (default ``NaN``).  Callers
+    that need a visually distinguishable gap colour (e.g. a sentinel
+    below the colour-bar minimum) can pass a custom fill.
+    """
     Ncoef = data_2d.shape[0]
     Ncut = data_2d.shape[1]
     slot_total = data_slots + gap_slots
     total_slots = Ncoef * slot_total
-    expanded = np.full((total_slots, Ncut), np.nan)
+    expanded = np.full((total_slots, Ncut), fill_value)
     for i in range(Ncoef):
         start = i * slot_total
         for s in range(data_slots):
