@@ -87,6 +87,10 @@ def _render_tex(
     lines.append(f"  \\caption{{{caption}}}")
     if label:
         lines.append(f"  \\label{{{label}}}")
+    if not use_longtable:
+        lines.append("  \\footnotesize")
+        lines.append("  \\setlength{\\tabcolsep}{4pt}")
+        lines.append("  \\resizebox{\\textwidth}{!}{%")
     lines.append("  \\begin{longtable}" if use_longtable else f"  \\begin{{tabular}}{{{col_spec}}}")
     lines.append("    \\toprule")
     header = " & ".join(f"{c}" for c in columns) + " \\\\"
@@ -96,8 +100,11 @@ def _render_tex(
         row_str = " & ".join(str(cell) for cell in row) + " \\\\"
         lines.append(f"    {row_str}")
     lines.append("    \\bottomrule")
-    lines.append("  \\end{longtable}" if use_longtable else "  \\end{tabular}")
-    if not use_longtable:
+    if use_longtable:
+        lines.append("  \\end{longtable}")
+    else:
+        lines.append("  \\end{tabular}")
+        lines.append("  }")  # close \resizebox
         lines.append("\\end{table}")
     return "\n".join(lines) + "\n"
 

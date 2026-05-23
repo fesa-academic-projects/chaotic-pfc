@@ -1,6 +1,9 @@
 \begin{table}[htbp]
   \centering
   \caption{Top-3 janelas por tipo de filtro com estatísticas de $\lambda_{\max}$.}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{lrrrrrrrr}
     \toprule
     Filtro & Rank & Janela & Pontos caóticos & $\%$ caótico (finitos) & $\overline{\lambda}_{\max}$ & $\lambda_{\max}$ máx & $\sigma(\lambda_{\max})$ & IC 95\% \\
@@ -19,4 +22,5 @@
     Rejeita-faixa & 3 & Hamming & 55 & 35.5\% & 0.0874 & 0.1012 & 0.0071 & [0.0854, 0.0892] \\
     \bottomrule
   \end{tabular}
+  }
 \end{table}

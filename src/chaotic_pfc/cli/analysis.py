@@ -95,14 +95,14 @@ def _add_export_tables_parser(sub: argparse._SubParsersAction) -> None:
     )
     p_et.add_argument(
         "--output-dir",
-        default="analysis_output/tables",
-        help="Output directory for .tex files (default: analysis_output/tables)",
+        default="data/analysis_output/tables",
+        help="Output directory for .tex files (default: data/analysis_output/tables)",
     )
     p_et.add_argument(
         "--lang",
         default="all",
-        choices=["all", "pt_BR", "en"],
-        help="Language(s) to generate: all (default), pt_BR, en",
+        choices=["all", "pt", "en"],
+        help="Language(s) to generate: all (default), pt, en",
     )
     p_et.add_argument(
         "--format",
@@ -149,7 +149,7 @@ def _run_export_tables(args: argparse.Namespace) -> int:
         print(f"ERROR: sweep directory not found: {sweep_dir}")
         return 1
 
-    langs = ["pt_BR", "en"] if args.lang == "all" else [args.lang]
+    langs = ["pt", "en"] if args.lang == "all" else [args.lang]
 
     # Load data once
     print(f"Loading sweeps from {sweep_dir} ...")
@@ -161,22 +161,18 @@ def _run_export_tables(args: argparse.Namespace) -> int:
     ranking = rank_configurations(sweeps, bootstrap_seed=args.bootstrap_seed)
     sweet = sweet_spot_per_filter(sweeps)
 
-    # i18n lang mapping: pt_BR -> pt
-    _lang_map = {"pt_BR": "pt", "en": "en"}
-
-    for lang_dir in langs:
-        i18n_lang = _lang_map.get(lang_dir, lang_dir)
-        out = output_dir / lang_dir
+    for lang in langs:
+        out = output_dir / lang
         out.mkdir(parents=True, exist_ok=True)
 
         paths: list[Path] = [
-            export_top_k_table(top_k, out / "tab_top_k.tex", lang=i18n_lang),
-            export_extended_top_k_table(top_k, out / "tab_top_k_extended.tex", lang=i18n_lang),
-            export_full_ranking_table(ranking, out / "tab_full_ranking.tex", lang=i18n_lang),
-            export_sweet_spots_table(sweet, out / "tab_sweet_spots.tex", lang=i18n_lang),
+            export_top_k_table(top_k, out / "tab_top_k.tex", lang=lang),
+            export_extended_top_k_table(top_k, out / "tab_top_k_extended.tex", lang=lang),
+            export_full_ranking_table(ranking, out / "tab_full_ranking.tex", lang=lang),
+            export_sweet_spots_table(sweet, out / "tab_sweet_spots.tex", lang=lang),
         ]
 
-        print(f"\n[{lang_dir}]")
+        print(f"\n[{lang}]")
         for p in paths:
             lines = p.read_text(encoding="utf-8").count("\n")
             size = p.stat().st_size
@@ -189,18 +185,10 @@ def _run_export_tables(args: argparse.Namespace) -> int:
         beta_opt = kaiser_beta_optimal(sweeps, bootstrap_seed=args.bootstrap_seed)
 
         cons_paths: list[Path] = [
-            export_consolidated_top_k_table(
-                cons_top_k, out / "tab_consolidated_top_k.tex", lang=i18n_lang
-            ),
-            export_consolidated_extended_table(
-                cons_top_k, out / "tab_consolidated_extended.tex", lang=i18n_lang
-            ),
-            export_consolidated_full_ranking(
-                cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=i18n_lang
-            ),
-            export_kaiser_beta_optimal_table(
-                beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=i18n_lang
-            ),
+            export_consolidated_top_k_table(cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang),
+            export_consolidated_extended_table(cons_top_k, out / "tab_consolidated_extended.tex", lang=lang),
+            export_consolidated_full_ranking(cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang),
+            export_kaiser_beta_optimal_table(beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang),
         ]
 
         print("  [consolidated — Kaiser best-β only]")

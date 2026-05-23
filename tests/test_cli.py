@@ -224,7 +224,7 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             self.assertEqual(code, 0)
 
             en_dir = Path(out_tmp) / "en"
-            pt_dir = Path(out_tmp) / "pt_BR"
+            pt_dir = Path(out_tmp) / "pt"
             self.assertTrue(en_dir.is_dir())
             self.assertTrue(pt_dir.is_dir())
             self.assertEqual(len(list(en_dir.rglob("*.tex"))), 8)

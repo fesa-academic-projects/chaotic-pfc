@@ -222,7 +222,7 @@ Generate publication-ready LaTeX tables with bilingual support:
 
     chaotic-pfc run analysis export-tables
 
-Produces 8 ``.tex`` files per language under ``analysis_output/tables/{pt_BR,en}/``:
+Produces 8 ``.tex`` files per language under ``data/analysis_output/tables/{pt,en}/``:
 
 * **tab_top_k.tex** — Top-3 windows per filter type (chaotic area).
 * **tab_top_k_extended.tex** — Top-3 with :math:`\lambda_{\max}` statistics and 95% CI.
