@@ -100,6 +100,7 @@ Key experiments
    :hidden:
 
    background
+   tutorial
    architecture
    internals
    usage

@@ -66,6 +66,8 @@ docs = [
     "furo>=2024.0",
     "sphinx-copybutton>=0.5",
     "sphinx-intl>=2.0",
+    "nbsphinx>=0.9",
+    "jupyter>=1.0",
 ]
 viz3d = [
     "plotly>=5.18",

@@ -643,10 +643,9 @@ def lyapunov_max_ensemble(
     seed
         RNG seed for IC sampling.  ``None`` uses the global unseeded RNG.
 
-    See :class:`EnsembleResult` for the output schema. Samples
-    ``n_initial`` initial conditions uniformly in a box of half-width
-    ``perturbation`` around the fixed point, then runs the single-IC
-    Gram-Schmidt Lyapunov estimator on each.
+    Returns
+    -------
+    EnsembleResult
     """
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
@@ -714,9 +713,9 @@ def lyapunov_henon2d_ensemble(
     seed
         RNG seed for IC sampling.  ``None`` uses the global unseeded RNG.
 
-    Samples around the *positive* fixed point (the one usually found in
-    the strange attractor basin for α = 1.4, β = 0.3). See
-    :class:`EnsembleResult` for the output schema.
+    Returns
+    -------
+    EnsembleResult
     """
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
