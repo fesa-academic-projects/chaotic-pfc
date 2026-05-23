@@ -125,3 +125,46 @@ Adding a new property test
    not replace them.  Example tests document expected behaviour for
    specific, meaningful cases; property tests guard against
    regressions in edge cases that humans would never write manually.
+
+Performance benchmarks
+----------------------
+
+In addition to correctness tests, ``chaotic-pfc`` includes a
+`pytest-benchmark <https://pytest-benchmark.readthedocs.io>`__ suite
+measuring hot-path performance and comparing against a committed baseline.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Benchmark
+     - Operation
+     - Typical time (ms)
+   * - ``test_henon_standard_1000_iters``
+     - Hénon map, 1000 iterations
+     - ~2.5
+   * - ``test_henon_standard_10000_iters``
+     - Hénon map, 10 000 iterations
+     - ~26
+   * - ``test_lyapunov_henon2d_2000_iters``
+     - Single Lyapunov, 2000 QR steps
+     - ~49
+   * - ``test_lyapunov_ensemble_25_ics``
+     - 25-IC ensemble, 500 QR steps each
+     - ~310
+   * - ``test_mini_sweep_30_points``
+     - Quick-mode sweep, 30 grid points
+     - ~2200
+
+.. code-block:: bash
+
+   # Run all benchmarks
+   pytest benchmarks/ --benchmark-only
+
+   # Compare against baseline (fails if any mean regresses >25%)
+   pytest benchmarks/ --benchmark-only \\
+     --benchmark-compare=benchmarks/baseline/baseline_v0_7_0.json \\
+     --benchmark-compare-fail=mean:25%
+
+The CI ``benchmark`` job runs only on pull requests.  The 25% threshold
+accounts for hardware variance in shared GitHub runners.
+

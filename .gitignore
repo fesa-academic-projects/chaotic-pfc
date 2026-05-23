@@ -125,3 +125,4 @@ tmp/
 logs/
 data/analysis_summary.json
 *.mo
+.benchmarks/

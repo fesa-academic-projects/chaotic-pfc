@@ -57,6 +57,7 @@ fast = [
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
+    "pytest-benchmark>=4.0",
     "hypothesis>=6.0",
     "ruff>=0.6",
     "mypy>=1.11",
@@ -87,6 +88,13 @@ strict_markers = true
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
+
+[tool.pytest-benchmark]
+# Use 5 rounds so throughput numbers are reliable
+rounds = 5
+timer = "time.perf_counter"
+# Only run benchmarks in the benchmarks/ directory
+include = ["benchmarks/"]
 
 # ───────────────────────────────────────────────────────────────────────────
 # Coverage — measurement config for pytest-cov
