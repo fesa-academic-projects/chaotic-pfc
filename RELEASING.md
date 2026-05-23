@@ -9,13 +9,19 @@
 
 ### 1. Update the changelog
 
-In `CHANGELOG.md`, rename the `## [Unreleased]` section to the new version and date:
+In `CHANGELOG.md`, rename the `## [Unreleased]` section to the new version and date
+(using ` - ` separator, per Keep a Changelog):
 
 ```markdown
-## [X.Y.Z]: 2026-06-01
+## [X.Y.Z] - 2026-06-01
 ```
 
-Open a fresh empty `## [Unreleased]` above it.
+Open a fresh empty `## [Unreleased]` section above it. Add reference links at the
+bottom matching the existing pattern:
+
+```markdown
+[X.Y.Z]: https://github.com/fesa-academic-projects/chaotic-pfc/releases/tag/vX.Y.Z
+```
 
 ### 2. Bump the version
 
