@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from chaotic_pfc.dynamics.lyapunov import (
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
+    lyapunov_max,
 )
 
 
@@ -34,3 +37,16 @@ def test_lyapunov_ensemble_25_ics(benchmark):
         perturbation=0.1,
     )
     assert result.n_chaotic > 0
+
+
+def test_lyapunov_max_4d_2000_iters(benchmark):
+    """4-D pole-filtered Lyapunov, 2000 iterations."""
+    result = benchmark(
+        lyapunov_max,
+        alpha=1.4,
+        beta=0.3,
+        Nitera=2000,
+        Ndiscard=500,
+        seed=42,
+    )
+    assert np.isfinite(result.lyapunov_max)

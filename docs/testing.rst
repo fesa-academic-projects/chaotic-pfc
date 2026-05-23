@@ -141,19 +141,31 @@ measuring hot-path performance and comparing against a committed baseline.
      - Typical time (ms)
    * - ``test_henon_standard_1000_iters``
      - Hénon map, 1000 iterations
-     - ~2.5
+     - ~2.6
+   * - ``test_henon_generalised_1000_iters``
+     - Generalised Hénon, 1000 iterations
+     - ~2.7
+   * - ``test_henon_filtered_1000_iters``
+     - FIR-filtered Hénon (c0=1, c1=0), 1000 iterations
+     - ~3.1
+   * - ``test_henon_order_n_1000_iters``
+     - Order-N Hénon (Nc=4), 1000 iterations
+     - ~4.3
    * - ``test_henon_standard_10000_iters``
      - Hénon map, 10 000 iterations
-     - ~26
+     - ~27
    * - ``test_lyapunov_henon2d_2000_iters``
      - Single Lyapunov, 2000 QR steps
-     - ~49
+     - ~53
+   * - ``test_lyapunov_max_4d_2000_iters``
+     - 4-D pole-filtered Lyapunov, 2000 QR steps
+     - ~120
    * - ``test_lyapunov_ensemble_25_ics``
      - 25-IC ensemble, 500 QR steps each
-     - ~310
+     - ~330
    * - ``test_mini_sweep_30_points``
      - Quick-mode sweep, 30 grid points
-     - ~2200
+     - ~2330
 
 .. code-block:: bash
 
