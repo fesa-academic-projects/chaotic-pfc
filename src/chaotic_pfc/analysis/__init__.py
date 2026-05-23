@@ -20,8 +20,7 @@ from .stats import (
     load_all_sweeps,
     optimal_parameters,
     rank_configurations,
-    summary_table,
-    transition_boundary,
+    top_k_per_filter,
 )
 from .sweep import (
     FILTER_TYPES,
@@ -81,5 +80,6 @@ __all__ = [
     "run_sweep",
     "save_sweep",
     "summary_table",
+    "top_k_per_filter",
     "transition_boundary",
 ]

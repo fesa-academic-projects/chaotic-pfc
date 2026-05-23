@@ -26,6 +26,7 @@ from chaotic_pfc.analysis.stats import (
     optimal_parameters,
     rank_configurations,
     summary_table,
+    top_k_per_filter,
     transition_boundary,
 )
 from chaotic_pfc.analysis.sweep import FILTER_TYPES, SweepResult, save_sweep
@@ -316,6 +317,60 @@ class TestAnalysis(unittest.TestCase):
         self.assertEqual(len(ranking), 1)
         self.assertEqual(ranking[0]["window"], "kaiser_3.50")
         self.assertAlmostEqual(ranking[0]["beta"], 3.5)
+
+    def test_top_k_per_filter(self):
+        """Each filter gets exactly k entries, sorted descending."""
+        rng = np.random.default_rng(0)
+        results: dict[tuple[str, str], SweepResult] = {}
+        combos = [
+            ("hamming", "lowpass", 8),
+            ("hann", "lowpass", 4),
+            ("boxcar", "lowpass", 2),
+            ("bartlett", "lowpass", 6),
+            ("hamming", "highpass", 5),
+            ("hann", "highpass", 3),
+        ]
+        for w, ft, n_chaotic in combos:
+            n_total = 12
+            h_pos = np.linspace(0.1, 0.5, n_chaotic)
+            h_neg = np.linspace(-0.5, -0.01, n_total - n_chaotic)
+            h_vals = np.concatenate([h_pos, h_neg])
+            rng.shuffle(h_vals)
+            h = h_vals.reshape(3, 4)
+            results[(ft, w)] = SweepResult(
+                h=h,
+                h_std=np.abs(h) * 0.1,
+                orders=np.arange(2, 5),
+                cutoffs=np.linspace(0.1, 0.9, 4),
+                window=w,
+                filter_type=ft,
+            )
+        top = top_k_per_filter(results, k=2, bootstrap_seed=0)
+        self.assertIn("lowpass", top)
+        self.assertIn("highpass", top)
+        self.assertEqual(len(top["lowpass"]), 2)
+        self.assertEqual(len(top["highpass"]), 2)
+        self.assertGreaterEqual(top["lowpass"][0]["n_chaotic"], top["lowpass"][1]["n_chaotic"])
+
+    def test_top_k_per_filter_fewer_than_k(self):
+        """When fewer windows exist than k, return all available."""
+        rng = np.random.default_rng(0)
+        results: dict[tuple[str, str], SweepResult] = {}
+        h_pos = np.linspace(0.1, 0.5, 5)
+        h_neg = np.linspace(-0.5, -0.01, 7)
+        h_vals = np.concatenate([h_pos, h_neg])
+        rng.shuffle(h_vals)
+        h = h_vals.reshape(3, 4)
+        results[("bandpass", "hamming")] = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 5),
+            cutoffs=np.linspace(0.1, 0.9, 4),
+            window="hamming",
+            filter_type="bandpass",
+        )
+        top = top_k_per_filter(results, k=5, bootstrap_seed=0)
+        self.assertEqual(len(top["bandpass"]), 1)
 
     def test_bootstrap_confidence_empty(self):
         with TemporaryDirectory() as td:

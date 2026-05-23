@@ -424,6 +424,43 @@ def rank_configurations(
     return entries
 
 
+def top_k_per_filter(
+    sweep_results: dict[tuple[str, str], SweepResult],
+    k: int = 3,
+    bootstrap_seed: int = 42,
+) -> dict[str, list[ConfigRank]]:
+    """Return the top-*k* configurations for each filter type.
+
+    Calls :func:`rank_configurations` internally, then groups the
+    global ranking by ``filter_type``, keeping at most *k* entries
+    per group.
+
+    Parameters
+    ----------
+    sweep_results
+        Mapping from ``(filter_type, window_key)`` to loaded sweeps.
+    k
+        Maximum number of entries per filter type (default 3).
+    bootstrap_seed
+        Forwarded to :func:`rank_configurations`.
+
+    Returns
+    -------
+    dict of str → list of ConfigRank
+        Keys are filter types; values are lists of at most *k*
+        :class:`ConfigRank` entries, ordered by descending
+        ``n_chaotic``.
+    """
+    ranking = rank_configurations(sweep_results, bootstrap_seed=bootstrap_seed)
+    out: dict[str, list[ConfigRank]] = {}
+    for entry in ranking:
+        ft = entry["filter_type"]
+        out.setdefault(ft, []).append(entry)
+    for ft in out:
+        out[ft] = out[ft][:k]
+    return out
+
+
 def best_chaos_preserving(
     data_dir: str | Path = "data/sweeps",
     top_n: int = 5,
