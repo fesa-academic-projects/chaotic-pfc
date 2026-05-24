@@ -10,60 +10,127 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Property-based testing with Hypothesis: 11 invariants for Hénon maps, Lyapunov exponents,
   signals, area summaries, and Kaiser consolidation (`tests/test_properties.py`).
-- Custom Hypothesis strategies in `tests/_hypothesis_strategies.py`.
-- Hypothesis profiles (`dev` / `ci`) in `tests/conftest.py`.
-- Tutorial notebook (`examples/tour.ipynb`, ~1 min) covering the full pipeline.
-- `nbsphinx` for rendering notebooks in Sphinx docs.
+- Custom Hypothesis strategies in `tests/_hypothesis_strategies.py` and profiles
+  (`dev` / `ci`) in `tests/conftest.py`.
+- Scientific validation tests against Wolf et al. (1985) and Sprott (2003) with
+  reference tables in `docs/validation.rst`.
+- Tutorial notebook (`examples/tour.ipynb`, ~1 min) covering Hénon maps, Lyapunov
+  exponents, filtered chaos, Pecora-Carroll communication, and parameter sweeps.
 - CI job (`notebook`) that executes `examples/tour.ipynb` on every push.
-- Scientific validation tests against Wolf et al. (1985) and Sprott (2003) for Hénon Lyapunov
-  exponents (`tests/test_scientific_validation.py`).
-- Validation documentation (`docs/validation.rst`) with reference tables, DOI, and ISBN.
-- PT-BR translation for validation page (`docs/locale/pt_BR/LC_MESSAGES/validation.po`).
+- Algorithm documentation pages: Lyapunov computation (`source/algorithms/lyapunov.rst`),
+  parameter sweep (`source/algorithms/sweep.rst`), FIR filter design
+  (`source/algorithms/fir_design.rst`).
+- `docs/testing.rst` and `docs/tutorial.rst` documentation pages.
+- Mathematical symbol glossary (`docs/symbols.rst`) mapping every symbol used in the
+  library to its definition and source modules.
+- References sections citing Hénon (1976), Pecora-Carroll (1990), Wolf (1985),
+  Sprott (2003), Fontes-Eisencraft (2016), and Borges-Eisencraft (2022) in key
+  public docstrings.
+- Complete Brazilian Portuguese translations for all 13 narrative documentation
+  pages via `docs/locale/pt_BR/LC_MESSAGES/`.
+- API reference translation policy: auto-generated docstrings kept in English only
+  with an explanatory note in `api/index.rst`.
+- Performance benchmarks with pytest-benchmark: 9 tests covering Hénon maps,
+  Lyapunov exponents, and mini-sweeps with v0.7.0 baseline.
 - `area_summary()`, `lmax_statistics()`, `rank_configurations()`, `top_k_per_filter()`,
   `sweet_spot_per_filter()`, `consolidate_kaiser()`, `kaiser_beta_optimal()` in `stats.py`.
 - `AreaSummary`, `LmaxStats`, `ConfigRank`, `SweetSpot`, `KaiserBetaOptimal` TypedDicts.
-- LaTeX table export module (`latex_export.py`): 8 exporters covering top-k, extended top-k,
-  full ranking, sweet spots, beta-optimal, and consolidated Kaiser variants.
-- Bilingual i18n keys for analysis tables (23 keys, PT + EN).
+- Bilingual LaTeX table export (`latex_export.py`): 8 exporters covering top-k,
+  extended top-k, full ranking, sweet spots, beta-optimal, and consolidated Kaiser.
 - CLI subcommand `chaotic-pfc run analysis export-tables` with `--lang pt|en|all`.
-- `docs/tutorial.rst` and `docs/testing.rst` documentation pages.
+- Chaotic union and density cross-sweep figures (`plot_chaotic_map`, `plot_chaotic_density`).
+- LaTeX auto-detection in `setup_rc()` with mathtext fallback for systems without LaTeX.
+- Interleaved layout in `plot_heatmap_continuous` and `plot_difficulty_map`.
+- `validate-pyproject` pre-commit hook.
+- Python 3.14 support in CI and classifiers.
 
 ### Changed
 - `CHANGELOG.md` fully conforms to Keep a Changelog 1.1.0 with reference links.
-- `docs/conf.py`: `nbsphinx` extension and `nbsphinx_execute = "never"` added.
-- `pyproject.toml`: `hypothesis` in `[dev]` extra, `nbsphinx` + `jupyter` in `[docs]` extra.
-- CI test job now uses `--hypothesis-profile=ci`.
+- `pyproject.toml`: description, keywords, and classifiers tightened to reflect the
+  Pecora-Carroll scope; `hypothesis` in `[dev]` extra; `nbsphinx` + `jupyter` in
+  `[docs]` extra.
+- `docs/conf.py`: `nbsphinx` extension added; `nbsphinx_execute` set to `"always"`
+  so the tour notebook renders with outputs on Read the Docs.
+- Default figure format changed from PNG+SVG to SVG-only (`SweepConfig.fig_fmts`,
+  `plot_all` fmt, CLI `--fmt` default).  PNG available via `--fmt png`.
+- `tour.ipynb`: code cells use English-only strings; LaTeX equations use proper
+  display/inline modes; Pecora-Carroll communication demo added; bilingual
+  structure cleaned up (H1 EN + H2 PT-BR, `---` separators, no `/` mixed labels).
+- `henon_fir_sequence` deprecated (no callers; superseded by `henon_order_n`).
+- TCC renamed to PFC across all layers (English source, Python help strings,
+  Portuguese translations).
+- Prose em-dashes replaced with commas, colons, or parentheses in both English
+  `.rst` sources and Portuguese `.po` translations.
+- 374 tracked PNG figures removed from version control; `optimize-png` pre-commit
+  hook removed (optimize-svg kept, manual stage only).
+- Generated Plotly 3-D HTML figures removed from version control (4 files, ~15 K lines).
+- Orphan `algorithms/` i18n folder removed (stale leftovers from a previous refactor).
+- `_save_both` renamed to `_save_svg`; hardcoded PNG paths removed from plotting code.
+- `nbsphinx_execute` changed from `"never"` to `"always"`.
 - `analysis_output/` output files moved to `data/analysis_output/tables/{pt,en}/`.
 - `--lang` flag aligned with other subcommands (`pt`/`en` instead of `pt_BR`).
-- LaTeX tabular tables now use `\resizebox{\textwidth}{!}`, `\footnotesize`, and
+- LaTeX tabular tables use `\resizebox{\textwidth}{!}`, `\footnotesize`, and
   `\setlength{\tabcolsep}{4pt}` for A4 fit.
-- README (PT and EN) updated with tutorial mention and scientific validation mention.
+- CI test job uses `--hypothesis-profile=ci`.
+- Default bandwidth narrowed from 0.2 to 0.05 across the sweep pipeline.
+- README (both languages): updated description, scope, validation wording, and
+  BibTeX citing section.
+- `np.random.seed` replaced with `np.random.default_rng` in benchmarks.
+- Pre-commit: ruff bumped to v0.15.14; `validate-pyproject` hook added; mypy
+  configured as `language: system`.
 
 ### Removed
-- DCSK and EF-DCSK from project scope. The library now exclusively implements
-  Pecora-Carroll synchronisation with FIR-filtered Hénon map.
-- References to joblib/loky parallelism in documentation — the codebase never
-  used joblib; parallelism is via Numba ``prange`` only.
+- DCSK and EF-DCSK from project scope (module, CLI, i18n keys, SVG figures,
+  documentation pages, README sections, source docstring references).
+- Joblib/loky references from documentation — the codebase never used joblib;
+  parallelism is via Numba ``prange`` only.
+- Dead WiFi interferer channel code (`channel_urban`).
+- BER mention from `CommConfig` docstring.
+- Sentinel value `-1e30` from sweep figures and Lyapunov ensemble data
+  (replaced with proper NaN propagation).
 
 ### Fixed
-- `henon_fir_sequence` now uses the generalised Hénon form (a - xf² + b·y,
-  y = x) for consistency with the rest of the codebase.
-- `receive_order_n` validates ``len(fir_coeffs) >= 3``, matching the check
-  in ``henon_order_n``.
-- ``docs/background.rst``: Hénon equations harmonised to generalised form.
-- ``docs/validation.rst``: notation updated from standard (a, b) to
-  generalised (α, β), with equivalence noted.
-- ``docs/source/algorithms/sweep.rst``: replaced joblib architecture
-  description with the actual prange-based implementation.
-- ``pyproject.toml`` description and keywords tightened to reflect
-  Pecora-Carroll scope.
-- README (both languages): added BibTeX Citing section.
-- `load_all_sweeps()` Kaiser detection: switched from `kaiser_beta is not None` (always true —
-  metadata defaults to 5.0) to `result.window == "kaiser"`.
-- `top_k_per_filter()` now re-ranks entries per filter group (1, 2, 3) instead of preserving
+- `henon_fir_sequence` uses the generalised Hénon form (a - xf² + b·y, y = x)
+  for consistency with the rest of the codebase.
+- `receive_order_n` validates `len(fir_coeffs) >= 3`, matching the check in
+  `henon_order_n`.
+- `henon_standard`, `henon_order_n`, and JIT kernels guard against divergence
+  with early NaN propagation.
+- `psd_normalised` raises `ValueError` on identically zero input, honouring its
+  documented contract.
+- `_fixed_point` guards against degenerate filter cases (pole on unit circle,
+  near-zero DC gain).
+- Lyapunov kernel guards against divergence leaking the `-1e30` sentinel into
+  sweep averages; Ns=1 fixed-point offset handled correctly.
+- Zero-norm handling unified between kernel (`1e-300` clamp) and public
+  API (`1e-300` fallback in `_gram_schmidt`).
+- All mypy errors resolved across the codebase (array covariance, TypedDict
+  returns, `**kwargs` unpacking, optional imports).
+- `_compat.prange` fallback accepts `(start, stop)` signature matching Numba's API.
+- Parameter validation added to public APIs: `awgn` SNR, `channel_impulsive`
+  probability, `lyapunov` perturbation and iteration counts, `sweep` adaptive
+  parameters, `spectral` window name and `kaiser_beta`.
+- Corrupted sweep metadata and unknown config paths now surface clear
+  `ValueError` instead of cryptic attribute errors.
+- `LmaxDistribution` return type aligned with actual implementation.
+- `plot_comm_grid` uses explicit sentinel defaults for `y_lim` parameters.
+- `receive` and `receive_order_n` guard against `mu=0` division by zero.
+- `run_all` sets attractor steps to 50k for dense phase portraits.
+- `load_all_sweeps()` Kaiser detection: switched from `kaiser_beta is not None`
+  to `result.window == "kaiser"`.
+- `top_k_per_filter()` re-ranks entries per filter group instead of preserving
   global rank numbers.
-- Sphinx docstring warnings in `lyapunov.py` (`lyapunov_max_ensemble`,
-  `lyapunov_henon2d_ensemble`) resolved.
+- Sphinx docstring warnings in `lyapunov.py` resolved (`lyapunov_max_ensemble`,
+  `lyapunov_henon2d_ensemble`).
+- Duplicate Sphinx citation warnings resolved by consolidating `[Citations]` in
+  `background.rst`.
+- `:option:` replaced with `:code:` in sweep.rst.
+- Fixed-point approximation in sweep kernel documented with rationale.
+- Welch segment overlap default (`noverlap=None` = 50%) documented in `psd_normalised`.
+- `rng=None` non-reproducible behaviour documented in `awgn`.
+- Various cross-reference fixes in `transmitter`, `signals`, `channel`,
+  `lyapunov`, `config`, and `sweep_plotting` docstrings.
+- DCSK references cleaned from all docstrings, READMEs, and documentation pages.
 
 ## [0.7.0] - 2026-05-10
 
