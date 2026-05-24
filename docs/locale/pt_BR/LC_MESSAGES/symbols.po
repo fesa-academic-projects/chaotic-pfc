@@ -37,7 +37,7 @@ msgstr "Aparece em"
 
 #: ../../symbols.rst:14
 msgid ":math:`\\alpha`"
-msgstr ":math:`\\\\alpha`"
+msgstr ":math:`\\alpha`"
 
 #: ../../symbols.rst:15
 msgid "Hénon constant term (generalised form)"
@@ -52,7 +52,7 @@ msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, :func:`~chaotic_pf
 
 #: ../../symbols.rst:20
 msgid ":math:`\\beta`"
-msgstr ":math:`\\\\beta`"
+msgstr ":math:`\\beta`"
 
 #: ../../symbols.rst:21
 msgid "Hénon coupling / dissipation parameter"
@@ -80,7 +80,7 @@ msgstr "Parâmetro de acoplamento de Hénon (forma clássica)"
 
 #: ../../symbols.rst:34
 msgid ":math:`\\mu`"
-msgstr ":math:`\\\\mu`"
+msgstr ":math:`\\mu`"
 
 #: ../../symbols.rst:35
 msgid "Modulation depth"
@@ -108,7 +108,7 @@ msgstr ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, :func:`~chaot
 
 #: ../../symbols.rst:44
 msgid ":math:`\\omega_c`, :math:`f_c`"
-msgstr ":math:`\\\\omega_c`, :math:`f_c`"
+msgstr ":math:`\\omega_c`, :math:`f_c`"
 
 #: ../../symbols.rst:45
 msgid "Normalised cutoff frequency, :math:`\\omega_c / \\pi \\in (0, 1)`"
@@ -174,7 +174,7 @@ msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_standard`, :func:`~chaotic_pfc.d
 #: ../../symbols.rst:69
 #, python-brace-format
 msgid ":math:`\\lambda_1`, :math:`\\lambda_{\\max}`"
-msgstr ":math:`\\\\lambda_1`, :math:`\\\\lambda_{\\\\max}`"
+msgstr ":math:`\\lambda_1`, :math:`\\lambda_{\\max}`"
 
 #: ../../symbols.rst:70
 msgid "Largest Lyapunov exponent"
@@ -227,7 +227,7 @@ msgstr ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
 #: ../../symbols.rst:87
 #, python-brace-format
 msgid ":math:`\\hat{m}[n]`"
-msgstr ":math:`\\\\hat{m}[n]`"
+msgstr ":math:`\\hat{m}[n]`"
 
 #: ../../symbols.rst:88
 msgid "Recovered message estimate"
@@ -239,7 +239,7 @@ msgstr ":func:`~chaotic_pfc.comms.receiver.receive`"
 
 #: ../../symbols.rst:91
 msgid ":math:`\\beta_K`"
-msgstr ":math:`\\\\beta_K`"
+msgstr ":math:`\\beta_K`"
 
 #: ../../symbols.rst:92
 msgid "Kaiser window shape parameter"
@@ -253,7 +253,7 @@ msgstr ":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`, 
 
 #: ../../symbols.rst:96
 msgid ":math:`N_{\\text{discard}}`"
-msgstr ":math:`N_{\\\\text{discard}}`"
+msgstr ":math:`N_{\\text{discard}}`"
 
 #: ../../symbols.rst:97
 msgid "Burn-in (transient discard) iterations"
@@ -267,7 +267,7 @@ msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, :func:`~chaotic
 
 #: ../../symbols.rst:101
 msgid ":math:`N_{\\text{IC}}`"
-msgstr ":math:`N_{\\\\text{IC}}`"
+msgstr ":math:`N_{\\text{IC}}`"
 
 #: ../../symbols.rst:102
 msgid "Number of initial conditions in ensemble"
@@ -282,7 +282,7 @@ msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, :func:
 #: ../../symbols.rst:106
 #, python-brace-format
 msgid ":math:`\\text{SNR}`, :math:`E_b/N_0`"
-msgstr ":math:`\\\\text{SNR}`, :math:`E_b/N_0`"
+msgstr ":math:`\\text{SNR}`, :math:`E_b/N_0`"
 
 #: ../../symbols.rst:107
 msgid "Signal-to-noise ratio (dB)"
@@ -295,7 +295,7 @@ msgstr ":func:`~chaotic_pfc.comms.channel.awgn`"
 #: ../../symbols.rst:110
 #, python-brace-format
 msgid ":math:`\\text{BER}`"
-msgstr ":math:`\\\\text{BER}`"
+msgstr ":math:`\\text{BER}`"
 
 #: ../../symbols.rst:111
 msgid "Bit error rate"

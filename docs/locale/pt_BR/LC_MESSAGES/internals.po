@@ -154,7 +154,7 @@ msgstr ""
 msgid ""
 "\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right|"
 " < \\text{tol}"
-msgstr "\\\\left| \\\\lambda_{\\\\text{current}} - \\\\lambda_{\\\\text{previous}} \\\\right| < \\\\text{tol}"
+msgstr "\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right| < \\text{tol}"
 
 #: ../../internals.rst:65
 msgid ""
@@ -250,7 +250,7 @@ msgid ""
 "loop over orders would assign threads to vastly unequal workloads (the "
 "MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with filter order "
 ":math:`N_s`)."
-msgstr "The ``_build_task_order`` function creates a permuted list of ``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different orders, ensuring balanced thread load. Without this permutation, a naive loop over orders would assign threads to vastly unequal workloads (the MGS inner loop scales as :math:`\\\\mathcal{O}(N_s^3)` with filter order :math:`N_s`)."
+msgstr "The ``_build_task_order`` function creates a permuted list of ``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different orders, ensuring balanced thread load. Without this permutation, a naive loop over orders would assign threads to vastly unequal workloads (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with filter order :math:`N_s`)."
 
 #: ../../internals.rst:109
 msgid "Fixed-point stability analysis"
@@ -285,7 +285,7 @@ msgstr ""
 #: ../../internals.rst:119
 #, python-brace-format
 msgid "Compute the eigenvalues of :math:`\\mathbf{J}` via"
-msgstr "Compute the eigenvalues of :math:`\\\\mathbf{J}` via"
+msgstr "Compute the eigenvalues of :math:`\\mathbf{J}` via"
 
 #: ../../internals.rst:120
 msgid ":func:`numpy.linalg.eigvals`."

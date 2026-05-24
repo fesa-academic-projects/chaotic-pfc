@@ -159,7 +159,7 @@ msgid ""
 "x_1[n+1] &= \\alpha - x_1[n]^2 + \\beta \\, x_2[n] \\\\\n"
 "x_2[n+1] &= x_1[n]"
 msgstr ""
-"x_1[n+1] &= 1 - a \\, x_1[n]^2 + b \\, x_2[n] \\\\\n"
+"x_1[n+1] &= 1 - a \\, x_1[n]^2 + b \\, x_2[n] \\\n"
 "x_2[n+1] &= x_1[n]"
 
 #: ../../background.rst:68
@@ -235,7 +235,7 @@ msgstr ""
 msgid ""
 "For :math:`\\alpha < 1.06`: the system is periodic (the fixed point is "
 "stable)."
-msgstr "Para :math:`\\\\alpha < 1{,}06`: o sistema é periódico (o ponto fixo é estável)."
+msgstr "Para :math:`\\alpha < 1{,}06`: o sistema é periódico (o ponto fixo é estável)."
 
 #: ../../background.rst:101
 msgid ""
@@ -285,7 +285,7 @@ msgstr ""
 
 #: ../../background.rst:117
 msgid "x_1[n+1] = \\alpha - x_1[n]^2 + \\beta \\, x_2[n]"
-msgstr "x_1[n+1] = \\\\alpha - x_1[n]^2 + \\\\beta \\\\, x_2[n]"
+msgstr "x_1[n+1] = \\alpha - x_1[n]^2 + \\beta \\, x_2[n]"
 
 #: ../../background.rst:121
 msgid ""
@@ -305,7 +305,7 @@ msgstr "Passa o estado por um filtro FIR de 2 coeficientes antes da realimentaç
 
 #: ../../background.rst:127
 msgid "x_1[n+1] = \\alpha - (c_0 x_1[n] + c_1 x_1[n-1])^2 + \\beta \\, x_2[n]"
-msgstr "x_1[n+1] = \\\\alpha - (c_0 x_1[n] + c_1 x_1[n-1])^2 + \\\\beta \\\\, x_2[n]"
+msgstr "x_1[n+1] = \\alpha - (c_0 x_1[n] + c_1 x_1[n-1])^2 + \\beta \\, x_2[n]"
 
 #: ../../background.rst:131
 msgid ""
@@ -529,7 +529,7 @@ msgid ""
 "\\lambda_{\\max} = \\lim_{n \\to \\infty} \\frac{1}{n}\n"
 "\\sum_{k=1}^{n} \\ln \\frac{\\| \\delta \\mathbf{x}_k \\|}\n"
 "                          {\\| \\delta \\mathbf{x}_0 \\|}"
-msgstr "\\\\lambda_{\\\\max} = \\\\lim_{n \\\\to \\\\infty} \\\\frac{1}{n}\\n\\\\sum_{k=1}^{n} \\\\ln \\\\frac{\\\\| \\\\delta \\\\mathbf{x}_k \\\\|}\\n                          {\\\\| \\\\delta \\\\mathbf{x}_0 \\\\|}"
+msgstr "\\lambda_{\\max} = \\lim_{n \\\\to \\infty} \\frac{1}{n}\\n\\sum_{k=1}^{n} \\ln \\frac{\\| \\delta \\mathbf{x}_k \\|}\\n                          {\\| \\delta \\mathbf{x}_0 \\|}"
 
 #: ../../background.rst:237
 #, python-brace-format
@@ -564,7 +564,7 @@ msgstr "Regime"
 #: ../../background.rst:250
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} > 0`"
-msgstr ":math:`\\\\lambda_{\\\\max} > 0`"
+msgstr ":math:`\\lambda_{\\max} > 0`"
 
 #: ../../background.rst:251
 msgid "Exponential divergence of nearby trajectories; SDIC present"
@@ -577,7 +577,7 @@ msgstr "**Caótico**"
 #: ../../background.rst:253
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} \\leq 0`"
-msgstr ":math:`\\\\lambda_{\\\\max} \\\\leq 0`"
+msgstr ":math:`\\lambda_{\\max} \\\\leq 0`"
 
 #: ../../background.rst:254
 msgid "Trajectories converge or remain bounded without exponential growth"
@@ -590,7 +590,7 @@ msgstr "**Periódico / quase periódico**"
 #: ../../background.rst:256
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} = \\text{NaN}`"
-msgstr ":math:`\\\\lambda_{\\\\max} = \\\\text{NaN}`"
+msgstr ":math:`\\lambda_{\\max} = \\text{NaN}`"
 
 #: ../../background.rst:257
 msgid "Trajectory diverged to infinity within the simulation window"
@@ -801,7 +801,7 @@ msgstr ""
 msgid ""
 "\\|\\mathbf{x}(t) - \\hat{\\mathbf{x}}(t)\\| \\to 0\n"
 "\\quad \\text{as} \\quad t \\to \\infty"
-msgstr "\\\\|\\\\mathbf{x}(t) - \\\\hat{\\\\mathbf{x}}(t)\\\\| \\\\to 0\\n\\\\quad \\\\text{as} \\\\quad t \\\\to \\\\infty"
+msgstr "\\|\\mathbf{x}(t) - \\hat{\\mathbf{x}}(t)\\| \\\\to 0\\n\\quad \\text{as} \\quad t \\\\to \\infty"
 
 #: ../../background.rst:353
 msgid "where :math:`\\hat{\\mathbf{x}}(t)` is the receiver state."
@@ -832,7 +832,7 @@ msgid ""
 "y_1[n+1] &= \\alpha - r[n]^2 + \\beta \\, y_2[n] \\\\\n"
 "y_2[n+1] &= y_1[n]"
 msgstr ""
-"y_1[n+1] &= 1 - a \\, r[n]^2 + b \\, y_2[n] \\\\\n"
+"y_1[n+1] &= 1 - a \\, r[n]^2 + b \\, y_2[n] \\\n"
 "y_2[n+1] &= y_1[n]"
 
 #: ../../background.rst:370
@@ -860,7 +860,7 @@ msgstr ""
 #: ../../background.rst:379
 #, python-brace-format
 msgid "\\hat{m}[n] \\approx m[n] = \\frac{r[n] - y_1[n]}{\\mu}"
-msgstr "\\\\hat{m}[n] \\\\approx m[n] = \\\\frac{r[n] - y_1[n]}{\\\\mu}"
+msgstr "\\hat{m}[n] \\approx m[n] = \\frac{r[n] - y_1[n]}{\\mu}"
 
 #: ../../background.rst:383
 msgid ""

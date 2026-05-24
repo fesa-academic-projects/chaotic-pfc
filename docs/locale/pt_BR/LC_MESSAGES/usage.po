@@ -224,7 +224,7 @@ msgstr "Varredura — Beta"
 
 #: ../../usage.rst:161
 msgid "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
-msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\\\beta` values:"
+msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
 
 #: ../../usage.rst:167
 msgid ""
@@ -342,7 +342,7 @@ msgstr "**tab_top_k.tex** — Top-3 janelas por tipo de filtro (área caótica).
 msgid ""
 "**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
 "statistics and 95% CI."
-msgstr "**tab_top_k_extended.tex** — Top-3 with :math:`\\\\lambda_{\\\\max}` statistics and 95% CI."
+msgstr "**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` statistics and 95% CI."
 
 #: ../../usage.rst:229
 msgid "**tab_full_ranking.tex** — Full 124-entry ranking (longtable)."
@@ -353,13 +353,13 @@ msgstr "**tab_full_ranking.tex** — Ranking completo com 124 entradas (longtabl
 msgid ""
 "**tab_sweet_spots.tex** — Grid point with highest "
 ":math:`\\lambda_{\\max}` per filter."
-msgstr "**tab_sweet_spots.tex** — Grid point with highest :math:`\\\\lambda_{\\\\max}` per filter."
+msgstr "**tab_sweet_spots.tex** — Grid point with highest :math:`\\lambda_{\\max}` per filter."
 
 #: ../../usage.rst:231
 msgid ""
 "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
 ":math:`\\beta`."
-msgstr "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\\\\beta`."
+msgstr "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\\beta`."
 
 #: ../../usage.rst:232
 msgid "**tab_consolidated_extended.tex** — Extended stats, Kaiser consolidated."
@@ -373,7 +373,7 @@ msgstr "**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), bal
 
 #: ../../usage.rst:234
 msgid "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
-msgstr "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\\\beta` per filter type."
+msgstr "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
 
 #: ../../usage.rst:249
 msgid ""

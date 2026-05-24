@@ -58,7 +58,7 @@ msgid ""
 "multipath, or composite urban model). The receiver synchronises to the "
 "carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx "
 "m[n]`."
-msgstr "The transmitter embeds a binary message into the chaotic carrier via Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \\\\mu \\\\cdot m[n]`. The channel applies distortion (ideal pass-through, FIR band-limiting, AWGN, multipath, or composite urban model). The receiver synchronises to the carrier and recovers the message estimate :math:`\\\\hat{m}[n] \\\\approx m[n]`."
+msgstr "The transmitter embeds a binary message into the chaotic carrier via Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \\mu \\cdot m[n]`. The channel applies distortion (ideal pass-through, FIR band-limiting, AWGN, multipath, or composite urban model). The receiver synchronises to the carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx m[n]`."
 
 #: ../../architecture.rst:100
 msgid "Parameter sweep pipeline"
@@ -147,7 +147,7 @@ msgid ""
 "costs (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)`), so "
 "simple block partitioning would leave threads idle. Interleaving ensures "
 "that each thread sees a balanced mix of light and heavy tasks."
-msgstr "**Single ``prange`` with load balancing.** The sweep kernel uses a single parallel region (not nested parallelism) with a permuted task order. Tasks with different filter orders have vastly different per-iteration costs (the MGS inner loop scales as :math:`\\\\mathcal{O}(N_s^3)`), so simple block partitioning would leave threads idle. Interleaving ensures that each thread sees a balanced mix of light and heavy tasks."
+msgstr "**Single ``prange`` with load balancing.** The sweep kernel uses a single parallel region (not nested parallelism) with a permuted task order. Tasks with different filter orders have vastly different per-iteration costs (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)`), so simple block partitioning would leave threads idle. Interleaving ensures that each thread sees a balanced mix of light and heavy tasks."
 
 #: ../../architecture.rst:175
 #, python-brace-format, python-format
@@ -158,7 +158,7 @@ msgid ""
 "remaining iterations are skipped. This provides 3–4× speedup over fixed-"
 "iteration computation with negligible accuracy loss (< 0.1% in "
 ":math:`\\lambda_{\\max}`)."
-msgstr "**Adaptive early-stop.** The Lyapunov estimator implements an optional early-stop criterion: if :math:`\\\\lambda_{\\\\max}` stabilises within a specified tolerance for a streak of consecutive checkpoints, the remaining iterations are skipped. This provides 3–4× speedup over fixed-iteration computation with negligible accuracy loss (< 0.1% in :math:`\\\\lambda_{\\\\max}`)."
+msgstr "**Adaptive early-stop.** The Lyapunov estimator implements an optional early-stop criterion: if :math:`\\lambda_{\\max}` stabilises within a specified tolerance for a streak of consecutive checkpoints, the remaining iterations are skipped. This provides 3–4× speedup over fixed-iteration computation with negligible accuracy loss (< 0.1% in :math:`\\lambda_{\\max}`)."
 
 #: ../../architecture.rst:183
 msgid "Configuration"

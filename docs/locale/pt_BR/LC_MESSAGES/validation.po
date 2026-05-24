@@ -58,15 +58,15 @@ msgstr "Fonte"
 
 #: ../../validation.rst:25
 msgid ":math:`\\lambda_1`"
-msgstr ":math:`\\\\lambda_1`"
+msgstr ":math:`\\lambda_1`"
 
 #: ../../validation.rst:26
 msgid ":math:`\\lambda_2`"
-msgstr ":math:`\\\\lambda_2`"
+msgstr ":math:`\\lambda_2`"
 
 #: ../../validation.rst:27
 msgid ":math:`\\lambda_1 + \\lambda_2`"
-msgstr ":math:`\\\\lambda_1 + \\\\lambda_2`"
+msgstr ":math:`\\lambda_1 + \\lambda_2`"
 
 #: ../../validation.rst:28
 msgid "Wolf et al. (1985) [1]_"
@@ -102,7 +102,7 @@ msgstr "Identidade analítica"
 
 #: ../../validation.rst:37
 msgid ":math:`\\ln|\\beta| = \\ln(0.3)`"
-msgstr ":math:`\\\\ln|\\\\beta| = \\\\ln(0.3)`"
+msgstr ":math:`\\ln|\\beta| = \\ln(0.3)`"
 
 #: ../../validation.rst:38 ../../validation.rst:39
 msgid "—"
@@ -110,7 +110,7 @@ msgstr "—"
 
 #: ../../validation.rst:40 ../../validation.rst:44
 msgid ":math:`-1.203\\,973`"
-msgstr ":math:`-1.203\\\\,973`"
+msgstr ":math:`-1.203\\,973`"
 
 #: ../../validation.rst:41
 msgid "**This work** (Nitera = 20 000)"
@@ -118,11 +118,11 @@ msgstr "**Este trabalho** (Nitera = 20 000)"
 
 #: ../../validation.rst:42
 msgid ":math:`+0.417\\,567`"
-msgstr ":math:`+0.417\\\\,567`"
+msgstr ":math:`+0.417\\,567`"
 
 #: ../../validation.rst:43
 msgid ":math:`-1.621\\,539`"
-msgstr ":math:`-1.621\\\\,539`"
+msgstr ":math:`-1.621\\,539`"
 
 #: ../../validation.rst:46
 msgid "Relative error of ``chaotic-pfc`` vs. each reference"
@@ -138,7 +138,7 @@ msgstr "Erro relativo"
 
 #: ../../validation.rst:51
 msgid ":math:`\\lambda_1` vs. Wolf 1985"
-msgstr ":math:`\\\\lambda_1` vs. Wolf 1985"
+msgstr ":math:`\\lambda_1` vs. Wolf 1985"
 
 #: ../../validation.rst:52
 msgid "0.10 %"
@@ -146,7 +146,7 @@ msgstr "0,10 %"
 
 #: ../../validation.rst:53
 msgid ":math:`\\lambda_1` vs. Sprott 2003"
-msgstr ":math:`\\\\lambda_1` vs. Sprott 2003"
+msgstr ":math:`\\lambda_1` vs. Sprott 2003"
 
 #: ../../validation.rst:54
 msgid "0.34 %"
@@ -154,7 +154,7 @@ msgstr "0,34 %"
 
 #: ../../validation.rst:55
 msgid ":math:`\\lambda_2` vs. Wolf 1985"
-msgstr ":math:`\\\\lambda_2` vs. Wolf 1985"
+msgstr ":math:`\\lambda_2` vs. Wolf 1985"
 
 #: ../../validation.rst:56
 msgid "0.03 %"
@@ -162,7 +162,7 @@ msgstr "0,03 %"
 
 #: ../../validation.rst:57
 msgid ":math:`\\lambda_2` vs. Sprott 2003"
-msgstr ":math:`\\\\lambda_2` vs. Sprott 2003"
+msgstr ":math:`\\lambda_2` vs. Sprott 2003"
 
 #: ../../validation.rst:58
 msgid "0.09 %"
@@ -175,7 +175,7 @@ msgstr "Soma vs. :math:`\\ln(0{,}3)`"
 #: ../../validation.rst:60
 #, python-brace-format
 msgid ":math:`2.2 \\times 10^{-16}` (machine precision)"
-msgstr ":math:`2.2 \\\\times 10^{-16}` (machine precision)"
+msgstr ":math:`2.2 \\times 10^{-16}` (machine precision)"
 
 #: ../../validation.rst:65
 msgid ""
@@ -188,7 +188,7 @@ msgstr ""
 
 #: ../../validation.rst:69
 msgid "\\lambda_1 + \\lambda_2 = \\ln|\\det J| = \\ln \\beta."
-msgstr "\\\\lambda_1 + \\\\lambda_2 = \\\\ln|\\\\det J| = \\\\ln \\\\beta."
+msgstr "\\lambda_1 + \\lambda_2 = \\ln|\\det J| = \\ln \\beta."
 
 #: ../../validation.rst:73
 msgid ""
@@ -208,15 +208,15 @@ msgstr ""
 
 #: ../../validation.rst:79
 msgid ":math:`(\\alpha = 1.4, \\; \\beta = 0.3)` — standard chaotic regime"
-msgstr ":math:`(\\\\alpha = 1.4, \\\\; \\\\beta = 0.3)` — standard chaotic regime"
+msgstr ":math:`(\\alpha = 1.4, \\; \\beta = 0.3)` — standard chaotic regime"
 
 #: ../../validation.rst:80
 msgid ":math:`(\\alpha = 1.4, \\; \\beta = 0.2)` — strongly dissipative"
-msgstr ":math:`(\\\\alpha = 1.4, \\\\; \\\\beta = 0.2)` — strongly dissipative"
+msgstr ":math:`(\\alpha = 1.4, \\; \\beta = 0.2)` — strongly dissipative"
 
 #: ../../validation.rst:81
 msgid ":math:`(\\alpha = 1.0, \\; \\beta = 0.5)` — non-chaotic (periodic)"
-msgstr ":math:`(\\\\alpha = 1.0, \\\\; \\\\beta = 0.5)` — non-chaotic (periodic)"
+msgstr ":math:`(\\alpha = 1.0, \\; \\beta = 0.5)` — non-chaotic (periodic)"
 
 #: ../../validation.rst:83
 #, python-brace-format

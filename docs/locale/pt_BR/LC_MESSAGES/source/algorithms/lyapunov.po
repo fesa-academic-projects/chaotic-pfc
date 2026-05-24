@@ -37,11 +37,11 @@ msgid ""
 ":math:`\\lambda_{\\max} \\le 0`, the system is periodic or stable."
 msgstr ""
 "In chaotic dynamics, the **largest Lyapunov exponent** "
-":math:`\\\\lambda_{\\\\max}` quantifies how quickly two initially nearby "
-"trajectories diverge from each other.  If :math:`\\\\lambda_{\\\\max} > "
+":math:`\\lambda_{\\max}` quantifies how quickly two initially nearby "
+"trajectories diverge from each other.  If :math:`\\lambda_{\\max} > "
 "0`, the system is chaotic — a tiny perturbation in the initial condition "
 "grows exponentially and the long-term behaviour becomes unpredictable.  "
-"If :math:`\\\\lambda_{\\\\max} \\\\le 0`, the system is periodic or "
+"If :math:`\\lambda_{\\max} \\le 0`, the system is periodic or "
 "stable."
 
 #: ../../source/algorithms/lyapunov.rst:16
@@ -52,7 +52,7 @@ msgid ""
 "filter still preserves chaos, or whether the filter *killed* the chaos "
 "(making the scheme useless for physical-layer security)."
 msgstr ""
-"For chaotic communication, :math:`\\\\lambda_{\\\\max}` is the single "
+"For chaotic communication, :math:`\\lambda_{\\max}` is the single "
 "most important diagnostic: it tells us whether the Hénon map with a given"
 " FIR filter still preserves chaos, or whether the filter *killed* the "
 "chaos (making the scheme useless for physical-layer security)."
@@ -68,8 +68,8 @@ msgid ""
 "f(\\mathbf{x}_n)`, the largest Lyapunov exponent is defined as the time-"
 "averaged exponential divergence rate:"
 msgstr ""
-"For a discrete-time dynamical system :math:`\\\\mathbf{x}_{n+1} = "
-"f(\\\\mathbf{x}_n)`, the largest Lyapunov exponent is defined as the "
+"For a discrete-time dynamical system :math:`\\mathbf{x}_{n+1} = "
+"f(\\mathbf{x}_n)`, the largest Lyapunov exponent is defined as the "
 "time-averaged exponential divergence rate:"
 
 #: ../../source/algorithms/lyapunov.rst:28
@@ -79,10 +79,10 @@ msgid ""
 "  \\sum_{k=1}^{N} \\ln \\frac{\\| \\delta \\mathbf{x}_k \\|}\n"
 "                            {\\| \\delta \\mathbf{x}_{k-1} \\|},"
 msgstr ""
-"\\\\lambda_{\\\\max}\\n= \\\\lim_{N \\\\to \\\\infty} \\\\frac{1}{N}\\n  "
-"\\\\sum_{k=1}^{N} \\\\ln \\\\frac{\\\\| \\\\delta \\\\mathbf{x}_k "
-"\\\\|}\\n                            {\\\\| \\\\delta \\\\mathbf{x}_{k-1}"
-" \\\\|},"
+"\\lambda_{\\max}\\n= \\lim_{N \\to \\infty} \\frac{1}{N}\\n  "
+"\\sum_{k=1}^{N} \\ln \\frac{\\| \\delta \\mathbf{x}_k "
+"\\|}\\n                            {\\| \\delta \\mathbf{x}_{k-1}"
+" \\|},"
 
 #: ../../source/algorithms/lyapunov.rst:35
 #, python-brace-format
@@ -91,9 +91,9 @@ msgid ""
 " :math:`k`, obtained by applying the Jacobian :math:`J(\\mathbf{x}_k)` "
 "and re-normalising."
 msgstr ""
-"where :math:`\\\\delta \\\\mathbf{x}_k` is the evolved tangent vector at "
+"where :math:`\\delta \\mathbf{x}_k` is the evolved tangent vector at "
 "step :math:`k`, obtained by applying the Jacobian "
-":math:`J(\\\\mathbf{x}_k)` and re-normalising."
+":math:`J(\\mathbf{x}_k)` and re-normalising."
 
 #: ../../source/algorithms/lyapunov.rst:39
 msgid ""
@@ -127,7 +127,7 @@ msgid ""
 "Choose an initial condition :math:`\\mathbf{x}_0` on the attractor (in "
 "our case, perturbed slightly around the fixed point)."
 msgstr ""
-"Choose an initial condition :math:`\\\\mathbf{x}_0` on the attractor (in "
+"Choose an initial condition :math:`\\mathbf{x}_0` on the attractor (in "
 "our case, perturbed slightly around the fixed point)."
 
 #: ../../source/algorithms/lyapunov.rst:53
@@ -141,12 +141,12 @@ msgstr "Para :math:`k = 1` até :math:`N`:"
 #: ../../source/algorithms/lyapunov.rst:56
 #, python-brace-format
 msgid "Evolve the system: :math:`\\mathbf{x}_k = f(\\mathbf{x}_{k-1})`."
-msgstr "Evolve the system: :math:`\\\\mathbf{x}_k = f(\\\\mathbf{x}_{k-1})`."
+msgstr "Evolve the system: :math:`\\mathbf{x}_k = f(\\mathbf{x}_{k-1})`."
 
 #: ../../source/algorithms/lyapunov.rst:57
 #, python-brace-format
 msgid "Evolve the tangent basis: :math:`Z = J(\\mathbf{x}_k) \\cdot W`."
-msgstr "Evolve the tangent basis: :math:`Z = J(\\\\mathbf{x}_k) \\\\cdot W`."
+msgstr "Evolve the tangent basis: :math:`Z = J(\\mathbf{x}_k) \\cdot W`."
 
 #: ../../source/algorithms/lyapunov.rst:58
 msgid ""
@@ -159,15 +159,15 @@ msgstr ""
 #: ../../source/algorithms/lyapunov.rst:60
 #, python-brace-format
 msgid "Accumulate: :math:`\\lambda_i \\mathrel{+}= \\ln n_i`."
-msgstr "Accumulate: :math:`\\\\lambda_i \\\\mathrel{+}= \\\\ln n_i`."
+msgstr "Accumulate: :math:`\\lambda_i \\mathrel{+}= \\ln n_i`."
 
 #: ../../source/algorithms/lyapunov.rst:61
 msgid "Replace :math:`W \\leftarrow Q`."
-msgstr "Replace :math:`W \\\\leftarrow Q`."
+msgstr "Replace :math:`W \\leftarrow Q`."
 
 #: ../../source/algorithms/lyapunov.rst:63
 msgid "The Lyapunov spectrum is :math:`\\lambda_i / N`."
-msgstr "The Lyapunov spectrum is :math:`\\\\lambda_i / N`."
+msgstr "The Lyapunov spectrum is :math:`\\lambda_i / N`."
 
 #: ../../source/algorithms/lyapunov.rst:66
 msgid "Pseudocode"
@@ -204,7 +204,7 @@ msgstr ""
 "``log(0)`` (which would produce NaN) while being indistinguishable from "
 "zero for any physically meaningful norm.  The constant :math:`10^{-300}` "
 "was chosen well below machine underflow for ``float64`` "
-"(:math:`\\\\approx 10^{-308}` in subnormal range)."
+"(:math:`\\approx 10^{-308}` in subnormal range)."
 
 #: ../../source/algorithms/lyapunov.rst:108
 msgid ""
@@ -223,11 +223,11 @@ msgstr ""
 "trajectory. To assess the **statistical robustness** of the Lyapunov "
 "estimate, "
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble` draws "
-":math:`N_{\\\\text{CI}}` independent initial conditions from a uniform "
+":math:`N_{\\text{CI}}` independent initial conditions from a uniform "
 "box around the positive fixed point and computes the spectrum for each.  "
 "The output (:class:`~chaotic_pfc.dynamics.lyapunov.EnsembleResult`) "
 "reports the mean, maximum, and per-IC values, plus a count of how many "
-"ICs yield positive :math:`\\\\lambda_{\\\\max}` (chaotic) versus non-"
+"ICs yield positive :math:`\\lambda_{\\max}` (chaotic) versus non-"
 "positive (periodic)."
 
 #: ../../source/algorithms/lyapunov.rst:117
@@ -253,9 +253,9 @@ msgid ""
 msgstr ""
 "The implementation has been validated against published reference values "
 "from Wolf et al. (1985).  For the standard Hénon map :math:`(a = 1.4, b ="
-" 0.3)`, our code with :math:`N_{\\\\text{itera}} = 20\\\\,000` yields "
-":math:`\\\\lambda_1 = 0.417567` (Wolf reports :math:`0.418`, error "
-":math:`0.10\\\\%`).  See :doc:`/validation` for the full validation "
+" 0.3)`, our code with :math:`N_{\\text{itera}} = 20\\,000` yields "
+":math:`\\lambda_1 = 0.417567` (Wolf reports :math:`0.418`, error "
+":math:`0.10\\%`).  See :doc:`/validation` for the full validation "
 "report."
 
 #: ../../source/algorithms/lyapunov.rst:129
@@ -265,7 +265,7 @@ msgid ""
 " correctness at machine precision independently of any published "
 "reference."
 msgstr ""
-"A mathematical identity — :math:`\\\\lambda_1 + \\\\lambda_2 = \\\\ln|b|`"
+"A mathematical identity — :math:`\\lambda_1 + \\lambda_2 = \\ln|b|`"
 " — is also verified routinely in the test suite (:ref:`validation`), "
 "confirming correctness at machine precision independently of any "
 "published reference."
@@ -284,9 +284,9 @@ msgid ""
 " confirming that the bias is a convergence-rate issue, not a bug."
 msgstr ""
 "**Finite-time convergence.**  Published values correspond to :math:`N "
-"\\\\to \\\\infty`.  With the sweep default of :math:`N = 500`, the "
+"\\to \\infty`.  With the sweep default of :math:`N = 500`, the "
 "estimate can deviate by ~2–3% from the asymptotic value.  The sum "
-"identity :math:`\\\\lambda_1 + \\\\lambda_2 = \\\\ln|b|` remains exact at"
+"identity :math:`\\lambda_1 + \\lambda_2 = \\ln|b|` remains exact at"
 " any :math:`N`, confirming that the bias is a convergence-rate issue, not"
 " a bug."
 
@@ -300,7 +300,7 @@ msgid ""
 msgstr ""
 "**Orbit divergence.**  Some parameter combinations cause the orbit to "
 "diverge to infinity.  In those cases the QR loop produces NaN (instead of"
-" the historical sentinel :math:`-1 \\\\times 10^{30}`).  NaN is the "
+" the historical sentinel :math:`-1 \\times 10^{30}`).  NaN is the "
 "correct mathematical answer — the exponent is undefined when the "
 "attractor does not exist."
 

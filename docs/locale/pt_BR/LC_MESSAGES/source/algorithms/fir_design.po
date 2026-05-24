@@ -107,7 +107,7 @@ msgid ""
 msgstr ""
 "The ``fs=2`` default in ``firwin`` means ``wc`` is in units of "
 ":math:`\\\\pi` rad/sample — consistent with the normalisation "
-":math:`\\\\omega_c / \\\\pi` used throughout the sweep literature."
+":math:`\\omega_c / \\\\pi` used throughout the sweep literature."
 
 #: ../../source/algorithms/fir_design.rst:46
 msgid "Filter types"
@@ -136,12 +136,12 @@ msgstr "``lowpass``"
 #: ../../source/algorithms/fir_design.rst:57
 #: ../../source/algorithms/fir_design.rst:61
 msgid ":math:`[0, \\omega_c]`"
-msgstr ":math:`[0, \\\\omega_c]`"
+msgstr ":math:`[0, \\omega_c]`"
 
 #: ../../source/algorithms/fir_design.rst:58
 #: ../../source/algorithms/fir_design.rst:60
 msgid ":math:`(\\omega_c, \\pi]`"
-msgstr ":math:`(\\\\omega_c, \\\\pi]`"
+msgstr ":math:`(\\omega_c, \\\\pi]`"
 
 #: ../../source/algorithms/fir_design.rst:59
 msgid "``highpass``"
@@ -154,7 +154,7 @@ msgstr "``bandpass``"
 #: ../../source/algorithms/fir_design.rst:63
 #: ../../source/algorithms/fir_design.rst:67
 msgid ":math:`[\\omega_c - \\Delta/2,\\; \\omega_c + \\Delta/2]`"
-msgstr ":math:`[\\\\omega_c - \\\\Delta/2,\\\\; \\\\omega_c + \\\\Delta/2]`"
+msgstr ":math:`[\\omega_c - \\\\Delta/2,\\; \\omega_c + \\\\Delta/2]`"
 
 #: ../../source/algorithms/fir_design.rst:64
 #: ../../source/algorithms/fir_design.rst:66
@@ -311,7 +311,7 @@ msgstr "``kaiser``"
 
 #: ../../source/algorithms/fir_design.rst:115
 msgid "Adjustable via :math:`\\beta`"
-msgstr "Adjustable via :math:`\\\\beta`"
+msgstr "Adjustable via :math:`\\beta`"
 
 #: ../../source/algorithms/fir_design.rst:116
 msgid "Adjustable"
@@ -327,10 +327,10 @@ msgid ""
 "filter type."
 msgstr ""
 "**Kaiser window** deserves special attention.  The shape parameter "
-":math:`\\\\beta` controls the trade‑off between main‑lobe width and "
-"sidelobe level.  The project includes a dedicated :math:`\\\\beta`-sweep "
+":math:`\\beta` controls the trade‑off between main‑lobe width and "
+"sidelobe level.  The project includes a dedicated :math:`\\beta`-sweep "
 "(``chaotic-pfc run sweep beta-sweep``) that evaluates Lyapunov exponents "
-"across :math:`\\\\beta \\\\in [2, 14]` in steps of :math:`0.5` for each "
+"across :math:`\\beta \\in [2, 14]` in steps of :math:`0.5` for each "
 "filter type."
 
 #: ../../source/algorithms/fir_design.rst:126
@@ -345,7 +345,7 @@ msgid ""
 "back into the dynamics."
 msgstr ""
 "When an FIR filter is inserted into the Hénon feedback loop, the Jacobian"
-" matrix grows from :math:`2 \\\\times 2` to :math:`(2 + N_c) \\\\times (2"
+" matrix grows from :math:`2 \\times 2` to :math:`(2 + N_c) \\times (2"
 " + N_c)`, where :math:`N_c` is the number of filter coefficients that "
 "feed back into the dynamics."
 
@@ -384,11 +384,11 @@ msgid ""
 "behaviour indistinguishable from the unfiltered map — the sweep grid "
 "excludes :math:`\\omega_c = 0` and :math:`\\omega_c = 1`."
 msgstr ""
-"**Cutoff extremes.**  :math:`\\\\omega_c \\\\to 0` produces a filter that"
-" passes almost nothing (all‑stop); :math:`\\\\omega_c \\\\to 1` passes "
+"**Cutoff extremes.**  :math:`\\omega_c \\\\to 0` produces a filter that"
+" passes almost nothing (all‑stop); :math:`\\omega_c \\\\to 1` passes "
 "almost everything (all‑pass).  Both extremes degenerate the filter and "
 "produce behaviour indistinguishable from the unfiltered map — the sweep "
-"grid excludes :math:`\\\\omega_c = 0` and :math:`\\\\omega_c = 1`."
+"grid excludes :math:`\\omega_c = 0` and :math:`\\omega_c = 1`."
 
 #: ../../source/algorithms/fir_design.rst:151
 msgid ""
