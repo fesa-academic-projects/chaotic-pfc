@@ -158,6 +158,8 @@ def receive_order_n(
         )
     N = len(r)
     Nc = len(fir_coeffs)
+    if Nc < 3:
+        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)
 

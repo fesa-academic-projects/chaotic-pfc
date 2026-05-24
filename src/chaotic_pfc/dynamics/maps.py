@@ -45,6 +45,8 @@ Four Henon map variants and one chaotic-sequence generator are provided:
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin
@@ -310,8 +312,9 @@ def henon_fir_sequence(
 ) -> NDArray:
     """Generate a chaotic sequence from the FIR-filtered Hénon map.
 
-    Iterates ``x[n+1] = 1 - a * xf[n]^2 + y[n]`` where ``xf`` is the
-    current output of an FIR filter applied to the state history.
+    Iterates the generalised Hénon form ``x[n+1] = a - xf[n]^2 + b * y[n]``,
+    ``y[n+1] = x[n]``, where ``xf`` is the current output of an FIR filter
+    applied to the state history.
 
     Parameters
     ----------
@@ -335,7 +338,19 @@ def henon_fir_sequence(
     ------
     ValueError
         If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
+
+    .. deprecated:: 0.8.0
+        This function is no longer used internally.  For filtered
+        chaotic sequences, prefer :func:`henon_order_n` with
+        pre-computed FIR coefficients.
     """
+    warnings.warn(
+        "henon_fir_sequence is deprecated and will be removed in a "
+        "future version.  Use henon_order_n with pre-computed FIR "
+        "coefficients instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     h = firwin(n_taps, wc, window=window)
     buf = np.full(n_taps, 0.1)
     x_val, y_val = 0.1, 0.1
@@ -346,8 +361,8 @@ def henon_fir_sequence(
         xf = 0.0
         for k in range(n_taps):
             xf += h[k] * buf[(write_idx - 1 - k) % n_taps]
-        xn = 1.0 - a * xf * xf + y_val
-        yn = b * x_val
+        xn = a - xf * xf + b * y_val
+        yn = x_val
         if not np.isfinite(xn) or abs(xn) > 100:
             raise ValueError(f"henon_fir_sequence diverged at n={n}")
         buf[write_idx] = xn
