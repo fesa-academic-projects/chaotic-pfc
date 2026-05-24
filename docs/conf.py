@@ -196,5 +196,5 @@ logging.getLogger("sphinx").addFilter(_DuplicateFilter())
 # ─────────────────────────────────────────────────────────────────────────
 # nbsphinx — render Jupyter notebooks in the docs without re-executing
 # ─────────────────────────────────────────────────────────────────────────
-nbsphinx_execute = "never"
+nbsphinx_execute = "always"
 nbsphinx_allow_errors = False
