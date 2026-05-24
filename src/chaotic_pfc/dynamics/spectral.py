@@ -82,6 +82,9 @@ def psd_normalised(
     This trades frequency resolution (controlled by ``window_length``)
     for variance reduction, which is the right trade-off for visualising
     the smooth broadband spectrum of a chaotic carrier.
+
+    Segment overlap is left at the scipy default of 50 %
+    (``noverlap = nperseg // 2``).
     """
     if remove_dc:
         x = x - np.mean(x)

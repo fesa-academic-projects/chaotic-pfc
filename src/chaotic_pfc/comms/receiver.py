@@ -83,7 +83,16 @@ def receive(
         :data:`chaotic_pfc.config.CommConfig.transient` for the default
         rejection window.
 
-    Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`."""
+    Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`.
+
+    References
+    ----------
+    .. [PecoraCarroll90] L. M. Pecora, T. L. Carroll.
+       "Synchronization in chaotic systems."
+       Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990.
+    .. [Williams01] C. Williams. "Chaotic communications over radio channels."
+       IEEE Trans. Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001.
+    """
     if mu == 0:
         raise ValueError(
             "mu must be non-zero; received mu=0 which would cause "

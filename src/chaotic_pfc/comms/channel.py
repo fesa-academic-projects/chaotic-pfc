@@ -117,12 +117,18 @@ def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) ->
         original signal; ``snr_db = 0`` gives equal-power noise.
     rng
         NumPy ``Generator``.  ``None`` (default) creates a fresh
-        ``default_rng()``.
+        ``default_rng()`` with no fixed seed, so results are not
+        reproducible across calls.  Pass a seeded generator for
+        deterministic noise.
 
     Returns
     -------
     ndarray, shape (N,)
         Signal with additive white Gaussian noise.
+
+    References
+    ----------
+    .. [Haykin01] S. Haykin. "Communication Systems." 4th ed., Wiley, 2001.
     """
     if rng is None:
         rng = np.random.default_rng()

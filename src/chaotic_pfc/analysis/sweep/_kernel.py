@@ -334,6 +334,17 @@ def _sweep_kernel(
         c = fir_bank[i, j, :Ns]
         gain = gains[i, j]
 
+        # Fixed-point approximation for IC centring.
+        #
+        # The true fixed point of the N>=3 filtered Henon system has
+        # state components that are not all equal when G != 1 (the
+        # filter recurrence x_new[2] = c0*x_new[0] + ... forces
+        # x[2] = G*x[0] at equilibrium).  We use the simplified
+        # formula below — exact when G=1, approximate otherwise.
+        # The perturbation spread (0.1 * |noise| per component) is
+        # wide enough to cover the true fixed-point neighbourhood
+        # in practice.  When G=0 the fixed point is ill-defined and
+        # we fall through with p1=p2=p3=0.0.
         p1 = 0.0
         p2 = 0.0
         p3 = 0.0

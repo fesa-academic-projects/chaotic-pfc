@@ -406,6 +406,14 @@ def lyapunov_henon2d(
     lyapunov_henon2d_ensemble : Multi-IC protocol.
     lyapunov_max : 4‑D pole‑filtered variant.
     :doc:`/source/algorithms/lyapunov` : Algorithm overview and validation.
+
+    References
+    ----------
+    .. [Wolf85] A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano.
+       "Determining Lyapunov exponents from a time series."
+       Physica D, vol. 16, pp. 285–317, 1985.
+    .. [Sprott03] J. C. Sprott. "Chaos and Time-Series Analysis."
+       Oxford University Press, 2003.
     """
     dim = 2
 
