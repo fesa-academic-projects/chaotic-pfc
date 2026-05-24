@@ -8,7 +8,7 @@ Motivation
 
 In chaotic dynamics, the **largest Lyapunov exponent** :math:`\lambda_{\max}`
 quantifies how quickly two initially nearby trajectories diverge from each
-other.  If :math:`\lambda_{\max} > 0`, the system is chaotic — a tiny
+other.  If :math:`\lambda_{\max} > 0`, the system is chaotic: a tiny
 perturbation in the initial condition grows exponentially and the long-term
 behaviour becomes unpredictable.  If :math:`\lambda_{\max} \le 0`, the
 system is periodic or stable.
@@ -37,7 +37,7 @@ where :math:`\delta \mathbf{x}_k` is the evolved tangent vector at step
 re-normalising.
 
 In the code, this is the **"Gram-Schmidt"** (more precisely, **Modified
-Gram-Schmidt — MGS**) approach to Lyapunov spectra.  The MGS variant is
+Gram-Schmidt  (MGS)**) approach to Lyapunov spectra.  The MGS variant is
 more stable numerically than classical Gram-Schmidt, especially when
 the tangent vectors become nearly parallel after many iterations.
 
@@ -126,7 +126,7 @@ from Wolf et al. (1985).  For the standard Hénon map
 yields :math:`\lambda_1 = 0.417567` (Wolf reports :math:`0.418`, error
 :math:`0.10\%`).  See :doc:`/validation` for the full validation report.
 
-A mathematical identity — :math:`\lambda_1 + \lambda_2 = \ln|b|` — is also
+A mathematical identity (:math:`\lambda_1 + \lambda_2 = \ln|b|`) is also
 verified routinely in the test suite (:ref:`validation`), confirming
 correctness at machine precision independently of any published reference.
 
@@ -143,7 +143,7 @@ Known limitations
 - **Orbit divergence.**  Some parameter combinations cause the orbit to
   diverge to infinity.  In those cases the QR loop produces NaN (instead
   of the historical sentinel :math:`-1 \times 10^{30}`).  NaN is the
-  correct mathematical answer — the exponent is undefined when the
+  correct mathematical answer : the exponent is undefined when the
   attractor does not exist.
 
 - **QR cost.**  The :math:`O(D^3)` QR step is the bottleneck.  For the

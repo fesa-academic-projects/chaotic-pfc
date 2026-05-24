@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"POT-Creation-Date: 2026-05-23 22:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -29,7 +29,12 @@ msgid ""
 " `Hypothesis <https://hypothesis.readthedocs.io>`__ to verify "
 "**mathematical invariants** — properties that must hold across the entire"
 " input domain, not just for a few hand-picked examples."
-msgstr "Além dos testes unitários tradicionais baseados em exemplos, o ``chaotic-pfc`` usa `Hypothesis <https://hypothesis.readthedocs.io>`__ para verificar **invariantes matemáticos** — propriedades que devem valer em todo o domínio de entrada, não apenas para alguns exemplos escolhidos a mão."
+msgstr ""
+"Além dos testes unitários tradicionais baseados em exemplos, o ``chaotic-"
+"pfc`` usa `Hypothesis <https://hypothesis.readthedocs.io>`__ para "
+"verificar **invariantes matemáticos** — propriedades que devem valer em "
+"todo o domínio de entrada, não apenas para alguns exemplos escolhidos a "
+"mão."
 
 #: ../../testing.rst:12
 msgid "What is property-based testing?"
@@ -49,7 +54,11 @@ msgid ""
 "the invariant for every one. When a counterexample is found, Hypothesis "
 "**shrinks** it to the simplest failing case and prints a minimal "
 "reproduction."
-msgstr "O Hypothesis gera centenas de tuplas ``(a, b, n)`` aleatórias e verifica o invariante para cada uma. Quando um contraexemplo é encontrado, o Hypothesis o **reduz** ao caso mais simples que falha e imprime uma reprodução mínima."
+msgstr ""
+"O Hypothesis gera centenas de tuplas ``(a, b, n)`` aleatórias e verifica "
+"o invariante para cada uma. Quando um contraexemplo é encontrado, o "
+"Hypothesis o **reduz** ao caso mais simples que falha e imprime uma "
+"reprodução mínima."
 
 #: ../../testing.rst:37
 msgid "Properties currently tested"
@@ -67,12 +76,13 @@ msgstr "Propriedade"
 msgid "``henon_standard``"
 msgstr "``henon_standard``"
 
-
 #: ../../testing.rst:45
 msgid ""
 "Output is either all-finite or diverges monotonically (once NaN appears, "
 "it never recovers)."
-msgstr "A saída ou é toda finita ou diverge monotonicamente (uma vez que NaN aparece, ele nunca se recupera)."
+msgstr ""
+"A saída ou é toda finita ou diverge monotonicamente (uma vez que NaN "
+"aparece, ele nunca se recupera)."
 
 #: ../../testing.rst:47
 msgid "Output length equals ``n + 1``."
@@ -82,7 +92,6 @@ msgstr "Comprimento da saída igual a ``n + 1``."
 msgid "``henon_filtered``"
 msgstr "``henon_filtered``"
 
-
 #: ../../testing.rst:49
 msgid "With stable lowpass FIR, output has correct shape."
 msgstr "Com FIR passa-baixas estável, a saída tem o formato correto."
@@ -91,10 +100,11 @@ msgstr "Com FIR passa-baixas estável, a saída tem o formato correto."
 msgid "``lyapunov_henon2d``"
 msgstr "``lyapunov_henon2d``"
 
-
 #: ../../testing.rst:51
 msgid "For (a,b) very near (1.4, 0.3), if orbit stays bounded, λ_max > 0."
-msgstr "Para (a,b) muito próximos de (1.4, 0.3), se a órbita permanece limitada, λ_max > 0."
+msgstr ""
+"Para (a,b) muito próximos de (1.4, 0.3), se a órbita permanece limitada, "
+"λ_max > 0."
 
 #: ../../testing.rst:53
 msgid "λ₁ + λ₂ = ln(b) for any bounded orbit (analytical identity)."
@@ -103,7 +113,6 @@ msgstr "λ₁ + λ₂ = ln(b) para qualquer órbita limitada (identidade analít
 #: ../../testing.rst:54
 msgid "``binary_message``"
 msgstr "``binary_message``"
-
 
 #: ../../testing.rst:55
 #, python-brace-format
@@ -114,7 +123,6 @@ msgstr "Valores de saída em {−1, +1}, formato (N,)."
 msgid "``sinusoidal_message``"
 msgstr "``sinusoidal_message``"
 
-
 #: ../../testing.rst:57
 msgid "Output in [−1, 1], all finite."
 msgstr "Saída em [−1, 1], todos finitos."
@@ -122,7 +130,6 @@ msgstr "Saída em [−1, 1], todos finitos."
 #: ../../testing.rst:58
 msgid "``area_summary``"
 msgstr "``area_summary``"
-
 
 #: ../../testing.rst:59
 msgid "n_chaotic + n_periodic + n_divergent = n_total (counting invariant)."
@@ -132,7 +139,6 @@ msgstr "n_chaotic + n_periodic + n_divergent = n_total (invariante de contagem).
 msgid "``lmax_statistics``"
 msgstr "``lmax_statistics``"
 
-
 #: ../../testing.rst:61
 msgid "When n_used ≥ 3, the 95% CI contains the mean."
 msgstr "Quando n_used ≥ 3, o IC de 95% contém a média."
@@ -140,7 +146,6 @@ msgstr "Quando n_used ≥ 3, o IC de 95% contém a média."
 #: ../../testing.rst:62 ../../testing.rst:64
 msgid "``consolidate_kaiser``"
 msgstr "``consolidate_kaiser``"
-
 
 #: ../../testing.rst:63
 msgid "At most 1 Kaiser entry per filter type after consolidation."
@@ -158,7 +163,9 @@ msgstr "Execução local vs. CI"
 msgid ""
 "Two Hypothesis profiles control the trade-off between speed and "
 "thoroughness:"
-msgstr "Dois perfis do Hypothesis controlam o compromisso entre velocidade e abrangência:"
+msgstr ""
+"Dois perfis do Hypothesis controlam o compromisso entre velocidade e "
+"abrangência:"
 
 #: ../../testing.rst:76
 msgid "Profile"
@@ -168,7 +175,6 @@ msgstr "Perfil"
 msgid "``max_examples``"
 msgstr "``max_examples``"
 
-
 #: ../../testing.rst:78
 msgid "Use case"
 msgstr "Caso de uso"
@@ -177,11 +183,9 @@ msgstr "Caso de uso"
 msgid "``dev``"
 msgstr "``dev``"
 
-
 #: ../../testing.rst:80
 msgid "50"
 msgstr "50"
-
 
 #: ../../testing.rst:81
 msgid "Local development (default)"
@@ -191,11 +195,9 @@ msgstr "Desenvolvimento local (padrão)"
 msgid "``ci``"
 msgstr "``ci``"
 
-
 #: ../../testing.rst:83
 msgid "500"
 msgstr "500"
-
 
 #: ../../testing.rst:84
 msgid "CI pipeline"
@@ -205,7 +207,9 @@ msgstr "Pipeline de CI"
 msgid ""
 "The CI workflow (``.github/workflows/ci.yml``) uses ``--hypothesis-"
 "profile=ci`` automatically."
-msgstr "O workflow de CI (``.github/workflows/ci.yml``) usa ``--hypothesis-profile=ci`` automaticamente."
+msgstr ""
+"O workflow de CI (``.github/workflows/ci.yml``) usa ``--hypothesis-"
+"profile=ci`` automaticamente."
 
 #: ../../testing.rst:101
 msgid "Custom strategies"
@@ -213,7 +217,9 @@ msgstr "Estratégias personalizadas"
 
 #: ../../testing.rst:103
 msgid "Reusable input generators live in ``tests/_hypothesis_strategies.py``:"
-msgstr "Geradores de entrada reutilizáveis residem em ``tests/_hypothesis_strategies.py``:"
+msgstr ""
+"Geradores de entrada reutilizáveis residem em "
+"``tests/_hypothesis_strategies.py``:"
 
 #: ../../testing.rst:105
 msgid "``safe_henon_params()`` — (a, b) in bounded-chaos regime"
@@ -244,12 +250,16 @@ msgid "Adding a new property test"
 msgstr "Adicionando um novo teste de propriedade"
 
 #: ../../testing.rst:115
-msgid "Decide the invariant — what MUST be true for ALL valid inputs?"
-msgstr "Decida o invariante — o que DEVE ser verdade para TODAS as entradas válidas?"
+msgid "Decide the invariant : what MUST be true for ALL valid inputs?"
+msgstr ""
+"Decida o invariante: o que DEVE ser verdade para TODAS as entradas "
+"válidas?"
 
 #: ../../testing.rst:116
 msgid "Write a strategy (or reuse an existing one) that generates valid inputs."
-msgstr "Escreva uma estratégia (ou reutilize uma existente) que gere entradas válidas."
+msgstr ""
+"Escreva uma estratégia (ou reutilize uma existente) que gere entradas "
+"válidas."
 
 #: ../../testing.rst:117
 msgid "Decorate the test method with ``@given(...)``."
@@ -257,21 +267,30 @@ msgstr "Decore o método de teste com ``@given(...)``."
 
 #: ../../testing.rst:118
 msgid "Use ``@settings(max_examples=N, deadline=Ms)`` to bound runtime."
-msgstr "Use ``@settings(max_examples=N, deadline=Ms)`` para limitar o tempo de execução."
+msgstr ""
+"Use ``@settings(max_examples=N, deadline=Ms)`` para limitar o tempo de "
+"execução."
 
 #: ../../testing.rst:119
 msgid ""
 "Run Hypothesis; if it finds a counterexample, investigate whether it is a"
 " bug in the code or a flaw in the property formulation."
-msgstr "Execute o Hypothesis; se ele encontrar um contraexemplo, investigue se é um bug no código ou uma falha na formulação da propriedade."
+msgstr ""
+"Execute o Hypothesis; se ele encontrar um contraexemplo, investigue se é "
+"um bug no código ou uma falha na formulação da propriedade."
 
 #: ../../testing.rst:124
 msgid ""
-"Property-based tests **complement** example-based tests — they do not "
+"Property-based tests **complement** example-based tests. They do not "
 "replace them.  Example tests document expected behaviour for specific, "
 "meaningful cases; property tests guard against regressions in edge cases "
 "that humans would never write manually."
-msgstr "Testes baseados em propriedades **complementam** os testes baseados em exemplos — eles não os substituem.  Testes de exemplo documentam o comportamento esperado para casos específicos e significativos; testes de propriedade protegem contra regressões em casos de borda que humanos nunca escreveriam manualmente."
+msgstr ""
+"Testes baseados em propriedades **complementam** os testes baseados em "
+"exemplos. Eles não os substituem.  Testes de exemplo documentam o "
+"comportamento esperado para casos específicos e significativos; testes de"
+" propriedade protegem contra regressões em casos de borda que humanos "
+"nunca escreveriam manualmente."
 
 #: ../../testing.rst:130
 msgid "Performance benchmarks"
@@ -282,12 +301,15 @@ msgid ""
 "In addition to correctness tests, ``chaotic-pfc`` includes a `pytest-"
 "benchmark <https://pytest-benchmark.readthedocs.io>`__ suite measuring "
 "hot-path performance and comparing against a committed baseline."
-msgstr "Além dos testes de correção, o ``chaotic-pfc`` inclui uma suíte `pytest-benchmark <https://pytest-benchmark.readthedocs.io>`__ que mede o desempenho dos caminhos críticos e compara com uma linha de base versionada."
+msgstr ""
+"Além dos testes de correção, o ``chaotic-pfc`` inclui uma suíte `pytest-"
+"benchmark <https://pytest-benchmark.readthedocs.io>`__ que mede o "
+"desempenho dos caminhos críticos e compara com uma linha de base "
+"versionada."
 
 #: ../../testing.rst:139
 msgid "Benchmark"
 msgstr "Benchmark"
-
 
 #: ../../testing.rst:140
 msgid "Operation"
@@ -301,7 +323,6 @@ msgstr "Tempo típico (ms)"
 msgid "``test_henon_standard_1000_iters``"
 msgstr "``test_henon_standard_1000_iters``"
 
-
 #: ../../testing.rst:143
 msgid "Hénon map, 1000 iterations"
 msgstr "Mapa de Hénon, 1000 iterações"
@@ -310,11 +331,9 @@ msgstr "Mapa de Hénon, 1000 iterações"
 msgid "~2.6"
 msgstr "~2.6"
 
-
 #: ../../testing.rst:145
 msgid "``test_henon_generalised_1000_iters``"
 msgstr "``test_henon_generalised_1000_iters``"
-
 
 #: ../../testing.rst:146
 msgid "Generalised Hénon, 1000 iterations"
@@ -324,11 +343,9 @@ msgstr "Hénon generalizado, 1000 iterações"
 msgid "~2.7"
 msgstr "~2.7"
 
-
 #: ../../testing.rst:148
 msgid "``test_henon_filtered_1000_iters``"
 msgstr "``test_henon_filtered_1000_iters``"
-
 
 #: ../../testing.rst:149
 msgid "FIR-filtered Hénon (c0=1, c1=0), 1000 iterations"
@@ -338,11 +355,9 @@ msgstr "Hénon com filtro FIR (c0=1, c1=0), 1000 iterações"
 msgid "~3.1"
 msgstr "~3.1"
 
-
 #: ../../testing.rst:151
 msgid "``test_henon_order_n_1000_iters``"
 msgstr "``test_henon_order_n_1000_iters``"
-
 
 #: ../../testing.rst:152
 msgid "Order-N Hénon (Nc=4), 1000 iterations"
@@ -352,11 +367,9 @@ msgstr "Hénon de ordem N (Nc=4), 1000 iterações"
 msgid "~4.3"
 msgstr "~4.3"
 
-
 #: ../../testing.rst:154
 msgid "``test_henon_standard_10000_iters``"
 msgstr "``test_henon_standard_10000_iters``"
-
 
 #: ../../testing.rst:155
 msgid "Hénon map, 10 000 iterations"
@@ -366,11 +379,9 @@ msgstr "Mapa de Hénon, 10 000 iterações"
 msgid "~27"
 msgstr "~27"
 
-
 #: ../../testing.rst:157
 msgid "``test_lyapunov_henon2d_2000_iters``"
 msgstr "``test_lyapunov_henon2d_2000_iters``"
-
 
 #: ../../testing.rst:158
 msgid "Single Lyapunov, 2000 QR steps"
@@ -380,11 +391,9 @@ msgstr "Lyapunov único, 2000 passos QR"
 msgid "~53"
 msgstr "~53"
 
-
 #: ../../testing.rst:160
 msgid "``test_lyapunov_max_4d_2000_iters``"
 msgstr "``test_lyapunov_max_4d_2000_iters``"
-
 
 #: ../../testing.rst:161
 msgid "4-D pole-filtered Lyapunov, 2000 QR steps"
@@ -394,11 +403,9 @@ msgstr "Lyapunov 4-D com filtro de polo, 2000 passos QR"
 msgid "~120"
 msgstr "~120"
 
-
 #: ../../testing.rst:163
 msgid "``test_lyapunov_ensemble_25_ics``"
 msgstr "``test_lyapunov_ensemble_25_ics``"
-
 
 #: ../../testing.rst:164
 msgid "25-IC ensemble, 500 QR steps each"
@@ -408,11 +415,9 @@ msgstr "Ensemble de 25 CIs, 500 passos QR cada"
 msgid "~330"
 msgstr "~330"
 
-
 #: ../../testing.rst:166
 msgid "``test_mini_sweep_30_points``"
 msgstr "``test_mini_sweep_30_points``"
-
 
 #: ../../testing.rst:167
 msgid "Quick-mode sweep, 30 grid points"
@@ -422,10 +427,12 @@ msgstr "Varredura em modo rápido, 30 pontos da grade"
 msgid "~2330"
 msgstr "~2330"
 
-
 #: ../../testing.rst:180
 msgid ""
 "The CI ``benchmark`` job runs only on pull requests.  The 25% threshold "
 "accounts for hardware variance in shared GitHub runners."
-msgstr "O job ``benchmark`` do CI executa apenas em pull requests.  O limiar de 25% considera a variância de hardware nos runners compartilhados do GitHub."
+msgstr ""
+"O job ``benchmark`` do CI executa apenas em pull requests.  O limiar de "
+"25% considera a variância de hardware nos runners compartilhados do "
+"GitHub."
 

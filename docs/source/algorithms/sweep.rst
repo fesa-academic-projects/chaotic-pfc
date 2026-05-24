@@ -116,7 +116,7 @@ Every sweep is **deterministic** given the same seed:
    :class:`numpy.random.SeedSequence` into per‑worker sub‑seeds.
 2. Initial‑condition perturbations are drawn on the Python side
    (before entering Numba).
-3. The Numba kernel uses no random state — only deterministic arithmetic.
+3. The Numba kernel uses no random state , only deterministic arithmetic.
 
 Running the same sweep twice with the same seed produces byte‑identical
 ``.npz`` files.  This is critical for scientific reproducibility and

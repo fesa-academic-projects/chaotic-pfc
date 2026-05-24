@@ -15,12 +15,12 @@ The motivation is two‑fold:
 
 1. **Band‑limiting.**  Chaotic signals produced by the unfiltered Hénon
    map have a broad, flat spectrum.  Real communication channels have
-   limited bandwidth — the FIR filter constrains the chaotic signal to
+   limited bandwidth ; the FIR filter constrains the chaotic signal to
    occupy only the desired frequency band.
 
 2. **Controllable chaos.**  By varying the filter order and cutoff, we
    can study which filter parameters *preserve* chaos and which
-   *suppress* it — the core empirical question of the PFC.
+   *suppress* it : the core empirical question of the PFC.
 
 ``firwin`` vs. MATLAB ``fir1``
 ------------------------------
@@ -153,7 +153,7 @@ Known limitations
   at the filter edges).  The sweep currently tops at :math:`N_z = 41`.
 
 * **DC gain.**  FIR filters designed with ``firwin`` have a DC gain
-  of approximately 1.0 for lowpass — but not exactly, due to window
+  of approximately 1.0 for lowpass , but not exactly, due to window
   tapering.  The chaotic map is sensitive to the exact coefficient
   magnitudes, which is why the FIR bank is precomputed once rather
   than reconstructed per grid point.

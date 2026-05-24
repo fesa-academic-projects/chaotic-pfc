@@ -30,7 +30,7 @@ msgid ""
 "statistical analysis of parameter sweeps."
 msgstr ""
 "Esta página descreve como os subpacotes do ``chaotic-pfc`` se conectam e "
-"como os dados fluem através do sistema — da geração de sinais caóticos "
+"como os dados fluem através do sistema, da geração de sinais caóticos "
 "até a análise estatística das varreduras de parâmetros."
 
 #: ../../architecture.rst:11

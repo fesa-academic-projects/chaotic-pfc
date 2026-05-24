@@ -4,7 +4,7 @@ Tutorial
 ========
 
 A self-contained Jupyter notebook walks through the full ``chaotic-pfc``
-pipeline — from the Hénon map to FIR-filtered chaotic communication —
+pipeline , from the Hénon map to FIR-filtered chaotic communication —
 in about one minute of compute time.
 
 .. code-block:: bash

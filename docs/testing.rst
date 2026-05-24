@@ -112,7 +112,7 @@ Reusable input generators live in ``tests/_hypothesis_strategies.py``:
 Adding a new property test
 ---------------------------
 
-1. Decide the invariant — what MUST be true for ALL valid inputs?
+1. Decide the invariant : what MUST be true for ALL valid inputs?
 2. Write a strategy (or reuse an existing one) that generates valid inputs.
 3. Decorate the test method with ``@given(...)``.
 4. Use ``@settings(max_examples=N, deadline=Ms)`` to bound runtime.
@@ -121,7 +121,7 @@ Adding a new property test
 
 .. note::
 
-   Property-based tests **complement** example-based tests — they do
+   Property-based tests **complement** example-based tests. They do
    not replace them.  Example tests document expected behaviour for
    specific, meaningful cases; property tests guard against
    regressions in edge cases that humans would never write manually.

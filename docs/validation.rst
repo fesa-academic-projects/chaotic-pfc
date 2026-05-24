@@ -11,9 +11,9 @@ Reference values
 ----------------
 
 The following table summarises the Lyapunov spectrum of the generalised
-Hénon map (:math:`\alpha = 1.4`, :math:`\beta = 0.3`) — equivalent to
+Hénon map (:math:`\alpha = 1.4`, :math:`\beta = 0.3`) , equivalent to
 the standard Hénon (:math:`a = 1.4`, :math:`b = 0.3`) under a linear
-change of variables —, as reported by
+change of variables , as reported by
 independent sources, alongside the value computed by
 :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` with
 :math:`N_{\text{itera}} = 20\,000` and seed 42.
@@ -72,7 +72,7 @@ must satisfy
 
 This identity holds for **any** dissipative parameter pair
 :math:`(\alpha, \beta)` for which the orbit remains bounded.  It does **not**
-depend on any external reference — it is a mathematical theorem.
+depend on any external reference ; it is a mathematical theorem.
 
 The test suite verifies this identity at three parameter sets:
 

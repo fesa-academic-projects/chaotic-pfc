@@ -92,7 +92,7 @@ msgid ""
 "chaotic dynamics."
 msgstr ""
 "Sobrepõe duas trajetórias de Hénon com condições iniciais separadas por "
-":math:`10^{-4}` para visualizar a divergência exponencial — a marca "
+":math:`10^{-4}` para visualizar a divergência exponencial: a marca "
 "registrada da dinâmica caótica."
 
 #: ../../usage.rst:59
