@@ -13,7 +13,8 @@
 [![CodeQL](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql)
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
-Sistema de comunicação digital caótico baseado no mapa de Hénon.
+Sistema de comunicação digital caótico baseado em sincronização
+Pecora-Carroll com mapa de Hénon filtrado por FIR.
 Projeto de PFC (*Projeto Final de Curso*).
 
 <p align="center">
@@ -101,9 +102,11 @@ subcomando com `chaotic-pfc run <nome> --help`.
 Tutorial: veja `examples/tour.ipynb` para um passo a passo completo (~1 minuto).
 
 O cálculo de expoentes de Lyapunov foi validado contra valores de
-referência publicados por Wolf et al. (1985) e Sprott (2003), com erros
-relativos inferiores a 0,35% para o mapa de Hénon padrão. Uma identidade
-analítica (λ₁ + λ₂ = ln|b|) confirma a exatidão em precisão de máquina.
+referência publicados por Wolf et al. (1985) e Sprott (2003) para o
+mapa de Hénon (forma generalizada, α=1,4, β=0,3 — equivalente à forma
+padrão sob mudança linear de variáveis), com erros
+relativos inferiores a 0,35%. Uma identidade
+analítica (λ₁ + λ₂ = ln|β|) confirma a exatidão em precisão de máquina.
 Consulte `docs/validation.rst` para detalhes.
 
 ## Estrutura do projeto
@@ -242,6 +245,23 @@ ou antes de push):
 
 ```bash
 pre-commit run --all-files
+```
+
+## Como citar
+
+Se você utilizar o chaotic-pfc em sua pesquisa, por favor cite:
+
+```bibtex
+@software{chaotic_pfc_2026,
+  author       = {Pereira, Roger Freitas and dos Santos, Guilherme Rodrigues
+                  and Silva, Kauê de Souza and Soares, Marcos Felipe Correa},
+  title        = {chaotic-pfc: Pecora-Carroll chaos-based communication
+                  with FIR-filtered Hénon map},
+  year         = {2026},
+  publisher    = {GitHub},
+  url          = {https://github.com/fesa-academic-projects/chaotic-pfc},
+  note         = {Projeto Final de Curso (PFC), FESA}
+}
 ```
 
 ## Licença

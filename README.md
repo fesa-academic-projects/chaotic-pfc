@@ -13,7 +13,8 @@
 [![CodeQL](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql)
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
-Chaotic digital communication system based on the Hénon map.
+Chaos-based digital communication system using Pecora-Carroll
+synchronisation with FIR-filtered Hénon map.
 Undergraduate final project (*Trabalho de Conclusão de Curso*).
 
 <p align="center">
@@ -101,9 +102,11 @@ subcommand's flags with `chaotic-pfc run <name> --help`.
 Tutorial: see `examples/tour.ipynb` for an end-to-end walkthrough (~1 minute).
 
 The Lyapunov exponent computation has been validated against published
-reference values from Wolf et al. (1985) and Sprott (2003), with relative
-errors below 0.35% for the standard Hénon map. An analytical identity
-(λ₁ + λ₂ = ln|b|) confirms correctness at machine precision.
+reference values from Wolf et al. (1985) and Sprott (2003) for the
+Hénon map (generalised form, α=1.4, β=0.3 — equivalent to the standard
+Hénon under a linear change of variables), with relative
+errors below 0.35%. An analytical identity
+(λ₁ + λ₂ = ln|β|) confirms correctness at machine precision.
 See `docs/validation.rst` for details.
 
 ## Project structure
@@ -241,6 +244,23 @@ Run the full suite of hooks against every file (useful after
 
 ```bash
 pre-commit run --all-files
+```
+
+## Citing
+
+If you use chaotic-pfc in your research, please cite:
+
+```bibtex
+@software{chaotic_pfc_2026,
+  author       = {Pereira, Roger Freitas and dos Santos, Guilherme Rodrigues
+                  and Silva, Kauê de Souza and Soares, Marcos Felipe Correa},
+  title        = {chaotic-pfc: Pecora-Carroll chaos-based communication
+                  with FIR-filtered Hénon map},
+  year         = {2026},
+  publisher    = {GitHub},
+  url          = {https://github.com/fesa-academic-projects/chaotic-pfc},
+  note         = {Undergraduate final project (PFC), FESA}
+}
 ```
 
 ## License

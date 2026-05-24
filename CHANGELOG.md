@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - 2026-05-23
 
 ### Added
 - Property-based testing with Hypothesis: 11 invariants for Hénon maps, Lyapunov exponents,
@@ -39,7 +39,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `\setlength{\tabcolsep}{4pt}` for A4 fit.
 - README (PT and EN) updated with tutorial mention and scientific validation mention.
 
+### Removed
+- DCSK and EF-DCSK from project scope. The library now exclusively implements
+  Pecora-Carroll synchronisation with FIR-filtered Hénon map.
+- References to joblib/loky parallelism in documentation — the codebase never
+  used joblib; parallelism is via Numba ``prange`` only.
+
 ### Fixed
+- `henon_fir_sequence` now uses the generalised Hénon form (a - xf² + b·y,
+  y = x) for consistency with the rest of the codebase.
+- `receive_order_n` validates ``len(fir_coeffs) >= 3``, matching the check
+  in ``henon_order_n``.
+- ``docs/background.rst``: Hénon equations harmonised to generalised form.
+- ``docs/validation.rst``: notation updated from standard (a, b) to
+  generalised (α, β), with equivalence noted.
+- ``docs/source/algorithms/sweep.rst``: replaced joblib architecture
+  description with the actual prange-based implementation.
+- ``pyproject.toml`` description and keywords tightened to reflect
+  Pecora-Carroll scope.
+- README (both languages): added BibTeX Citing section.
 - `load_all_sweeps()` Kaiser detection: switched from `kaiser_beta is not None` (always true —
   metadata defaults to 5.0) to `result.window == "kaiser"`.
 - `top_k_per_filter()` now re-ranks entries per filter group (1, 2, 3) instead of preserving
@@ -301,7 +319,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lyapunov exponent computation (single IC) and parameter sweep over `(order, cutoff)` grid.
 - Basic CLI scripts (01–08) for each experiment step.
 
-[Unreleased]: https://github.com/fesa-academic-projects/chaotic-pfc/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/fesa-academic-projects/chaotic-pfc/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/fesa-academic-projects/chaotic-pfc/releases/tag/v0.8.0
 [0.7.0]: https://github.com/fesa-academic-projects/chaotic-pfc/releases/tag/v0.7.0
 [0.6.2]: https://github.com/fesa-academic-projects/chaotic-pfc/releases/tag/v0.6.2
 [0.6.0]: https://github.com/fesa-academic-projects/chaotic-pfc/releases/tag/v0.6.0
