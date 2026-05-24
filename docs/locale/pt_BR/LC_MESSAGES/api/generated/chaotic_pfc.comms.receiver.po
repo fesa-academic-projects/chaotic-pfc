@@ -362,4 +362,3 @@ msgstr "*Receiver protocol.*"
 #~ "radio channels.\" IEEE Trans. Circuits "
 #~ "Syst. I, v. 48, n. 12, pp. "
 #~ "1394–1404, 2001."
-

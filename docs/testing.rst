@@ -179,4 +179,3 @@ measuring hot-path performance and comparing against a committed baseline.
 
 The CI ``benchmark`` job runs only on pull requests.  The 25% threshold
 accounts for hardware variance in shared GitHub runners.
-

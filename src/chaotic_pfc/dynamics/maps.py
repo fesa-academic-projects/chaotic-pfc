@@ -81,7 +81,7 @@ def henon_standard(
         Trajectories of ``x`` and ``y`` from ``n = 0`` (the initial
         condition) to ``n = steps``.
 
-"""
+    """
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -283,7 +283,7 @@ def henon_order_n(
     output : ndarray, shape (steps,)
         Carrier signal ``x[2][n]`` for ``n = 0, …, steps − 1``.
 
-"""
+    """
     Nc = len(fir_coeffs)
     if Nc < 3:
         raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")

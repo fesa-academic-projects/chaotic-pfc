@@ -435,4 +435,3 @@ msgstr ""
 "O job ``benchmark`` do CI executa apenas em pull requests.  O limiar de "
 "25% considera a variância de hardware nos runners compartilhados do "
 "GitHub."
-

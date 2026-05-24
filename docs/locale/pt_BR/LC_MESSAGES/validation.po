@@ -299,4 +299,3 @@ msgid ""
 msgstr ""
 "J. C. Sprott, *Chaos and Time-Series Analysis*, Oxford University Press, "
 "2003, Seção 5.2. ISBN: 978-0-19-850840-3"
-

@@ -420,4 +420,3 @@ msgstr ":doc:`background` — fundamentos teóricos completos."
 #: ../../usage.rst:280
 msgid ":doc:`development`: development environment and tooling."
 msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
-

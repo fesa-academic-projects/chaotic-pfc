@@ -185,10 +185,18 @@ def _run_export_tables(args: argparse.Namespace) -> int:
         beta_opt = kaiser_beta_optimal(sweeps, bootstrap_seed=args.bootstrap_seed)
 
         cons_paths: list[Path] = [
-            export_consolidated_top_k_table(cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang),
-            export_consolidated_extended_table(cons_top_k, out / "tab_consolidated_extended.tex", lang=lang),
-            export_consolidated_full_ranking(cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang),
-            export_kaiser_beta_optimal_table(beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang),
+            export_consolidated_top_k_table(
+                cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang
+            ),
+            export_consolidated_extended_table(
+                cons_top_k, out / "tab_consolidated_extended.tex", lang=lang
+            ),
+            export_consolidated_full_ranking(
+                cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang
+            ),
+            export_kaiser_beta_optimal_table(
+                beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang
+            ),
         ]
 
         print("  [consolidated — Kaiser best-β only]")

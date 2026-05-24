@@ -139,7 +139,9 @@ class TestSignalInvariants(unittest.TestCase):
         self.assertEqual(msg.shape, (n,))
         self.assertTrue(np.all((msg == -1) | (msg == 1)), f"Values not in {{-1,1}}: {set(msg)}")
 
-    @given(n=st.integers(1, 200), freq=st.floats(0.001, 0.499, allow_nan=False, allow_infinity=False))
+    @given(
+        n=st.integers(1, 200), freq=st.floats(0.001, 0.499, allow_nan=False, allow_infinity=False)
+    )
     @COMMON
     def test_sinusoidal_message_range(self, n, freq):
         msg = sinusoidal_message(n, normalised_freq=freq)

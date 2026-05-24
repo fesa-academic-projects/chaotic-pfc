@@ -365,10 +365,18 @@ def run(args: argparse.Namespace) -> int:
         export_extended_top_k_table(top_k, out / "tab_top_k_extended.tex", lang=lang_i18n),
         export_full_ranking_table(ranking, out / "tab_full_ranking.tex", lang=lang_i18n),
         export_sweet_spots_table(sweet, out / "tab_sweet_spots.tex", lang=lang_i18n),
-        export_consolidated_top_k_table(cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang_i18n),
-        export_consolidated_extended_table(cons_top_k, out / "tab_consolidated_extended.tex", lang=lang_i18n),
-        export_consolidated_full_ranking(cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang_i18n),
-        export_kaiser_beta_optimal_table(beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang_i18n),
+        export_consolidated_top_k_table(
+            cons_top_k, out / "tab_consolidated_top_k.tex", lang=lang_i18n
+        ),
+        export_consolidated_extended_table(
+            cons_top_k, out / "tab_consolidated_extended.tex", lang=lang_i18n
+        ),
+        export_consolidated_full_ranking(
+            cons_ranking, out / "tab_consolidated_full_ranking.tex", lang=lang_i18n
+        ),
+        export_kaiser_beta_optimal_table(
+            beta_opt, out / "tab_kaiser_beta_optimal.tex", lang=lang_i18n
+        ),
     ]
     for t in tables:
         print(f"    Saved -> {t}")

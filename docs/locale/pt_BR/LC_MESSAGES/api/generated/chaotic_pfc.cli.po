@@ -232,4 +232,3 @@ msgstr "Sweep Lyapunov exponents across (order, cutoff) grid."
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
-

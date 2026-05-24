@@ -348,4 +348,3 @@ msgstr "*Transmitter protocol.*"
 #~ " bandlimited chaotic communication system.\" "
 #~ "Commun. Nonlinear Sci. Numer. Simul., "
 #~ "vol. 37, pp. 374–385, 2016."
-

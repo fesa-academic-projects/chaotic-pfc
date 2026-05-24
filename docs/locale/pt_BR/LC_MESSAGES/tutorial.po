@@ -40,4 +40,3 @@ msgid ""
 msgstr ""
 "O notebook também é executado no CI a cada push para garantir que "
 "permaneça atualizado com a API."
-

@@ -942,4 +942,3 @@ msgstr "C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans.
 
 #~ msgid "The system is described by the recurrence equations:"
 #~ msgstr "O sistema é descrito pelas equações de recorrência:"
-

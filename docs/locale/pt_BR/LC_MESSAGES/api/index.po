@@ -234,4 +234,3 @@ msgstr ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
 #: ../../api/index.rst:38:<autosummary>:1
 msgid "cli  Unified command-line interface for the chaotic_pfc package."
 msgstr "Interface de linha de comando unificada para o pacote chaotic_pfc."
-

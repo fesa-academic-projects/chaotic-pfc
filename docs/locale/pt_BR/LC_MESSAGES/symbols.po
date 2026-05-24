@@ -304,4 +304,3 @@ msgstr "Taxa de erro de bit"
 #: ../../symbols.rst:112
 msgid ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
 msgstr ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
-

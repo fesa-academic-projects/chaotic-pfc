@@ -352,4 +352,3 @@ msgstr ""
 "camada de orquestração executa uma minivarredura de aquecimento "
 "(:code:`warmup=True`) para que a varredura real se beneficie do código "
 "nativo em cache."
-

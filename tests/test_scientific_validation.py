@@ -76,18 +76,14 @@ class TestLyapunovAgainstLiterature(unittest.TestCase):
     def test_lambda_sum_equals_log_determinant_alt_params(self):
         """λ₁ + λ₂ = ln|b| holds for non-standard but bounded parameters (b=0.2)."""
         beta = 0.2
-        r = lyapunov_henon2d(
-            alpha=1.4, beta=beta, Nitera=10_000, Ndiscard=1_000, seed=42
-        )
+        r = lyapunov_henon2d(alpha=1.4, beta=beta, Nitera=10_000, Ndiscard=1_000, seed=42)
         computed_sum = float(np.sum(r.all_exponents))
         expected_sum = float(np.log(beta))
         np.testing.assert_allclose(computed_sum, expected_sum, rtol=1e-6)
 
     def test_lambda_sum_log_det_different_alpha(self):
         """λ₁ + λ₂ = ln|b| holds independent of α (here α=1.0, b=0.5)."""
-        r = lyapunov_henon2d(
-            alpha=1.0, beta=0.5, Nitera=10_000, Ndiscard=1_000, seed=42
-        )
+        r = lyapunov_henon2d(alpha=1.0, beta=0.5, Nitera=10_000, Ndiscard=1_000, seed=42)
         computed_sum = float(np.sum(r.all_exponents))
         expected_sum = float(np.log(0.5))
         np.testing.assert_allclose(computed_sum, expected_sum, rtol=1e-6)

@@ -380,4 +380,3 @@ msgstr "Save a :class:`SweepResult` to a compressed ``.npz``."
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
-

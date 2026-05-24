@@ -413,4 +413,3 @@ msgstr ""
 "janelamento.  O mapa caótico é sensível às magnitudes exatas dos "
 "coeficientes, razão pela qual o banco FIR é pré-computado uma vez em vez "
 "de reconstruído por ponto da grade."
-

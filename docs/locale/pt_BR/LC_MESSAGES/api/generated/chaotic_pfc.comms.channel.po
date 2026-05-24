@@ -439,4 +439,3 @@ msgstr "Multipath-combined signal with AWGN."
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
-

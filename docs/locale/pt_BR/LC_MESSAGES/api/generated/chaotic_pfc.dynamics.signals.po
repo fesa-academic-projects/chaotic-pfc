@@ -210,4 +210,3 @@ msgstr "If *normalised_freq* is not strictly between 0 and 0.5."
 
 #~ msgid "Levanta"
 #~ msgstr "Levanta"
-

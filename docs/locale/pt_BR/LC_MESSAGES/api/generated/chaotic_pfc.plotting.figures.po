@@ -412,4 +412,3 @@ msgstr "Language for axis labels (``\"pt\"`` or ``\"en\"``)."
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
-
