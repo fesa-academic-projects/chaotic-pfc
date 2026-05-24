@@ -164,7 +164,7 @@ msgid ""
 "Otherwise it returns ``(cur, streak, n_used, False)``. The actual number "
 "of iterations used is recorded in the ``SweepResult`` attribute "
 "``n_iters_used``, available for the difficulty-map visualisation."
-msgstr "If this condition holds for ``_ADAPTIVE_STREAK = 2`` consecutive checkpoints *and* ``Nitera_min`` iterations have elapsed, the kernel signals early termination and returns ``(cur, streak, n_done, True)``. Otherwise it returns ``(cur, streak, n_used, False)``. The actual number of iterations used is recorded in the ``SweepResult`` attribute ``n_iters_used``, available for the difficulty-map visualisation."
+msgstr "Se esta condição for satisfeita por ``_ADAPTIVE_STREAK = 2`` pontos de verificação consecutivos *e* ``Nitera_min`` iterações tiverem transcorrido, o kernel sinaliza término antecipado e retorna ``(cur, streak, n_done, True)``. Caso contrário, retorna ``(cur, streak, n_used, False)``. O número real de iterações utilizadas é registrado no atributo ``n_iters_used`` do ``SweepResult``, disponível para a visualização do mapa de dificuldade."
 
 #: ../../internals.rst:73
 msgid "Lyapunov estimator kernels"
@@ -250,7 +250,7 @@ msgid ""
 "loop over orders would assign threads to vastly unequal workloads (the "
 "MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with filter order "
 ":math:`N_s`)."
-msgstr "The ``_build_task_order`` function creates a permuted list of ``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different orders, ensuring balanced thread load. Without this permutation, a naive loop over orders would assign threads to vastly unequal workloads (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with filter order :math:`N_s`)."
+msgstr "A função ``_build_task_order`` cria uma lista permutada de pares ``(order_idx, cutoff_idx)`` que entrelaça tarefas de diferentes ordens, garantindo carga balanceada entre as threads. Sem essa permutação, um laço ingênuo sobre as ordens atribuiria às threads cargas de trabalho muito desiguais (o laço interno MGS escala como :math:`\\mathcal{O}(N_s^3)` com a ordem do filtro :math:`N_s`)."
 
 #: ../../internals.rst:109
 msgid "Fixed-point stability analysis"
@@ -350,7 +350,7 @@ msgid ""
 ":func:`scipy.signal.firwin` for each combination. The coefficients are "
 "stored in **float64** (double precision) to match the data type used "
 "throughout the Numba kernels."
-msgstr "The bank is built by :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, which calls :func:`scipy.signal.firwin` for each combination. The coefficients are stored in **float64** (double precision) to match the data type used throughout the Numba kernels."
+msgstr "O banco é construído por :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, que chama :func:`scipy.signal.firwin` para cada combinação. Os coeficientes são armazenados em **float64** (precisão dupla) para corresponder ao tipo de dado utilizado em todos os kernels Numba."
 
 #: ../../internals.rst:151
 msgid "Signal generators"
