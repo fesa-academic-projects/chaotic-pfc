@@ -1,6 +1,16 @@
 API Reference
 =============
 
+
+.. note::
+
+   The API reference below is auto-generated from the source code docstrings
+   and is maintained in English only. This is consistent with the practice
+   adopted by major scientific Python projects (NumPy, SciPy, scikit-learn)
+   and reflects the technical audience of the reference material.
+   Narrative documentation (tutorial, background, usage, algorithms) is
+   available in Portuguese.
+
 This page documents every public module in the ``chaotic_pfc``
 package. Each link below opens the module's reference, listing its
 functions, classes, and dataclasses with full signatures and

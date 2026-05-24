@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -23,167 +23,215 @@ msgstr ""
 msgid "API Reference"
 msgstr "Referência da API"
 
-#: ../../api/index.rst:4
+#: ../../api/index.rst:7
+msgid ""
+"The API reference below is auto-generated from the source code docstrings"
+" and is maintained in English only. This is consistent with the practice "
+"adopted by major scientific Python projects (NumPy, SciPy, scikit-learn) "
+"and reflects the technical audience of the reference material. Narrative "
+"documentation (tutorial, background, usage, algorithms) is available in "
+"Portuguese."
+msgstr ""
+"A referência de API abaixo é gerada automaticamente a partir das docstrings"
+" do código-fonte e é mantida apenas em inglês. Essa decisão acompanha a"
+" prática adotada pelos principais projetos científicos em Python (NumPy,"
+" SciPy, scikit-learn) e reflete o público técnico do material de referência."
+" A documentação narrativa (tutorial, fundamentação, uso, algoritmos) está"
+" disponível em português."
+
+#: ../../api/index.rst:14
 msgid ""
 "This page documents every public module in the ``chaotic_pfc`` package. "
 "Each link below opens the module's reference, listing its functions, "
 "classes, and dataclasses with full signatures and NumPy-style docstrings "
 "extracted from the source."
-msgstr "This page documents every public module in the ``chaotic_pfc`` package. Each link below opens the module's reference, listing its functions, classes, and dataclasses with full signatures and NumPy-style docstrings extracted from the source."
+msgstr ""
+"This page documents every public module in the ``chaotic_pfc`` package. "
+"Each link below opens the module's reference, listing its functions, "
+"classes, and dataclasses with full signatures and NumPy-style docstrings "
+"extracted from the source."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.maps <chaotic_pfc.dynamics.maps>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.maps <chaotic_pfc.dynamics.maps>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "maps.py  Hénon map variants used as chaotic oscillators throughout the "
 "communication system."
-msgstr "maps.py  Hénon map variants used as chaotic oscillators throughout the communication system."
+msgstr ""
+"maps.py  Hénon map variants used as chaotic oscillators throughout the "
+"communication system."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "signals.py  Generators for the information-bearing messages used "
 "throughout the chaotic communication pipeline."
-msgstr "signals.py  Generators for the information-bearing messages used throughout the chaotic communication pipeline."
+msgstr ""
+"signals.py  Generators for the information-bearing messages used "
+"throughout the chaotic communication pipeline."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "lyapunov.py  Lyapunov exponent computation for the Hénon map (2-D) and "
 "the Hénon map with a pole filter (4-D)."
-msgstr "lyapunov.py  Lyapunov exponent computation for the Hénon map (2-D) and the Hénon map with a pole filter (4-D)."
+msgstr ""
+"lyapunov.py  Lyapunov exponent computation for the Hénon map (2-D) and "
+"the Hénon map with a pole filter (4-D)."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "spectral.py  Power-spectral-density estimation utilities used by the "
 "plotting layer."
-msgstr "spectral.py  Power-spectral-density estimation utilities used by the plotting layer."
+msgstr ""
+"spectral.py  Power-spectral-density estimation utilities used by the "
+"plotting layer."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
 msgstr ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "transmitter.py  Chaos-based modulator. Implements the Transmitter "
 "protocol — a callable that embeds a message in the state of a Hénon "
 "oscillator."
-msgstr "transmitter.py  Chaos-based modulator. Implements the Transmitter protocol — a callable that embeds a message in the state of a Hénon oscillator."
+msgstr ""
+"transmitter.py  Chaos-based modulator. Implements the Transmitter "
+"protocol — a callable that embeds a message in the state of a Hénon "
+"oscillator."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`"
 msgstr ":py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "channel.py  Transmission-channel models sitting between the chaotic "
 "transmitter and the receiver."
-msgstr "channel.py  Transmission-channel models sitting between the chaotic transmitter and the receiver."
+msgstr ""
+"channel.py  Transmission-channel models sitting between the chaotic "
+"transmitter and the receiver."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
 msgstr ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "receiver.py  Chaos-synchronisation demodulator. Implements the Receiver "
 "protocol — a callable that extracts the original message from a "
 "transmitted (and possibly channel-distorted) carrier."
-msgstr "receiver.py  Chaos-synchronisation demodulator. Implements the Receiver protocol — a callable that extracts the original message from a transmitted (and possibly channel-distorted) carrier."
+msgstr ""
+"receiver.py  Chaos-synchronisation demodulator. Implements the Receiver "
+"protocol — a callable that extracts the original message from a "
+"transmitted (and possibly channel-distorted) carrier."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.protocols <chaotic_pfc.comms.protocols>`"
 msgstr ":py:obj:`chaotic_pfc.comms.protocols <chaotic_pfc.comms.protocols>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "Structural contracts for the communication pipeline."
 msgstr "Contratos estruturais para o pipeline de comunicação."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.analysis.sweep <chaotic_pfc.analysis.sweep>`"
 msgstr ":py:obj:`chaotic_pfc.analysis.sweep <chaotic_pfc.analysis.sweep>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "Parameter-sweep computation of Lyapunov exponents for the Henon map with "
 "an internal FIR filter."
-msgstr "Parameter-sweep computation of Lyapunov exponents for the Henon map with an internal FIR filter."
+msgstr ""
+"Parameter-sweep computation of Lyapunov exponents for the Henon map with "
+"an internal FIR filter."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.analysis.stats <chaotic_pfc.analysis.stats>`"
 msgstr ":py:obj:`chaotic_pfc.analysis.stats <chaotic_pfc.analysis.stats>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "Statistical analysis of Lyapunov sweep results."
 msgstr "Análise estatística dos resultados da varredura de Lyapunov."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 ":py:obj:`chaotic_pfc.analysis.latex_export "
 "<chaotic_pfc.analysis.latex_export>`"
-msgstr ":py:obj:`chaotic_pfc.analysis.latex_export <chaotic_pfc.analysis.latex_export>`"
+msgstr ""
+":py:obj:`chaotic_pfc.analysis.latex_export "
+"<chaotic_pfc.analysis.latex_export>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "LaTeX table export for chaotic-PFC analysis results."
 msgstr "Exportação de tabelas LaTeX para resultados de análise do chaotic-PFC."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 ":py:obj:`chaotic_pfc.analysis.sweep_plotting "
 "<chaotic_pfc.analysis.sweep_plotting>`"
-msgstr ":py:obj:`chaotic_pfc.analysis.sweep_plotting <chaotic_pfc.analysis.sweep_plotting>`"
+msgstr ""
+":py:obj:`chaotic_pfc.analysis.sweep_plotting "
+"<chaotic_pfc.analysis.sweep_plotting>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "sweep_plotting.py  Figures for Lyapunov classification maps produced by "
 "chaotic_pfc.sweep."
-msgstr "sweep_plotting.py  Figures for Lyapunov classification maps produced by chaotic_pfc.sweep."
+msgstr ""
+"sweep_plotting.py  Figures for Lyapunov classification maps produced by "
+"chaotic_pfc.sweep."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 ":py:obj:`chaotic_pfc.analysis.sweep_plotting_3d "
 "<chaotic_pfc.analysis.sweep_plotting_3d>`"
-msgstr ":py:obj:`chaotic_pfc.analysis.sweep_plotting_3d <chaotic_pfc.analysis.sweep_plotting_3d>`"
+msgstr ""
+":py:obj:`chaotic_pfc.analysis.sweep_plotting_3d "
+"<chaotic_pfc.analysis.sweep_plotting_3d>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ""
 "sweep_plotting_3d.py  Plotly-based 3-D visualisation of a stack of Kaiser"
 " β-sweeps."
-msgstr "sweep_plotting_3d.py  Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps."
+msgstr ""
+"sweep_plotting_3d.py  Plotly-based 3-D visualisation of a stack of Kaiser"
+" β-sweeps."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
 msgstr ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "figures.py  Publication-quality SVG figures with LaTeX-style labels."
 msgstr "Figuras SVG com qualidade de publicação e rótulos em estilo LaTeX."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.config <chaotic_pfc.config>`"
 msgstr ":py:obj:`chaotic_pfc.config <chaotic_pfc.config>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "config.py  Centralised configuration for all experiments."
 msgstr "Configuração centralizada para todos os experimentos."
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
 msgstr ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
 
-#: ../../api/index.rst:28:<autosummary>:1
+#: ../../api/index.rst:38:<autosummary>:1
 msgid "cli  Unified command-line interface for the chaotic_pfc package."
 msgstr "Interface de linha de comando unificada para o pacote chaotic_pfc."
 

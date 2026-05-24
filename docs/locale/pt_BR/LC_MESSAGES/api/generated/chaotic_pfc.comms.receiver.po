@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:2
 msgid "chaotic\\_pfc.comms.receiver"
@@ -128,7 +141,8 @@ msgstr ""
 "dividing by ``μ`` recovers the message."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.comms.receiver.receive:14 of
@@ -164,7 +178,8 @@ msgstr ""
 "default; synchronisation converges regardless after a short transient."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.comms.receiver.receive:28 of
@@ -202,28 +217,8 @@ msgid "**Implements** (:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
 msgstr "**Implements** (:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
-
-#: chaotic_pfc.comms.receiver.receive:36 of
-msgid "Referências"
-msgstr "Referências"
-
-#: chaotic_pfc.comms.receiver.receive:37 of
-msgid ""
-"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
-"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
+msgid "Return type"
 msgstr ""
-"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
-"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
-
-#: chaotic_pfc.comms.receiver.receive:40 of
-msgid ""
-"C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
-"Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
-msgstr ""
-"C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
-"Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:3 of
 msgid ""
@@ -339,4 +334,32 @@ msgstr "*Receiver protocol.*"
 
 #~ msgid "References"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
+
+#~ msgid "Referências"
+#~ msgstr "Referências"
+
+#~ msgid ""
+#~ "L. M. Pecora, T. L. Carroll. "
+#~ "\"Synchronization in chaotic systems.\" Phys."
+#~ " Rev. Lett., v. 64, n. 8, p."
+#~ " 821, 1990."
+#~ msgstr ""
+#~ "L. M. Pecora, T. L. Carroll. "
+#~ "\"Synchronization in chaotic systems.\" Phys."
+#~ " Rev. Lett., v. 64, n. 8, p."
+#~ " 821, 1990."
+
+#~ msgid ""
+#~ "C. Williams. \"Chaotic communications over "
+#~ "radio channels.\" IEEE Trans. Circuits "
+#~ "Syst. I, v. 48, n. 12, pp. "
+#~ "1394–1404, 2001."
+#~ msgstr ""
+#~ "C. Williams. \"Chaotic communications over "
+#~ "radio channels.\" IEEE Trans. Circuits "
+#~ "Syst. I, v. 48, n. 12, pp. "
+#~ "1394–1404, 2001."
 

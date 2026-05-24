@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst:2
 msgid "chaotic\\_pfc.analysis.sweep\\_plotting"
@@ -221,14 +234,15 @@ msgstr ""
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
 #: chaotic_pfc.analysis.sweep_plotting.classify
 #: chaotic_pfc.analysis.sweep_plotting.plot_all of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
 #: chaotic_pfc.analysis.sweep_plotting.classify
 #: chaotic_pfc.analysis.sweep_plotting.plot_all of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.analysis.sweep_plotting.plot_heatmap_continuous:3 of
 msgid ""
@@ -353,8 +367,8 @@ msgstr ""
 "and prints well in greyscale."
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting.rst
-msgid "Levanta"
-msgstr "Levanta"
+msgid "Raises"
+msgstr ""
 
 #: chaotic_pfc.analysis.sweep_plotting.plot_difficulty_map:24 of
 msgid ""
@@ -509,4 +523,10 @@ msgstr "The output directory is created if it does not exist."
 
 #~ msgid "Raises"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
+
+#~ msgid "Levanta"
+#~ msgstr "Levanta"
 

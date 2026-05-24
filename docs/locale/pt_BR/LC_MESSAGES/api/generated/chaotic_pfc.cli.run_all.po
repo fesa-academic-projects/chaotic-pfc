@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.cli.run_all.rst:2
 msgid "chaotic\\_pfc.cli.run\\_all"
@@ -97,16 +110,20 @@ msgid "Execute ``run all``."
 msgstr "Execute ``run all``."
 
 #: chaotic_pfc.cli.run_all.add_parser chaotic_pfc.cli.run_all.run of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.cli.run_all.add_parser chaotic_pfc.cli.run_all.run of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #~ msgid "Parameters"
 #~ msgstr ""
 
 #~ msgid "Return type"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
 

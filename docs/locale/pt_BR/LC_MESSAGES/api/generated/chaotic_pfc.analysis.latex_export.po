@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:2
 msgid "chaotic\\_pfc.analysis.latex\\_export"
@@ -159,7 +172,8 @@ msgid "Export Categoria A — Top-3 per filter (chaotic area only)."
 msgstr "Export Categoria A — Top-3 per filter (chaotic area only)."
 
 #: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:3
@@ -196,7 +210,8 @@ msgid "``\"pt\"`` or ``\"en\"``. Defaults to the active locale."
 msgstr "``\"pt\"`` or ``\"en\"``. Defaults to the active locale."
 
 #: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.analysis.latex_export.export_top_k_table:9 of
@@ -204,8 +219,8 @@ msgid "The path written."
 msgstr "The path written."
 
 #: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:5 of
 msgid ""
@@ -314,4 +329,7 @@ msgstr ""
 
 #~ msgid "Return type"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
 

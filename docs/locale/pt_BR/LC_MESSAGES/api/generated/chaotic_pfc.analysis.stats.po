@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.analysis.stats.rst:2
 msgid "chaotic\\_pfc.analysis.stats"
@@ -531,7 +544,8 @@ msgstr ""
 #: chaotic_pfc.analysis.stats.export_summary_json
 #: chaotic_pfc.analysis.stats.optimal_parameters
 #: chaotic_pfc.analysis.stats.summary_table of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: ../../api/generated/chaotic_pfc.analysis.stats.rst
@@ -542,8 +556,9 @@ msgstr "Parâmetros"
 #: chaotic_pfc.analysis.stats.export_summary_json
 #: chaotic_pfc.analysis.stats.optimal_parameters
 #: chaotic_pfc.analysis.stats.summary_table of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+#, fuzzy
+msgid "Return type"
+msgstr "Return types"
 
 #: chaotic_pfc.analysis.stats.area_summary:3 of
 #, python-brace-format
@@ -567,8 +582,9 @@ msgid "A loaded sweep."
 msgstr "A loaded sweep."
 
 #: ../../api/generated/chaotic_pfc.analysis.stats.rst
-msgid "Retorna"
-msgstr "Retorna"
+#, fuzzy
+msgid "Returns"
+msgstr "Return types"
 
 #: chaotic_pfc.analysis.stats.area_summary:15 of
 msgid "Counts and percentages for the three dynamical regimes."
@@ -854,4 +870,10 @@ msgstr ""
 
 #~ msgid "Returns"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
+
+#~ msgid "Retorna"
+#~ msgstr "Retorna"
 

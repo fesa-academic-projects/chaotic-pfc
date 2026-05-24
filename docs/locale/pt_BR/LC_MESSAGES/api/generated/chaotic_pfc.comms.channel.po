@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.comms.channel.rst:2
 msgid "chaotic\\_pfc.comms.channel"
@@ -159,7 +172,8 @@ msgstr ""
 
 #: ../../api/generated/chaotic_pfc.comms.channel.rst
 #: chaotic_pfc.comms.channel.fir_channel of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.comms.channel.fir_channel:8
@@ -169,7 +183,8 @@ msgstr "Transmitted signal, shape ``(N,)``."
 
 #: ../../api/generated/chaotic_pfc.comms.channel.rst
 #: chaotic_pfc.comms.channel.fir_channel of
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.comms.channel.ideal_channel:10 of
@@ -196,8 +211,8 @@ msgstr "**Implements** (:class:`~chaotic_pfc.comms.protocols.Channel`.)"
 
 #: ../../api/generated/chaotic_pfc.comms.channel.rst
 #: chaotic_pfc.comms.channel.fir_channel of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.comms.channel.fir_channel:3 of
 msgid ""
@@ -263,8 +278,10 @@ msgstr ""
 "**h** (*ndarray, shape (num_taps,)*) -- Filter coefficients, useful for "
 "overlaying the channel response on PSD plots."
 
-#: chaotic_pfc.comms.channel.fir_channel:22 of
-msgid "Notas"
+#: chaotic_pfc.comms.channel.awgn:18 chaotic_pfc.comms.channel.fir_channel:22
+#: of
+#, fuzzy
+msgid "Notes"
 msgstr "Notas"
 
 #: chaotic_pfc.comms.channel.fir_channel:23 of
@@ -315,11 +332,17 @@ msgstr ""
 msgid "Signal with additive white Gaussian noise."
 msgstr "Signal with additive white Gaussian noise."
 
-#: chaotic_pfc.comms.channel.awgn:18 of
-msgid "Referências"
+#: chaotic_pfc.comms.channel.awgn:19 of
+#, python-brace-format
+msgid "The SNR is defined as :math:`E[|s|^2] / 10^{SNR/10}` [Haykin01]_."
+msgstr ""
+
+#: chaotic_pfc.comms.channel.awgn:22 of
+#, fuzzy
+msgid "References"
 msgstr "Referências"
 
-#: chaotic_pfc.comms.channel.awgn:19 of
+#: chaotic_pfc.comms.channel.awgn:23 of
 msgid "Haykin. \"Communication Systems.\" 4th ed., Wiley, 2001."
 msgstr "Haykin. \"Communication Systems.\" 4th ed., Wiley, 2001."
 
@@ -413,4 +436,7 @@ msgstr "Multipath-combined signal with AWGN."
 
 #~ msgid "References"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
 

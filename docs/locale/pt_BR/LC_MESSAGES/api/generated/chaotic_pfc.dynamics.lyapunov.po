@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst:2
 msgid "chaotic\\_pfc.dynamics.lyapunov"
@@ -232,7 +245,8 @@ msgstr ""
 
 #: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
 #: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.dynamics.lyapunov.fixed_point_stability:3
@@ -302,7 +316,8 @@ msgid "RNG seed for the initial-condition perturbation."
 msgstr "RNG seed for the initial-condition perturbation."
 
 #: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.dynamics.lyapunov.lyapunov_max:19 of
@@ -315,8 +330,8 @@ msgstr ""
 
 #: ../../api/generated/chaotic_pfc.dynamics.lyapunov.rst
 #: chaotic_pfc.dynamics.lyapunov.EnsembleResult.to_csv of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.dynamics.lyapunov.lyapunov_max:24 of
 msgid ""
@@ -383,11 +398,18 @@ msgstr ""
 "pole‑filtered variant. :doc:`/source/algorithms/lyapunov` : Algorithm "
 "overview and validation."
 
-#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:22 of
-msgid "Referências"
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:21 of
+msgid ""
+"Validated against published values from Wolf et al. [Wolf85]_ and Sprott "
+"[Sprott03]_ (see :doc:`/validation`)."
+msgstr ""
+
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:25 of
+#, fuzzy
+msgid "References"
 msgstr "Referências"
 
-#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:23 of
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:26 of
 msgid ""
 "A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano. \"Determining "
 "Lyapunov exponents from a time series.\" Physica D, vol. 16, pp. 285–317,"
@@ -397,7 +419,7 @@ msgstr ""
 "Lyapunov exponents from a time series.\" Physica D, vol. 16, pp. 285–317,"
 " 1985."
 
-#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:26 of
+#: chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d:29 of
 msgid ""
 "J. C. Sprott. \"Chaos and Time-Series Analysis.\" Oxford University "
 "Press, 2003."
@@ -565,4 +587,7 @@ msgstr ""
 
 #~ msgid "References"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
 

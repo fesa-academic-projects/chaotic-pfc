@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep.rst:2
 msgid "chaotic\\_pfc.analysis.sweep"
@@ -80,7 +93,8 @@ msgstr "Result of a single (window, filter) sweep."
 #: ../../api/generated/chaotic_pfc.analysis.sweep.rst
 #: chaotic_pfc.analysis.sweep._io.load_sweep
 #: chaotic_pfc.analysis.sweep._io.save_sweep of
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.analysis.sweep._types.SweepResult:5 of
@@ -175,8 +189,8 @@ msgstr "Load a sweep from ``.npz`` produced by :func:`save_sweep`."
 #: chaotic_pfc.analysis.sweep._io.load_sweep
 #: chaotic_pfc.analysis.sweep._io.save_sweep
 #: chaotic_pfc.analysis.sweep._orchestration.quick_sweep_params of
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:1 of
 msgid "Build the FIR coefficient tensor and gain matrix for a sweep."
@@ -217,7 +231,8 @@ msgstr ""
 " inside ``(0, 1)``."
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep.rst
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank:13 of
@@ -362,4 +377,7 @@ msgstr "Save a :class:`SweepResult` to a compressed ``.npz``."
 
 #~ msgid "Returns"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
 

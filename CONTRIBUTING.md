@@ -140,3 +140,18 @@ Heavy or specialised dependencies (currently Plotly for 3-D visualisation) are d
 ---
 
 These conventions are working if: diffs contain only changes that trace to the task, regressions are caught by tests rather than by users, and clarifying questions arrive before implementation rather than after mistakes.
+
+
+### Translation policy
+
+- Narrative documentation (`docs/*.rst` and `docs/source/algorithms/*.rst`)
+  is fully translated to Brazilian Portuguese via `.po` files in
+  `docs/locale/pt_BR/LC_MESSAGES/`.
+- Auto-generated API reference (`docs/api/generated/`) is **intentionally
+  kept in English only**. Translation would create unmaintainable drift as
+  docstrings evolve.
+- When adding a new `.rst` page, run `make gettext && make update-po` and
+  translate the resulting `.po` file in the corresponding `locale/`
+  subdirectory.
+- When changing existing pages, `msgmerge` will mark affected entries as
+  `#, fuzzy`. Review and re-translate, then remove the fuzzy flag.

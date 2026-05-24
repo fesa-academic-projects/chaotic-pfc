@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:2
 msgid "chaotic\\_pfc.comms.transmitter"
@@ -101,7 +114,9 @@ msgid "Modulate a message onto an N-th order filtered Hénon carrier."
 msgstr "Modulate a message onto an N-th order filtered Hénon carrier."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-msgid "Parâmetros"
+#: chaotic_pfc.comms.transmitter.transmit of
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.comms.transmitter.transmit:3 of
@@ -135,7 +150,9 @@ msgid "Initial conditions of the transmitter's internal state."
 msgstr "Initial conditions of the transmitter's internal state."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-msgid "Retorna"
+#: chaotic_pfc.comms.transmitter.transmit of
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.comms.transmitter.transmit:14 of
@@ -143,11 +160,13 @@ msgid "The transmitted carrier ``s[n] = x_1[n] + μ · m[n]``."
 msgstr "The transmitted carrier ``s[n] = x_1[n] + μ · m[n]``."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
+#: chaotic_pfc.comms.transmitter.transmit of
+msgid "Return type"
+msgstr ""
 
 #: chaotic_pfc.comms.transmitter.transmit:18 of
-msgid "Notas"
+#, fuzzy
+msgid "Notes"
 msgstr "Notas"
 
 #: chaotic_pfc.comms.transmitter.transmit:19 of
@@ -177,28 +196,6 @@ msgstr ""
 #: chaotic_pfc.comms.transmitter.transmit:31 of
 msgid "Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."
 msgstr "Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."
-
-#: chaotic_pfc.comms.transmitter.transmit:34 of
-msgid "Referências"
-msgstr "Referências"
-
-#: chaotic_pfc.comms.transmitter.transmit:35 of
-msgid ""
-"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
-"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
-msgstr ""
-"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
-"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
-
-#: chaotic_pfc.comms.transmitter.transmit:38 of
-msgid ""
-"R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
-"system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, "
-"2016."
-msgstr ""
-"R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
-"system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, "
-"2016."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:3 of
 msgid ""
@@ -323,4 +320,32 @@ msgstr "*Transmitter protocol.*"
 
 #~ msgid "References"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
+
+#~ msgid "Referências"
+#~ msgstr "Referências"
+
+#~ msgid ""
+#~ "L. M. Pecora, T. L. Carroll. "
+#~ "\"Synchronization in chaotic systems.\" Phys."
+#~ " Rev. Lett., v. 64, n. 8, p."
+#~ " 821, 1990."
+#~ msgstr ""
+#~ "L. M. Pecora, T. L. Carroll. "
+#~ "\"Synchronization in chaotic systems.\" Phys."
+#~ " Rev. Lett., v. 64, n. 8, p."
+#~ " 821, 1990."
+
+#~ msgid ""
+#~ "R. Fontes, M. Eisencraft. \"A digital"
+#~ " bandlimited chaotic communication system.\" "
+#~ "Commun. Nonlinear Sci. Numer. Simul., "
+#~ "vol. 37, pp. 374–385, 2016."
+#~ msgstr ""
+#~ "R. Fontes, M. Eisencraft. \"A digital"
+#~ " bandlimited chaotic communication system.\" "
+#~ "Commun. Nonlinear Sci. Numer. Simul., "
+#~ "vol. 37, pp. 374–385, 2016."
 

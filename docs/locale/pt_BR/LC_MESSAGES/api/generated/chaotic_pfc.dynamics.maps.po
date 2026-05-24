@@ -7,6 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Translation status: INTENTIONALLY UNTRANSLATED.
+# Auto-generated API reference is maintained in English only.
+# See docs/api/index.rst for rationale.
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst:2
 msgid "chaotic\\_pfc.dynamics.maps"
@@ -178,7 +191,8 @@ msgid "Iterate the standard 2-D Hénon map."
 msgstr "Iterate the standard 2-D Hénon map."
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst
-msgid "Parâmetros"
+#, fuzzy
+msgid "Parameters"
 msgstr "Parâmetros"
 
 #: chaotic_pfc.dynamics.maps.henon_standard:3 of
@@ -206,7 +220,8 @@ msgstr ""
 "unbounded trajectories for most ICs."
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst
-msgid "Retorna"
+#, fuzzy
+msgid "Returns"
 msgstr "Retorna"
 
 #: chaotic_pfc.dynamics.maps.henon_standard:14 of
@@ -218,21 +233,8 @@ msgstr ""
 "condition) to ``n = steps``."
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst
-msgid "Tipo de retorno"
-msgstr "Tipo de retorno"
-
-#: chaotic_pfc.dynamics.maps.henon_order_n:30
-#: chaotic_pfc.dynamics.maps.henon_standard:19 of
-msgid "Referências"
-msgstr "Referências"
-
-#: chaotic_pfc.dynamics.maps.henon_standard:20 of
-msgid ""
-"M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
-" Math. Phys., vol. 50, pp. 69–77, 1976."
+msgid "Return type"
 msgstr ""
-"M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
-" Math. Phys., vol. 50, pp. 69–77, 1976."
 
 #: chaotic_pfc.dynamics.maps.henon_generalised:3 of
 msgid ""
@@ -378,14 +380,6 @@ msgstr ""
 "**output** (*ndarray, shape (steps,)*) -- Carrier signal ``x[2][n]`` for "
 "``n = 0, …, steps − 1``."
 
-#: chaotic_pfc.dynamics.maps.henon_order_n:31 of
-msgid ""
-"V. S. Borges, M. Eisencraft. \"A filtered Hénon map.\" Chaos, Solitons "
-"and Fractals, vol. 165, 2022."
-msgstr ""
-"V. S. Borges, M. Eisencraft. \"A filtered Hénon map.\" Chaos, Solitons "
-"and Fractals, vol. 165, 2022."
-
 #: chaotic_pfc.dynamics.maps.henon_fir_sequence:3 of
 msgid ""
 "Iterates the generalised Hénon form ``x[n+1] = a - xf[n]^2 + b * y[n]``, "
@@ -422,8 +416,8 @@ msgid "Chaotic samples."
 msgstr "Chaotic samples."
 
 #: ../../api/generated/chaotic_pfc.dynamics.maps.rst
-msgid "Levanta"
-msgstr "Levanta"
+msgid "Raises"
+msgstr ""
 
 #: chaotic_pfc.dynamics.maps.henon_fir_sequence:17 of
 msgid "If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf."
@@ -490,4 +484,33 @@ msgstr ""
 
 #~ msgid "Raises"
 #~ msgstr ""
+
+#~ msgid "Tipo de retorno"
+#~ msgstr "Tipo de retorno"
+
+#~ msgid "Referências"
+#~ msgstr "Referências"
+
+#~ msgid ""
+#~ "M. Hénon. \"A two-dimensional mapping"
+#~ " with a strange attractor.\" Commun. "
+#~ "Math. Phys., vol. 50, pp. 69–77, "
+#~ "1976."
+#~ msgstr ""
+#~ "M. Hénon. \"A two-dimensional mapping"
+#~ " with a strange attractor.\" Commun. "
+#~ "Math. Phys., vol. 50, pp. 69–77, "
+#~ "1976."
+
+#~ msgid ""
+#~ "V. S. Borges, M. Eisencraft. \"A "
+#~ "filtered Hénon map.\" Chaos, Solitons "
+#~ "and Fractals, vol. 165, 2022."
+#~ msgstr ""
+#~ "V. S. Borges, M. Eisencraft. \"A "
+#~ "filtered Hénon map.\" Chaos, Solitons "
+#~ "and Fractals, vol. 165, 2022."
+
+#~ msgid "Levanta"
+#~ msgstr "Levanta"
 
