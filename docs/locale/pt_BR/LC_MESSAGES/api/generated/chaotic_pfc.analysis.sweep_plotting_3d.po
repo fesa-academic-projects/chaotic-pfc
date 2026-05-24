@@ -7,30 +7,18 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:2
 msgid "chaotic\\_pfc.analysis.sweep\\_plotting\\_3d"
-msgstr ""
+msgstr "chaotic\\_pfc.analysis.sweep\\_plotting\\_3d"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d:2 of
 msgid "sweep_plotting_3d.py"
-msgstr ""
+msgstr "sweep_plotting_3d.py"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d:3 of
 msgid "Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps."
-msgstr ""
+msgstr "Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d:5 of
 msgid ""
@@ -38,6 +26,9 @@ msgid ""
 "``chaotic-pfc run sweep beta-sweep``) into a single 3-D volume "
 "``λ_max(N_z, ω_c, β)`` and renders it as an interactive surface stack."
 msgstr ""
+"Aggregates a directory of per-β ``.npz`` checkpoints (produced by "
+"``chaotic-pfc run sweep beta-sweep``) into a single 3-D volume "
+"``λ_max(N_z, ω_c, β)`` and renders it as an interactive surface stack."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d:9 of
 msgid ""
@@ -45,10 +36,13 @@ msgid ""
 "install with ``pip install -e .[viz3d]``. Importing this module without "
 "Plotly installed will raise an actionable :class:`ImportError`."
 msgstr ""
+"Plotly is an *optional* dependency declared under the ``viz3d`` extra: "
+"install with ``pip install -e .[viz3d]``. Importing this module without "
+"Plotly installed will raise an actionable :class:`ImportError`."
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:8
 msgid "Functions"
-msgstr ""
+msgstr "Functions"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:12:<autosummary>:1
 msgid ""
@@ -56,11 +50,14 @@ msgid ""
 "<chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps>`\\ "
 "\\(data\\_dir\\)"
 msgstr ""
+":py:obj:`aggregate_beta_sweeps "
+"<chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps>`\\ "
+"\\(data\\_dir\\)"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:12:<autosummary>:1
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:1 of
 msgid "Load every per-β sweep under ``data_dir`` into a single volume."
-msgstr ""
+msgstr "Load every per-β sweep under ``data_dir`` into a single volume."
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:12:<autosummary>:1
 msgid ""
@@ -68,16 +65,19 @@ msgid ""
 "<chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume>`\\ "
 "\\(h\\_volume\\, betas\\, orders\\, ...\\)"
 msgstr ""
+":py:obj:`plot_3d_beta_volume "
+"<chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume>`\\ "
+"\\(h\\_volume\\, betas\\, orders\\, ...\\)"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst:12:<autosummary>:1
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:1 of
 msgid "Render a stack of λ_max surfaces, one per β."
-msgstr ""
+msgstr "Render a stack of λ_max surfaces, one per β."
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps of
-msgid "Parameters"
-msgstr ""
+msgid "Parâmetros"
+msgstr "Parâmetros"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:3 of
 msgid ""
@@ -85,10 +85,13 @@ msgid ""
 "``variables_lyapunov.npz`` file (matches the layout produced by ``run "
 "sweep beta-sweep``)."
 msgstr ""
+"Root directory containing one sub-directory per β, each with a "
+"``variables_lyapunov.npz`` file (matches the layout produced by ``run "
+"sweep beta-sweep``)."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps of
-msgid "Returns"
-msgstr ""
+msgid "Retorna"
+msgstr "Retorna"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:7 of
 msgid ""
@@ -97,33 +100,39 @@ msgid ""
 "values, sorted ascending. * **orders** (*ndarray*) * **cutoffs** "
 "(*ndarray*)"
 msgstr ""
+"* **h_volume** (*ndarray, shape (Nbeta, Ncoef, Ncut)*) -- λ_max indexed "
+"by (β, order, cutoff). * **betas** (*ndarray, shape (Nbeta,)*) -- β "
+"values, sorted ascending. * **orders** (*ndarray*) * **cutoffs** "
+"(*ndarray*)"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:7 of
 msgid ""
 "**h_volume** (*ndarray, shape (Nbeta, Ncoef, Ncut)*) -- λ_max indexed by "
 "(β, order, cutoff)."
 msgstr ""
+"**h_volume** (*ndarray, shape (Nbeta, Ncoef, Ncut)*) -- λ_max indexed by "
+"(β, order, cutoff)."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:8 of
 msgid "**betas** (*ndarray, shape (Nbeta,)*) -- β values, sorted ascending."
-msgstr ""
+msgstr "**betas** (*ndarray, shape (Nbeta,)*) -- β values, sorted ascending."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:9 of
 msgid "**orders** (*ndarray*)"
-msgstr ""
+msgstr "**orders** (*ndarray*)"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:10 of
 msgid "**cutoffs** (*ndarray*)"
-msgstr ""
+msgstr "**cutoffs** (*ndarray*)"
 
 #: ../../api/generated/chaotic_pfc.analysis.sweep_plotting_3d.rst
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps of
-msgid "Return type"
-msgstr ""
+msgid "Tipo de retorno"
+msgstr "Tipo de retorno"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:13 of
-msgid "Notes"
-msgstr ""
+msgid "Notas"
+msgstr "Notas"
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.aggregate_beta_sweeps:14 of
 msgid ""
@@ -131,6 +140,9 @@ msgid ""
 "different order ranges) are grouped separately. The function returns the "
 "largest group and logs a warning when sweeps are skipped."
 msgstr ""
+"Sweeps with incompatible grids (e.g. bandstop vs lowpass, which use "
+"different order ranges) are grouped separately. The function returns the "
+"largest group and logs a warning when sweeps are skipped."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:3 of
 msgid ""
@@ -138,19 +150,37 @@ msgid ""
 "β`` over the (N_z, ω_c) plane. The user can rotate, zoom and pick the "
 "slice they want in the browser."
 msgstr ""
+"Each β contributes a 2-D heat-coloured surface placed at altitude ``z = "
+"β`` over the (N_z, ω_c) plane. The user can rotate, zoom and pick the "
+"slice they want in the browser."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:7 of
 msgid "Output of :func:`aggregate_beta_sweeps`, shape ``(Nbeta, Ncoef, Ncut)``."
-msgstr ""
+msgstr "Output of :func:`aggregate_beta_sweeps`, shape ``(Nbeta, Ncoef, Ncut)``."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:8
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:9
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:10 of
 msgid "Coordinate arrays."
-msgstr ""
+msgstr "Coordinate arrays."
 
 #: chaotic_pfc.analysis.sweep_plotting_3d.plot_3d_beta_volume:11 of
 msgid ""
 "Optional ``.html`` path. If given, the figure is also written to disk via"
 " ``write_html``."
 msgstr ""
+"Optional ``.html`` path. If given, the figure is also written to disk via"
+" ``write_html``."
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "Return type"
+#~ msgstr ""
+
+#~ msgid "Notes"
+#~ msgstr ""
+

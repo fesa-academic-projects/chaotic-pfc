@@ -1,0 +1,317 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:2
+msgid "chaotic\\_pfc.analysis.latex\\_export"
+msgstr "chaotic\\_pfc.analysis.latex\\_export"
+
+#: chaotic_pfc.analysis.latex_export:1 of
+msgid "LaTeX table export for chaotic-PFC analysis results."
+msgstr "LaTeX table export for chaotic-PFC analysis results."
+
+#: chaotic_pfc.analysis.latex_export:3 of
+msgid ""
+"Every exporter accepts a ``lang`` parameter (``\"pt\"`` or ``\"en\"``) "
+"that drives column headers, captions, and filter names via "
+":func:`~chaotic_pfc._i18n.t`."
+msgstr ""
+"Every exporter accepts a ``lang`` parameter (``\"pt\"`` or ``\"en\"``) "
+"that drives column headers, captions, and filter names via "
+":func:`~chaotic_pfc._i18n.t`."
+
+#: chaotic_pfc.analysis.latex_export:7 of
+msgid ""
+"All tables use ``booktabs`` rules and are wrapped in a ``table`` float "
+"(``longtable`` for the full ranking). Output encoding is UTF-8."
+msgstr ""
+"All tables use ``booktabs`` rules and are wrapped in a ``table`` float "
+"(``longtable`` for the full ranking). Output encoding is UTF-8."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:8
+msgid "Functions"
+msgstr "Functions"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_consolidated_extended_table "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_extended_table>`\\"
+" \\(...\\[\\, ...\\]\\)"
+msgstr ""
+":py:obj:`export_consolidated_extended_table "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_extended_table>`\\"
+" \\(...\\[\\, ...\\]\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:1 of
+msgid "Export consolidated extended top-k (Categoria B)."
+msgstr "Export consolidated extended top-k (Categoria B)."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_consolidated_full_ranking "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking>`\\ "
+"\\(...\\[\\, ...\\]\\)"
+msgstr ""
+":py:obj:`export_consolidated_full_ranking "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking>`\\ "
+"\\(...\\[\\, ...\\]\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:1 of
+msgid "Export consolidated full ranking (Categoria C.1, longtable)."
+msgstr "Export consolidated full ranking (Categoria C.1, longtable)."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_consolidated_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table>`\\ "
+"\\(...\\[\\, ...\\]\\)"
+msgstr ""
+":py:obj:`export_consolidated_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table>`\\ "
+"\\(...\\[\\, ...\\]\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:1 of
+msgid "Export consolidated top-k (Categoria A, Kaiser collapsed to best β)."
+msgstr "Export consolidated top-k (Categoria A, Kaiser collapsed to best β)."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_extended_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_extended_top_k_table>`\\ "
+"\\(top\\_k\\_data\\, ...\\)"
+msgstr ""
+":py:obj:`export_extended_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_extended_top_k_table>`\\ "
+"\\(top\\_k\\_data\\, ...\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:1 of
+msgid "Export Categoria B — Top-3 per filter with extended λ_max statistics."
+msgstr "Export Categoria B — Top-3 per filter with extended λ_max statistics."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_full_ranking_table "
+"<chaotic_pfc.analysis.latex_export.export_full_ranking_table>`\\ "
+"\\(rank\\_data\\, output\\_path\\)"
+msgstr ""
+":py:obj:`export_full_ranking_table "
+"<chaotic_pfc.analysis.latex_export.export_full_ranking_table>`\\ "
+"\\(rank\\_data\\, output\\_path\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:1 of
+msgid "Export Categoria C.1 — Full ranking (longtable)."
+msgstr "Export Categoria C.1 — Full ranking (longtable)."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_kaiser_beta_optimal_table "
+"<chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table>`\\ "
+"\\(beta\\_data\\, ...\\)"
+msgstr ""
+":py:obj:`export_kaiser_beta_optimal_table "
+"<chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table>`\\ "
+"\\(beta\\_data\\, ...\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:1 of
+msgid "Export optimal Kaiser β per filter type."
+msgstr "Export optimal Kaiser β per filter type."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_sweet_spots_table "
+"<chaotic_pfc.analysis.latex_export.export_sweet_spots_table>`\\ "
+"\\(sweet\\_spot\\_data\\, ...\\)"
+msgstr ""
+":py:obj:`export_sweet_spots_table "
+"<chaotic_pfc.analysis.latex_export.export_sweet_spots_table>`\\ "
+"\\(sweet\\_spot\\_data\\, ...\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:1 of
+msgid "Export Categoria C.2 — Sweet-spot points per filter type."
+msgstr "Export Categoria C.2 — Sweet-spot points per filter type."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+msgid ""
+":py:obj:`export_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_top_k_table>`\\ "
+"\\(top\\_k\\_data\\, output\\_path\\)"
+msgstr ""
+":py:obj:`export_top_k_table "
+"<chaotic_pfc.analysis.latex_export.export_top_k_table>`\\ "
+"\\(top\\_k\\_data\\, output\\_path\\)"
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst:18:<autosummary>:1
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:1 of
+msgid "Export Categoria A — Top-3 per filter (chaotic area only)."
+msgstr "Export Categoria A — Top-3 per filter (chaotic area only)."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
+msgid "Parâmetros"
+msgstr "Parâmetros"
+
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:3
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:3 of
+#, python-brace-format
+msgid ""
+"``{filter_type: [ConfigRank, ...]}`` from "
+":func:`~.stats.top_k_per_filter`."
+msgstr ""
+"``{filter_type: [ConfigRank, ...]}`` from "
+":func:`~.stats.top_k_per_filter`."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:4
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:4
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:5
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:4
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:4
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:4
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:4
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:4 of
+msgid "Destination ``.tex`` file."
+msgstr "Destination ``.tex`` file."
+
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:5 of
+msgid "i18n key for the caption. Defaults to ``analysis.tables.top_k.caption``."
+msgstr "i18n key for the caption. Defaults to ``analysis.tables.top_k.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:6 of
+msgid "LaTeX label (without ``\\label`` wrapper)."
+msgstr "LaTeX label (without ``\\label`` wrapper)."
+
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:7 of
+msgid "``\"pt\"`` or ``\"en\"``. Defaults to the active locale."
+msgstr "``\"pt\"`` or ``\"en\"``. Defaults to the active locale."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
+msgid "Retorna"
+msgstr "Retorna"
+
+#: chaotic_pfc.analysis.latex_export.export_top_k_table:9 of
+msgid "The path written."
+msgstr "The path written."
+
+#: ../../api/generated/chaotic_pfc.analysis.latex_export.rst
+msgid "Tipo de retorno"
+msgstr "Tipo de retorno"
+
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:5 of
+msgid ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.top_k_extended.caption``."
+msgstr ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.top_k_extended.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:6
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:6
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:7
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:7
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:7
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:6
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:7 of
+msgid "LaTeX label."
+msgstr "LaTeX label."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:7
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:7
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:8
+#: chaotic_pfc.analysis.latex_export.export_extended_top_k_table:8
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:8
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:7
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:8 of
+msgid "``\"pt\"`` or ``\"en\"``."
+msgstr "``\"pt\"`` or ``\"en\"``."
+
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:3 of
+msgid "Sorted list from :func:`~.stats.rank_configurations`."
+msgstr "Sorted list from :func:`~.stats.rank_configurations`."
+
+#: chaotic_pfc.analysis.latex_export.export_full_ranking_table:5 of
+msgid ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.full_ranking.caption``."
+msgstr ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.full_ranking.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:3 of
+#, python-brace-format
+msgid "``{filter_type: SweetSpot}`` from :func:`~.stats.sweet_spot_per_filter`."
+msgstr "``{filter_type: SweetSpot}`` from :func:`~.stats.sweet_spot_per_filter`."
+
+#: chaotic_pfc.analysis.latex_export.export_sweet_spots_table:5 of
+msgid ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.sweet_spots.caption``."
+msgstr ""
+"i18n key for the caption. Defaults to "
+"``analysis.tables.sweet_spots.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:3 of
+#, python-brace-format
+msgid ""
+"``{filter_type: KaiserBetaOptimal}`` from "
+":func:`~.stats.kaiser_beta_optimal`."
+msgstr ""
+"``{filter_type: KaiserBetaOptimal}`` from "
+":func:`~.stats.kaiser_beta_optimal`."
+
+#: chaotic_pfc.analysis.latex_export.export_kaiser_beta_optimal_table:5 of
+msgid "i18n key. Defaults to ``analysis.tables.kaiser_beta_optimal.caption``."
+msgstr "i18n key. Defaults to ``analysis.tables.kaiser_beta_optimal.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:3 of
+#, python-brace-format
+msgid ""
+"``{filter_type: [ConfigRank, ...]}`` from "
+":func:`~.stats.top_k_per_filter` run on consolidated sweeps."
+msgstr ""
+"``{filter_type: [ConfigRank, ...]}`` from "
+":func:`~.stats.top_k_per_filter` run on consolidated sweeps."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_top_k_table:6 of
+msgid "i18n key. Defaults to ``analysis.tables.consolidated_top_k.caption``."
+msgstr "i18n key. Defaults to ``analysis.tables.consolidated_top_k.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:3 of
+msgid "From :func:`~.stats.top_k_per_filter` on consolidated sweeps."
+msgstr "From :func:`~.stats.top_k_per_filter` on consolidated sweeps."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_extended_table:5 of
+msgid "i18n key. Defaults to ``analysis.tables.consolidated_extended.caption``."
+msgstr "i18n key. Defaults to ``analysis.tables.consolidated_extended.caption``."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:3 of
+msgid "From :func:`~.stats.rank_configurations` on consolidated sweeps."
+msgstr "From :func:`~.stats.rank_configurations` on consolidated sweeps."
+
+#: chaotic_pfc.analysis.latex_export.export_consolidated_full_ranking:5 of
+msgid ""
+"i18n key. Defaults to "
+"``analysis.tables.consolidated_full_ranking.caption``."
+msgstr ""
+"i18n key. Defaults to "
+"``analysis.tables.consolidated_full_ranking.caption``."
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "Return type"
+#~ msgstr ""
+

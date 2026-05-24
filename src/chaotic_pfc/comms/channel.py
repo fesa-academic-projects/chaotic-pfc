@@ -126,6 +126,10 @@ def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) ->
     ndarray, shape (N,)
         Signal with additive white Gaussian noise.
 
+    Notes
+    -----
+    The SNR is defined as :math:`E[|s|^2] / 10^{SNR/10}` [Haykin01]_.
+
     References
     ----------
     .. [Haykin01] S. Haykin. "Communication Systems." 4th ed., Wiley, 2001.

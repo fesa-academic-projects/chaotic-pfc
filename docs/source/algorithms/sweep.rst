@@ -135,7 +135,7 @@ Known limitations
 
 * **Warmup compilation.**  The first call to :func:`_sweep_kernel` triggers
    Numba's JIT compilation, which adds a few seconds of startup time.
-   The orchestration layer runs a tiny warmup sweep (:option:`warmup=True`)
+   The orchestration layer runs a tiny warmup sweep (:code:`warmup=True`)
    so that the actual sweep benefits from the cached native code.
 
 

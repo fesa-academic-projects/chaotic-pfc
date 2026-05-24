@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 20:49-0300\n"
+"POT-Creation-Date: 2026-05-23 21:24-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -154,9 +154,7 @@ msgstr ""
 
 #: ../../usage.rst:94
 msgid "Saves per-IC CSV tables with 50 initial conditions to ``data/lyapunov/``."
-msgstr ""
-"Salva tabelas CSV por CI com 50 condições iniciais no diretório "
-"``data/lyapunov/``."
+msgstr "Salva tabelas CSV por CI com 50 condições iniciais em ``data/lyapunov/``."
 
 #: ../../usage.rst:98
 msgid "Sweep compute"
@@ -164,9 +162,7 @@ msgstr "Varredura — Computação"
 
 #: ../../usage.rst:100
 msgid "Runs the 2-D (filter order, cutoff frequency) Lyapunov sweep:"
-msgstr ""
-"Executa a varredura de Lyapunov 2-D (ordem do filtro, frequência de "
-"corte):"
+msgstr "Executa a varredura de Lyapunov 2-D (ordem do filtro, frequência de corte):"
 
 #: ../../usage.rst:106
 msgid ""
@@ -228,9 +224,7 @@ msgstr "Varredura — Beta"
 
 #: ../../usage.rst:161
 msgid "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
-msgstr ""
-"Executa a varredura de Lyapunov para uma faixa de valores de "
-":math:`\\beta` de Kaiser:"
+msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\\\beta` values:"
 
 #: ../../usage.rst:167
 msgid ""
@@ -283,15 +277,11 @@ msgstr ""
 
 #: ../../usage.rst:199
 msgid "**Best chaos-preserving filters**: ranked by chaotic coverage."
-msgstr ""
-"**Melhores filtros preservadores de caos** — ranqueados por cobertura "
-"caótica."
+msgstr "**Melhores filtros preservadores de caos**: ranqueados por cobertura caótica."
 
 #: ../../usage.rst:200
 msgid "**Lambda-max distribution**: histogram with skewness statistics."
-msgstr ""
-"**Distribuição de lambda-max** — histograma com estatísticas de "
-"assimetria."
+msgstr "**Distribuição de lambda-max**: histograma com estatísticas de assimetria."
 
 #: ../../usage.rst:201
 msgid "**Transition boundaries**: first chaotic cutoff per filter order."
@@ -329,10 +319,73 @@ msgstr ""
 ":math:`\\beta`."
 
 #: ../../usage.rst:217
+msgid "Export tables for TCC/article"
+msgstr "Exportar tabelas para TCC/artigo"
+
+#: ../../usage.rst:219
+msgid "Generate publication-ready LaTeX tables with bilingual support:"
+msgstr "Gera tabelas LaTeX prontas para publicação com suporte bilíngue:"
+
+#: ../../usage.rst:225
+#, python-brace-format
+msgid ""
+"Produces 8 ``.tex`` files per language under "
+"``data/analysis_output/tables/{pt,en}/``:"
+msgstr "Produz 8 arquivos ``.tex`` por idioma em ``data/analysis_output/tables/{pt,en}/``:"
+
+#: ../../usage.rst:227
+msgid "**tab_top_k.tex** — Top-3 windows per filter type (chaotic area)."
+msgstr "**tab_top_k.tex** — Top-3 janelas por tipo de filtro (área caótica)."
+
+#: ../../usage.rst:228
+#, python-brace-format
+msgid ""
+"**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
+"statistics and 95% CI."
+msgstr "**tab_top_k_extended.tex** — Top-3 with :math:`\\\\lambda_{\\\\max}` statistics and 95% CI."
+
+#: ../../usage.rst:229
+msgid "**tab_full_ranking.tex** — Full 124-entry ranking (longtable)."
+msgstr "**tab_full_ranking.tex** — Ranking completo com 124 entradas (longtable)."
+
+#: ../../usage.rst:230
+#, python-brace-format
+msgid ""
+"**tab_sweet_spots.tex** — Grid point with highest "
+":math:`\\lambda_{\\max}` per filter."
+msgstr "**tab_sweet_spots.tex** — Grid point with highest :math:`\\\\lambda_{\\\\max}` per filter."
+
+#: ../../usage.rst:231
+msgid ""
+"**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
+":math:`\\beta`."
+msgstr "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\\\\beta`."
+
+#: ../../usage.rst:232
+msgid "**tab_consolidated_extended.tex** — Extended stats, Kaiser consolidated."
+msgstr "**tab_consolidated_extended.tex** — Estatísticas estendidas, Kaiser consolidado."
+
+#: ../../usage.rst:233
+msgid ""
+"**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), "
+"balanced."
+msgstr "**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), balanced."
+
+#: ../../usage.rst:234
+msgid "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
+msgstr "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\\\beta` per filter type."
+
+#: ../../usage.rst:249
+msgid ""
+"All tables use ``booktabs`` rules and inline LaTeX math. Captions, column"
+" headers, and filter names are resolved via the i18n system."
+msgstr "Todas as tabelas usam regras ``booktabs`` e matemática LaTeX inline. Legendas, cabeçalhos de coluna e nomes de filtros são resolvidos via o sistema de i18n."
+
+#: ../../usage.rst:253
 msgid "Language support"
 msgstr "Suporte a idiomas"
 
-#: ../../usage.rst:219
+#: ../../usage.rst:255
 msgid ""
 "The CLI supports bilingual figure labels via the ``--lang`` flag or the "
 "``CHAOTIC_PFC_LANG`` environment variable:"
@@ -340,8 +393,7 @@ msgstr ""
 "A CLI oferece suporte a rótulos de figuras bilíngues via a flag "
 "``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG``:"
 
-#: ../../usage.rst:234
-#, fuzzy
+#: ../../usage.rst:270
 msgid ""
 "The flag is supported by ``attractors``, ``sensitivity``, ``comm-ideal``,"
 " ``comm-fir``, ``comm-order-n``, and ``run all``."
@@ -349,22 +401,23 @@ msgstr ""
 "A flag é suportada por ``attractors``, ``sensitivity``, ``comm-ideal``, "
 "``comm-fir``, ``comm-order-n`` e ``run all``."
 
-#: ../../usage.rst:239
+#: ../../usage.rst:275
 msgid "Further reading"
 msgstr "Leitura adicional"
 
-#: ../../usage.rst:241
+#: ../../usage.rst:277
 msgid ":doc:`architecture`: how the modules fit together."
 msgstr ":doc:`architecture` — como os módulos se integram."
 
-#: ../../usage.rst:242
+#: ../../usage.rst:278
 msgid ":doc:`internals`: Numba kernels, MGS, adaptive early-stop."
 msgstr ":doc:`internals` — kernels Numba, MGS, parada antecipada adaptativa."
 
-#: ../../usage.rst:243
+#: ../../usage.rst:279
 msgid ":doc:`background`: complete theoretical foundations."
 msgstr ":doc:`background` — fundamentos teóricos completos."
 
-#: ../../usage.rst:244
+#: ../../usage.rst:280
 msgid ":doc:`development`: development environment and tooling."
 msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
+

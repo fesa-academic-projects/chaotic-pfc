@@ -81,15 +81,7 @@ def transmit(
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`.
 
-    References
-    ----------
-    .. [PecoraCarroll90] L. M. Pecora, T. L. Carroll.
-       "Synchronization in chaotic systems."
-       Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990.
-    .. [FontesEisencraft16] R. Fontes, M. Eisencraft.
-       "A digital bandlimited chaotic communication system."
-       Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, 2016.
-    """
+"""
     N = len(message)
     x1 = np.empty(N + 1)
     x2 = np.empty(N + 1)

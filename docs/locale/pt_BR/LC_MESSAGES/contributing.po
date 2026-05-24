@@ -34,9 +34,7 @@ msgstr ""
 
 #: ../../contributing.rst:9
 msgid "For environment setup and tooling details, see :doc:`development`."
-msgstr ""
-"Para detalhes sobre configuração do ambiente e ferramentas, consulte "
-":doc:`development`."
+msgstr "Para detalhes de configuração do ambiente e ferramentas, veja :doc:`development`."
 
 #: ../../contributing.rst:12
 msgid "Philosophy"
@@ -72,9 +70,7 @@ msgstr "Nenhuma configurabilidade espúria para cenários hipotéticos."
 
 #: ../../contributing.rst:24
 msgid "No error handling for states proven impossible by the call chain."
-msgstr ""
-"Nenhum tratamento de erro para estados comprovadamente impossíveis pela "
-"cadeia de chamadas."
+msgstr "Sem tratamento de erro para estados comprovadamente impossíveis pela cadeia de chamadas."
 
 #: ../../contributing.rst:26
 msgid ""
@@ -100,9 +96,7 @@ msgstr "Não refatore código que não está quebrado."
 
 #: ../../contributing.rst:34
 msgid "Match the existing style even if you would write it differently."
-msgstr ""
-"Combine com o estilo existente mesmo que você escreveria de forma "
-"diferente."
+msgstr "Siga o estilo existente mesmo que você escreveria diferente."
 
 #: ../../contributing.rst:35
 msgid "Dead code unrelated to the task: mention it, do not delete it."
@@ -160,9 +154,7 @@ msgstr "``docs`` — alterações na documentação."
 
 #: ../../contributing.rst:81
 msgid "``chore``: maintenance (dependency updates, tooling config)."
-msgstr ""
-"``chore`` — manutenção (atualização de dependências, configuração de "
-"ferramentas)."
+msgstr "``chore``: manutenção (atualização de dependências, configuração de ferramentas)."
 
 #: ../../contributing.rst:82
 msgid "``ci``: CI/CD configuration."
@@ -238,9 +230,7 @@ msgstr "Use crases para referências de código."
 
 #: ../../contributing.rst:176
 msgid "Use ``:class:``, ``:func:``, ``:mod:`` for Sphinx cross-references."
-msgstr ""
-"Use ``:class:``, ``:func:``, ``:mod:`` para referências cruzadas do "
-"Sphinx."
+msgstr "Use ``:class:``, ``:func:``, ``:mod:`` para referências cruzadas do Sphinx."
 
 #: ../../contributing.rst:177
 msgid "Avoid vague language like \"process the data\"."
@@ -380,9 +370,7 @@ msgstr ""
 
 #: ../../contributing.rst:248
 msgid "Feature requests: describe the use case and proposed solution."
-msgstr ""
-"Solicitações de funcionalidades — descreva o caso de uso e a solução "
-"proposta."
+msgstr "Solicitações de funcionalidades: descreva o caso de uso e a solução proposta."
 
 #: ../../contributing.rst:249
 msgid "Documentation issues: point to the specific page and section."
@@ -390,9 +378,7 @@ msgstr "Problemas de documentação — aponte para a página e seção específ
 
 #: ../../contributing.rst:251
 msgid "Before opening a new issue, search existing issues to avoid duplicates."
-msgstr ""
-"Antes de abrir uma nova issue, pesquise issues existentes para evitar "
-"duplicatas."
+msgstr "Antes de abrir uma nova issue, pesquise as issues existentes para evitar duplicatas."
 
 #: ../../contributing.rst:255
 msgid "Pull request checklist"

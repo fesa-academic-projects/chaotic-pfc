@@ -7,30 +7,18 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:2
 msgid "chaotic\\_pfc.dynamics.spectral"
-msgstr ""
+msgstr "chaotic\\_pfc.dynamics.spectral"
 
 #: chaotic_pfc.dynamics.spectral:2 of
 msgid "spectral.py"
-msgstr ""
+msgstr "spectral.py"
 
 #: chaotic_pfc.dynamics.spectral:3 of
 msgid "Power-spectral-density estimation utilities used by the plotting layer."
-msgstr ""
+msgstr "Power-spectral-density estimation utilities used by the plotting layer."
 
 #: chaotic_pfc.dynamics.spectral:5 of
 msgid ""
@@ -39,21 +27,27 @@ msgid ""
 "project: peak-normalised magnitude, and the frequency axis expressed as "
 "``ω/π ∈ [0, 1]`` rather than cycles or hertz."
 msgstr ""
+"The single public function, :func:`psd_normalised`, wraps "
+":func:`scipy.signal.welch` with the conventions adopted throughout the "
+"project: peak-normalised magnitude, and the frequency axis expressed as "
+"``ω/π ∈ [0, 1]`` rather than cycles or hertz."
 
 #: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:8
 msgid "Functions"
-msgstr ""
+msgstr "Functions"
 
 #: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:11:<autosummary>:1
 msgid ""
 ":py:obj:`psd_normalised <chaotic_pfc.dynamics.spectral.psd_normalised>`\\"
 " \\(x\\[\\, nfft\\, window\\_length\\, fs\\, ...\\]\\)"
 msgstr ""
+":py:obj:`psd_normalised <chaotic_pfc.dynamics.spectral.psd_normalised>`\\"
+" \\(x\\[\\, nfft\\, window\\_length\\, fs\\, ...\\]\\)"
 
 #: ../../api/generated/chaotic_pfc.dynamics.spectral.rst:11:<autosummary>:1
 #: chaotic_pfc.dynamics.spectral.psd_normalised:1 of
 msgid "Estimate the normalised power-spectral density of ``x`` via Welch."
-msgstr ""
+msgstr "Estimate the normalised power-spectral density of ``x`` via Welch."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:3 of
 msgid ""
@@ -61,32 +55,41 @@ msgid ""
 "is returned as ``ω/π`` for consistency with the notation used in the "
 "project figures (x-axis of every PSD panel)."
 msgstr ""
+"The PSD is one-sided, peak-normalised to ``1.0``, and the frequency axis "
+"is returned as ``ω/π`` for consistency with the notation used in the "
+"project figures (x-axis of every PSD panel)."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised of
-msgid "Parameters"
-msgstr ""
+msgid "Parâmetros"
+msgstr "Parâmetros"
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:7 of
 msgid "Input signal, shape ``(N,)``. Can be any dtype coercible to ``float``."
-msgstr ""
+msgstr "Input signal, shape ``(N,)``. Can be any dtype coercible to ``float``."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:9 of
 msgid ""
 "Length of the FFT. Larger values give smoother spectra at the cost of "
 "more computation. Must be ``>= window_length``."
 msgstr ""
+"Length of the FFT. Larger values give smoother spectra at the cost of "
+"more computation. Must be ``>= window_length``."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:11 of
 msgid ""
 "Length of the Welch segment (aka ``nperseg``). Controls the frequency "
 "resolution."
 msgstr ""
+"Length of the Welch segment (aka ``nperseg``). Controls the frequency "
+"resolution."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:13 of
 msgid ""
 "Sampling frequency. Leave at the default ``1.0`` to work in normalised "
 "units — the output axis becomes ``ω/π`` directly."
 msgstr ""
+"Sampling frequency. Leave at the default ``1.0`` to work in normalised "
+"units — the output axis becomes ``ω/π`` directly."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:15 of
 msgid ""
@@ -94,6 +97,9 @@ msgid ""
 " FFT to avoid a spurious spike at ``ω = 0``. Set to ``False`` only if you"
 " explicitly want to see the DC bin."
 msgstr ""
+"If ``True`` (default), the DC component of ``x`` is subtracted before the"
+" FFT to avoid a spurious spike at ``ω = 0``. Set to ``False`` only if you"
+" explicitly want to see the DC bin."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:18 of
 msgid ""
@@ -101,44 +107,59 @@ msgid ""
 "``\"blackman\"``, ``\"kaiser\"``, ``\"blackmanharris\"``, ``\"boxcar\"``,"
 " ``\"bartlett\"``."
 msgstr ""
+"Welch window. Supported values: ``\"hamming\"`` (default), ``\"hann\"``, "
+"``\"blackman\"``, ``\"kaiser\"``, ``\"blackmanharris\"``, ``\"boxcar\"``,"
+" ``\"bartlett\"``."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:21 of
 msgid ""
 "Shape parameter of the Kaiser window. Must be ``>= 0``; ignored when "
 "``window != \"kaiser\"``."
 msgstr ""
+"Shape parameter of the Kaiser window. Must be ``>= 0``; ignored when "
+"``window != \"kaiser\"``."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised of
-msgid "Returns"
-msgstr ""
+msgid "Retorna"
+msgstr "Retorna"
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:24 of
 msgid ""
 "* **omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
 "frequency axis, ``ω/π ∈ [0, 1]``. * **psd** (*ndarray, shape (nfft // 2 +"
-" 1,)*) -- Peak-normalised PSD. ``psd.max() == 1.0`` unless the input is"
-"   identically zero."
+" 1,)*) -- Peak-normalised PSD. ``psd.max() == 1.0``.  Raises "
+"``ValueError``   when the input is identically zero."
 msgstr ""
+"* **omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
+"frequency axis, ``ω/π ∈ [0, 1]``. * **psd** (*ndarray, shape (nfft // 2 +"
+" 1,)*) -- Peak-normalised PSD. ``psd.max() == 1.0``.  Raises "
+"``ValueError``   when the input is identically zero."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:24 of
 msgid ""
 "**omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
 "frequency axis, ``ω/π ∈ [0, 1]``."
 msgstr ""
+"**omega_norm** (*ndarray, shape (nfft // 2 + 1,)*) -- Normalised "
+"frequency axis, ``ω/π ∈ [0, 1]``."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:25 of
 msgid ""
 "**psd** (*ndarray, shape (nfft // 2 + 1,)*) -- Peak-normalised PSD. "
-"``psd.max() == 1.0`` unless the input is identically zero."
+"``psd.max() == 1.0``.  Raises ``ValueError`` when the input is "
+"identically zero."
 msgstr ""
+"**psd** (*ndarray, shape (nfft // 2 + 1,)*) -- Peak-normalised PSD. "
+"``psd.max() == 1.0``.  Raises ``ValueError`` when the input is "
+"identically zero."
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised of
-msgid "Return type"
-msgstr ""
+msgid "Tipo de retorno"
+msgstr "Tipo de retorno"
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:29 of
-msgid "Notes"
-msgstr ""
+msgid "Notas"
+msgstr "Notas"
 
 #: chaotic_pfc.dynamics.spectral.psd_normalised:30 of
 msgid ""
@@ -148,3 +169,46 @@ msgid ""
 "variance reduction, which is the right trade-off for visualising the "
 "smooth broadband spectrum of a chaotic carrier."
 msgstr ""
+"Welch's method divides ``x`` into overlapping segments, applies the "
+"window, takes the periodogram of each, and averages the result. This "
+"trades frequency resolution (controlled by ``window_length``) for "
+"variance reduction, which is the right trade-off for visualising the "
+"smooth broadband spectrum of a chaotic carrier."
+
+#: chaotic_pfc.dynamics.spectral.psd_normalised:36 of
+msgid ""
+"Segment overlap is left at the scipy default of 50 % (``noverlap = "
+"nperseg // 2``)."
+msgstr ""
+"Segment overlap is left at the scipy default of 50 % (``noverlap = "
+"nperseg // 2``)."
+
+#~ msgid ""
+#~ "* **omega_norm** (*ndarray, shape (nfft "
+#~ "// 2 + 1,)*) -- Normalised "
+#~ "frequency axis, ``ω/π ∈ [0, 1]``. "
+#~ "* **psd** (*ndarray, shape (nfft // "
+#~ "2 + 1,)*) -- Peak-normalised PSD."
+#~ " ``psd.max() == 1.0`` unless the "
+#~ "input is   identically zero."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**psd** (*ndarray, shape (nfft // 2 "
+#~ "+ 1,)*) -- Peak-normalised PSD. "
+#~ "``psd.max() == 1.0`` unless the input"
+#~ " is identically zero."
+#~ msgstr ""
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "Return type"
+#~ msgstr ""
+
+#~ msgid "Notes"
+#~ msgstr ""
+

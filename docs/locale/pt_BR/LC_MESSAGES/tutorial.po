@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../tutorial.rst:4
+msgid "Tutorial"
+msgstr "Tutorial"
+
+#: ../../tutorial.rst:6
+msgid ""
+"A self-contained Jupyter notebook walks through the full ``chaotic-pfc`` "
+"pipeline — from the Hénon map to FIR-filtered chaotic communication — in "
+"about one minute of compute time."
+msgstr "A self-contained Jupyter notebook walks through the full ``chaotic-pfc`` pipeline — from the Hénon map to FIR-filtered chaotic communication — in about one minute of compute time."
+
+#: ../../tutorial.rst:18
+msgid ""
+"The notebook is also run in CI on every push to ensure it stays up-to-"
+"date with the API."
+msgstr "O notebook também é executado no CI a cada push para garantir que permaneça atualizado com a API."
+

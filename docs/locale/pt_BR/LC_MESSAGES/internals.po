@@ -107,13 +107,7 @@ msgid ""
 "projection coefficients sequentially *after each projection subtraction*,"
 " which significantly improves numerical stability for near-degenerate "
 "subspaces:"
-msgstr ""
-"``_mgs_accumulate(z, Ns, lyap_sum)`` realiza a reortonormalização de "
-"Gram-Schmidt Modificado (MGS) dos vetores de perturbação a cada iteração."
-" Ao contrário do Gram-Schmidt clássico (CGS), o MGS calcula os "
-"coeficientes de projeção sequencialmente *após cada subtração de "
-"projeção*, o que melhora significativamente a estabilidade numérica para "
-"subespaços quase degenerados:"
+msgstr "``_mgs_accumulate(z, Ns, lyap_sum)`` performs the Modified Gram-Schmidt (MGS) re-orthonormalisation of the perturbation vectors at each iteration. Unlike classical Gram-Schmidt (CGS), MGS computes the projection coefficients sequentially *after each projection subtraction*, which significantly improves numerical stability for near-degenerate subspaces:"
 
 #: ../../internals.rst:44
 msgid ""
@@ -160,9 +154,7 @@ msgstr ""
 msgid ""
 "\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right|"
 " < \\text{tol}"
-msgstr ""
-"\\left| \\lambda_{\\text{current}} - \\lambda_{\\text{previous}} \\right|"
-" < \\text{tol}"
+msgstr "\\\\left| \\\\lambda_{\\\\text{current}} - \\\\lambda_{\\\\text{previous}} \\\\right| < \\\\text{tol}"
 
 #: ../../internals.rst:65
 msgid ""
@@ -172,13 +164,7 @@ msgid ""
 "Otherwise it returns ``(cur, streak, n_used, False)``. The actual number "
 "of iterations used is recorded in the ``SweepResult`` attribute "
 "``n_iters_used``, available for the difficulty-map visualisation."
-msgstr ""
-"Se esta condição se mantiver por ``_ADAPTIVE_STREAK = 2`` verificações "
-"consecutivas *e* ``Nitera_min`` iterações tiverem decorrido, o kernel "
-"sinaliza término antecipado e retorna ``(cur, streak, n_done, True)``. "
-"Caso contrário, retorna ``(cur, streak, n_used, False)``. O número real "
-"de iterações utilizadas é registrado no atributo ``n_iters_used`` de "
-"``SweepResult``, disponível para a visualização do mapa de dificuldade."
+msgstr "If this condition holds for ``_ADAPTIVE_STREAK = 2`` consecutive checkpoints *and* ``Nitera_min`` iterations have elapsed, the kernel signals early termination and returns ``(cur, streak, n_done, True)``. Otherwise it returns ``(cur, streak, n_used, False)``. The actual number of iterations used is recorded in the ``SweepResult`` attribute ``n_iters_used``, available for the difficulty-map visualisation."
 
 #: ../../internals.rst:73
 msgid "Lyapunov estimator kernels"
@@ -264,13 +250,7 @@ msgid ""
 "loop over orders would assign threads to vastly unequal workloads (the "
 "MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with filter order "
 ":math:`N_s`)."
-msgstr ""
-"A função ``_build_task_order`` cria uma lista permutada de pares "
-"``(order_idx, cutoff_idx)`` que intercala tarefas de diferentes ordens, "
-"garantindo carga balanceada entre threads. Sem esta permutação, um laço "
-"ingênuo sobre as ordens atribuiria a threads cargas de trabalho muito "
-"desiguais (o laço interno MGS escala como :math:`\\mathcal{O}(N_s^3)` com"
-" a ordem do filtro :math:`N_s`)."
+msgstr "The ``_build_task_order`` function creates a permuted list of ``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different orders, ensuring balanced thread load. Without this permutation, a naive loop over orders would assign threads to vastly unequal workloads (the MGS inner loop scales as :math:`\\\\mathcal{O}(N_s^3)` with filter order :math:`N_s`)."
 
 #: ../../internals.rst:109
 msgid "Fixed-point stability analysis"
@@ -305,13 +285,11 @@ msgstr ""
 #: ../../internals.rst:119
 #, python-brace-format
 msgid "Compute the eigenvalues of :math:`\\mathbf{J}` via"
-msgstr ""
-"Calcula os autovalores de :math:`\\mathbf{J}` via "
-"``scipy.linalg.eig``."
+msgstr "Compute the eigenvalues of :math:`\\\\mathbf{J}` via"
 
 #: ../../internals.rst:120
 msgid ":func:`numpy.linalg.eigvals`."
-msgstr ""
+msgstr ":func:`numpy.linalg.eigvals`."
 
 #: ../../internals.rst:121
 msgid ""
@@ -332,13 +310,7 @@ msgid ""
 "estimator. However, points with unstable fixed points require the full "
 "estimator because the Lyapunov exponent can be negative (periodic orbit) "
 "or positive (chaotic) despite the instability."
-msgstr ""
-"Esta abordagem em duas etapas economiza computação significativa: pontos "
-"com pontos fixos estáveis frequentemente podem ser classificados sem "
-"executar o estimador MGS completo. No entanto, pontos com pontos fixos "
-"instáveis exigem o estimador completo porque o expoente de Lyapunov pode "
-"ser negativo (órbita periódica) ou positivo (caótico) apesar da "
-"instabilidade."
+msgstr "This two-stage approach saves significant computation: points with stable fixed points can often be classified without running the full MGS estimator. However, points with unstable fixed points require the full estimator because the Lyapunov exponent can be negative (periodic orbit) or positive (chaotic) despite the instability."
 
 #: ../../internals.rst:133
 msgid "FIR bank precomputation"
@@ -378,12 +350,7 @@ msgid ""
 ":func:`scipy.signal.firwin` for each combination. The coefficients are "
 "stored in **float64** (double precision) to match the data type used "
 "throughout the Numba kernels."
-msgstr ""
-"O banco é construído por "
-":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, que chama "
-":func:`scipy.signal.firwin` para cada combinação. Os coeficientes são "
-"armazenados em **float64** (precisão dupla) para corresponder ao tipo de "
-"dados utilizado em todos os kernels Numba."
+msgstr "The bank is built by :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, which calls :func:`scipy.signal.firwin` for each combination. The coefficients are stored in **float64** (double precision) to match the data type used throughout the Numba kernels."
 
 #: ../../internals.rst:151
 msgid "Signal generators"
@@ -492,7 +459,7 @@ msgstr "Modelos de canal"
 msgid ""
 "Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and "
 ":func:`~chaotic_pfc.comms.channel.fir_channel`."
-msgstr ""
+msgstr "Além dos canais básicos :func:`~chaotic_pfc.comms.channel.ideal_channel` e :func:`~chaotic_pfc.comms.channel.fir_channel`."
 
 #: ../../internals.rst:193
 msgid ":func:`~chaotic_pfc.comms.channel.awgn`"
@@ -552,7 +519,6 @@ msgstr ""
 "ou flag CLI ``--lang``."
 
 #: ../../internals.rst:214
-#, fuzzy
 msgid ""
 "Covers attractor titles, sensitivity axis labels, communication grid "
 "subplot titles."
@@ -595,9 +561,7 @@ msgstr "``dataclasses.asdict(cfg)`` para serialização."
 
 #: ../../internals.rst:243
 msgid "Type-safe access through attribute paths (``cfg.comm.henon.a``)."
-msgstr ""
-"Acesso com segurança de tipos através de caminhos de atributos "
-"(``cfg.comm.henon.a``)."
+msgstr "Acesso type-safe através de caminhos de atributos (``cfg.comm.henon.a``)."
 
 #: ../../internals.rst:244
 msgid ""

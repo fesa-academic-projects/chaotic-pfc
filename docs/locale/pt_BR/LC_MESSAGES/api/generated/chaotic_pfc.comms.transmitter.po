@@ -7,26 +7,14 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:2
 msgid "chaotic\\_pfc.comms.transmitter"
-msgstr ""
+msgstr "chaotic\\_pfc.comms.transmitter"
 
 #: chaotic_pfc.comms.transmitter:2 of
 msgid "transmitter.py"
-msgstr ""
+msgstr "transmitter.py"
 
 #: chaotic_pfc.comms.transmitter:3 of
 msgid ""
@@ -34,10 +22,13 @@ msgid ""
 ":class:`~chaotic_pfc.comms.protocols.Transmitter` protocol — a callable "
 "that embeds a message in the state of a Hénon oscillator."
 msgstr ""
+"Chaos-based modulator. Implements the "
+":class:`~chaotic_pfc.comms.protocols.Transmitter` protocol — a callable "
+"that embeds a message in the state of a Hénon oscillator."
 
 #: chaotic_pfc.comms.transmitter:7 of
 msgid "Two transmitters are provided, mirroring the two receiver modes:"
-msgstr ""
+msgstr "Two transmitters are provided, mirroring the two receiver modes:"
 
 #: chaotic_pfc.comms.transmitter:9 of
 msgid ""
@@ -45,14 +36,17 @@ msgid ""
 "the state ``x₁[n]`` before it feeds back into the next iteration, so the "
 "emitted carrier is"
 msgstr ""
+":func:`transmit` — 2-D Hénon carrier. The message ``m[n]`` is added to "
+"the state ``x₁[n]`` before it feeds back into the next iteration, so the "
+"emitted carrier is"
 
 #: chaotic_pfc.comms.transmitter:13 of
 msgid "s[n] = x_1[n] + \\mu \\, m[n]"
-msgstr ""
+msgstr "s[n] = x_1[n] + \\mu \\, m[n]"
 
 #: chaotic_pfc.comms.transmitter:17 of
 msgid "and the updated state becomes ``x_1[n+1] = a - s[n]^2 + b \\, x_2[n]``."
-msgstr ""
+msgstr "and the updated state becomes ``x_1[n+1] = a - s[n]^2 + b \\, x_2[n]``."
 
 #: chaotic_pfc.comms.transmitter:20 of
 msgid ""
@@ -60,6 +54,9 @@ msgid ""
 " whose taps form the coefficient vector ``c``. The carrier is taken from "
 "the filtered state component ``x[2][n]``."
 msgstr ""
+":func:`transmit_order_n` — higher-order Hénon with an internal FIR filter"
+" whose taps form the coefficient vector ``c``. The carrier is taken from "
+"the filtered state component ``x[2][n]``."
 
 #: chaotic_pfc.comms.transmitter:24 of
 msgid ""
@@ -67,21 +64,26 @@ msgid ""
 "initial condition is needed (``transmit_order_n`` with ``x0=None``), a "
 "``seed`` parameter exposes the RNG so callers can reproduce results."
 msgstr ""
+"Both functions are deterministic given their inputs. Where a random "
+"initial condition is needed (``transmit_order_n`` with ``x0=None``), a "
+"``seed`` parameter exposes the RNG so callers can reproduce results."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:8
 msgid "Functions"
-msgstr ""
+msgstr "Functions"
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:12:<autosummary>:1
 msgid ""
 ":py:obj:`transmit <chaotic_pfc.comms.transmitter.transmit>`\\ "
 "\\(message\\[\\, mu\\, a\\, b\\, x0\\, y0\\]\\)"
 msgstr ""
+":py:obj:`transmit <chaotic_pfc.comms.transmitter.transmit>`\\ "
+"\\(message\\[\\, mu\\, a\\, b\\, x0\\, y0\\]\\)"
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:12:<autosummary>:1
 #: chaotic_pfc.comms.transmitter.transmit:1 of
 msgid "Modulate a message onto a 2-D Hénon carrier."
-msgstr ""
+msgstr "Modulate a message onto a 2-D Hénon carrier."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:12:<autosummary>:1
 msgid ""
@@ -89,22 +91,26 @@ msgid ""
 "<chaotic_pfc.comms.transmitter.transmit_order_n>`\\ \\(message\\, "
 "fir\\_coeffs\\[\\, mu\\, ...\\]\\)"
 msgstr ""
+":py:obj:`transmit_order_n "
+"<chaotic_pfc.comms.transmitter.transmit_order_n>`\\ \\(message\\, "
+"fir\\_coeffs\\[\\, mu\\, ...\\]\\)"
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst:12:<autosummary>:1
 #: chaotic_pfc.comms.transmitter.transmit_order_n:1 of
 msgid "Modulate a message onto an N-th order filtered Hénon carrier."
-msgstr ""
+msgstr "Modulate a message onto an N-th order filtered Hénon carrier."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-#: chaotic_pfc.comms.transmitter.transmit of
-msgid "Parameters"
-msgstr ""
+msgid "Parâmetros"
+msgstr "Parâmetros"
 
 #: chaotic_pfc.comms.transmitter.transmit:3 of
 msgid ""
 "Message samples ``m[n]``, shape ``(N,)``. Typically produced by "
 ":func:`chaotic_pfc.dynamics.signals.binary_message`."
 msgstr ""
+"Message samples ``m[n]``, shape ``(N,)``. Typically produced by "
+":func:`chaotic_pfc.dynamics.signals.binary_message`."
 
 #: chaotic_pfc.comms.transmitter.transmit:5 of
 msgid ""
@@ -113,38 +119,40 @@ msgid ""
 "at the receiver. The default ``0.01`` matches the convention used "
 "throughout the project."
 msgstr ""
+"Modulation depth. Small values (≪ 1) keep the Hénon dynamics near their "
+"autonomous regime, which is important for reliable chaos synchronisation "
+"at the receiver. The default ``0.01`` matches the convention used "
+"throughout the project."
 
 #: chaotic_pfc.comms.transmitter.transmit:9
 #: chaotic_pfc.comms.transmitter.transmit:10 of
 msgid "Hénon parameters. The canonical chaotic regime is ``(1.4, 0.3)``."
-msgstr ""
+msgstr "Hénon parameters. The canonical chaotic regime is ``(1.4, 0.3)``."
 
 #: chaotic_pfc.comms.transmitter.transmit:11
 #: chaotic_pfc.comms.transmitter.transmit:12 of
 msgid "Initial conditions of the transmitter's internal state."
-msgstr ""
+msgstr "Initial conditions of the transmitter's internal state."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-#: chaotic_pfc.comms.transmitter.transmit of
-msgid "Returns"
-msgstr ""
+msgid "Retorna"
+msgstr "Retorna"
 
 #: chaotic_pfc.comms.transmitter.transmit:14 of
 msgid "The transmitted carrier ``s[n] = x_1[n] + μ · m[n]``."
-msgstr ""
+msgstr "The transmitted carrier ``s[n] = x_1[n] + μ · m[n]``."
 
 #: ../../api/generated/chaotic_pfc.comms.transmitter.rst
-#: chaotic_pfc.comms.transmitter.transmit of
-msgid "Return type"
-msgstr ""
+msgid "Tipo de retorno"
+msgstr "Tipo de retorno"
 
 #: chaotic_pfc.comms.transmitter.transmit:18 of
-msgid "Notes"
-msgstr ""
+msgid "Notas"
+msgstr "Notas"
 
 #: chaotic_pfc.comms.transmitter.transmit:19 of
 msgid "The recurrence implemented is"
-msgstr ""
+msgstr "The recurrence implemented is"
 
 #: chaotic_pfc.comms.transmitter.transmit:21 of
 msgid ""
@@ -152,6 +160,9 @@ msgid ""
 "x_1[n+1]   &= a - s[n]^2 + b \\, x_2[n] \\\\\n"
 "x_2[n+1]   &= x_1[n]"
 msgstr ""
+"s[n]       &= x_1[n] + \\mu \\, m[n] \\\\\n"
+"x_1[n+1]   &= a - s[n]^2 + b \\, x_2[n] \\\\\n"
+"x_2[n+1]   &= x_1[n]"
 
 #: chaotic_pfc.comms.transmitter.transmit:27 of
 msgid ""
@@ -159,10 +170,35 @@ msgid ""
 "autonomous Hénon map for ``μ ≪ 1``, with the message imprinted as a small"
 " spectral perturbation."
 msgstr ""
+"The output ``s`` has the same chaotic broadband spectrum as the "
+"autonomous Hénon map for ``μ ≪ 1``, with the message imprinted as a small"
+" spectral perturbation."
 
 #: chaotic_pfc.comms.transmitter.transmit:31 of
 msgid "Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."
+msgstr "Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`."
+
+#: chaotic_pfc.comms.transmitter.transmit:34 of
+msgid "Referências"
+msgstr "Referências"
+
+#: chaotic_pfc.comms.transmitter.transmit:35 of
+msgid ""
+"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
+"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
 msgstr ""
+"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
+"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
+
+#: chaotic_pfc.comms.transmitter.transmit:38 of
+msgid ""
+"R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
+"system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, "
+"2016."
+msgstr ""
+"R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
+"system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, "
+"2016."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:3 of
 msgid ""
@@ -171,37 +207,47 @@ msgid ""
 "coefficients in ``fir_coeffs`` shape the feedback path and directly "
 "control the Lyapunov spectrum of the system."
 msgstr ""
+"The carrier is taken from the filtered state component ``x[2][n]``, "
+"producing a signal with a richer spectrum than the 2-D variant. The FIR "
+"coefficients in ``fir_coeffs`` shape the feedback path and directly "
+"control the Lyapunov spectrum of the system."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:8 of
 msgid "Message samples, shape ``(N,)``."
-msgstr ""
+msgstr "Message samples, shape ``(N,)``."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:9 of
 msgid ""
 "FIR feedback coefficients ``c``, shape ``(Nc,)``. ``Nc`` must be at least"
 " 3. Usually produced by :func:`scipy.signal.firwin`."
 msgstr ""
+"FIR feedback coefficients ``c``, shape ``(Nc,)``. ``Nc`` must be at least"
+" 3. Usually produced by :func:`scipy.signal.firwin`."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:11 of
 msgid "Modulation depth. Same semantics as in :func:`transmit`."
-msgstr ""
+msgstr "Modulation depth. Same semantics as in :func:`transmit`."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:12
 #: chaotic_pfc.comms.transmitter.transmit_order_n:13 of
 msgid "Hénon parameters."
-msgstr ""
+msgstr "Hénon parameters."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:14 of
 msgid ""
 "Optional explicit initial state, shape ``(Nc,)``. If omitted, a random "
 "state is drawn from ``Uniform(0, 0.5)`` using ``seed``."
 msgstr ""
+"Optional explicit initial state, shape ``(Nc,)``. If omitted, a random "
+"state is drawn from ``Uniform(0, 0.5)`` using ``seed``."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:16 of
 msgid ""
 "Seed for the RNG that produces ``x0`` when ``x0=None``. Has no effect if "
 "``x0`` is provided."
 msgstr ""
+"Seed for the RNG that produces ``x0`` when ``x0=None``. Has no effect if "
+"``x0`` is provided."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:19 of
 msgid ""
@@ -215,12 +261,23 @@ msgid ""
 ":func:`transmit` (the 2-D variant) for code that types against the * "
 "*Transmitter protocol.*"
 msgstr ""
+"* **s** (*ndarray, shape (N,)*) -- Transmitted carrier ``s[n] = v[n] + μ "
+"· m[n]`` where   ``v[n] = x[2][n]``. * **state** (*ndarray, shape (Nc, N "
+"+ 1)*) -- Full state trajectory of the N-th order system. Column ``n``   "
+"holds the state at step ``n``, with column 0 equal to ``x0``. * **Note** "
+"(*this function does NOT implement*) * "
+":class:`~chaotic_pfc.comms.protocols.Transmitter` because it returns a * "
+"``(signal, state)`` tuple instead of a single ndarray. Use * "
+":func:`transmit` (the 2-D variant) for code that types against the * "
+"*Transmitter protocol.*"
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:19 of
 msgid ""
 "**s** (*ndarray, shape (N,)*) -- Transmitted carrier ``s[n] = v[n] + μ · "
 "m[n]`` where ``v[n] = x[2][n]``."
 msgstr ""
+"**s** (*ndarray, shape (N,)*) -- Transmitted carrier ``s[n] = v[n] + μ · "
+"m[n]`` where ``v[n] = x[2][n]``."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:21 of
 msgid ""
@@ -228,23 +285,42 @@ msgid ""
 "N-th order system. Column ``n`` holds the state at step ``n``, with "
 "column 0 equal to ``x0``."
 msgstr ""
+"**state** (*ndarray, shape (Nc, N + 1)*) -- Full state trajectory of the "
+"N-th order system. Column ``n`` holds the state at step ``n``, with "
+"column 0 equal to ``x0``."
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:23 of
 msgid "**Note** (*this function does NOT implement*)"
-msgstr ""
+msgstr "**Note** (*this function does NOT implement*)"
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:24 of
 msgid ":class:`~chaotic_pfc.comms.protocols.Transmitter` because it returns a"
-msgstr ""
+msgstr ":class:`~chaotic_pfc.comms.protocols.Transmitter` because it returns a"
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:25 of
 msgid "``(signal, state)`` tuple instead of a single ndarray. Use"
-msgstr ""
+msgstr "``(signal, state)`` tuple instead of a single ndarray. Use"
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:26 of
 msgid ":func:`transmit` (the 2-D variant) for code that types against the"
-msgstr ""
+msgstr ":func:`transmit` (the 2-D variant) for code that types against the"
 
 #: chaotic_pfc.comms.transmitter.transmit_order_n:27 of
 msgid "*Transmitter protocol.*"
-msgstr ""
+msgstr "*Transmitter protocol.*"
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "Return type"
+#~ msgstr ""
+
+#~ msgid "Notes"
+#~ msgstr ""
+
+#~ msgid "References"
+#~ msgstr ""
+

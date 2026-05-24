@@ -1,0 +1,357 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Roger Freitas Pereira and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/algorithms/fir_design.rst:4
+msgid "FIR filter design"
+msgstr "Projeto de filtros FIR"
+
+#: ../../source/algorithms/fir_design.rst:7
+msgid "Motivation"
+msgstr "Motivação"
+
+#: ../../source/algorithms/fir_design.rst:9
+msgid ""
+"In the chaotic communication scheme, a finite impulse response (FIR) "
+"filter is inserted **inside the Hénon feedback loop**.  This turns the "
+"standard 2‑D map into a higher‑dimensional system whose dynamics are "
+"shaped by the filter coefficients."
+msgstr "In the chaotic communication scheme, a finite impulse response (FIR) filter is inserted **inside the Hénon feedback loop**.  This turns the standard 2‑D map into a higher‑dimensional system whose dynamics are shaped by the filter coefficients."
+
+#: ../../source/algorithms/fir_design.rst:14
+msgid "The motivation is two‑fold:"
+msgstr "A motivação é dupla:"
+
+#: ../../source/algorithms/fir_design.rst:16
+msgid ""
+"**Band‑limiting.**  Chaotic signals produced by the unfiltered Hénon map "
+"have a broad, flat spectrum.  Real communication channels have limited "
+"bandwidth — the FIR filter constrains the chaotic signal to occupy only "
+"the desired frequency band."
+msgstr "**Band‑limiting.**  Chaotic signals produced by the unfiltered Hénon map have a broad, flat spectrum.  Real communication channels have limited bandwidth — the FIR filter constrains the chaotic signal to occupy only the desired frequency band."
+
+#: ../../source/algorithms/fir_design.rst:21
+msgid ""
+"**Controllable chaos.**  By varying the filter order and cutoff, we can "
+"study which filter parameters *preserve* chaos and which *suppress* it — "
+"the core empirical question of the TCC."
+msgstr "**Controllable chaos.**  By varying the filter order and cutoff, we can study which filter parameters *preserve* chaos and which *suppress* it — the core empirical question of the TCC."
+
+#: ../../source/algorithms/fir_design.rst:26
+msgid "``firwin`` vs. MATLAB ``fir1``"
+msgstr "``firwin`` vs. MATLAB ``fir1``"
+
+#: ../../source/algorithms/fir_design.rst:28
+msgid ""
+"The project uses :func:`scipy.signal.firwin` rather than implementing its"
+" own FIR design.  There is a documented off‑by‑one difference relative to"
+" MATLAB's ``fir1``:"
+msgstr "The project uses :func:`scipy.signal.firwin` rather than implementing its own FIR design.  There is a documented off‑by‑one difference relative to MATLAB's ``fir1``:"
+
+#: ../../source/algorithms/fir_design.rst:32
+msgid "MATLAB: ``fir1(N, wc)`` produces ``N+1`` coefficients."
+msgstr "MATLAB: ``fir1(N, wc)`` produz ``N+1`` coeficientes."
+
+#: ../../source/algorithms/fir_design.rst:33
+msgid "SciPy: ``firwin(N, wc)`` produces ``N`` coefficients."
+msgstr "SciPy: ``firwin(N, wc)`` produz ``N`` coeficientes."
+
+#: ../../source/algorithms/fir_design.rst:35
+msgid ""
+"To obtain the same filter as MATLAB's ``fir1(N, wc)``, call ``firwin(N+1,"
+" wc)``.  The ``chaotic-pfc`` codebase consistently uses ``firwin(Nss, "
+"wc)`` where ``Nss`` is the number of filter taps (coefficients), which "
+"matches the convention used in the academic article."
+msgstr "To obtain the same filter as MATLAB's ``fir1(N, wc)``, call ``firwin(N+1, wc)``.  The ``chaotic-pfc`` codebase consistently uses ``firwin(Nss, wc)`` where ``Nss`` is the number of filter taps (coefficients), which matches the convention used in the academic article."
+
+#: ../../source/algorithms/fir_design.rst:41
+msgid ""
+"The ``fs=2`` default in ``firwin`` means ``wc`` is in units of "
+":math:`\\pi` rad/sample — consistent with the normalisation "
+":math:`\\omega_c / \\pi` used throughout the sweep literature."
+msgstr "The ``fs=2`` default in ``firwin`` means ``wc`` is in units of :math:`\\\\pi` rad/sample — consistent with the normalisation :math:`\\\\omega_c / \\\\pi` used throughout the sweep literature."
+
+#: ../../source/algorithms/fir_design.rst:46
+msgid "Filter types"
+msgstr "Tipos de filtro"
+
+#: ../../source/algorithms/fir_design.rst:48
+msgid "Four pass‑zero configurations are supported:"
+msgstr "Quatro configurações pass‑zero são suportadas:"
+
+#: ../../source/algorithms/fir_design.rst:53
+msgid "Type"
+msgstr "Tipo"
+
+#: ../../source/algorithms/fir_design.rst:54
+msgid "Pass‑band"
+msgstr "Banda passante"
+
+#: ../../source/algorithms/fir_design.rst:55
+msgid "Stop‑band"
+msgstr "Banda de rejeição"
+
+#: ../../source/algorithms/fir_design.rst:56
+msgid "``lowpass``"
+msgstr "``lowpass``"
+
+#: ../../source/algorithms/fir_design.rst:57
+#: ../../source/algorithms/fir_design.rst:61
+msgid ":math:`[0, \\omega_c]`"
+msgstr ":math:`[0, \\\\omega_c]`"
+
+#: ../../source/algorithms/fir_design.rst:58
+#: ../../source/algorithms/fir_design.rst:60
+msgid ":math:`(\\omega_c, \\pi]`"
+msgstr ":math:`(\\\\omega_c, \\\\pi]`"
+
+#: ../../source/algorithms/fir_design.rst:59
+msgid "``highpass``"
+msgstr "``highpass``"
+
+#: ../../source/algorithms/fir_design.rst:62
+msgid "``bandpass``"
+msgstr "``bandpass``"
+
+#: ../../source/algorithms/fir_design.rst:63
+#: ../../source/algorithms/fir_design.rst:67
+msgid ":math:`[\\omega_c - \\Delta/2,\\; \\omega_c + \\Delta/2]`"
+msgstr ":math:`[\\\\omega_c - \\\\Delta/2,\\\\; \\\\omega_c + \\\\Delta/2]`"
+
+#: ../../source/algorithms/fir_design.rst:64
+#: ../../source/algorithms/fir_design.rst:66
+msgid "remainder"
+msgstr "restante"
+
+#: ../../source/algorithms/fir_design.rst:65
+msgid "``bandstop``"
+msgstr "``bandstop``"
+
+#: ../../source/algorithms/fir_design.rst:69
+msgid ""
+"For bandpass and bandstop, the bandwidth :math:`\\Delta` defaults to "
+":math:`0.0375` — a narrow band typical of the project's experimental "
+"setup."
+msgstr "For bandpass and bandstop, the bandwidth :math:`\\\\Delta` defaults to :math:`0.0375` — a narrow band typical of the project's experimental setup."
+
+#: ../../source/algorithms/fir_design.rst:73
+msgid ""
+"Lowpass is the default because it is the most common configuration in "
+"communication engineering and serves as the baseline for all comparisons."
+msgstr "Lowpass is the default because it is the most common configuration in communication engineering and serves as the baseline for all comparisons."
+
+#: ../../source/algorithms/fir_design.rst:77
+msgid "Windows"
+msgstr "Janelas"
+
+#: ../../source/algorithms/fir_design.rst:79
+msgid ""
+"The FIR design uses one of seven window functions to shape the filter's "
+"frequency response:"
+msgstr "The FIR design uses one of seven window functions to shape the filter's frequency response:"
+
+#: ../../source/algorithms/fir_design.rst:85
+msgid "Window"
+msgstr "Janela"
+
+#: ../../source/algorithms/fir_design.rst:86
+msgid "Key"
+msgstr "Key"
+
+#: ../../source/algorithms/fir_design.rst:87
+msgid "Sidelobe attenuation"
+msgstr "Atenuação de lóbulos laterais"
+
+#: ../../source/algorithms/fir_design.rst:88
+msgid "Ripple"
+msgstr "Ondulação"
+
+#: ../../source/algorithms/fir_design.rst:89
+msgid "Hamming"
+msgstr "Hamming"
+
+#: ../../source/algorithms/fir_design.rst:90
+msgid "``hamming``"
+msgstr "``hamming``"
+
+#: ../../source/algorithms/fir_design.rst:91
+msgid "~53 dB"
+msgstr "~53 dB"
+
+#: ../../source/algorithms/fir_design.rst:92
+#: ../../source/algorithms/fir_design.rst:96
+#: ../../source/algorithms/fir_design.rst:112
+msgid "Moderate"
+msgstr "Moderada"
+
+#: ../../source/algorithms/fir_design.rst:93
+msgid "Hann"
+msgstr "Hann"
+
+#: ../../source/algorithms/fir_design.rst:94
+msgid "``hann``"
+msgstr "``hann``"
+
+#: ../../source/algorithms/fir_design.rst:95
+msgid "~44 dB"
+msgstr "~44 dB"
+
+#: ../../source/algorithms/fir_design.rst:97
+msgid "Blackman"
+msgstr "Blackman"
+
+#: ../../source/algorithms/fir_design.rst:98
+msgid "``blackman``"
+msgstr "``blackman``"
+
+#: ../../source/algorithms/fir_design.rst:99
+msgid "~74 dB"
+msgstr "~74 dB"
+
+#: ../../source/algorithms/fir_design.rst:100
+msgid "Low"
+msgstr "Low"
+
+#: ../../source/algorithms/fir_design.rst:101
+msgid "Blackman-Harris"
+msgstr "Blackman-Harris"
+
+#: ../../source/algorithms/fir_design.rst:102
+msgid "``blackmanharris``"
+msgstr "``blackmanharris``"
+
+#: ../../source/algorithms/fir_design.rst:103
+msgid "~92 dB"
+msgstr "~92 dB"
+
+#: ../../source/algorithms/fir_design.rst:104
+msgid "Very low"
+msgstr "Muito baixa"
+
+#: ../../source/algorithms/fir_design.rst:105
+msgid "Rectangular"
+msgstr "Retangular"
+
+#: ../../source/algorithms/fir_design.rst:106
+msgid "``boxcar``"
+msgstr "``boxcar``"
+
+#: ../../source/algorithms/fir_design.rst:107
+msgid "~13 dB"
+msgstr "~13 dB"
+
+#: ../../source/algorithms/fir_design.rst:108
+msgid "High"
+msgstr "Alta"
+
+#: ../../source/algorithms/fir_design.rst:109
+msgid "Bartlett"
+msgstr "Bartlett"
+
+#: ../../source/algorithms/fir_design.rst:110
+msgid "``bartlett``"
+msgstr "``bartlett``"
+
+#: ../../source/algorithms/fir_design.rst:111
+msgid "~25 dB"
+msgstr "~25 dB"
+
+#: ../../source/algorithms/fir_design.rst:113
+msgid "Kaiser"
+msgstr "Kaiser"
+
+#: ../../source/algorithms/fir_design.rst:114
+msgid "``kaiser``"
+msgstr "``kaiser``"
+
+#: ../../source/algorithms/fir_design.rst:115
+msgid "Adjustable via :math:`\\beta`"
+msgstr "Adjustable via :math:`\\\\beta`"
+
+#: ../../source/algorithms/fir_design.rst:116
+msgid "Adjustable"
+msgstr "Ajustável"
+
+#: ../../source/algorithms/fir_design.rst:118
+msgid ""
+"**Kaiser window** deserves special attention.  The shape parameter "
+":math:`\\beta` controls the trade‑off between main‑lobe width and "
+"sidelobe level.  The project includes a dedicated :math:`\\beta`-sweep "
+"(``chaotic-pfc run sweep beta-sweep``) that evaluates Lyapunov exponents "
+"across :math:`\\beta \\in [2, 14]` in steps of :math:`0.5` for each "
+"filter type."
+msgstr "**Kaiser window** deserves special attention.  The shape parameter :math:`\\\\beta` controls the trade‑off between main‑lobe width and sidelobe level.  The project includes a dedicated :math:`\\\\beta`-sweep (``chaotic-pfc run sweep beta-sweep``) that evaluates Lyapunov exponents across :math:`\\\\beta \\\\in [2, 14]` in steps of :math:`0.5` for each filter type."
+
+#: ../../source/algorithms/fir_design.rst:126
+msgid "Stability and the fixed point"
+msgstr "Estabilidade e o ponto fixo"
+
+#: ../../source/algorithms/fir_design.rst:128
+msgid ""
+"When an FIR filter is inserted into the Hénon feedback loop, the Jacobian"
+" matrix grows from :math:`2 \\times 2` to :math:`(2 + N_c) \\times (2 + "
+"N_c)`, where :math:`N_c` is the number of filter coefficients that feed "
+"back into the dynamics."
+msgstr "When an FIR filter is inserted into the Hénon feedback loop, the Jacobian matrix grows from :math:`2 \\\\times 2` to :math:`(2 + N_c) \\\\times (2 + N_c)`, where :math:`N_c` is the number of filter coefficients that feed back into the dynamics."
+
+#: ../../source/algorithms/fir_design.rst:133
+msgid ""
+"The **fixed point** of the combined map‑plus‑filter system is computed by"
+" solving a linear system involving the filter coefficients.  For the "
+"system to have a bounded attractor, the fixed point must be finite and "
+"the filter must be stable (all poles inside the unit circle)."
+msgstr "The **fixed point** of the combined map‑plus‑filter system is computed by solving a linear system involving the filter coefficients.  For the system to have a bounded attractor, the fixed point must be finite and the filter must be stable (all poles inside the unit circle)."
+
+#: ../../source/algorithms/fir_design.rst:138
+msgid ""
+"The function :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_max` handles "
+"the 4‑D pole‑filtered variant, which introduces an additional stability "
+"parameter (pole radius :math:`r`) that must satisfy :math:`0 \\le r < 1`."
+msgstr "The function :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_max` handles the 4‑D pole‑filtered variant, which introduces an additional stability parameter (pole radius :math:`r`) that must satisfy :math:`0 \\\\le r < 1`."
+
+#: ../../source/algorithms/fir_design.rst:143
+msgid "Known limitations"
+msgstr "Limitações conhecidas"
+
+#: ../../source/algorithms/fir_design.rst:145
+msgid ""
+"**Cutoff extremes.**  :math:`\\omega_c \\to 0` produces a filter that "
+"passes almost nothing (all‑stop); :math:`\\omega_c \\to 1` passes almost "
+"everything (all‑pass).  Both extremes degenerate the filter and produce "
+"behaviour indistinguishable from the unfiltered map — the sweep grid "
+"excludes :math:`\\omega_c = 0` and :math:`\\omega_c = 1`."
+msgstr "**Cutoff extremes.**  :math:`\\\\omega_c \\\\to 0` produces a filter that passes almost nothing (all‑stop); :math:`\\\\omega_c \\\\to 1` passes almost everything (all‑pass).  Both extremes degenerate the filter and produce behaviour indistinguishable from the unfiltered map — the sweep grid excludes :math:`\\\\omega_c = 0` and :math:`\\\\omega_c = 1`."
+
+#: ../../source/algorithms/fir_design.rst:151
+msgid ""
+"**Order limits.**  For :math:`N_z \\ge 40`, the filter design becomes "
+"numerically ill‑conditioned (the window function has extreme values at "
+"the filter edges).  The sweep currently tops at :math:`N_z = 41`."
+msgstr "**Order limits.**  For :math:`N_z \\\\ge 40`, the filter design becomes numerically ill‑conditioned (the window function has extreme values at the filter edges).  The sweep currently tops at :math:`N_z = 41`."
+
+#: ../../source/algorithms/fir_design.rst:155
+msgid ""
+"**DC gain.**  FIR filters designed with ``firwin`` have a DC gain of "
+"approximately 1.0 for lowpass — but not exactly, due to window tapering."
+"  The chaotic map is sensitive to the exact coefficient magnitudes, which"
+" is why the FIR bank is precomputed once rather than reconstructed per "
+"grid point."
+msgstr "**DC gain.**  FIR filters designed with ``firwin`` have a DC gain of approximately 1.0 for lowpass — but not exactly, due to window tapering.  The chaotic map is sensitive to the exact coefficient magnitudes, which is why the FIR bank is precomputed once rather than reconstructed per grid point."
+

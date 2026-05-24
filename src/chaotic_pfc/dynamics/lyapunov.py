@@ -407,6 +407,9 @@ def lyapunov_henon2d(
     lyapunov_max : 4‑D pole‑filtered variant.
     :doc:`/source/algorithms/lyapunov` : Algorithm overview and validation.
 
+    Validated against published values from Wolf et al. [Wolf85]_ and
+    Sprott [Sprott03]_ (see :doc:`/validation`).
+
     References
     ----------
     .. [Wolf85] A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano.

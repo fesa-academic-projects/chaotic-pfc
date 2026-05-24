@@ -96,12 +96,7 @@ msgid ""
 "is slow.  **Adaptive early‑stop** monitors the running estimate of "
 ":math:`\\lambda_{\\max}` at checkpoints (every :math:`K = 100` iterations) "
 "and exits early when the estimate stabilises."
-msgstr ""
-"Calcular :math:`\\lambda_{\\max}` com :math:`N_{\\text{itera}} = 3000` "
-"iterações fornece uma estimativa precisa; fazer isso para cada ponto da "
-"grade é lento.  A **parada antecipada adaptativa** monitora a estimativa "
-"corrente de :math:`\\lambda_{\\max}` em checkpoints (a cada :math:`K = 100` "
-"iterações) e encerra antecipadamente quando a estimativa se estabiliza."
+msgstr "Computing :math:`\\lambda_{\\max}` with :math:`N_{\\text{itera}} = 3000` iterations gives a precise estimate; doing that for every grid point is slow.  **Adaptive early‑stop** monitors the running estimate of :math:`\\lambda_{\\max}` at checkpoints (every :math:`K = 100` iterations) and exits early when the estimate stabilises."
 
 #: ../../source/algorithms/sweep.rst:89
 msgid ""

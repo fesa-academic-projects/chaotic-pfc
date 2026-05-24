@@ -81,11 +81,7 @@ def henon_standard(
         Trajectories of ``x`` and ``y`` from ``n = 0`` (the initial
         condition) to ``n = steps``.
 
-    References
-    ----------
-    .. [Henon76] M. Hénon. "A two-dimensional mapping with a strange attractor."
-       Commun. Math. Phys., vol. 50, pp. 69–77, 1976.
-    """
+"""
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -287,12 +283,7 @@ def henon_order_n(
     output : ndarray, shape (steps,)
         Carrier signal ``x[2][n]`` for ``n = 0, …, steps − 1``.
 
-    References
-    ----------
-    .. [BorgesEisencraft22] V. S. Borges, M. Eisencraft.
-       "A filtered Hénon map."
-       Chaos, Solitons and Fractals, vol. 165, 2022.
-    """
+"""
     Nc = len(fir_coeffs)
     if Nc < 3:
         raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")

@@ -47,14 +47,7 @@ msgid ""
 "underlying nonlinear dynamics. The library also includes a full numerical"
 " study that classifies regions of the (filter order, cutoff frequency) "
 "parameter space as chaotic, periodic, or divergent."
-msgstr ""
-"O projeto modela um pipeline ponta a ponta: geração de mensagem, "
-"modulação caótica no transmissor, propagação por canais ideais ou FIR com"
-" banda limitada e demodulação via sincronização de caos no receptor — "
-"respaldado por uma análise rigorosa dos expoentes de Lyapunov da dinâmica"
-" não linear subjacente. A biblioteca também inclui um estudo numérico "
-"completo que classifica regiões do espaço de parâmetros (ordem do filtro,"
-" frequência de corte) como caóticas, periódicas ou divergentes."
+msgstr "O projeto modela um pipeline ponta a ponta: geração de mensagem, modulação caótica no transmissor, propagação através de canais ideais ou com limitação de banda FIR, e demodulação via sincronização caótica no receptor: respaldado por uma análise rigorosa de expoentes de Lyapunov da dinâmica não linear subjacente. A biblioteca também inclui um estudo numérico completo que classifica regiões do espaço de parâmetros (ordem do filtro, frequência de corte) como caóticas, periódicas ou divergentes."
 
 #: ../../index.rst:16
 msgid "Status"
@@ -97,15 +90,14 @@ msgstr ""
 ":mod:`chaotic_pfc.comms.receiver`)."
 
 #: ../../index.rst:33
-#, fuzzy
 msgid ""
 "**Channel models**: ideal pass-through, FIR band-limited channels, AWGN, "
 "multipath propagation, and impulsive noise "
 "(:mod:`chaotic_pfc.comms.channel`)."
 msgstr ""
-"**Modelos de canal** — passagem ideal, canais FIR com banda limitada, "
-"AWGN, propagação multipercurso, ruído impulsivo e canais compostos "
-"urbanos (:mod:`chaotic_pfc.comms.channel`)."
+"**Modelos de canal**: passagem ideal, canais FIR com banda limitada, "
+"AWGN, propagação multipercurso e ruído impulsivo "
+"(:mod:`chaotic_pfc.comms.channel`)."
 
 #: ../../index.rst:36
 msgid ""
@@ -128,15 +120,15 @@ msgstr ""
 "corte) via compilação Numba JIT (:mod:`chaotic_pfc.analysis.sweep`)."
 
 #: ../../index.rst:42
-#, fuzzy
 msgid ""
 "**Modulation**: Pecora-Carroll chaos-based modulation via "
 "transmitter/receiver synchronisation "
 "(:mod:`chaotic_pfc.comms.transmitter`, "
 ":mod:`chaotic_pfc.comms.receiver`)."
 msgstr ""
-"**Comunicação baseada em caos** — par transmissor/receptor via "
-"sincronização de Pecora-Carroll (:mod:`chaotic_pfc.comms.transmitter`, "
+"**Modulação**: modulação caótica Pecora-Carroll via "
+"sincronização transmissor/receptor "
+"(:mod:`chaotic_pfc.comms.transmitter`, "
 ":mod:`chaotic_pfc.comms.receiver`)."
 
 #: ../../index.rst:45

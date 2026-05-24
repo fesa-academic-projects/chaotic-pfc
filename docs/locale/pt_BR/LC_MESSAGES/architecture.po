@@ -58,13 +58,7 @@ msgid ""
 "multipath, or composite urban model). The receiver synchronises to the "
 "carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx "
 "m[n]`."
-msgstr ""
-"O transmissor incorpora uma mensagem binária na portadora caótica via "
-"modulação Pecora-Carroll: :math:`s[n] = x_1[n] + \\mu \\cdot m[n]`. O "
-"canal aplica distorção (passagem ideal, limitação de banda FIR, AWGN, "
-"multipercurso ou modelo urbano composto). O receptor sincroniza com a "
-"portadora e recupera a estimativa da mensagem :math:`\\hat{m}[n] \\approx"
-" m[n]`."
+msgstr "The transmitter embeds a binary message into the chaotic carrier via Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \\\\mu \\\\cdot m[n]`. The channel applies distortion (ideal pass-through, FIR band-limiting, AWGN, multipath, or composite urban model). The receiver synchronises to the carrier and recovers the message estimate :math:`\\\\hat{m}[n] \\\\approx m[n]`."
 
 #: ../../architecture.rst:100
 msgid "Parameter sweep pipeline"
@@ -105,13 +99,7 @@ msgid ""
 "that no-ops ``njit``, aliases ``prange`` to ``range``, and returns ``1`` "
 "for ``get_num_threads()``. Install the ``[fast]`` extra for 20–50× "
 "speedup on the sweep."
-msgstr ""
-"**Numba como acelerador opcional.** O pacote importa e executa "
-"corretamente sem o Numba instalado. Todos os kernels compilados via JIT "
-"fazem fallback para Python puro via :mod:`chaotic_pfc._compat` — uma fina"
-" camada de compatibilidade que transforma ``njit`` em no-op, mapeia "
-"``prange`` para ``range`` e retorna ``1`` para ``get_num_threads()``. "
-"Instale o extra ``[fast]`` para um ganho de 20–50× na varredura."
+msgstr "**Numba como acelerador opcional.** O pacote importa e executa corretamente sem o Numba instalado. Todos os kernels compilados em JIT recaem para Python puro via :mod:`chaotic_pfc._compat`: uma fina camada de compatibilidade que transforma ``njit`` em no-op, mapeia ``prange`` para ``range`` e retorna ``1`` para ``get_num_threads()``. Instale o extra ``[fast]`` para ganho de 20–50× na varredura."
 
 #: ../../architecture.rst:141
 msgid ""
@@ -120,12 +108,7 @@ msgid ""
 "arrays into the Numba kernel. This is necessary because Numba's per-"
 "thread RNG does not honour the global seed. Every run with the same seed "
 "produces bit-exact identical results."
-msgstr ""
-"**Reprodutibilidade determinística.** Vetores de perturbação são "
-"pré-gerados no lado Python usando ``default_rng(seed)`` e passados como "
-"arrays NumPy para o kernel Numba. Isso é necessário porque o RNG por "
-"thread do Numba não respeita a semente global. Cada execução com a mesma "
-"semente produz resultados bit a bit idênticos."
+msgstr "**Reprodutibilidade determinística.** Os vetores de perturbação são pré-gerados no lado Python usando ``default_rng(seed)`` e passados como arrays NumPy para o kernel Numba. Isso é necessário porque o RNG por thread do Numba não respeita a semente global. Cada execução com a mesma semente produz resultados idênticos byte a byte."
 
 #: ../../architecture.rst:147
 msgid ""
@@ -134,13 +117,7 @@ msgid ""
 ":mod:`chaotic_pfc.analysis.sweep_plotting_3d` is actually used, so "
 "``import chaotic_pfc`` always succeeds. The same pattern applies to "
 ":samp:`scipy.signal.firwin` imports within dataclass methods."
-msgstr ""
-"**Importações opcionais tardias.** A visualização 3-D requer ``plotly`` "
-"instalado via o extra ``[viz3d]``. A importação é adiada até que "
-":mod:`chaotic_pfc.analysis.sweep_plotting_3d` seja de fato utilizado, de "
-"modo que ``import chaotic_pfc`` sempre funcione. O mesmo padrão se aplica"
-" às importações de :samp:`scipy.signal.firwin` dentro dos métodos das "
-"dataclasses."
+msgstr "**Importações opcionais sob demanda.** A visualização 3‑D requer ``plotly`` instalado via o extra ``[viz3d]``. A importação é adiada até que :mod:`chaotic_pfc.analysis.sweep_plotting_3d` seja efetivamente usado, de modo que ``import chaotic_pfc`` sempre funciona. O mesmo padrão se aplica a importações de :samp:`scipy.signal.firwin` dentro de métodos de dataclasses."
 
 #: ../../architecture.rst:153
 msgid ""
@@ -150,13 +127,7 @@ msgid ""
 "``ideal_channel``, ``receive``, etc.) satisfy these protocols by duck "
 "typing. This provides mypy-level documentation of the communication "
 "pipeline's interface without runtime overhead."
-msgstr ""
-"**Protocolos estruturais.** :mod:`chaotic_pfc.comms.protocols` define "
-"classes ``typing.Protocol`` — ``Transmitter``, ``Channel``, ``Receiver`` "
-"— como contratos estruturais. Implementações concretas (``transmit``, "
-"``ideal_channel``, ``receive``, etc.) satisfazem esses protocolos por "
-"duck typing. Isso fornece documentação em nível mypy da interface do "
-"pipeline de comunicação sem custo em tempo de execução."
+msgstr "**Protocolos estruturais.** :mod:`chaotic_pfc.comms.protocols` define classes ``typing.Protocol``: ``Transmitter``, ``Channel``, ``Receiver``: como contratos estruturais. Implementações concretas (``transmit``, ``ideal_channel``, ``receive``, etc.) satisfazem esses protocolos por duck typing. Isso fornece documentação em nível mypy da interface do pipeline de comunicação sem sobrecarga em tempo de execução."
 
 #: ../../architecture.rst:160
 msgid ""
@@ -165,13 +136,7 @@ msgid ""
 "shallow: every sub-config has only primitive fields or nested dataclasses"
 " of primitives: enabling trivial copying (``dataclasses.replace``), test "
 "isolation, and serialisation (``dataclasses.asdict``)."
-msgstr ""
-"**Hierarquia de configuração rasa.** Todos os valores padrão residem em "
-":mod:`chaotic_pfc.config` como dataclasses. A hierarquia é "
-"intencionalmente rasa — cada sub-configuração possui apenas campos "
-"primitivos ou dataclasses aninhadas de primitivos — permitindo cópia "
-"trivial (``dataclasses.replace``), isolamento para testes e serialização "
-"(``dataclasses.asdict``)."
+msgstr "**Hierarquia de configuração rasa.** Todos os padrões residem em :mod:`chaotic_pfc.config` como dataclasses. A hierarquia é intencionalmente rasa: cada sub-config possui apenas campos primitivos ou dataclasses aninhadas de primitivos: permitindo cópia trivial (``dataclasses.replace``), isolamento de testes e serialização (``dataclasses.asdict``)."
 
 #: ../../architecture.rst:167
 #, python-brace-format
@@ -182,14 +147,7 @@ msgid ""
 "costs (the MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)`), so "
 "simple block partitioning would leave threads idle. Interleaving ensures "
 "that each thread sees a balanced mix of light and heavy tasks."
-msgstr ""
-"**``prange`` único com balanceamento de carga.** O kernel de varredura "
-"utiliza uma única região paralela (não paralelismo aninhado) com ordem de"
-" tarefas permutada. Tarefas com diferentes ordens de filtro têm custos "
-"por iteração muito diferentes (o laço interno MGS escala como "
-":math:`\\mathcal{O}(N_s^3)`), portanto o particionamento simples em "
-"blocos deixaria threads ociosas. O intercalamento garante que cada thread"
-" receba uma mistura balanceada de tarefas leves e pesadas."
+msgstr "**Single ``prange`` with load balancing.** The sweep kernel uses a single parallel region (not nested parallelism) with a permuted task order. Tasks with different filter orders have vastly different per-iteration costs (the MGS inner loop scales as :math:`\\\\mathcal{O}(N_s^3)`), so simple block partitioning would leave threads idle. Interleaving ensures that each thread sees a balanced mix of light and heavy tasks."
 
 #: ../../architecture.rst:175
 #, python-brace-format, python-format
@@ -200,14 +158,7 @@ msgid ""
 "remaining iterations are skipped. This provides 3–4× speedup over fixed-"
 "iteration computation with negligible accuracy loss (< 0.1% in "
 ":math:`\\lambda_{\\max}`)."
-msgstr ""
-"**Parada antecipada adaptativa.** O estimador de Lyapunov implementa um "
-"critério opcional de parada antecipada: se :math:`\\lambda_{\\max}` se "
-"estabilizar dentro de uma tolerância especificada por uma sequência de "
-"pontos de verificação consecutivos, as iterações restantes são puladas. "
-"Isso proporciona um ganho de 3–4× em relação ao cálculo com iterações "
-"fixas, com perda desprezível de precisão (< 0,1% em "
-":math:`\\lambda_{\\max}`)."
+msgstr "**Adaptive early-stop.** The Lyapunov estimator implements an optional early-stop criterion: if :math:`\\\\lambda_{\\\\max}` stabilises within a specified tolerance for a streak of consecutive checkpoints, the remaining iterations are skipped. This provides 3–4× speedup over fixed-iteration computation with negligible accuracy loss (< 0.1% in :math:`\\\\lambda_{\\\\max}`)."
 
 #: ../../architecture.rst:183
 msgid "Configuration"
@@ -215,9 +166,7 @@ msgstr "Configuração"
 
 #: ../../architecture.rst:185
 msgid "All default values live in :mod:`chaotic_pfc.config` as dataclasses:"
-msgstr ""
-"Todos os valores padrão residem em :mod:`chaotic_pfc.config` como "
-"dataclasses:"
+msgstr "Todos os valores padrão residem em :mod:`chaotic_pfc.config` como dataclasses:"
 
 #: ../../architecture.rst:208
 msgid ""
@@ -226,12 +175,7 @@ msgid ""
 ":meth:`~chaotic_pfc.config.ExperimentConfig.to_namespace` method "
 "generates an ``argparse.Namespace`` for ``run all``, forwarding a single "
 "namespace to all sub-experiments."
-msgstr ""
-"Scripts de experimento importam ``DEFAULT_CONFIG`` e sobrescrevem apenas "
-"os campos expostos como flags da CLI. O método "
-":meth:`~chaotic_pfc.config.ExperimentConfig.to_namespace` gera um "
-"``argparse.Namespace`` para ``run all``, encaminhando um único namespace "
-"para todos os sub-experimentos."
+msgstr "Os scripts de experimento importam ``DEFAULT_CONFIG`` e sobrescrevem apenas os campos expostos como flags da CLI. O método :meth:`~chaotic_pfc.config.ExperimentConfig.to_namespace` gera um ``argparse.Namespace`` para o ``run all``, encaminhando um único namespace para todos os sub-experimentos."
 
 #: ../../architecture.rst:214
 msgid "Subpackages and their responsibilities"
@@ -249,6 +193,7 @@ msgstr "Responsabilidade"
 msgid "``dynamics``"
 msgstr "``dynamics``"
 
+
 #: ../../architecture.rst:223
 msgid ""
 "Hénon map variants, Lyapunov exponents (2-D and 4-D), PSD estimation "
@@ -261,21 +206,19 @@ msgstr ""
 msgid "``comms``"
 msgstr "``comms``"
 
+
 #: ../../architecture.rst:226
 msgid "Chaotic modulation (transmitter), synchronised demodulation"
-msgstr ""
+msgstr "Modulação caótica (transmissor), demodulação sincronizada"
 
 #: ../../architecture.rst:227
-#, fuzzy
 msgid "(receiver), channel models (ideal, FIR low-pass) with AWGN and multipath"
-msgstr ""
-"Modulação caótica (transmissor), demodulação sincronizada (receptor), "
-"modelos de canal (ideal, FIR passa-baixas) com AWGN e "
-"multipercurso"
+msgstr "(receptor), modelos de canal (ideal, FIR passa-baixas) com AWGN e multipercurso"
 
 #: ../../architecture.rst:229
 msgid "``analysis``"
 msgstr "``analysis``"
+
 
 #: ../../architecture.rst:230
 msgid ""
@@ -290,6 +233,7 @@ msgstr ""
 msgid "``plotting``"
 msgstr "``plotting``"
 
+
 #: ../../architecture.rst:234
 msgid ""
 "Publication-quality SVG figures with STIX fonts: attractor portraits, "
@@ -302,6 +246,7 @@ msgstr ""
 msgid "``cli``"
 msgstr "``cli``"
 
+
 #: ../../architecture.rst:237
 msgid ""
 "Unified argparse-based CLI with hierarchical subcommands, shared helpers "
@@ -313,6 +258,7 @@ msgstr ""
 #: ../../architecture.rst:239
 msgid "``config``"
 msgstr "``config``"
+
 
 #: ../../architecture.rst:240
 msgid "Centralised dataclass configuration, default singleton"

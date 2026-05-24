@@ -7,26 +7,14 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:2
 msgid "chaotic\\_pfc.comms.receiver"
-msgstr ""
+msgstr "chaotic\\_pfc.comms.receiver"
 
 #: chaotic_pfc.comms.receiver:2 of
 msgid "receiver.py"
-msgstr ""
+msgstr "receiver.py"
 
 #: chaotic_pfc.comms.receiver:3 of
 msgid ""
@@ -35,6 +23,10 @@ msgid ""
 " extracts the original message from a transmitted (and possibly channel-"
 "distorted) carrier."
 msgstr ""
+"Chaos-synchronisation demodulator. Implements the "
+":class:`~chaotic_pfc.comms.protocols.Receiver` protocol — a callable that"
+" extracts the original message from a transmitted (and possibly channel-"
+"distorted) carrier."
 
 #: chaotic_pfc.comms.receiver:8 of
 msgid ""
@@ -44,25 +36,32 @@ msgid ""
 "transient. The recovered message is then extracted as the difference "
 "between the driving signal and the local state estimate."
 msgstr ""
+"Both receivers rely on the Pecora-Carroll synchronisation principle: "
+"running a second copy of the Hénon oscillator driven by the received "
+"signal causes it to track the transmitter's state after a short "
+"transient. The recovered message is then extracted as the difference "
+"between the driving signal and the local state estimate."
 
 #: chaotic_pfc.comms.receiver:14 of
 msgid ""
 "Two receivers are provided, mirroring "
 ":mod:`chaotic_pfc.comms.transmitter`:"
 msgstr ""
+"Two receivers are provided, mirroring "
+":mod:`chaotic_pfc.comms.transmitter`:"
 
 #: chaotic_pfc.comms.receiver:17 of
 msgid ":func:`receive` — 2-D Hénon demodulator. The message is recovered via"
-msgstr ""
+msgstr ":func:`receive` — 2-D Hénon demodulator. The message is recovered via"
 
 #: chaotic_pfc.comms.receiver:19 of
 #, python-brace-format
 msgid "\\hat{m}[n] = \\frac{r[n] - y_1[n]}{\\mu}"
-msgstr ""
+msgstr "\\hat{m}[n] = \\frac{r[n] - y_1[n]}{\\mu}"
 
 #: chaotic_pfc.comms.receiver:23 of
 msgid "where ``y_1`` is the local 2-D state driven by ``r``."
-msgstr ""
+msgstr "where ``y_1`` is the local 2-D state driven by ``r``."
 
 #: chaotic_pfc.comms.receiver:25 of
 msgid ""
@@ -71,42 +70,52 @@ msgid ""
 " ``y[2][n]`` and the message follows the same formula with ``y_1`` "
 "replaced by ``v = y[2]``."
 msgstr ""
+":func:`receive_order_n` — higher-order demodulator. Uses the same FIR "
+"filter the transmitter used. The carrier is taken from the filtered state"
+" ``y[2][n]`` and the message follows the same formula with ``y_1`` "
+"replaced by ``v = y[2]``."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:8
 msgid "Functions"
-msgstr ""
+msgstr "Functions"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:12:<autosummary>:1
 msgid ""
 ":py:obj:`receive <chaotic_pfc.comms.receiver.receive>`\\ \\(r\\[\\, mu\\,"
 " a\\, b\\, y0\\, z0\\]\\)"
 msgstr ""
+":py:obj:`receive <chaotic_pfc.comms.receiver.receive>`\\ \\(r\\[\\, mu\\,"
+" a\\, b\\, y0\\, z0\\]\\)"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:12:<autosummary>:1
 #: chaotic_pfc.comms.receiver.receive:1 of
 msgid "Demodulate the carrier ``r`` via 2-D Hénon synchronisation."
-msgstr ""
+msgstr "Demodulate the carrier ``r`` via 2-D Hénon synchronisation."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:12:<autosummary>:1
 msgid ""
 ":py:obj:`receive_order_n <chaotic_pfc.comms.receiver.receive_order_n>`\\ "
 "\\(r\\, fir\\_coeffs\\[\\, mu\\, a\\, b\\, ...\\]\\)"
 msgstr ""
+":py:obj:`receive_order_n <chaotic_pfc.comms.receiver.receive_order_n>`\\ "
+"\\(r\\, fir\\_coeffs\\[\\, mu\\, a\\, b\\, ...\\]\\)"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst:12:<autosummary>:1
 #: chaotic_pfc.comms.receiver.receive_order_n:1 of
 msgid "Demodulate the carrier ``r`` via N-th order Hénon synchronisation."
-msgstr ""
+msgstr "Demodulate the carrier ``r`` via N-th order Hénon synchronisation."
 
 #: chaotic_pfc.comms.receiver.receive:3 of
 msgid "The local oscillator is driven by ``r`` itself:"
-msgstr ""
+msgstr "The local oscillator is driven by ``r`` itself:"
 
 #: chaotic_pfc.comms.receiver.receive:5 of
 msgid ""
 "y_1[n+1] &= a - r[n]^2 + b \\, y_2[n] \\\\\n"
 "y_2[n+1] &= y_1[n]"
 msgstr ""
+"y_1[n+1] &= a - r[n]^2 + b \\, y_2[n] \\\\\n"
+"y_2[n+1] &= y_1[n]"
 
 #: chaotic_pfc.comms.receiver.receive:10 of
 msgid ""
@@ -114,10 +123,13 @@ msgid ""
 " state, ``r[n] - y_1[n]`` equals the instantaneous modulation and "
 "dividing by ``μ`` recovers the message."
 msgstr ""
+"This is the Pecora-Carroll trick: once ``y`` locks onto the transmitter's"
+" state, ``r[n] - y_1[n]`` equals the instantaneous modulation and "
+"dividing by ``μ`` recovers the message."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Parameters"
-msgstr ""
+msgid "Parâmetros"
+msgstr "Parâmetros"
 
 #: chaotic_pfc.comms.receiver.receive:14 of
 msgid ""
@@ -125,17 +137,22 @@ msgid ""
 ":func:`chaotic_pfc.comms.channel.ideal_channel` or "
 ":func:`chaotic_pfc.comms.channel.fir_channel`."
 msgstr ""
+"Received carrier, shape ``(N,)``. Usually the output of "
+":func:`chaotic_pfc.comms.channel.ideal_channel` or "
+":func:`chaotic_pfc.comms.channel.fir_channel`."
 
 #: chaotic_pfc.comms.receiver.receive:17 of
 msgid ""
 "Modulation depth — must match the value used at the transmitter, "
 "otherwise the recovered amplitude is rescaled."
 msgstr ""
+"Modulation depth — must match the value used at the transmitter, "
+"otherwise the recovered amplitude is rescaled."
 
 #: chaotic_pfc.comms.receiver.receive:19 chaotic_pfc.comms.receiver.receive:20
 #: of
 msgid "Hénon parameters — must match the transmitter's."
-msgstr ""
+msgstr "Hénon parameters — must match the transmitter's."
 
 #: chaotic_pfc.comms.receiver.receive:21 chaotic_pfc.comms.receiver.receive:24
 #: of
@@ -143,10 +160,12 @@ msgid ""
 "Initial conditions of the local oscillator. A random pair is a safe "
 "default; synchronisation converges regardless after a short transient."
 msgstr ""
+"Initial conditions of the local oscillator. A random pair is a safe "
+"default; synchronisation converges regardless after a short transient."
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Returns"
-msgstr ""
+msgid "Retorna"
+msgstr "Retorna"
 
 #: chaotic_pfc.comms.receiver.receive:28 of
 msgid ""
@@ -157,6 +176,12 @@ msgid ""
 "rejection window. * **Implements** "
 "(:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
 msgstr ""
+"* *ndarray, shape (N,)* -- Recovered message estimate ``m̂[n] = (r[n] - "
+"y_1[n]) / μ``.   Transient samples (first few hundred) may differ from "
+"the true   message while the local oscillator locks in; see   "
+":data:`chaotic_pfc.config.CommConfig.transient` for the default   "
+"rejection window. * **Implements** "
+"(:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
 
 #: chaotic_pfc.comms.receiver.receive:28 of
 msgid ""
@@ -166,14 +191,39 @@ msgid ""
 ":data:`chaotic_pfc.config.CommConfig.transient` for the default rejection"
 " window."
 msgstr ""
+"*ndarray, shape (N,)* -- Recovered message estimate ``m̂[n] = (r[n] - "
+"y_1[n]) / μ``. Transient samples (first few hundred) may differ from the "
+"true message while the local oscillator locks in; see "
+":data:`chaotic_pfc.config.CommConfig.transient` for the default rejection"
+" window."
 
 #: chaotic_pfc.comms.receiver.receive:33 of
 msgid "**Implements** (:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
-msgstr ""
+msgstr "**Implements** (:class:`~chaotic_pfc.comms.protocols.Receiver`.)"
 
 #: ../../api/generated/chaotic_pfc.comms.receiver.rst
-msgid "Return type"
+msgid "Tipo de retorno"
+msgstr "Tipo de retorno"
+
+#: chaotic_pfc.comms.receiver.receive:36 of
+msgid "Referências"
+msgstr "Referências"
+
+#: chaotic_pfc.comms.receiver.receive:37 of
+msgid ""
+"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
+"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
 msgstr ""
+"L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
+"Phys. Rev. Lett., v. 64, n. 8, p. 821, 1990."
+
+#: chaotic_pfc.comms.receiver.receive:40 of
+msgid ""
+"C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
+"Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
+msgstr ""
+"C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
+"Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:3 of
 msgid ""
@@ -181,39 +231,48 @@ msgid ""
 "and recovers the message from the difference between the received sample "
 "and the local filtered state ``v = y[2]``:"
 msgstr ""
+"Runs a local copy of the N-th order filtered Hénon map driven by ``r``, "
+"and recovers the message from the difference between the received sample "
+"and the local filtered state ``v = y[2]``:"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:7 of
 #, python-brace-format
 msgid "\\hat{m}[n] = \\frac{r[n] - v[n]}{\\mu}"
-msgstr ""
+msgstr "\\hat{m}[n] = \\frac{r[n] - v[n]}{\\mu}"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:11 of
 msgid "Received carrier, shape ``(N,)``."
-msgstr ""
+msgstr "Received carrier, shape ``(N,)``."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:12 of
 msgid ""
 "FIR feedback coefficients, shape ``(Nc,)``. Must match the ones used at "
 "the transmitter — otherwise synchronisation fails."
 msgstr ""
+"FIR feedback coefficients, shape ``(Nc,)``. Must match the ones used at "
+"the transmitter — otherwise synchronisation fails."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:15
 #: chaotic_pfc.comms.receiver.receive_order_n:16
 #: chaotic_pfc.comms.receiver.receive_order_n:17 of
 msgid "Must match the transmitter's parameters."
-msgstr ""
+msgstr "Must match the transmitter's parameters."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:18 of
 msgid ""
 "Optional explicit initial state, shape ``(Nc,)``. If omitted, a random "
 "state is drawn from ``Uniform(0, 0.5)``."
 msgstr ""
+"Optional explicit initial state, shape ``(Nc,)``. If omitted, a random "
+"state is drawn from ``Uniform(0, 0.5)``."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:20 of
 msgid ""
 "Seed for the RNG used when ``y0=None``. Has no effect when ``y0`` is "
 "provided."
 msgstr ""
+"Seed for the RNG used when ``y0=None``. Has no effect when ``y0`` is "
+"provided."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:23 of
 msgid ""
@@ -226,10 +285,18 @@ msgid ""
 ":func:`receive` (the 2-D variant) for code that types against the * "
 "*Receiver protocol.*"
 msgstr ""
+"* **m_hat** (*ndarray, shape (N,)*) -- Recovered message estimate. * "
+"**state** (*ndarray, shape (Nc, N + 1)*) -- Full state trajectory of the "
+"local oscillator. Column 0 holds   ``y0``; each subsequent column is the "
+"next iterate. * **Note** (*this function does NOT implement*) * "
+":class:`~chaotic_pfc.comms.protocols.Receiver` because it returns a * "
+"``(recovered, state)`` tuple instead of a single ndarray. Use * "
+":func:`receive` (the 2-D variant) for code that types against the * "
+"*Receiver protocol.*"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:23 of
 msgid "**m_hat** (*ndarray, shape (N,)*) -- Recovered message estimate."
-msgstr ""
+msgstr "**m_hat** (*ndarray, shape (N,)*) -- Recovered message estimate."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:24 of
 msgid ""
@@ -237,23 +304,39 @@ msgid ""
 "local oscillator. Column 0 holds ``y0``; each subsequent column is the "
 "next iterate."
 msgstr ""
+"**state** (*ndarray, shape (Nc, N + 1)*) -- Full state trajectory of the "
+"local oscillator. Column 0 holds ``y0``; each subsequent column is the "
+"next iterate."
 
 #: chaotic_pfc.comms.receiver.receive_order_n:26 of
 msgid "**Note** (*this function does NOT implement*)"
-msgstr ""
+msgstr "**Note** (*this function does NOT implement*)"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:27 of
 msgid ":class:`~chaotic_pfc.comms.protocols.Receiver` because it returns a"
-msgstr ""
+msgstr ":class:`~chaotic_pfc.comms.protocols.Receiver` because it returns a"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:28 of
 msgid "``(recovered, state)`` tuple instead of a single ndarray. Use"
-msgstr ""
+msgstr "``(recovered, state)`` tuple instead of a single ndarray. Use"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:29 of
 msgid ":func:`receive` (the 2-D variant) for code that types against the"
-msgstr ""
+msgstr ":func:`receive` (the 2-D variant) for code that types against the"
 
 #: chaotic_pfc.comms.receiver.receive_order_n:30 of
 msgid "*Receiver protocol.*"
-msgstr ""
+msgstr "*Receiver protocol.*"
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "Return type"
+#~ msgstr ""
+
+#~ msgid "References"
+#~ msgstr ""
+

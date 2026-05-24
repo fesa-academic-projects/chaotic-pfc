@@ -153,9 +153,7 @@ msgstr "**Categorias de teste:**"
 
 #: ../../development.rst:119
 msgid "**Unit tests**: verify individual functions with known inputs/outputs."
-msgstr ""
-"**Testes unitários** — verificam funções individuais com entradas/saídas "
-"conhecidas."
+msgstr "**Testes unitários**: verificam funções individuais com entradas/saídas conhecidas."
 
 #: ../../development.rst:120
 msgid "**Integration tests**: test the communication pipeline end-to-end."
@@ -251,12 +249,7 @@ msgid ""
 "``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
 "reference pages are **not** translated: they stay in English because they"
 " are auto-generated from Python docstrings."
-msgstr ""
-"As fontes da documentação estão em ``docs/`` como reStructuredText "
-"(``.rst``). As traduções (português brasileiro) estão em "
-"``docs/locale/pt_BR/LC_MESSAGES/`` como arquivos Gettext ``.po``. As "
-"páginas de referência da API **não** são traduzidas — permanecem em "
-"inglês porque são geradas automaticamente a partir das docstrings Python."
+msgstr "Documentation sources are in ``docs/`` as reStructuredText (``.rst``). Translations (Brazilian Portuguese) are in ``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API reference pages are **not** translated: they stay in English because they are auto-generated from Python docstrings."
 
 #: ../../development.rst:193
 msgid "Code style"
@@ -314,9 +307,7 @@ msgstr "Mensagens de commit"
 msgid ""
 "Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
 "``ci``, ``refactor``)"
-msgstr ""
-"Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
-"``ci``, ``refactor``)"
+msgstr "Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, ``ci``, ``refactor``)"
 
 #: ../../development.rst:212
 msgid "Language"

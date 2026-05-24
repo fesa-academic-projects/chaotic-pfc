@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 15:30-0300\n"
+"POT-Creation-Date: 2026-05-23 21:24-0300\n"
 "PO-Revision-Date: 2026-05-23 15:30-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -25,9 +25,9 @@ msgstr "Validação científica"
 
 #: ../../validation.rst:6
 msgid ""
-"The Lyapunov exponent computation in ``chaotic_pfc`` has been numerically "
-"validated against published reference values from the scientific literature "
-"and against an analytical mathematical identity."
+"The Lyapunov exponent computation in ``chaotic_pfc`` has been numerically"
+" validated against published reference values from the scientific "
+"literature and against an analytical mathematical identity."
 msgstr ""
 "O cálculo de expoentes de Lyapunov do ``chaotic_pfc`` foi validado "
 "numericamente contra valores de referência publicados na literatura "
@@ -39,11 +39,12 @@ msgstr "Valores de referência"
 
 #: ../../validation.rst:13
 msgid ""
-"The following table summarises the Lyapunov spectrum of the standard "
-"Hénon map (:math:`a = 1.4`, :math:`b = 0.3`) as reported by independent "
-"sources, alongside the value computed by "
-":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` with "
-":math:`N_{\\text{itera}} = 20\\,000` and seed 42."
+"The following table summarises the Lyapunov spectrum of the generalised "
+"Hénon map (:math:`\\alpha = 1.4`, :math:`\\beta = 0.3`) — equivalent to "
+"the standard Hénon (:math:`a = 1.4`, :math:`b = 0.3`) under a linear "
+"change of variables —, as reported by independent sources, alongside the "
+"value computed by :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`"
+" with :math:`N_{\\text{itera}} = 20\\,000` and seed 42."
 msgstr ""
 "A tabela a seguir resume o espectro de Lyapunov do mapa de Hénon padrão "
 "(:math:`a = 1.4`, :math:`b = 0.3`) conforme reportado por fontes "
@@ -51,101 +52,245 @@ msgstr ""
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` com "
 ":math:`N_{\\text{itera}} = 20\\,000` e seed 42."
 
-#: ../../validation.rst:18
+#: ../../validation.rst:24
 msgid "Source"
 msgstr "Fonte"
 
-#: ../../validation.rst:43
-msgid ""
-"Relative error of ``chaotic-pfc`` vs. each reference"
-msgstr ""
-"Erro relativo do ``chaotic-pfc`` vs. cada referência"
+#: ../../validation.rst:25
+msgid ":math:`\\lambda_1`"
+msgstr ":math:`\\\\lambda_1`"
 
-#: ../../validation.rst:48
-msgid "Comparison"
-msgstr "Comparação"
+#: ../../validation.rst:26
+msgid ":math:`\\lambda_2`"
+msgstr ":math:`\\\\lambda_2`"
 
-#: ../../validation.rst:49
-msgid "Relative error"
-msgstr "Erro relativo"
+#: ../../validation.rst:27
+msgid ":math:`\\lambda_1 + \\lambda_2`"
+msgstr ":math:`\\\\lambda_1 + \\\\lambda_2`"
 
-#: ../../validation.rst:65
+#: ../../validation.rst:28
+msgid "Wolf et al. (1985) [1]_"
+msgstr "Wolf et al. (1985) [1]_"
+
+#: ../../validation.rst:29
+msgid ":math:`+0.418`"
+msgstr ":math:`+0.418`"
+
+#: ../../validation.rst:30
+msgid ":math:`-1.622`"
+msgstr ":math:`-1.622`"
+
+#: ../../validation.rst:31 ../../validation.rst:35
+msgid ":math:`-1.204`"
+msgstr ":math:`-1.204`"
+
+#: ../../validation.rst:32
+msgid "Sprott (2003) [2]_"
+msgstr "Sprott (2003) [2]_"
+
+#: ../../validation.rst:33
+msgid ":math:`+0.419`"
+msgstr ":math:`+0.419`"
+
+#: ../../validation.rst:34
+msgid ":math:`-1.623`"
+msgstr ":math:`-1.623`"
+
+#: ../../validation.rst:36 ../../validation.rst:63
 msgid "Analytical identity"
 msgstr "Identidade analítica"
 
-#: ../../validation.rst:67
-msgid ""
-"For the Hénon map, the Jacobian determinant is constant: "
-":math:`\\det J = -b`.  Consequently, the sum of the Lyapunov exponents "
-"must satisfy"
-msgstr ""
-"Para o mapa de Hénon, o determinante Jacobiano é constante: "
-":math:`\\det J = -b`.  Consequentemente, a soma dos expoentes de "
-"Lyapunov deve satisfazer"
+#: ../../validation.rst:37
+msgid ":math:`\\ln|\\beta| = \\ln(0.3)`"
+msgstr ":math:`\\\\ln|\\\\beta| = \\\\ln(0.3)`"
 
-#: ../../validation.rst:77
+#: ../../validation.rst:38 ../../validation.rst:39
+msgid "—"
+msgstr "—"
+
+#: ../../validation.rst:40 ../../validation.rst:44
+msgid ":math:`-1.203\\,973`"
+msgstr ":math:`-1.203\\\\,973`"
+
+#: ../../validation.rst:41
+msgid "**This work** (Nitera = 20 000)"
+msgstr "**Este trabalho** (Nitera = 20 000)"
+
+#: ../../validation.rst:42
+msgid ":math:`+0.417\\,567`"
+msgstr ":math:`+0.417\\\\,567`"
+
+#: ../../validation.rst:43
+msgid ":math:`-1.621\\,539`"
+msgstr ":math:`-1.621\\\\,539`"
+
+#: ../../validation.rst:46
+msgid "Relative error of ``chaotic-pfc`` vs. each reference"
+msgstr "Erro relativo do ``chaotic-pfc`` vs. cada referência"
+
+#: ../../validation.rst:49
+msgid "Comparison"
+msgstr "Comparação"
+
+#: ../../validation.rst:50
+msgid "Relative error"
+msgstr "Erro relativo"
+
+#: ../../validation.rst:51
+msgid ":math:`\\lambda_1` vs. Wolf 1985"
+msgstr ":math:`\\\\lambda_1` vs. Wolf 1985"
+
+#: ../../validation.rst:52
+msgid "0.10 %"
+msgstr "0,10 %"
+
+#: ../../validation.rst:53
+msgid ":math:`\\lambda_1` vs. Sprott 2003"
+msgstr ":math:`\\\\lambda_1` vs. Sprott 2003"
+
+#: ../../validation.rst:54
+msgid "0.34 %"
+msgstr "0,34 %"
+
+#: ../../validation.rst:55
+msgid ":math:`\\lambda_2` vs. Wolf 1985"
+msgstr ":math:`\\\\lambda_2` vs. Wolf 1985"
+
+#: ../../validation.rst:56
+msgid "0.03 %"
+msgstr "0,03 %"
+
+#: ../../validation.rst:57
+msgid ":math:`\\lambda_2` vs. Sprott 2003"
+msgstr ":math:`\\\\lambda_2` vs. Sprott 2003"
+
+#: ../../validation.rst:58
+msgid "0.09 %"
+msgstr "0,09 %"
+
+#: ../../validation.rst:59
+msgid "Sum vs. :math:`\\ln(0.3)`"
+msgstr "Soma vs. :math:`\\ln(0{,}3)`"
+
+#: ../../validation.rst:60
+#, python-brace-format
+msgid ":math:`2.2 \\times 10^{-16}` (machine precision)"
+msgstr ":math:`2.2 \\\\times 10^{-16}` (machine precision)"
+
+#: ../../validation.rst:65
+msgid ""
+"For the Hénon map, the Jacobian determinant is constant: :math:`\\det J ="
+" -\\beta`.  Consequently, the sum of the Lyapunov exponents must satisfy"
+msgstr ""
+"Para o mapa de Hénon, o determinante Jacobiano é constante: :math:`\\det "
+"J = -b`.  Consequentemente, a soma dos expoentes de Lyapunov deve "
+"satisfazer"
+
+#: ../../validation.rst:69
+msgid "\\lambda_1 + \\lambda_2 = \\ln|\\det J| = \\ln \\beta."
+msgstr "\\\\lambda_1 + \\\\lambda_2 = \\\\ln|\\\\det J| = \\\\ln \\\\beta."
+
+#: ../../validation.rst:73
 msgid ""
 "This identity holds for **any** dissipative parameter pair "
-":math:`(a, b)` for which the orbit remains bounded.  It does **not** "
-"depend on any external reference — it is a mathematical theorem."
+":math:`(\\alpha, \\beta)` for which the orbit remains bounded.  It does "
+"**not** depend on any external reference — it is a mathematical theorem."
 msgstr ""
-"Esta identidade é válida para **qualquer** par de parâmetros dissipativos "
-":math:`(a, b)` para o qual a órbita permanece limitada.  Ela **não** "
+"Esta identidade é válida para **qualquer** par de parâmetros dissipativos"
+" :math:`(a, b)` para o qual a órbita permanece limitada.  Ela **não** "
 "depende de nenhuma referência externa — é um teorema matemático."
 
-#: ../../validation.rst:82
+#: ../../validation.rst:77
 msgid "The test suite verifies this identity at three parameter sets:"
-msgstr "A suíte de testes verifica esta identidade em três conjuntos de parâmetros:"
+msgstr "The test suite verifies this identity at three parameter sets:"
+"A suíte de testes verifica esta identidade em três conjuntos de "
+"parâmetros:"
 
-#: ../../validation.rst:90
+#: ../../validation.rst:79
+msgid ":math:`(\\alpha = 1.4, \\; \\beta = 0.3)` — standard chaotic regime"
+msgstr ":math:`(\\\\alpha = 1.4, \\\\; \\\\beta = 0.3)` — standard chaotic regime"
+
+#: ../../validation.rst:80
+msgid ":math:`(\\alpha = 1.4, \\; \\beta = 0.2)` — strongly dissipative"
+msgstr ":math:`(\\\\alpha = 1.4, \\\\; \\\\beta = 0.2)` — strongly dissipative"
+
+#: ../../validation.rst:81
+msgid ":math:`(\\alpha = 1.0, \\; \\beta = 0.5)` — non-chaotic (periodic)"
+msgstr ":math:`(\\\\alpha = 1.0, \\\\; \\\\beta = 0.5)` — non-chaotic (periodic)"
+
+#: ../../validation.rst:83
+#, python-brace-format
+msgid "In every case the error is below :math:`10^{-6}`."
+msgstr "Em todos os casos o erro é inferior a :math:`10^{-6}`."
+
+#: ../../validation.rst:86
 msgid "How to run the validation tests"
 msgstr "Como executar os testes de validação"
 
-#: ../../validation.rst:96
+#: ../../validation.rst:92
 msgid ""
 "All nine tests pass (≈ 4 s on a modern CPU).  The Wolf and Sprott "
 "comparisons use :math:`N_{\\text{itera}} = 20\\,000`; the analytical "
 "identity tests use :math:`10\\,000`."
 msgstr ""
 "Todos os nove testes passam (≈ 4 s em uma CPU moderna).  As comparações "
-"com Wolf e Sprott usam :math:`N_{\\text{itera}} = 20\\,000`; os testes de "
-"identidade analítica usam :math:`10\\,000`."
+"com Wolf e Sprott usam :math:`N_{\\text{itera}} = 20\\,000`; os testes de"
+" identidade analítica usam :math:`10\\,000`."
 
-#: ../../validation.rst:101
+#: ../../validation.rst:97
 msgid "Known limitations"
 msgstr "Limitações conhecidas"
 
-#: ../../validation.rst:103
+#: ../../validation.rst:99
+#, python-format
 msgid ""
-"**Finite-time convergence.**  Published Lyapunov values correspond to the "
-"asymptotic limit :math:`N_{\\text{itera}} \\to \\infty`.  Our code with "
+"**Finite-time convergence.**  Published Lyapunov values correspond to the"
+" asymptotic limit :math:`N_{\\text{itera}} \\to \\infty`.  Our code with "
 ":math:`N_{\\text{itera}} = 2\\,000` (the default for sweeps) produces "
 ":math:`\\lambda_1 \\approx 0.408` — a 2.4 % deviation from Wolf.  The "
-"error decreases to 0.10 % at :math:`20\\,000` iterations.  The default "
+"error decreases to 0.10 % at :math:`20\\,000` iterations. The default "
 "iteration count is a conscious trade-off between sweep throughput and "
 "per-point accuracy; the analytical identity confirms the implementation "
 "is correct at *any* iteration count."
 msgstr ""
 "**Convergência em tempo finito.**  Os valores de Lyapunov publicados "
 "correspondem ao limite assintótico :math:`N_{\\text{itera}} \\to "
-"\\infty`.  Nosso código com :math:`N_{\\text{itera}} = 2\\,000` (o "
-"padrão para varreduras) produz :math:`\\lambda_1 \\approx 0.408` — um "
-"desvio de 2,4 % em relação a Wolf.  O erro cai para 0,10 % com "
-":math:`20\\,000` iterações.  A contagem padrão de iterações é uma "
-"troca consciente entre vazão da varredura e precisão por ponto; a "
-"identidade analítica confirma que a implementação está correta em "
-"*qualquer* contagem de iterações."
+"\\infty`.  Nosso código com :math:`N_{\\text{itera}} = 2\\,000` (o padrão"
+" para varreduras) produz :math:`\\lambda_1 \\approx 0.408` — um desvio de"
+" 2,4 % em relação a Wolf.  O erro cai para 0,10 % com :math:`20\\,000` "
+"iterações.  A contagem padrão de iterações é uma troca consciente entre "
+"vazão da varredura e precisão por ponto; a identidade analítica confirma "
+"que a implementação está correta em *qualquer* contagem de iterações."
 
-#: ../../validation.rst:112
+#: ../../validation.rst:108
+msgid "**Orbit divergence.**  Not every :math:`(a, b)` pair yields a bounded"
+msgstr "**Divergência da órbita.**  Nem todo par :math:`(a, b)` produz um atrator"
+
+#: ../../validation.rst:109
 msgid ""
-"**Orbit divergence.**  Not every :math:`(a, b)` pair yields a bounded "
 "attractor.  The test suite uses only parameter sets known to produce "
 "bounded orbits in the long-time limit."
 msgstr ""
-"**Divergência de órbita.**  Nem todo par :math:`(a, b)` produz um "
-"atrator limitado.  A suíte de testes usa apenas conjuntos de parâmetros "
+"**Divergência de órbita.**  Nem todo par :math:`(a, b)` produz um atrator"
+" limitado.  A suíte de testes usa apenas conjuntos de parâmetros "
 "conhecidos por produzir órbitas limitadas no limite de tempo longo."
 
-#: ../../validation.rst:118
+#: ../../validation.rst:113
 msgid "References"
 msgstr "Referências"
+
+#: ../../validation.rst:115
+msgid ""
+"A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, \"Determining "
+"Lyapunov exponents from a time series,\" *Physica D: Nonlinear "
+"Phenomena*, vol. 16, no. 3, pp. 285–317, 1985. DOI: "
+"`10.1016/0167-2789(85)90011-9 "
+"<https://doi.org/10.1016/0167-2789(85)90011-9>`_"
+msgstr "A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, \\Lyapunov exponents from a time series,\\Phenomena*, vol. 16, no. 3, pp. 285–317, 1985. DOI: `10.1016/0167-2789(85)90011-9 <https://doi.org/10.1016/0167-2789(85)90011-9>`_"
+
+#: ../../validation.rst:120
+msgid ""
+"J. C. Sprott, *Chaos and Time-Series Analysis*, Oxford University Press, "
+"2003, Section 5.2. ISBN: 978-0-19-850840-3"
+msgstr "J. C. Sprott, *Chaos and Time-Series Analysis*, Oxford University Press, 2003, Seção 5.2. ISBN: 978-0-19-850840-3"
+
