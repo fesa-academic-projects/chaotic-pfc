@@ -28,7 +28,7 @@ msgid ""
 "A self-contained Jupyter notebook walks through the full ``chaotic-pfc`` "
 "pipeline — from the Hénon map to FIR-filtered chaotic communication — in "
 "about one minute of compute time."
-msgstr "A self-contained Jupyter notebook walks through the full ``chaotic-pfc`` pipeline — from the Hénon map to FIR-filtered chaotic communication — in about one minute of compute time."
+msgstr "Um notebook Jupyter autocontido percorre o pipeline completo do ``chaotic-pfc`` — do mapa de Hénon à comunicação caótica com filtro FIR — em cerca de um minuto de tempo de computação."
 
 #: ../../tutorial.rst:18
 msgid ""

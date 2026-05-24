@@ -39,8 +39,8 @@ msgstr "O mapa de Hénon tem dois parâmetros :math:`(a, b)`; a versão com filt
 msgid ""
 "A single Lyapunov computation answers this for one grid point.  The "
 "**parameter sweep** answers it for the entire 2‑D grid, producing the "
-"classification maps that form the empirical backbone of the TCC."
-msgstr "Um único cálculo de Lyapunov responde isso para um ponto da grade.  A **varredura de parâmetros** responde para toda a grade 2‑D, produzindo os mapas de classificação que formam a espinha dorsal empírica do TCC."
+"classification maps that form the empirical backbone of the PFC."
+msgstr "Um único cálculo de Lyapunov responde isso para um ponto da grade.  A **varredura de parâmetros** responde para toda a grade 2‑D, produzindo os mapas de classificação que formam a espinha dorsal empírica do PFC."
 
 #: ../../source/algorithms/sweep.rst:19
 msgid "Grid structure"

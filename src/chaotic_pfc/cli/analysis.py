@@ -86,7 +86,7 @@ def _add_export_tables_parser(sub: argparse._SubParsersAction) -> None:
     """Register ``export-tables`` sub-subcommand."""
     p_et = sub.add_parser(
         "export-tables",
-        help="Export analysis tables as LaTeX (.tex) files ready for TCC.",
+        help="Export analysis tables as LaTeX (.tex) files ready for PFC.",
     )
     p_et.add_argument(
         "--sweep-dir",

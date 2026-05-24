@@ -33,7 +33,7 @@ msgid ""
 "filter is inserted **inside the Hénon feedback loop**.  This turns the "
 "standard 2‑D map into a higher‑dimensional system whose dynamics are "
 "shaped by the filter coefficients."
-msgstr "In the chaotic communication scheme, a finite impulse response (FIR) filter is inserted **inside the Hénon feedback loop**.  This turns the standard 2‑D map into a higher‑dimensional system whose dynamics are shaped by the filter coefficients."
+msgstr "No esquema de comunicação caótica, um filtro de resposta ao impulso finita (FIR) é inserido **dentro do laço de realimentação de Hénon**.  Isso transforma o mapa 2‑D padrão em um sistema de dimensão mais alta cuja dinâmica é moldada pelos coeficientes do filtro."
 
 #: ../../source/algorithms/fir_design.rst:14
 msgid "The motivation is two‑fold:"
@@ -45,14 +45,14 @@ msgid ""
 "have a broad, flat spectrum.  Real communication channels have limited "
 "bandwidth — the FIR filter constrains the chaotic signal to occupy only "
 "the desired frequency band."
-msgstr "**Band‑limiting.**  Chaotic signals produced by the unfiltered Hénon map have a broad, flat spectrum.  Real communication channels have limited bandwidth — the FIR filter constrains the chaotic signal to occupy only the desired frequency band."
+msgstr "**Limitação de banda.**  Sinais caóticos produzidos pelo mapa de Hénon não filtrado têm um espectro amplo e plano.  Canais de comunicação reais têm largura de banda limitada — o filtro FIR restringe o sinal caótico a ocupar apenas a faixa de frequência desejada."
 
 #: ../../source/algorithms/fir_design.rst:21
 msgid ""
 "**Controllable chaos.**  By varying the filter order and cutoff, we can "
 "study which filter parameters *preserve* chaos and which *suppress* it — "
-"the core empirical question of the TCC."
-msgstr "**Controllable chaos.**  By varying the filter order and cutoff, we can study which filter parameters *preserve* chaos and which *suppress* it — the core empirical question of the TCC."
+"the core empirical question of the PFC."
+msgstr "**Caos controlável.**  Variando a ordem e a frequência de corte do filtro, podemos estudar quais parâmetros *preservam* o caos e quais o *suprimem* — a questão empírica central do PFC."
 
 #: ../../source/algorithms/fir_design.rst:26
 msgid "``firwin`` vs. MATLAB ``fir1``"
@@ -63,7 +63,7 @@ msgid ""
 "The project uses :func:`scipy.signal.firwin` rather than implementing its"
 " own FIR design.  There is a documented off‑by‑one difference relative to"
 " MATLAB's ``fir1``:"
-msgstr "The project uses :func:`scipy.signal.firwin` rather than implementing its own FIR design.  There is a documented off‑by‑one difference relative to MATLAB's ``fir1``:"
+msgstr "O projeto usa :func:`scipy.signal.firwin` em vez de implementar seu próprio projeto FIR.  Há uma diferença off‑by‑one documentada em relação ao ``fir1`` do MATLAB:"
 
 #: ../../source/algorithms/fir_design.rst:32
 msgid "MATLAB: ``fir1(N, wc)`` produces ``N+1`` coefficients."
@@ -79,7 +79,7 @@ msgid ""
 " wc)``.  The ``chaotic-pfc`` codebase consistently uses ``firwin(Nss, "
 "wc)`` where ``Nss`` is the number of filter taps (coefficients), which "
 "matches the convention used in the academic article."
-msgstr "To obtain the same filter as MATLAB's ``fir1(N, wc)``, call ``firwin(N+1, wc)``.  The ``chaotic-pfc`` codebase consistently uses ``firwin(Nss, wc)`` where ``Nss`` is the number of filter taps (coefficients), which matches the convention used in the academic article."
+msgstr "Para obter o mesmo filtro do ``fir1(N, wc)`` do MATLAB, chame ``firwin(N+1, wc)``.  O código do ``chaotic-pfc`` consistentemente usa ``firwin(Nss, wc)`` onde ``Nss`` é o número de coeficientes do filtro, que corresponde à convenção usada no artigo acadêmico."
 
 #: ../../source/algorithms/fir_design.rst:41
 msgid ""
@@ -155,7 +155,7 @@ msgstr "For bandpass and bandstop, the bandwidth :math:`\\\\Delta` defaults to :
 msgid ""
 "Lowpass is the default because it is the most common configuration in "
 "communication engineering and serves as the baseline for all comparisons."
-msgstr "Lowpass is the default because it is the most common configuration in communication engineering and serves as the baseline for all comparisons."
+msgstr "Passa-baixas é o padrão porque é a configuração mais comum em engenharia de comunicação e serve como linha de base para todas as comparações."
 
 #: ../../source/algorithms/fir_design.rst:77
 msgid "Windows"
@@ -165,7 +165,7 @@ msgstr "Janelas"
 msgid ""
 "The FIR design uses one of seven window functions to shape the filter's "
 "frequency response:"
-msgstr "The FIR design uses one of seven window functions to shape the filter's frequency response:"
+msgstr "O projeto FIR usa uma de sete funções de janela para moldar a resposta em frequência do filtro:"
 
 #: ../../source/algorithms/fir_design.rst:85
 msgid "Window"
@@ -173,7 +173,7 @@ msgstr "Janela"
 
 #: ../../source/algorithms/fir_design.rst:86
 msgid "Key"
-msgstr "Key"
+msgstr "Identificador"
 
 #: ../../source/algorithms/fir_design.rst:87
 msgid "Sidelobe attenuation"
@@ -227,7 +227,7 @@ msgstr "~74 dB"
 
 #: ../../source/algorithms/fir_design.rst:100
 msgid "Low"
-msgstr "Low"
+msgstr "Baixa"
 
 #: ../../source/algorithms/fir_design.rst:101
 msgid "Blackman-Harris"
@@ -317,7 +317,7 @@ msgid ""
 " solving a linear system involving the filter coefficients.  For the "
 "system to have a bounded attractor, the fixed point must be finite and "
 "the filter must be stable (all poles inside the unit circle)."
-msgstr "The **fixed point** of the combined map‑plus‑filter system is computed by solving a linear system involving the filter coefficients.  For the system to have a bounded attractor, the fixed point must be finite and the filter must be stable (all poles inside the unit circle)."
+msgstr "O **ponto fixo** do sistema combinado mapa‑mais‑filtro é calculado resolvendo um sistema linear envolvendo os coeficientes do filtro.  Para que o sistema tenha um atrator limitado, o ponto fixo deve ser finito e o filtro deve ser estável (todos os polos dentro do círculo unitário)."
 
 #: ../../source/algorithms/fir_design.rst:138
 msgid ""
@@ -353,5 +353,5 @@ msgid ""
 "  The chaotic map is sensitive to the exact coefficient magnitudes, which"
 " is why the FIR bank is precomputed once rather than reconstructed per "
 "grid point."
-msgstr "**DC gain.**  FIR filters designed with ``firwin`` have a DC gain of approximately 1.0 for lowpass — but not exactly, due to window tapering.  The chaotic map is sensitive to the exact coefficient magnitudes, which is why the FIR bank is precomputed once rather than reconstructed per grid point."
+msgstr "**Ganho DC.**  Filtros FIR projetados com ``firwin`` têm ganho DC de aproximadamente 1,0 para passa-baixas — mas não exatamente, devido ao janelamento.  O mapa caótico é sensível às magnitudes exatas dos coeficientes, razão pela qual o banco FIR é pré-computado uma vez em vez de reconstruído por ponto da grade."
 

@@ -13,7 +13,7 @@ adds the filter order :math:`N_z` and the normalised cutoff frequency
 
 A single Lyapunov computation answers this for one grid point.  The
 **parameter sweep** answers it for the entire 2‑D grid, producing the
-classification maps that form the empirical backbone of the TCC.
+classification maps that form the empirical backbone of the PFC.
 
 Grid structure
 --------------

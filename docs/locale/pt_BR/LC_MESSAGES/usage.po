@@ -319,8 +319,8 @@ msgstr ""
 ":math:`\\beta`."
 
 #: ../../usage.rst:217
-msgid "Export tables for TCC/article"
-msgstr "Exportar tabelas para TCC/artigo"
+msgid "Export tables for PFC/article"
+msgstr "Exportar tabelas para PFC/artigo"
 
 #: ../../usage.rst:219
 msgid "Generate publication-ready LaTeX tables with bilingual support:"

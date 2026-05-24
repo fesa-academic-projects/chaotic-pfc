@@ -20,7 +20,7 @@ The motivation is two‑fold:
 
 2. **Controllable chaos.**  By varying the filter order and cutoff, we
    can study which filter parameters *preserve* chaos and which
-   *suppress* it — the core empirical question of the TCC.
+   *suppress* it — the core empirical question of the PFC.
 
 ``firwin`` vs. MATLAB ``fir1``
 ------------------------------

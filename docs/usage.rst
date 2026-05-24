@@ -213,7 +213,7 @@ found under ``data/sweeps/``:
    # Analyse a specific sweep directory
     chaotic-pfc run analysis --data-dir data/sweeps
 
-Export tables for TCC/article
+Export tables for PFC/article
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Generate publication-ready LaTeX tables with bilingual support:
