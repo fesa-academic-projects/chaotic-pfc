@@ -10,8 +10,10 @@ scientific literature and against an analytical mathematical identity.
 Reference values
 ----------------
 
-The following table summarises the Lyapunov spectrum of the standard
-Hénon map (:math:`a = 1.4`, :math:`b = 0.3`) as reported by
+The following table summarises the Lyapunov spectrum of the generalised
+Hénon map (:math:`\alpha = 1.4`, :math:`\beta = 0.3`) — equivalent to
+the standard Hénon (:math:`a = 1.4`, :math:`b = 0.3`) under a linear
+change of variables —, as reported by
 independent sources, alongside the value computed by
 :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d` with
 :math:`N_{\text{itera}} = 20\,000` and seed 42.
@@ -32,7 +34,7 @@ independent sources, alongside the value computed by
      - :math:`-1.623`
      - :math:`-1.204`
    * - | Analytical identity
-       | :math:`\ln|b| = \ln(0.3)`
+       | :math:`\ln|\beta| = \ln(0.3)`
      - —
      - —
      - :math:`-1.203\,973`
@@ -61,22 +63,22 @@ Analytical identity
 -------------------
 
 For the Hénon map, the Jacobian determinant is constant:
-:math:`\det J = -b`.  Consequently, the sum of the Lyapunov exponents
+:math:`\det J = -\beta`.  Consequently, the sum of the Lyapunov exponents
 must satisfy
 
 .. math::
 
-   \lambda_1 + \lambda_2 = \ln|\det J| = \ln b.
+   \lambda_1 + \lambda_2 = \ln|\det J| = \ln \beta.
 
 This identity holds for **any** dissipative parameter pair
-:math:`(a, b)` for which the orbit remains bounded.  It does **not**
+:math:`(\alpha, \beta)` for which the orbit remains bounded.  It does **not**
 depend on any external reference — it is a mathematical theorem.
 
 The test suite verifies this identity at three parameter sets:
 
-* :math:`(a = 1.4, \; b = 0.3)` — standard chaotic regime
-* :math:`(a = 1.4, \; b = 0.2)` — strongly dissipative
-* :math:`(a = 1.0, \; b = 0.5)` — non-chaotic (periodic)
+* :math:`(\alpha = 1.4, \; \beta = 0.3)` — standard chaotic regime
+* :math:`(\alpha = 1.4, \; \beta = 0.2)` — strongly dissipative
+* :math:`(\alpha = 1.0, \; \beta = 0.5)` — non-chaotic (periodic)
 
 In every case the error is below :math:`10^{-6}`.
 

@@ -54,19 +54,23 @@ continuous systems. Its widespread use as a paradigm for chaotic signal
 generation stems from the combination of mathematical simplicity with
 rich dynamical behaviour [Henon76]_.
 
-Standard form
-~~~~~~~~~~~~~
+Generalised form
+~~~~~~~~~~~~~~~~
 
-The system is described by the recurrence equations:
+The system used throughout the library is the generalised form,
+written in coupled-oscillator notation:
 
 .. math::
 
-    x_1[n+1] &= 1 - a \, x_1[n]^2 + b \, x_2[n] \\
+    x_1[n+1] &= \alpha - x_1[n]^2 + \beta \, x_2[n] \\
     x_2[n+1] &= x_1[n]
 
 where :math:`x_1[n]` and :math:`x_2[n]` are the state variables at
-discrete time :math:`n`, and the parameters :math:`(a, b)` control the
-dynamical behaviour.
+discrete time :math:`n`, and the parameters :math:`(\alpha, \beta)`
+control the dynamical behaviour.  This form is equivalent to the
+classic Hénon map (which uses :math:`1 - a\,x_n^2 + y_n`,
+:math:`y_{n+1} = b\,x_n`) under a linear change of variables;
+both share the same Lyapunov spectrum.
 
 Canonical chaotic regime
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,7 +79,7 @@ For the parameter pair
 
 .. math::
 
-    (a, b) = (1.4, 0.3)
+    (\alpha, \beta) = (1.4, 0.3)
 
 the map exhibits a **strange attractor** with:
 
@@ -90,17 +94,17 @@ Parameter dependence
 ^^^^^^^^^^^^^^^^^^^^
 
 The qualitative behaviour of the Hénon map depends critically on
-:math:`(a, b)`:
+:math:`(\alpha, \beta)`:
 
-* For :math:`a < 1.06`: the system is periodic (the fixed point is
+* For :math:`\alpha < 1.06`: the system is periodic (the fixed point is
   stable).
-* For :math:`1.06 \lesssim a \lesssim 1.43`: the system is chaotic,
+* For :math:`1.06 \lesssim \alpha \lesssim 1.43`: the system is chaotic,
   with the canonical chaotic regime at :math:`(1.4, 0.3)`.
-* For :math:`a > 1.43`: most initial conditions diverge to infinity,
+* For :math:`\alpha > 1.43`: most initial conditions diverge to infinity,
   rendering the system inoperable for communication.
 
-The parameter :math:`b` controls dissipation: :math:`|b| < 1`
-makes the map area-contracting (dissipative), while :math:`|b| > 1`
+The parameter :math:`\beta` controls dissipation: :math:`|\beta| < 1`
+makes the map area-contracting (dissipative), while :math:`|\beta| > 1`
 would be area-expanding.
 
 Variants implemented in the package
@@ -356,11 +360,11 @@ perturbations in the state difference are attenuated over iterations
 Receiver equations for the 2-D Hénon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For the standard 2-D Hénon, the receiver state evolves as:
+For the generalised 2-D Hénon, the receiver state evolves as:
 
 .. math::
 
-    y_1[n+1] &= 1 - a \, r[n]^2 + b \, y_2[n] \\
+    y_1[n+1] &= \alpha - r[n]^2 + \beta \, y_2[n] \\
     y_2[n+1] &= y_1[n]
 
 where :math:`r[n]` is the received (possibly channel-distorted) carrier.

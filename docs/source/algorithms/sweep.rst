@@ -41,23 +41,19 @@ The total cost is:
 Parallel architecture
 ---------------------
 
-The sweep is a two-level parallel problem:
+The sweep is a data-parallel problem parallelised with Numba:
 
-**Outer level — joblib with loky backend.**
+**Numba prange with load-balanced task ordering.**
 
-Python's ``multiprocessing.Pool`` (``fork`` backend) deadlocks on macOS
-and modern Linux because Numba's JIT compiled code is not fork‑safe after
-the first call.  We use ``joblib`` with the ``loky`` backend, which
-spawns workers by re‑importing the module — avoiding the fork problem
-entirely [joblib_loky]_.
-
-Each worker receives a sub‑block of grid points.
-
-**Inner level — Numba prange.**
-
-Within each worker, the loop over grid points is parallelised with
-``numba.prange``.  Numba compiles the Lyapunov kernel to machine code,
-achieving ~100× speedup over pure Python.
+The entire sweep runs inside a single :func:`numba.prange` loop
+(:func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`).
+Each thread receives a contiguous block of the iteration space
+following Numba's static schedule.  To prevent load imbalance (grid
+points with larger-order filters are proportionally more expensive),
+the tasks are ordered by estimated cost before being interleaved
+across threads by :func:`~chaotic_pfc.analysis.sweep._kernel._build_task_order`.
+This keeps every thread busy for approximately the same wall time
+without any inter-process communication overhead.
 
 **Why pre‑generated perturbations?**
 
@@ -137,8 +133,9 @@ Known limitations
 * **Memory.**  The FIR coefficient bank for 40 orders × 100 cutoffs
   requires ~320 KB — negligible.  The bottleneck is CPU, not memory.
 
-* **joblib loky overhead.**  Spawning workers and re‑importing modules
-  adds ~1–2 seconds of startup time per sweep.  This is amortised over
-  the grid but noticeable in quick‑mode sweeps.
+* **Warmup compilation.**  The first call to :func:`_sweep_kernel` triggers
+   Numba's JIT compilation, which adds a few seconds of startup time.
+   The orchestration layer runs a tiny warmup sweep (:option:`warmup=True`)
+   so that the actual sweep benefits from the cached native code.
 
-.. [joblib_loky] `joblib.loky backend documentation <https://joblib.readthedocs.io/en/latest/parallel.html#loky-the-default-backend>`_
+
