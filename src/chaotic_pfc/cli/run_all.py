@@ -295,7 +295,7 @@ def run(args: argparse.Namespace) -> int:
             all=True,
             data_dir="data/sweeps",
             figures_dir="figures/sweeps",
-            fmt=["png", "svg"],
+            fmt=["svg"],
             lang=getattr(args, "lang", "pt"),
         )
     )

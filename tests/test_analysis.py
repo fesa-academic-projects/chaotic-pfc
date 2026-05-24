@@ -7,11 +7,6 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from chaotic_pfc.analysis.stats import (
-    AreaSummary,
-    ConfigRank,
-    LmaxDistribution,
-    LmaxStats,
-    SweetSpot,
     area_summary,
     best_chaos_preserving,
     beta_curve,

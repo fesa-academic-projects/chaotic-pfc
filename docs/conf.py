@@ -165,8 +165,6 @@ suppress_warnings = [
     "epub.unknown_project_files",
 ]
 
-autodoc_mock_imports: list[str] = []
-
 numfig = True
 
 # todo extension

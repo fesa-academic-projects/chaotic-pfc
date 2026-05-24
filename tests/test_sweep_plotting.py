@@ -15,7 +15,6 @@ from chaotic_pfc.analysis.sweep._io import save_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
     DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
-    _discover_sweeps,
     _interleaved_expand,
     _unpack,
     classify,
@@ -322,28 +321,24 @@ class TestChaoticRegions(unittest.TestCase):
                 save_sweep(sr, out_dir / "variables_lyapunov.npz")
         return base
 
-    def test_chaotic_map_saves_svg_and_png(self):
+    def test_chaotic_map_saves_svg(self):
         with TemporaryDirectory() as td:
             base = Path(td)
             sweep_dir = self._make_sweep_dir(base / "sweeps")
             stem = base / "fig_chaotic_map"
             fig = plot_chaotic_map(sweep_dir, save_path=stem)
             self.assertTrue(stem.with_suffix(".svg").exists())
-            self.assertTrue(stem.with_suffix(".png").exists())
             self.assertGreater(stem.with_suffix(".svg").stat().st_size, 0)
-            self.assertGreater(stem.with_suffix(".png").stat().st_size, 0)
             fig.clear()
 
-    def test_chaotic_density_saves_svg_and_png(self):
+    def test_chaotic_density_saves_svg(self):
         with TemporaryDirectory() as td:
             base = Path(td)
             sweep_dir = self._make_sweep_dir(base / "sweeps")
             stem = base / "fig_chaotic_density"
             fig = plot_chaotic_density(sweep_dir, save_path=stem)
             self.assertTrue(stem.with_suffix(".svg").exists())
-            self.assertTrue(stem.with_suffix(".png").exists())
             self.assertGreater(stem.with_suffix(".svg").stat().st_size, 0)
-            self.assertGreater(stem.with_suffix(".png").stat().st_size, 0)
             fig.clear()
 
     def test_chaotic_map_raises_on_empty_dir(self):

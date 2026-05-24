@@ -67,11 +67,11 @@ The full end-to-end communication chain:
                             +--------+---------+
                                      |  m[n]
                                      v
-    +-------------------+   +------------------+
-    |  henon_standard() |-->|    transmit()    |
-    |  (carrier)        |   |  s[n]=x1[n]      |
-    +-------------------+   |       + mu*m[n]  |
-                            +--------+---------+
+    +------------------+   +------------------+
+    | henon_generalised|-->|    transmit()    |
+    | (chaotic carrier)|   |  s[n]=x1[n]     |
+    +------------------+   |       + mu*m[n] |
+                           +--------+---------+
                                      |  s[n]
                                      v
                             +------------------+
@@ -85,9 +85,7 @@ The full end-to-end communication chain:
                             |    receive()     |  <- comms.receiver
                             |  recover via     |
                             |  synchronisation |
-                            +--------+---------+
-                                     |  m_hat[n]
-                                     v
+                            +------------------+
 
 The transmitter embeds a binary message into the chaotic carrier via
 Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \mu \cdot m[n]`.

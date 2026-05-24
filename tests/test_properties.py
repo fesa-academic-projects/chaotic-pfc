@@ -7,6 +7,7 @@ domain, complementing the example-based tests in other test files.
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 import numpy as np
 from hypothesis import assume, given, settings
@@ -24,8 +25,6 @@ from chaotic_pfc.dynamics.maps import henon_filtered, henon_standard
 from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
 
 from ._hypothesis_strategies import (
-    arrays_with_nan,
-    finite_ndarrays,
     lowpass_fir_params,
     safe_henon_params,
     small_sweep_results,
@@ -78,7 +77,7 @@ class TestHenonFilteredInvariants(unittest.TestCase):
 
     @given(
         params=safe_henon_params(b_range=(0.1, 0.5)),
-        fir=lowpass_fir_params(3, 15),
+        fir=lowpass_fir_params(1, 1),  # henon_filtered accepts only two FIR taps (c0, c1)
         n=st.integers(5, 50),
     )
     @COMMON
@@ -192,9 +191,14 @@ class TestAreaSummaryInvariants(unittest.TestCase):
             self.assertGreaterEqual(stats["ci_95_high"], stats["mean"])
 
 
+SWEEPS_DIR = Path("data/sweeps")
+HAS_SWEEPS_DATA = SWEEPS_DIR.is_dir() and any(SWEEPS_DIR.iterdir())
+
+
 class TestConsolidateKaiserInvariants(unittest.TestCase):
     """Property tests for consolidate_kaiser()."""
 
+    @unittest.skipUnless(HAS_SWEEPS_DATA, "integration test requires non-empty data/sweeps")
     def test_kaiser_entries_per_filter(self):
         """After consolidation, each filter type has at most 1 Kaiser entry."""
         from chaotic_pfc.analysis.stats import load_all_sweeps
@@ -208,6 +212,7 @@ class TestConsolidateKaiserInvariants(unittest.TestCase):
                 len(kaiser_keys), 1, f"Expected ≤1 Kaiser for {ft}, got {len(kaiser_keys)}"
             )
 
+    @unittest.skipUnless(HAS_SWEEPS_DATA, "integration test requires non-empty data/sweeps")
     def test_non_kaiser_windows_preserved(self):
         """Non-Kaiser windows are passed through unchanged."""
         from chaotic_pfc.analysis.stats import load_all_sweeps

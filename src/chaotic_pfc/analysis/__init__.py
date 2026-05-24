@@ -34,8 +34,10 @@ from .stats import (
     load_all_sweeps,
     optimal_parameters,
     rank_configurations,
+    summary_table,
     sweet_spot_per_filter,
     top_k_per_filter,
+    transition_boundary,
 )
 from .sweep import (
     FILTER_TYPES,

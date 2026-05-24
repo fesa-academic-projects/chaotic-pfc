@@ -203,7 +203,7 @@ msgstr ""
 #: ../../validation.rst:77
 msgid "The test suite verifies this identity at three parameter sets:"
 msgstr ""
-"The test suite verifies this identity at three parameter sets:A suíte de "
+"A suíte de "
 "testes verifica esta identidade em três conjuntos de parâmetros:"
 
 #: ../../validation.rst:79

@@ -8,6 +8,8 @@ from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
 from chaotic_pfc.dynamics.signals import binary_message
 from tests._test_helpers import make_fir_coeffs
 
+DIVERGENCE_THRESHOLD = 1e10
+
 
 class TestTransmitStandard(unittest.TestCase):
     def test_output_shape(self):
@@ -28,12 +30,22 @@ class TestTransmitStandard(unittest.TestCase):
         """With mu=0 the output must be the autonomous Hénon trajectory,
         independent of the message content."""
         x0, y0 = 0.1, 0.2
+        a, b = 1.4, 0.3
         N = 200
         m1 = np.ones(N)
         m2 = -np.ones(N)
-        s1 = transmit(m1, mu=0.0, x0=x0, y0=y0)
-        s2 = transmit(m2, mu=0.0, x0=x0, y0=y0)
+        s1 = transmit(m1, mu=0.0, a=a, b=b, x0=x0, y0=y0)
+        s2 = transmit(m2, mu=0.0, a=a, b=b, x0=x0, y0=y0)
         np.testing.assert_array_equal(s1, s2)
+        # At mu=0, the emitted signal is the autonomous Hénon x-state.
+        self.assertAlmostEqual(float(s1[0]), x0, places=12)
+        self.assertAlmostEqual(float(s1[1]), a - s1[0] ** 2 + b * y0, places=12)
+        for n in range(2, N):
+            self.assertAlmostEqual(
+                float(s1[n]),
+                float(a - s1[n - 1] ** 2 + b * s1[n - 2]),
+                places=12,
+            )
 
     def test_message_affects_output(self):
         """With mu != 0, changing the message changes the output."""
@@ -68,11 +80,11 @@ class TestTransmitStandard(unittest.TestCase):
         self.assertAlmostEqual(float(s[1]), s1_expected, places=12)
 
     def test_transmit_diverges_with_large_mu(self):
-        """mu=0.5 typically causes overflow/divergence in Henon carrier."""
+        """mu=0.5 typically causes overflow/divergence in Hénon carrier."""
         m = binary_message(10_000, period=20)
         s = transmit(m, mu=0.5)
         self.assertTrue(
-            np.any(~np.isfinite(s)) or np.max(np.abs(s)) > 1e10,
+            np.any(~np.isfinite(s)) or np.max(np.abs(s)) > DIVERGENCE_THRESHOLD,
             "expected divergence for mu=0.5",
         )
 

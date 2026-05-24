@@ -57,22 +57,23 @@ def finite_ndarrays(
     ).map(lambda xs: np.array(xs, dtype=float))
 
 
+@st.composite
 def arrays_with_nan(
+    draw,
     min_size: int = 2,
     max_size: int = 100,
     nan_ratio: float = 0.5,
 ):
     """Arrays that may contain NaN mixed with finite values."""
-    size = st.integers(min_size, max_size)
-    return st.builds(
-        lambda n, vals: _build_mixed_array(n, vals, nan_ratio),
-        st.just(size),
+    size = draw(st.integers(min_size, max_size))
+    vals = draw(
         st.lists(
             st.floats(-5.0, 5.0, allow_nan=False, allow_infinity=False),
             min_size=size,
             max_size=size,
-        ),
+        )
     )
+    return _build_mixed_array(size, vals, nan_ratio)
 
 
 def _build_mixed_array(size: int, vals: list[float], nan_ratio: float) -> NDArray:
@@ -87,7 +88,7 @@ def small_sweep_results():
     """Synthetic SweepResult-like dicts with classification data."""
     shape = st.tuples(st.integers(2, 8), st.integers(2, 8))
     return st.builds(
-        lambda s, vals: _build_sweep_h(s, vals),
+        _build_sweep_h,
         shape,
         st.lists(
             st.floats(-1.0, 1.0, allow_nan=False, allow_infinity=False), min_size=4, max_size=64

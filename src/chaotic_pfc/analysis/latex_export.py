@@ -11,6 +11,7 @@ UTF-8.
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -22,6 +23,8 @@ if TYPE_CHECKING:
 
 def _fmt(v: float | int, decimals: int = 3) -> str:
     """Format a number with *decimals* places, strip trailing zeros."""
+    if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+        return "---"
     if isinstance(v, int) or v == int(v):
         return str(int(v))
     s = f"{v:.{decimals}f}"
