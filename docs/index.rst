@@ -111,4 +111,5 @@ Key experiments
    source/algorithms/lyapunov
    source/algorithms/sweep
    source/algorithms/fir_design
+   symbols
    api/index
