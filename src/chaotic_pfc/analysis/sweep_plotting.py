@@ -544,10 +544,9 @@ def _setup_interleaved_axes(
     ax.set_xlim(-0.5, total_slots - 0.5)
 
 
-def _save_both(fig: Figure, stem: Path) -> None:
-    """Save *fig* as both SVG and PNG from *stem*."""
+def _save_svg(fig: Figure, stem: Path) -> None:
+    """Save *fig* as SVG from *stem*."""
     _save(fig, stem.with_suffix(".svg"))
-    _save(fig, stem.with_suffix(".png"))
 
 
 def plot_chaotic_map(
@@ -624,7 +623,7 @@ def plot_chaotic_map(
 
     fig.tight_layout()
     if save_path is not None:
-        _save_both(fig, Path(save_path))
+        _save_svg(fig, Path(save_path))
     return fig
 
 
@@ -727,7 +726,7 @@ def plot_chaotic_density(
 
     fig.tight_layout()
     if save_path is not None:
-        _save_both(fig, Path(save_path))
+        _save_svg(fig, Path(save_path))
     return fig
 
 
@@ -769,7 +768,7 @@ def plot_chaotic_all(
     paths: list[Path] = []
 
     for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME):
-        for ext in (".svg", ".png"):
+        for ext in (".svg",):
             paths.append(out_dir / f"{stem}{ext}")
 
     fig = plot_chaotic_map(sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang)
@@ -823,7 +822,7 @@ def plot_all(
     result: SweepResult,
     out_dir: str | Path,
     *,
-    fmt: str = "png",
+    fmt: str = "svg",
     close_figures: bool = True,
     lang: str = "pt",
 ) -> list[Path]:

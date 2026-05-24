@@ -226,7 +226,7 @@ class SweepConfig:
     bandwidth: float = 0.05  # bandpass/bandstop width (×π)
     data_dir: str = "data/sweeps"
     figures_dir: str = "figures/sweeps"
-    fig_fmts: tuple[str, ...] = ("png", "svg")
+    fig_fmts: tuple[str, ...] = ("svg",)
 
 
 @dataclass

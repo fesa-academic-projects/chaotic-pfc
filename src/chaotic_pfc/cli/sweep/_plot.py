@@ -42,7 +42,7 @@ def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument(
         "--fmt",
         nargs="+",
-        default=["png", "svg"],
+        default=["svg"],
         choices=("png", "svg", "pdf"),
         help="Output format(s). Multiple values allowed, e.g. '--fmt png svg'.",
     )

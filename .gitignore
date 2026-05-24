@@ -111,7 +111,8 @@ _build/
 # henon_sweep_compute pipeline takes ~5 h to regenerate.
 # NOTE: data/lyapunov/*.csv are intentionally versioned — the ensemble
 # tables are the canonical reference used in the PFC paper.
-# NOTE: figures/ is intentionally versioned — it contains the final PFC
+# NOTE: figures/ is intentionally versioned — SVG files are tracked;
+# PNG files are generated artefacts and excluded.
 # artifacts and is the canonical output location after the old figuras/
 # directory was migrated in.
 

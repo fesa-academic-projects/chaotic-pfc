@@ -43,8 +43,6 @@ repos:
   - repo: https://github.com/boidolr/pre-commit-images
     rev: v1.12.0
     hooks:
-      - id: optimize-png
-        stages: [manual]
       - id: optimize-svg
         stages: [manual]
 
