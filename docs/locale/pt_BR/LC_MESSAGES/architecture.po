@@ -58,7 +58,7 @@ msgid ""
 "multipath, or composite urban model). The receiver synchronises to the "
 "carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx "
 "m[n]`."
-msgstr "The transmitter embeds a binary message into the chaotic carrier via Pecora-Carroll modulation: :math:`s[n] = x_1[n] + \\mu \\cdot m[n]`. The channel applies distortion (ideal pass-through, FIR band-limiting, AWGN, multipath, or composite urban model). The receiver synchronises to the carrier and recovers the message estimate :math:`\\hat{m}[n] \\approx m[n]`."
+msgstr "O transmissor incorpora uma mensagem binária no portador caótico via modulação Pecora-Carroll: :math:`s[n] = x_1[n] + \mu \cdot m[n]`. O canal aplica distorção (passagem ideal, limitação de banda FIR, AWGN, multipercurso ou modelo urbano composto). O receptor sincroniza com o portador e recupera a estimativa da mensagem :math:`\hat{m}[n] \approx m[n]`."
 
 #: ../../architecture.rst:100
 msgid "Parameter sweep pipeline"
