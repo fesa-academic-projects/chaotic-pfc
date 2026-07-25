@@ -260,7 +260,7 @@ def run_sweep(
             beta,
         )
 
-    h, h_std, n_iters_used = _sweep_kernel(
+    h, h_std, n_iters_used, n_fallback = _sweep_kernel(
         orders_arr,
         cutoffs_arr,
         fir_bank,
@@ -295,5 +295,6 @@ def run_sweep(
             "adaptive": adaptive,
             "Nmap_min": Nmap_min if adaptive else None,
             "tol": tol if adaptive else None,
+            "n_fallback": int(np.sum(n_fallback)),
         },
     )

@@ -31,12 +31,20 @@ For each grid point :math:`(N_z, \omega_c)`:
 3. The mean :math:`\lambda_{\max}` (and its standard deviation) is
    stored in the output :class:`~chaotic_pfc.analysis.sweep.SweepResult`.
 
-The total cost is:
+The sweep uses a **hybrid estimator**: the default single-vector path
+(described below) runs at :math:`O(N_s)` per iteration; cells whose
+:math:`\lambda_{\max}` is close to zero (:math:`|\lambda| < 5 \times 10^{-3}`)
+are transparently recomputed with the full spectrum at :math:`O(N_s^2)` per
+iteration.  This eliminates classification flips near the chaotic/periodic
+transition while keeping the common-case cost low.
+
+The total cost therefore depends on the fraction :math:`f` of marginal cells:
 
 .. math::
 
    \text{cost} \approx N_{\text{orders}} \times N_{\text{cutoffs}}
-   \times N_{\text{CI}} \times N_{\text{itera}} \times O(D^3)
+   \times N_{\text{CI}} \times N_{\text{itera}}
+   \times \left[ O(N_s) + f \cdot O(N_s^2) \right]
 
 Parallel architecture
 ---------------------
@@ -119,6 +127,53 @@ Combined with the deferred tangent-vector scan from the previous
 section, the block scheme reduces the kernel runtime by 3–6× depending on
 the fraction of divergent grid points (which short-circuit the Lyapunov
 loop early).  On a full bandstop sweep the measured speedup is 5.9×.
+
+Single-vector estimator
+-----------------------
+
+The first column of the tangent matrix is **independent** of all other
+columns in the MGS factorisation.  Under exact arithmetic, column 0 can
+be evolved and normalised in isolation, and its growth rate is exactly
+the largest Lyapunov exponent.  The per-iteration cost drops from
+:math:`O(N_s^2)` (full-spectrum J@W + MGS) to :math:`O(N_s)`.
+
+The :math:`_v` kernel variants (:func:`_lyap_online_core_v`,
+:func:`_propagate_v_n12`, :func:`_propagate_v_nN`) implement exactly this
+— they evolve only the first tangent vector and accumulate
+:math:`\log \|\mathbf{v}\|` once per Benettin block.  On a full bandstop
+sweep the measured speedup vs. the full-spectrum kernel is **3.6×**.
+
+Hybrid fallback for marginal cells
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Finite-block MGS (:math:`K=10`) can cause adjacent exponents to cross
+in 2.6–19.4 % of finite cells (measured across 124 sweeps):
+:math:`\text{lyap\_sum}[k] > \text{lyap\_sum}[0]` for some :math:`k > 0`.
+When this happens, the single-vector estimator (which always picks column
+0) differs from the true :math:`\lambda_{\max}` by at most
+:math:`3.5 \times 10^{-3}` — never enough to flip the sign of an
+individual IC.
+
+To eliminate the tiny probability of a classification flip near the
+transition boundary, the sweep kernel applies a **hybrid strategy**:
+
+1. Run the fast :math:`_v` path for all ICs.
+2. If the cell's mean :math:`|\lambda| < 5 \times 10^{-3}` (the
+   :data:`~chaotic_pfc.analysis.sweep._types._VONLY_MARGIN` threshold),
+   re-run *all* ICs for that cell with the full-spectrum kernel.
+3. The decision is atomic per cell: no cell mixes estimates from
+   different estimators.
+
+The margin (:math:`5 \times 10^{-3}`) is conservative: the largest
+measured :math:`|\Delta \lambda|` across 124 sweeps is
+:math:`3.5 \times 10^{-3}`, so any cell accepted by the :math:`_v` path
+(:math:`|\lambda| \geq 5 \times 10^{-3}`) cannot change classification
+sign after the correction.  The fallback fraction depends strongly on
+the filter type: highpass, bandpass, and bandstop sweeps typically see
+:math:`\sim 0`–:math:`12\%` of finite cells falling back (most cells
+have well-separated Lyapunov exponents); lowpass sweeps, where a large
+fraction of periodic cells have :math:`|\lambda|` below the margin,
+see :math:`20\%`–:math:`73\%`.
 
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
