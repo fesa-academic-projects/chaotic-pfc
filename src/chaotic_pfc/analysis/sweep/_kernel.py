@@ -12,7 +12,7 @@ from numpy.typing import NDArray
 
 from chaotic_pfc._compat import njit, prange
 
-from ._types import _ADAPTIVE_CHECKPOINT_EVERY, _ADAPTIVE_STREAK
+from ._types import _ADAPTIVE_CHECKPOINT_EVERY, _ADAPTIVE_STREAK, _BENETTIN_K
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Henon map variants — in-place, buffer-reusing, @njit (no fastmath)
@@ -127,9 +127,15 @@ def _adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak
 
 @njit(cache=True)
 def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta):
-    """Shared adaptive Lyapunov loop — init, iterate, checkpoint, finalise.
+    """Shared adaptive Lyapunov loop with Benettin block reorthonormalisation.
 
     ``_step_id`` is 0 for the n12 kernel (Ns ∈ {1, 2}) or 1 for nN (Ns ≥ 3).
+
+    The tangent vectors are propagated without MGS for ``_BENETTIN_K``
+    iterations, then reorthonormalised once per block.  This reduces the
+    O(Ns^3) MGS cost by a factor ~K while preserving the Lyapunov exponent
+    estimates within early-stop tolerance (typically |Δλ| < 1e-3).
+    See Benettin et al., Meccanica 15:9–20, 1980.
     """
     for i in range(Ns):
         for j in range(Ns):
@@ -143,64 +149,65 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
     tick = 0
 
     for it in range(Nitera):
+        # Propagate tangent vectors + map (J@W only, no MGS)
         if _step_id == 0:
-            tick = _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta)
+            tick = _propagate_n12(tick, xx, ww, Ns, c, alpha, beta)
         else:
-            tick = _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta)
+            tick = _propagate_nN(tick, xx, ww, Ns, c, alpha, beta)
 
-        # Detect divergence during Lyapunov phase.
-        # Overflow in the tangent vectors (Inf → NaN via Inf×0) or in
-        # the map state would otherwise poison lyap_sum via the
-        # unconditional log(max(nrm**0.5, 1e-300)) in _mgs_accumulate,
-        # leaking the sentinel -1e30 into sweep averages.
-        #
-        # The O(Ns^2) ww scan runs only at checkpoints (every
-        # _ADAPTIVE_CHECKPOINT_EVERY iterations). Non-finite entries in
-        # the tangent vectors are absorbing: once Inf/NaN appears, the
-        # MGS either preserves it or collapses to zero while lyap_sum
-        # already contains Inf. The finalisation block below converts
-        # any non-finite best to NaN, so a delayed detection produces
-        # the same output as an immediate one. n_used of divergent
-        # samples does change — that value is inobservable (NaN samples
-        # are skipped in the sweep aggregation) so it does not affect
-        # correctness.
+        # O(1) state divergence check — every iteration.
         if not np.isfinite(xx[tick, 0]):
             for k in range(Ns):
                 lyap_sum[k] = np.nan
             n_used = it + 1
             break
-        n_done = it + 1
-        do_scan = (n_done % _ADAPTIVE_CHECKPOINT_EVERY == 0) or (
-            adaptive
-            and n_done >= Nitera_min
-            and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
-        )
-        if do_scan:
-            w_diverged = False
-            w_slab = ww[tick]
-            for w_i in range(Ns):
-                for w_j in range(Ns):
-                    if not np.isfinite(w_slab[w_i, w_j]):
-                        w_diverged = True
+
+        # Benettin block: reorthonormalise every K iterations.
+        # The ww scan and adaptive checkpoint are both aligned to multiples
+        # of _BENETTIN_K (since _ADAPTIVE_CHECKPOINT_EVERY % K == 0), so
+        # they land on MGS ticks and see an orthonormal slab.
+        if (it + 1) % _BENETTIN_K == 0:
+            _mgs_accumulate(ww[tick], Ns, lyap_sum)
+
+            n_done = it + 1
+            do_scan = (n_done % _ADAPTIVE_CHECKPOINT_EVERY == 0) or (
+                adaptive
+                and n_done >= Nitera_min
+                and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
+            )
+            if do_scan:
+                w_diverged = False
+                w_slab = ww[tick]
+                for w_i in range(Ns):
+                    for w_j in range(Ns):
+                        if not np.isfinite(w_slab[w_i, w_j]):
+                            w_diverged = True
+                            break
+                    if w_diverged:
                         break
                 if w_diverged:
+                    for k in range(Ns):
+                        lyap_sum[k] = np.nan
+                    n_used = it + 1
                     break
-            if w_diverged:
-                for k in range(Ns):
-                    lyap_sum[k] = np.nan
-                n_used = it + 1
-                break
 
-        if (
-            adaptive
-            and n_done >= Nitera_min
-            and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
-        ):
-            prev_est, streak, n_used, should_break = _adaptive_checkpoint(
-                lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used
-            )
-            if should_break:
-                break
+            if (
+                adaptive
+                and n_done >= Nitera_min
+                and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
+            ):
+                prev_est, streak, n_used, should_break = _adaptive_checkpoint(
+                    lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used
+                )
+                if should_break:
+                    break
+
+    # Final partial block: if the loop ended mid-block and the state did
+    # not diverge, capture the growth of the unfinished block.
+    # lyap_sum has size dim >= Ns; slots [Ns, dim) are never initialised
+    # and may contain heap garbage. Only check the live Ns entries.
+    if np.all(np.isfinite(lyap_sum[:Ns])) and n_used % _BENETTIN_K != 0:
+        _mgs_accumulate(ww[tick], Ns, lyap_sum)
 
     best = np.nan
     for k in range(Ns):
@@ -218,8 +225,8 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
 
 
 @njit(cache=True, inline="always")
-def _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
-    """Single-iteration step for the Ns ∈ {1, 2} Jacobian."""
+def _propagate_n12(tick, xx, ww, Ns, c, alpha, beta):
+    """Propagate tangent vectors + map for Ns ∈ {1, 2} (no MGS)."""
     Ns_full = 2
     w_in = ww[tick]
     z_out = ww[1 - tick]
@@ -234,9 +241,16 @@ def _step_n12(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
     for col in range(Ns_full):
         z_out[0, col] = a * w_in[0, col] + b_val * w_in[1, col]
         z_out[1, col] = w_in[0, col]
-    _mgs_accumulate(z_out, Ns_full, lyap_sum)
     _henon_n12_inplace(x_in, x_out, alpha, beta, c)
     return 1 - tick
+
+
+@njit(cache=True, inline="always")
+def _step_n12_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+    """Per-iteration reference step (J@W + MGS + map) for Ns ∈ {1, 2}."""
+    tick = _propagate_n12(tick, xx, ww, Ns, c, alpha, beta)
+    _mgs_accumulate(ww[tick], 2, lyap_sum)
+    return tick
 
 
 @njit(cache=True)
@@ -246,8 +260,8 @@ def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, be
 
 
 @njit(cache=True, inline="always")
-def _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
-    """Single-iteration step for the Ns ≥ 3 Jacobian (O(Ns²) structured J@W)."""
+def _propagate_nN(tick, xx, ww, Ns, c, alpha, beta):
+    """Propagate tangent vectors + map for Ns ≥ 3 (no MGS)."""
     w_in = ww[tick]
     z_out = ww[1 - tick]
     x_in = xx[tick]
@@ -273,9 +287,16 @@ def _step_nN(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
         for k in range(4, Ns):
             z_out[k, col] = w_in[k - 1, col]
 
-    _mgs_accumulate(z_out, Ns, lyap_sum)
     _henon_nN_inplace(x_in, x_out, alpha, beta, c)
     return 1 - tick
+
+
+@njit(cache=True, inline="always")
+def _step_nN_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+    """Per-iteration reference step (J@W + MGS + map) for Ns ≥ 3."""
+    tick = _propagate_nN(tick, xx, ww, Ns, c, alpha, beta)
+    _mgs_accumulate(ww[tick], Ns, lyap_sum)
+    return tick
 
 
 @njit(cache=True)
