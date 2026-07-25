@@ -46,6 +46,20 @@ _KAISER_BETA: float = 5.0
 _ADAPTIVE_CHECKPOINT_EVERY: int = 100
 _ADAPTIVE_STREAK: int = 2
 
+# Benettin block reorthonormalisation period. MGS runs once every K map
+# iterations instead of every iteration. Must divide
+# _ADAPTIVE_CHECKPOINT_EVERY so that convergence checkpoints land on
+# orthonormalisation ticks (lyap_sum/n_done is only meaningful there).
+# Safety: inter-vector collapse grows ~e^((l1-l2)*K); with gap ~2 and
+# K=10 this is ~5e8, well within float64. Norm growth per block
+# ~e^(l1*K) ~= 55, no overflow risk.
+_BENETTIN_K: int = 10
+if _ADAPTIVE_CHECKPOINT_EVERY % _BENETTIN_K:
+    raise ValueError(
+        f"_BENETTIN_K={_BENETTIN_K} must divide "
+        f"_ADAPTIVE_CHECKPOINT_EVERY={_ADAPTIVE_CHECKPOINT_EVERY}"
+    )
+
 
 @dataclass
 class SweepResult:

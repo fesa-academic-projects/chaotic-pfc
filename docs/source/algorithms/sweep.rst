@@ -86,6 +86,52 @@ In practice this provides a 3–4× speedup on typical sweeps with negligible
 accuracy loss (the exponent estimate is already converged long before
 :math:`N_{\text{itera}} = 3000` for stable orbits).
 
+Benettin block reorthonormalisation
+------------------------------------
+
+The Modified Gram–Schmidt (MGS) reorthonormalisation at every iteration
+accounts for ~82% of the kernel's CPU time.  Following Benettin et al.
+(Meccanica **15**:9–20, 1980), the tangent vectors are propagated without
+MGS for :math:`K = 10` consecutive map iterations and reorthonormalised
+once per block.  The QR factorisation of a :math:`K`-step product is
+mathematically equivalent to the product of the per-iteration factors
+for the Lyapunov spectrum (the log of the determinant adds correctly);
+individual exponents differ by at most :math:`\sim 10^{-2}` in
+high-variance cells and :math:`\lesssim 10^{-3}` in converged cells —
+well within the sampling noise of the ensemble estimate.
+
+Safety margins for :math:`K = 10`:
+
+* Norm growth per block: :math:`\sim e^{\lambda_1 K} \approx 55` — no
+  overflow risk in IEEE float64.
+* Inter-vector collapse: :math:`\sim e^{(\lambda_1 - \lambda_2) K} \approx
+  5 \times 10^{8}` for a typical gap of 2 — the MGS resolves this without
+  loss of orthogonality.
+
+The block period divides the adaptive checkpoint interval
+(:math:`K \mid K_{\text{checkpoint}} = 100`), so every convergence
+checkpoint falls on an orthonormalisation tick.  A final partial-block
+MGS runs when :math:`N_{\text{itera}}` is not a multiple of :math:`K`
+(the warmup divergence early-exit bypasses the partial block because the
+Lyapunov sum is already NaN).
+
+Combined with the deferred tangent-vector scan from the previous
+section, the block scheme reduces the kernel runtime by 3–6× depending on
+the fraction of divergent grid points (which short-circuit the Lyapunov
+loop early).  On a full bandstop sweep the measured speedup is 5.9×.
+
+Versioned checkpoint policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``.npz`` checkpoints committed to the repository were computed with
+the per-iteration estimator and remain canonical — they are
+**never regenerated**.  The Benettin-K kernel applies only to new
+computations.  Its deviation from the per-iteration result is bounded
+by the early-stop tolerance :math:`\varepsilon` except in marginal cells
+where :math:`|\lambda_{\max}| < 3 \times 10^{-3}`; in that regime the
+binary verdict (chaotic vs. periodic) is inherently unstable under
+both estimators.
+
 Divergence handling (Opção B)
 -----------------------------
 
