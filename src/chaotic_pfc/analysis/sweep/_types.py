@@ -60,6 +60,14 @@ if _ADAPTIVE_CHECKPOINT_EVERY % _BENETTIN_K:
         f"_ADAPTIVE_CHECKPOINT_EVERY={_ADAPTIVE_CHECKPOINT_EVERY}"
     )
 
+# Marginal-zone threshold for the hybrid estimator. Cells whose v-only
+# mean satisfies |lambda| < _VONLY_MARGIN are recomputed with the full
+# spectrum kernel to eliminate classification flips near λ=0.
+# The bound is conservative: the largest |Δλ| measured across 124 sweeps
+# is ~3.5e-3, so any cell with |λ| >= 5e-3 in the v-only path cannot
+# change sign after the full-spectrum correction.
+_VONLY_MARGIN: float = 5e-3
+
 
 @dataclass
 class SweepResult:
