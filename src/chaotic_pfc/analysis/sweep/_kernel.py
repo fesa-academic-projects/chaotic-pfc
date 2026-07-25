@@ -153,34 +153,54 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
         # the map state would otherwise poison lyap_sum via the
         # unconditional log(max(nrm**0.5, 1e-300)) in _mgs_accumulate,
         # leaking the sentinel -1e30 into sweep averages.
+        #
+        # The O(Ns^2) ww scan runs only at checkpoints (every
+        # _ADAPTIVE_CHECKPOINT_EVERY iterations). Non-finite entries in
+        # the tangent vectors are absorbing: once Inf/NaN appears, the
+        # MGS either preserves it or collapses to zero while lyap_sum
+        # already contains Inf. The finalisation block below converts
+        # any non-finite best to NaN, so a delayed detection produces
+        # the same output as an immediate one. n_used of divergent
+        # samples does change — that value is inobservable (NaN samples
+        # are skipped in the sweep aggregation) so it does not affect
+        # correctness.
         if not np.isfinite(xx[tick, 0]):
             for k in range(Ns):
                 lyap_sum[k] = np.nan
             n_used = it + 1
             break
-        w_diverged = False
-        w_slab = ww[tick]
-        for w_i in range(Ns):
-            for w_j in range(Ns):
-                if not np.isfinite(w_slab[w_i, w_j]):
-                    w_diverged = True
+        n_done = it + 1
+        do_scan = (n_done % _ADAPTIVE_CHECKPOINT_EVERY == 0) or (
+            adaptive
+            and n_done >= Nitera_min
+            and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
+        )
+        if do_scan:
+            w_diverged = False
+            w_slab = ww[tick]
+            for w_i in range(Ns):
+                for w_j in range(Ns):
+                    if not np.isfinite(w_slab[w_i, w_j]):
+                        w_diverged = True
+                        break
+                if w_diverged:
                     break
             if w_diverged:
+                for k in range(Ns):
+                    lyap_sum[k] = np.nan
+                n_used = it + 1
                 break
-        if w_diverged:
-            for k in range(Ns):
-                lyap_sum[k] = np.nan
-            n_used = it + 1
-            break
 
-        if adaptive:
-            n_done = it + 1
-            if n_done >= Nitera_min and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0:
-                prev_est, streak, n_used, should_break = _adaptive_checkpoint(
-                    lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used
-                )
-                if should_break:
-                    break
+        if (
+            adaptive
+            and n_done >= Nitera_min
+            and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
+        ):
+            prev_est, streak, n_used, should_break = _adaptive_checkpoint(
+                lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used
+            )
+            if should_break:
+                break
 
     best = np.nan
     for k in range(Ns):
@@ -379,9 +399,15 @@ def _sweep_kernel(
                     xx[0, 0] = 0.1 * noise[0] + p1
                     xx[0, 1] = 0.1 * noise[1] + p2
                 tick = 0
-                for _ in range(Nitera):
+                for it_t in range(Nitera):
                     _henon_n12_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
                     tick = 1 - tick
+                    # Non-finite states are absorbing in the Henon map:
+                    # once component 0 is Inf/NaN, subsequent iterates
+                    # remain non-finite, and the post-loop check below
+                    # catches it with the same outcome.
+                    if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
+                        break
                 if tick == 1:
                     xx[0, 0] = xx[1, 0]
                     xx[0, 1] = xx[1, 1]
@@ -400,9 +426,11 @@ def _sweep_kernel(
                 for k in range(3, Ns):
                     xx[0, k] = 0.1 * noise[k] + p1
                 tick = 0
-                for _ in range(Nitera):
+                for it_t in range(Nitera):
                     _henon_nN_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
                     tick = 1 - tick
+                    if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
+                        break
                 if tick == 1:
                     for k in range(Ns):
                         xx[0, k] = xx[1, k]
