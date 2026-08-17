@@ -9,10 +9,17 @@ import matplotlib
 matplotlib.use("Agg")  # must come before pyplot is imported anywhere
 
 import numpy as np
+from matplotlib.collections import PolyCollection, QuadMesh
+from matplotlib.colors import to_rgba
+from matplotlib.image import AxesImage
 
 from chaotic_pfc.analysis.sweep import SweepResult
 from chaotic_pfc.analysis.sweep._io import save_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
+    _YTICKS,
+    COLOR_CHAOTIC,
+    COLOR_PERIODIC,
+    COLOR_UNBOUNDED,
     DIFFICULTY_FIGURE_FILENAME,
     FIGURE_FILENAMES,
     _interleaved_expand,
@@ -378,6 +385,278 @@ class TestChaoticRegions(unittest.TestCase):
         np.testing.assert_array_equal(expanded[0, :], data[0, :])
         np.testing.assert_array_equal(expanded[1, :], data[0, :])
         self.assertTrue(np.all(np.isnan(expanded[2, :])))
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Fig 2 — plot_classification_interleaved (PolyCollection)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestFig2PolyCollection(unittest.TestCase):
+    """Structural tests for the PolyCollection-based fig 2."""
+
+    @staticmethod
+    def _synthetic_h(ncoef: int = 3, ncut: int = 5) -> SweepResult:
+        rng = np.random.default_rng(0)
+        h = rng.uniform(-0.5, 0.5, size=(ncoef, ncut))
+        h[0, 0] = np.nan
+        h[-1, -1] = np.nan
+        return SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=np.arange(2, 2 + ncoef),
+            cutoffs=np.linspace(0.1, 0.9, ncut),
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+
+    def test_fig2_contains_no_mesh(self):
+        """Axes must contain no QuadMesh / AxesImage, exactly one PolyCollection."""
+        result = self._synthetic_h()
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+
+        for coll in ax.collections:
+            self.assertNotIsInstance(coll, QuadMesh)
+        self.assertEqual(len(ax.images), 0)
+
+        poly_colls = [c for c in ax.collections if isinstance(c, PolyCollection)]
+        self.assertEqual(len(poly_colls), 1)
+        fig.clear()
+
+    def test_fig2_rect_count_matches_rle(self):
+        """Polygon count must equal the sum of RLE runs per column."""
+        orders = np.array([2, 3, 5])
+        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        h = np.array(
+            [
+                [-0.5, -0.3, 0.1, 0.2, np.nan],
+                [0.3, 0.5, 0.2, -0.1, -0.2],
+                [-0.1, -0.2, 0.5, 0.3, 0.1],
+            ]
+        )
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=orders,
+            cutoffs=cutoffs,
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+
+        h_color = classify(h)
+        expected_runs = 0
+        for i in range(h.shape[0]):
+            col = h_color[i, :]
+            diffs = np.diff(col)
+            change_idx = np.flatnonzero(diffs != 0)
+            expected_runs += len(change_idx) + 1
+
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+        poly_coll = next(c for c in ax.collections if isinstance(c, PolyCollection))
+        n_polys = len(poly_coll.get_paths())
+        self.assertEqual(n_polys, expected_runs)
+        fig.clear()
+
+    def test_fig2_facecolors_match_classification(self):
+        """Each polygon's facecolor must match the class color of its run."""
+        orders = np.array([2, 3, 5])
+        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        h = np.array(
+            [
+                [-0.5, -0.3, 0.1, 0.2, np.nan],
+                [0.3, 0.5, 0.2, -0.1, -0.2],
+                [-0.1, -0.2, 0.5, 0.3, 0.1],
+            ]
+        )
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=orders,
+            cutoffs=cutoffs,
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+
+        h_color = classify(h)
+
+        # Build expected colors per polygon using the same RLE as the code
+        class_colors = {-1.0: COLOR_PERIODIC, 0.0: COLOR_CHAOTIC, 2.0: COLOR_UNBOUNDED}
+        expected_fcs: list[tuple[float, float, float, float]] = []
+        for i in range(h.shape[0]):
+            col = h_color[i, :]
+            diffs = np.diff(col)
+            change_idx = np.flatnonzero(diffs != 0)
+            starts = np.concatenate([[0], change_idx + 1])
+            run_values = col[starts]
+            for code in run_values:
+                expected_fcs.append(to_rgba(class_colors[code]))
+
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+        poly_coll = next(c for c in ax.collections if isinstance(c, PolyCollection))
+        actual_fcs = poly_coll.get_facecolors()
+
+        self.assertEqual(len(actual_fcs), len(expected_fcs))
+        for actual, expected in zip(actual_fcs, expected_fcs, strict=True):
+            np.testing.assert_array_almost_equal(actual, expected, decimal=6)
+        fig.clear()
+
+    def test_fig2_geometry_matches_slot_layout(self):
+        """X vertices must match the slot layout; y vertices must match edges."""
+        orders = np.array([2, 3, 5])
+        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        h = np.array(
+            [
+                [-0.5, -0.3, 0.1, 0.2, np.nan],
+                [0.3, 0.5, 0.2, -0.1, -0.2],
+                [-0.1, -0.2, 0.5, 0.3, 0.1],
+            ]
+        )
+        data_slots, gap_slots = 3, 1
+        slot_total = data_slots + gap_slots
+        Ncoef = h.shape[0]
+        Ncut = h.shape[1]
+
+        # Expected y_edges
+        cut = np.asarray(cutoffs, dtype=np.float64)
+        mid = 0.5 * (cut[:-1] + cut[1:])
+        y_edges = np.concatenate(
+            [
+                [cut[0] - (mid[0] - cut[0])],
+                mid,
+                [cut[-1] + (cut[-1] - mid[-1])],
+            ]
+        )
+
+        h_color = classify(h)
+        # Build expected vertices per polygon
+        expected_verts: list[list[tuple[float, float]]] = []
+        for i in range(Ncoef):
+            x0 = i * slot_total - 0.5
+            x1 = x0 + data_slots
+            col = h_color[i, :]
+            diffs = np.diff(col)
+            change_idx = np.flatnonzero(diffs != 0)
+            starts = np.concatenate([[0], change_idx + 1])
+            ends = np.concatenate([change_idx, [Ncut - 1]])
+            for s, e in zip(starts, ends, strict=True):
+                expected_verts.append(
+                    [
+                        (x0, y_edges[s]),
+                        (x1, y_edges[s]),
+                        (x1, y_edges[e + 1]),
+                        (x0, y_edges[e + 1]),
+                    ]
+                )
+
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=orders,
+            cutoffs=cutoffs,
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+        poly_coll = next(c for c in ax.collections if isinstance(c, PolyCollection))
+        paths = poly_coll.get_paths()
+
+        self.assertEqual(len(paths), len(expected_verts))
+        for path, exp_verts in zip(paths, expected_verts, strict=True):
+            actual = path.vertices.tolist()
+            # Path may have 5 vertices if closed (last = first); check first 4
+            if len(actual) == 5:
+                actual = actual[:4]
+            for a, e in zip(actual, exp_verts, strict=True):
+                self.assertAlmostEqual(a[0], e[0], places=10)
+                self.assertAlmostEqual(a[1], e[1], places=10)
+        fig.clear()
+
+    def test_fig2_axes_contract_unchanged(self):
+        """Axes limits, tick positions and labels must match expected values."""
+        orders = np.array([2, 3, 5])
+        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        h = np.array(
+            [
+                [-0.5, -0.3, 0.1, 0.2, np.nan],
+                [0.3, 0.5, 0.2, -0.1, -0.2],
+                [-0.1, -0.2, 0.5, 0.3, 0.1],
+            ]
+        )
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=orders,
+            cutoffs=cutoffs,
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+
+        # xlim, ylim
+        self.assertAlmostEqual(ax.get_xlim()[0], -0.5, places=10)
+        self.assertAlmostEqual(ax.get_xlim()[1], 11.5, places=10)
+        self.assertAlmostEqual(ax.get_ylim()[0], 0.0, places=10)
+        self.assertAlmostEqual(ax.get_ylim()[1], 1.0, places=10)
+
+        # yticks: _YTICKS = arange(0, 1.01, 0.1)
+        np.testing.assert_array_almost_equal(ax.get_yticks(), _YTICKS, decimal=10)
+
+        # xticks: Nz = [1, 2, 4], tick_vals = [1, 5]
+        # 5 not in Nz, so only label for 1 at center = 0*4 + 1 = 1
+        xticks = ax.get_xticks()
+        self.assertEqual(len(xticks), 1)
+        self.assertAlmostEqual(xticks[0], 1.0, places=10)
+        xticklabels = [t.get_text() for t in ax.get_xticklabels()]
+        self.assertEqual(xticklabels, ["1"])
+
+        fig.clear()
+
+    def test_fig2_single_cutoff_grid(self):
+        """Single cutoff must not crash and must produce valid y_edges."""
+        orders = np.array([2, 3])
+        cutoffs = np.array([0.5])
+        h = np.array(
+            [
+                [-0.1],
+                [0.2],
+            ]
+        )
+        result = SweepResult(
+            h=h,
+            h_std=np.abs(h) * 0.1,
+            orders=orders,
+            cutoffs=cutoffs,
+            window="hamming",
+            filter_type="lowpass",
+            metadata={},
+        )
+        fig = plot_classification_interleaved(result=result)
+        ax = fig.axes[0]
+
+        poly_colls = [c for c in ax.collections if isinstance(c, PolyCollection)]
+        self.assertEqual(len(poly_colls), 1)
+
+        paths = poly_colls[0].get_paths()
+        self.assertGreater(len(paths), 0)
+
+        # y_edges should be [0.0, 1.0] for cutoff=0.5
+        for path in paths:
+            verts = path.vertices
+            if verts.shape[0] >= 4:
+                ys = verts[:4, 1]
+                self.assertGreaterEqual(ys.min(), 0.0)
+                self.assertLessEqual(ys.max(), 1.0)
+        fig.clear()
 
 
 if __name__ == "__main__":

@@ -32,6 +32,7 @@ from pathlib import Path
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.collections import PolyCollection
 from matplotlib.figure import Figure
 from matplotlib.patches import Patch
 from numpy.typing import NDArray
@@ -125,8 +126,19 @@ def _axis_cosmetics(ax, ylabel_fs: int = 24) -> None:
 
 
 def _save(fig: Figure, path: str | Path | None) -> None:
-    """Save figure with sweep-plotting defaults (dpi=200, tight bbox)."""
-    _figures_save(fig, path, dpi=200, bbox_inches="tight", facecolor="white")
+    """Save figure with sweep-plotting defaults (dpi=600, fixed bbox).
+
+    ``bbox_inches=fig.bbox_inches`` prevents matplotlib from doing a
+    second full render to compute the tight bounding box — every plot
+    function already calls ``fig.tight_layout()`` before saving.
+    """
+    _figures_save(
+        fig,
+        path,
+        dpi=600,
+        bbox_inches=fig.bbox_inches,
+        facecolor="white",
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -179,7 +191,14 @@ def plot_heatmap_continuous(
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
-    pcm = ax.pcolormesh(x_exp, cutoffs, h_expanded.T, shading="nearest")
+    # Rasterized mesh at savefig dpi (600): in vector backends the mesh layer
+    # becomes an embedded image while axes, ticks, labels, grid, colorbar and
+    # legend remain 100 % vector. At 12 × 5 in → 7200 × 3000 px the raster
+    # resolution far exceeds the data grid, so there is zero information loss.
+    # antialiased=False prevents faint half-pixel lines between adjacent quads.
+    pcm = ax.pcolormesh(
+        x_exp, cutoffs, h_expanded.T, shading="nearest", rasterized=True, antialiased=False
+    )
     fig.colorbar(pcm, ax=ax, label=r"$\lambda_{\max}$")
     _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
     fig.tight_layout()
@@ -240,27 +259,69 @@ def plot_classification_interleaved(
     Ncoef = len(Nz)
     Ncut = len(cutoffs)
     total_slots = Ncoef * slot_total
-    h_color_exp = np.full((total_slots, Ncut), 3.0)
+
+    # Convert cutoff centres to edges for rectangle drawing
+    cut = np.asarray(cutoffs, dtype=np.float64)
+    if cut.size == 1:
+        y_edges = np.array([cut[0] - 0.5, cut[0] + 0.5])
+    else:
+        mid = 0.5 * (cut[:-1] + cut[1:])
+        y_edges = np.concatenate(
+            [
+                [cut[0] - (mid[0] - cut[0])],
+                mid,
+                [cut[-1] + (cut[-1] - mid[-1])],
+            ]
+        )
+
+    _CLASS_COLORS: dict[float, str] = {
+        -1.0: COLOR_PERIODIC,
+        0.0: COLOR_CHAOTIC,
+        2.0: COLOR_UNBOUNDED,
+    }
+
+    verts: list[list[tuple[float, float]]] = []
+    colors: list[str] = []
 
     for i in range(Ncoef):
-        start = i * slot_total
-        for s in range(data_slots):
-            h_color_exp[start + s, :] = h_color[i, :]
+        x0 = i * slot_total - 0.5
+        x1 = x0 + data_slots
 
-    x_exp = np.arange(total_slots)
+        col = h_color[i, :]
+        diffs = np.diff(col)
+        change_idx = np.flatnonzero(diffs != 0)
+        starts = np.concatenate([[0], change_idx + 1])
+        ends = np.concatenate([change_idx, [Ncut - 1]])
+        run_values = col[starts]
+
+        for s, e, code in zip(starts, ends, run_values, strict=True):
+            try:
+                fc = _CLASS_COLORS[code]
+            except KeyError:
+                continue
+            verts.append(
+                [
+                    (x0, y_edges[s]),
+                    (x1, y_edges[s]),
+                    (x1, y_edges[e + 1]),
+                    (x0, y_edges[e + 1]),
+                ]
+            )
+            colors.append(fc)
 
     fig, ax = plt.subplots(figsize=(12, 5))
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
-    ax.pcolormesh(
-        x_exp,
-        cutoffs,
-        h_color_exp.T,
-        cmap=_cmap_disc,
-        norm=_norm_disc,
-        shading="nearest",
+    coll = PolyCollection(
+        verts,
+        facecolors=colors,
+        edgecolors="face",
+        linewidths=0.0,
+        snap=False,
+        zorder=0,
     )
+    ax.add_collection(coll)
 
     ax.set_xlabel(r"$N_z$", fontsize=16)
     ax.set_ylabel(r"$\omega_c/\pi$", fontsize=16)
@@ -417,6 +478,8 @@ def plot_difficulty_map(
         vmin=vmin,
         vmax=vmax,
         shading="nearest",
+        rasterized=True,
+        antialiased=False,
     )
     cbar = fig.colorbar(pcm, ax=ax, label="Lyapunov iterations used")
     cbar.ax.tick_params(labelsize=12)
@@ -571,7 +634,7 @@ def plot_chaotic_map(
         Root directory with ``<Window> (<ft>)/variables_lyapunov.npz``
         subdirectories.
     save_path
-        If provided, saved as both ``.svg`` and ``.png`` (bare stem).
+        If provided, the figure is saved as SVG via ``_save_svg()``.
     color
         Matplotlib colour for chaotic cells (default: project red).
     data_slots, gap_slots
@@ -616,6 +679,8 @@ def plot_chaotic_map(
         h_expanded.T,
         cmap=cmap_obj,
         shading="nearest",
+        rasterized=True,
+        antialiased=False,
     )
 
     _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
@@ -650,7 +715,7 @@ def plot_chaotic_density(
         Root directory with ``<Window> (<ft>)/variables_lyapunov.npz``
         subdirectories.
     save_path
-        If provided, saved as both ``.svg`` and ``.png`` (bare stem).
+        If provided, the figure is saved as SVG via ``_save_svg()``.
     cmap
         Sequential matplotlib colormap (default ``"viridis"``).
     data_slots, gap_slots
@@ -700,6 +765,8 @@ def plot_chaotic_density(
         vmin=0.0,
         vmax=max_density,
         shading="nearest",
+        rasterized=True,
+        antialiased=False,
     )
     cbar = fig.colorbar(pcm, ax=ax)
     cbar.set_label(t("sweep.chaotic_density.cbar", lang=lang), fontsize=13)
@@ -744,7 +811,7 @@ def plot_chaotic_all(
     """Generate both cross-sweep chaotic figures and save to *out_dir*.
 
     Produces :data:`CHAOTIC_MAP_FILENAME` and
-    :data:`CHAOTIC_DENSITY_FILENAME` as both ``.svg`` and ``.png``.
+    :data:`CHAOTIC_DENSITY_FILENAME` as SVG.
     Returns the list of written paths.
 
     Parameters
@@ -768,8 +835,7 @@ def plot_chaotic_all(
     paths: list[Path] = []
 
     for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME):
-        for ext in (".svg",):
-            paths.append(out_dir / f"{stem}{ext}")
+        paths.append(out_dir / f"{stem}.svg")
 
     fig = plot_chaotic_map(sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang)
     if close_figures:

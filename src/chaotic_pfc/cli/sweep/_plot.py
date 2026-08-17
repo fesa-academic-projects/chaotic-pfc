@@ -52,6 +52,12 @@ def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Run matplotlib in headless mode.",
     )
+    p.add_argument(
+        "--no-parallel",
+        dest="no_parallel",
+        action="store_true",
+        help="Disable parallel rendering of multiple sweeps (default: auto-parallel for >1 sweep).",
+    )
     add_lang_flag(p)
     p.set_defaults(_run=run_plot)
 
@@ -77,6 +83,32 @@ def _target_dir(figures_dir: Path, npz_path: Path, data_dir: Path) -> Path:
     except ValueError:
         rel = Path(npz_path.parent.name)
     return figures_dir / rel
+
+
+def _render_one(npz_path: Path, figures_dir: Path, data_dir: Path, fmt: str, lang: str) -> dict:
+    """Load a sweep ``.npz`` and render all figures for one format.
+
+    Module-level function so it is picklable by
+    ``concurrent.futures.ProcessPoolExecutor``.  Sets
+    ``matplotlib.use("Agg")`` before importing pyplot so workers never
+    attempt an interactive backend.
+    """
+    import matplotlib
+
+    matplotlib.use("Agg")
+
+    from chaotic_pfc.analysis.sweep import load_sweep
+    from chaotic_pfc.analysis.sweep_plotting import plot_all
+
+    result = load_sweep(npz_path)
+    out_dir = _target_dir(figures_dir, npz_path, data_dir)
+    paths = plot_all(result, out_dir, fmt=fmt, lang=lang)
+    return {
+        "name": result.display_name,
+        "npz": str(npz_path),
+        "out": str(out_dir),
+        "paths": [str(p) for p in paths],
+    }
 
 
 def run_plot(args: argparse.Namespace) -> int:
@@ -111,18 +143,38 @@ def run_plot(args: argparse.Namespace) -> int:
         npz_paths = [candidate]
 
     fmts_str = ", ".join(f".{f}" for f in args.fmt)
-    print(f"[08] Plotting {len(npz_paths)} sweep(s) (formats: {fmts_str})")
+    n_total = len(npz_paths) * len(args.fmt)
+    print(f"[08] Plotting {len(npz_paths)} sweep(s) × {len(args.fmt)} format(s) = {n_total} job(s)")
+    print(f"     Formats: {fmts_str}")
 
-    for npz_path in npz_paths:
-        result = load_sweep(npz_path)
-        out_dir = _target_dir(figures_dir, npz_path, data_dir)
-        print(f"\n     {result.display_name}")
-        print(f"     ← {npz_path}")
-        print(f"     → {out_dir}")
-        for fmt in args.fmt:
-            paths = plot_all(result, out_dir, fmt=fmt, lang=args.lang)
-            for p in paths:
-                print(f"       {p.name}")
+    use_parallel = args.all and not args.no_parallel and len(npz_paths) > 1
+
+    if use_parallel:
+        from concurrent.futures import ProcessPoolExecutor, as_completed
+
+        jobs = [
+            (npz, figures_dir, data_dir, fmt, args.lang) for npz in npz_paths for fmt in args.fmt
+        ]
+        with ProcessPoolExecutor() as pool:
+            futures = [pool.submit(_render_one, *j) for j in jobs]
+            for fut in as_completed(futures):
+                r = fut.result()
+                print(f"\n     {r['name']}")
+                print(f"     ← {r['npz']}")
+                print(f"     → {r['out']}")
+                for p in r["paths"]:
+                    print(f"       {Path(p).name}")
+    else:
+        for npz_path in npz_paths:
+            result = load_sweep(npz_path)
+            out_dir = _target_dir(figures_dir, npz_path, data_dir)
+            print(f"\n     {result.display_name}")
+            print(f"     ← {npz_path}")
+            print(f"     → {out_dir}")
+            for fmt in args.fmt:
+                paths = plot_all(result, out_dir, fmt=fmt, lang=args.lang)
+                for p in paths:
+                    print(f"       {p.name}")
 
     print("\n[08] done")
     return 0
