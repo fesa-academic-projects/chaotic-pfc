@@ -11,7 +11,7 @@ Environment setup
 
 Requirements:
 
-* **Python 3.11+** (3.11, 3.12, 3.13 tested in CI).
+* **Python 3.12+** (3.12, 3.13, 3.14 tested in CI).
 * **Git** for version control.
 * Optional: **Numba** 0.59+ for JIT acceleration (via ``[fast]`` extra).
 

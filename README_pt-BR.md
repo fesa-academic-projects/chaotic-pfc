@@ -42,7 +42,7 @@ Lyapunov é compilada em JIT com Numba e paralelizada sobre a grade
 
 ## Instalação
 
-Requer Python 3.11 ou superior.
+Requer Python 3.12 ou superior.
 
 ```bash
 python -m venv .venv

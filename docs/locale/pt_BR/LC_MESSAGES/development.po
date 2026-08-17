@@ -40,8 +40,8 @@ msgid "Requirements:"
 msgstr "Requisitos:"
 
 #: ../../development.rst:14
-msgid "**Python 3.11+** (3.11, 3.12, 3.13 tested in CI)."
-msgstr "**Python 3.11+** (3.11, 3.12, 3.13 testados no CI)."
+msgid "**Python 3.12+** (3.12, 3.13, 3.14 tested in CI)."
+msgstr "**Python 3.12+** (3.12, 3.13, 3.14 testados no CI)."
 
 #: ../../development.rst:15
 msgid "**Git** for version control."

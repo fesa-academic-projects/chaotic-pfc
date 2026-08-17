@@ -42,7 +42,7 @@ grid.
 
 ## Installation
 
-Requires Python 3.11 or later.
+Requires Python 3.12 or later.
 
 ```bash
 python -m venv .venv

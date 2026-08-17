@@ -166,8 +166,8 @@ msgid "Installation"
 msgstr "Instalação"
 
 #: ../../index.rst:57
-msgid "Requires **Python 3.11+**."
-msgstr "Requer **Python 3.11+**."
+msgid "Requires **Python 3.12+**."
+msgstr "Requer **Python 3.12+**."
 
 #: ../../index.rst:65
 msgid ""
