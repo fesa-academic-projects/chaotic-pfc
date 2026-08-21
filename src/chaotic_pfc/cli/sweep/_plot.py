@@ -99,6 +99,14 @@ def _render_one(npz_path: Path, figures_dir: Path, data_dir: Path, fmt: str, lan
 
     from chaotic_pfc.analysis.sweep import load_sweep
     from chaotic_pfc.analysis.sweep_plotting import plot_all
+    from chaotic_pfc.plotting.figures import setup_rc
+
+    # The rcParams applied by ``pick_backend()`` live in the *parent*
+    # process only. Under the "spawn"/"forkserver" start methods this
+    # module is re-imported from scratch in every worker, so without
+    # this call the workers render with stock Matplotlib defaults
+    # (DejaVu Sans) instead of the publication typography.
+    setup_rc()
 
     result = load_sweep(npz_path)
     out_dir = _target_dir(figures_dir, npz_path, data_dir)

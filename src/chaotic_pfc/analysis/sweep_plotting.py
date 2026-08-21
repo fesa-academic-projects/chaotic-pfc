@@ -125,6 +125,171 @@ def _axis_cosmetics(ax, ylabel_fs: int = 24) -> None:
         ax.axhline(y=yt, color="black", linewidth=0.4)
 
 
+def _pick_xticks(
+    Nz: NDArray,
+    slot_total: int,
+    data_slots: int,
+    step: int,
+) -> tuple[list[float], list[str]]:
+    """Choose x-tick positions that exist in the swept order grid.
+
+    Highpass and bandstop sweeps only contain odd tap counts, so a
+    naive ``range(step, ..., step)`` with ``step`` even silently yields
+    an axis with no numeric labels at all. The step is halved until at
+    least three ticks land on real grid points.
+    """
+    nz_int = np.asarray(Nz).astype(int)
+    while step >= 1:
+        candidates: Iterable[int] = [1, *list(range(step, int(nz_int[-1]) + 1, step))]
+        positions: list[float] = []
+        labels: list[str] = []
+        for nz_val in candidates:
+            idx = np.where(nz_int == nz_val)[0]
+            if len(idx) > 0:
+                positions.append(idx[0] * slot_total + (data_slots - 1) / 2.0)
+                labels.append(str(nz_val))
+        if len(positions) >= 3 or step == 1:
+            return positions, labels
+        step //= 2
+    return [], []
+
+
+_PANEL_LABEL_CORNERS: dict[str, tuple[float, float, str, str]] = {
+    "upper left": (0.015, 0.975, "left", "top"),
+    "upper right": (0.985, 0.975, "right", "top"),
+    "lower left": (0.015, 0.025, "left", "bottom"),
+    "lower right": (0.985, 0.025, "right", "bottom"),
+}
+
+# Sit just above the top spine, flush with it. No opaque patch: there is
+# no data up here to hide, so a box would only add visual noise.
+_PANEL_LABEL_ABOVE: dict[str, tuple[float, str]] = {
+    "above left": (0.0, "left"),
+    "above": (0.5, "center"),
+    "above right": (1.0, "right"),
+}
+
+
+def _draw_panel_label(
+    fig: Figure,
+    ax: plt.Axes,
+    text: str,
+    fontsize: float,
+    loc: str,
+) -> None:
+    """Draw a sub-panel identifier such as ``"(a)"`` on *ax*."""
+    if loc in _PANEL_LABEL_ABOVE:
+        x, ha = _PANEL_LABEL_ABOVE[loc]
+        ax.text(
+            x,
+            1.0,
+            text,
+            transform=ax.transAxes,
+            ha=ha,
+            va="bottom",
+            fontsize=fontsize,
+            zorder=20,
+        )
+        ax.margins(y=0.0)
+        return
+
+    if loc in _PANEL_LABEL_CORNERS:
+        x, y, ha, va = _PANEL_LABEL_CORNERS[loc]
+        ax.text(
+            x,
+            y,
+            text,
+            transform=ax.transAxes,
+            ha=ha,
+            va=va,
+            fontsize=fontsize,
+            zorder=20,
+            bbox={
+                "facecolor": "white",
+                "edgecolor": "black",
+                "linewidth": 0.6,
+                "boxstyle": "square,pad=0.25",
+            },
+        )
+        return
+
+    if loc != "below":
+        raise ValueError(
+            f"panel_label_loc must be 'below', one of "
+            f"{sorted(_PANEL_LABEL_ABOVE)}, or one of "
+            f"{sorted(_PANEL_LABEL_CORNERS)}; got {loc!r}"
+        )
+
+    # Anchor the identifier a fixed number of points below the real ink
+    # of the x-axis (ticks + label), measured after a draw pass.
+    # Reserving a fraction of the figure height instead would leave a
+    # gap that scales with the panel, which reads as a stray caption.
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    bbox = ax.xaxis.get_tightbbox(renderer)
+    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]
+    gap = 5.0 / (fig.get_figheight() * 72.0)
+    box = ax.get_position()
+    fig.text(
+        box.x0 + box.width / 2.0,
+        y_fig - gap,
+        text,
+        ha="center",
+        va="top",
+        fontsize=fontsize,
+    )
+
+
+def make_classification_legend(
+    *,
+    lang: str = "pt",
+    save_path: str | Path | None = None,
+    figsize: tuple[float, float] = (3.35, 1.0),
+    fontsize: float = 9.0,
+    ncol: int = 1,
+) -> Figure:
+    """Render the periodic/chaotic/unbounded legend as a standalone figure.
+
+    Used when several classification panels are composed into a single
+    LaTeX float and share one legend, so the colour key is not repeated
+    three times.
+
+    Parameters
+    ----------
+    lang
+        ``"pt"`` or ``"en"``.
+    save_path
+        Optional output path.
+    figsize
+        Size in inches; make it match the panel width it sits next to.
+    fontsize
+        Type size in points at ``figsize`` scale.
+    ncol
+        Number of legend columns.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    fig = plt.figure(figsize=figsize)
+    fig.patch.set_facecolor("white")
+    fig.legend(
+        handles=_build_legend_handles(lang),
+        loc="center",
+        fontsize=fontsize,
+        framealpha=1.0,
+        edgecolor="gray",
+        fancybox=False,
+        handlelength=1.4,
+        handleheight=0.9,
+        borderpad=0.6,
+        labelspacing=0.6,
+        ncol=ncol,
+    )
+    _save(fig, save_path)
+    return fig
+
+
 def _save(fig: Figure, path: str | Path | None) -> None:
     """Save figure with sweep-plotting defaults (dpi=600, fixed bbox).
 
@@ -221,6 +386,16 @@ def plot_classification_interleaved(
     data_slots: int = 3,
     gap_slots: int = 1,
     lang: str = "pt",
+    figsize: tuple[float, float] = (12.0, 5.0),
+    label_fontsize: float = 16.0,
+    tick_fontsize: float = 12.0,
+    legend_fontsize: float = 10.0,
+    legend: bool = True,
+    ytick_step: float = 0.1,
+    xtick_step: int = 5,
+    panel_label: str | None = None,
+    panel_label_fontsize: float = 11.0,
+    panel_label_loc: str = "below",
 ) -> Figure:
     """Publication-style layout with gaps between adjacent orders.
 
@@ -247,6 +422,39 @@ def plot_classification_interleaved(
         Number of white/yellow slots interleaved between classes.
     lang
         Language for axis labels (``"pt"`` or ``"en"``).
+    figsize
+        Figure size in inches. For camera-ready output set this to the
+        *final printed size* of the figure so that ``label_fontsize``
+        and friends are expressed directly in typographic points on
+        the page — no scaling correction needed.
+    label_fontsize, tick_fontsize, legend_fontsize
+        Type sizes in points, interpreted at ``figsize`` scale.
+    legend
+        Draw the classification legend inside the axes. Set to
+        ``False`` when several panels share one external legend (see
+        :func:`make_classification_legend`).
+    ytick_step
+        Spacing of *labelled* y ticks. Horizontal rules are always
+        drawn every 0.1, independently of this value, so a compact
+        panel can keep the fine grid while thinning the labels.
+    xtick_step
+        Preferred spacing of x ticks. Only values actually present in
+        ``orders`` are labelled; if fewer than three survive the
+        filter, the step is progressively halved.
+    panel_label
+        Text such as ``"(a)"`` drawn centred beneath the axes, baking
+        the sub-panel identifier into the artwork itself. Leave as
+        ``None`` when the identifier is supplied by LaTeX (e.g. via
+        ``subcaption``), otherwise it will appear twice.
+    panel_label_fontsize
+        Type size of ``panel_label`` in points at ``figsize`` scale.
+    panel_label_loc
+        Where the identifier goes: ``"above left"``, ``"above"`` and
+        ``"above right"`` sit flush on top of the plot box;
+        ``"below"`` places it under the x-label; ``"upper left"``,
+        ``"upper right"``, ``"lower left"`` and ``"lower right"`` place
+        it inside the axes, on an opaque patch so it stays readable
+        over the data.
 
     Returns
     -------
@@ -309,7 +517,7 @@ def plot_classification_interleaved(
             )
             colors.append(fc)
 
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
@@ -323,9 +531,9 @@ def plot_classification_interleaved(
     )
     ax.add_collection(coll)
 
-    ax.set_xlabel(r"$N_z$", fontsize=16)
-    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=16)
-    ax.set_yticks(_YTICKS)
+    ax.set_xlabel(r"$N_z$", fontsize=label_fontsize)
+    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=label_fontsize)
+    ax.set_yticks(np.arange(0.0, 1.0 + 1e-9, ytick_step))
     ax.set_ylim(0.0, 1.0)
     for yt in _YTICKS:
         ax.axhline(y=yt, color="black", linewidth=0.4)
@@ -334,34 +542,31 @@ def plot_classification_interleaved(
     for i in range(Ncoef + 1):
         ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
 
-    tick_vals: Iterable[int] = [1, *list(range(5, int(Nz[-1]) + 1, 5))]
-    tick_positions: list[float] = []
-    tick_labels: list[str] = []
-    for nz_val in tick_vals:
-        idx = np.where(Nz == nz_val)[0]
-        if len(idx) > 0:
-            center = idx[0] * slot_total + (data_slots - 1) / 2.0
-            tick_positions.append(center)
-            tick_labels.append(str(nz_val))
+    tick_positions, tick_labels = _pick_xticks(Nz, slot_total, data_slots, xtick_step)
 
     ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_labels, fontsize=12)
-    ax.tick_params(labelsize=12)
+    ax.set_xticklabels(tick_labels, fontsize=tick_fontsize)
+    ax.tick_params(labelsize=tick_fontsize)
     ax.set_xlim(-0.5, total_slots - 0.5)
 
-    ax.legend(
-        handles=_build_legend_handles(lang),
-        fontsize=10,
-        loc="upper right",
-        framealpha=0.95,
-        edgecolor="gray",
-        fancybox=False,
-        handlelength=1.2,
-        handleheight=0.8,
-        borderpad=0.4,
-    )
+    if legend:
+        ax.legend(
+            handles=_build_legend_handles(lang),
+            fontsize=legend_fontsize,
+            loc="upper right",
+            framealpha=0.95,
+            edgecolor="gray",
+            fancybox=False,
+            handlelength=1.2,
+            handleheight=0.8,
+            borderpad=0.4,
+        )
 
     fig.tight_layout()
+
+    if panel_label is not None:
+        _draw_panel_label(fig, ax, panel_label, panel_label_fontsize, panel_label_loc)
+
     _save(fig, save_path)
     return fig
 
@@ -574,15 +779,19 @@ def _setup_interleaved_axes(
     cutoffs: NDArray,
     data_slots: int = 3,
     gap_slots: int = 1,
+    label_fontsize: float = 16.0,
+    tick_fontsize: float = 12.0,
+    ytick_step: float = 0.1,
+    xtick_step: int = 5,
 ) -> None:
     """Apply tick marks, vlines, and hlines for an interleaved heatmap."""
     Ncoef = len(Nz)
     slot_total = data_slots + gap_slots
     total_slots = Ncoef * slot_total
 
-    ax.set_xlabel(r"$N_z$", fontsize=16)
-    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=16)
-    ax.set_yticks(_YTICKS)
+    ax.set_xlabel(r"$N_z$", fontsize=label_fontsize)
+    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=label_fontsize)
+    ax.set_yticks(np.arange(0.0, 1.0 + 1e-9, ytick_step))
     ax.set_ylim(0.0, 1.0)
     for yt in _YTICKS:
         ax.axhline(y=yt, color="black", linewidth=0.4)
@@ -591,19 +800,11 @@ def _setup_interleaved_axes(
     for i in range(Ncoef + 1):
         ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
 
-    tick_vals: Iterable[int] = [1, *list(range(5, int(Nz[-1]) + 1, 5))]
-    tick_positions: list[float] = []
-    tick_labels: list[str] = []
-    for nz_val in tick_vals:
-        idx = np.where(Nz == nz_val)[0]
-        if len(idx) > 0:
-            center = idx[0] * slot_total + (data_slots - 1) / 2.0
-            tick_positions.append(center)
-            tick_labels.append(str(nz_val))
+    tick_positions, tick_labels = _pick_xticks(Nz, slot_total, data_slots, xtick_step)
 
     ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_labels, fontsize=12)
-    ax.tick_params(labelsize=12)
+    ax.set_xticklabels(tick_labels, fontsize=tick_fontsize)
+    ax.tick_params(labelsize=tick_fontsize)
     ax.set_xlim(-0.5, total_slots - 0.5)
 
 
@@ -620,6 +821,13 @@ def plot_chaotic_map(
     data_slots: int = 3,
     gap_slots: int = 1,
     lang: str = "pt",
+    figsize: tuple[float, float] = (12.0, 5.0),
+    label_fontsize: float = 16.0,
+    tick_fontsize: float = 12.0,
+    title_fontsize: float = 16.0,
+    show_title: bool = True,
+    ytick_step: float = 0.1,
+    xtick_step: int = 5,
 ) -> Figure:
     """Binary union of chaotic regions across all window × filter sweeps.
 
@@ -669,7 +877,7 @@ def plot_chaotic_map(
     cmap_obj = mcolors.ListedColormap([color])
     cmap_obj.set_bad("white")
 
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
@@ -683,8 +891,19 @@ def plot_chaotic_map(
         antialiased=False,
     )
 
-    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
-    ax.set_title(t("sweep.chaotic_map.title", lang=lang), fontsize=16, pad=14)
+    _setup_interleaved_axes(
+        ax,
+        Nz,
+        cutoffs,
+        data_slots,
+        gap_slots,
+        label_fontsize=label_fontsize,
+        tick_fontsize=tick_fontsize,
+        ytick_step=ytick_step,
+        xtick_step=xtick_step,
+    )
+    if show_title:
+        ax.set_title(t("sweep.chaotic_map.title", lang=lang), fontsize=title_fontsize, pad=14)
 
     fig.tight_layout()
     if save_path is not None:
@@ -700,6 +919,15 @@ def plot_chaotic_density(
     data_slots: int = 3,
     gap_slots: int = 1,
     lang: str = "pt",
+    figsize: tuple[float, float] = (12.0, 5.0),
+    label_fontsize: float = 16.0,
+    tick_fontsize: float = 12.0,
+    title_fontsize: float = 16.0,
+    cbar_fontsize: float = 13.0,
+    show_title: bool = True,
+    marker_size: float = 10.0,
+    ytick_step: float = 0.1,
+    xtick_step: int = 5,
 ) -> Figure:
     """Density map: how many window × filter configurations are chaotic.
 
@@ -753,7 +981,7 @@ def plot_chaotic_density(
     cmap_obj = plt.get_cmap(cmap).copy()
     cmap_obj.set_bad("white")
 
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
     ax.set_facecolor("white")
 
@@ -769,11 +997,22 @@ def plot_chaotic_density(
         antialiased=False,
     )
     cbar = fig.colorbar(pcm, ax=ax)
-    cbar.set_label(t("sweep.chaotic_density.cbar", lang=lang), fontsize=13)
-    cbar.ax.tick_params(labelsize=11)
+    cbar.set_label(t("sweep.chaotic_density.cbar", lang=lang), fontsize=cbar_fontsize)
+    cbar.ax.tick_params(labelsize=cbar_fontsize - 1.0)
 
-    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
-    ax.set_title(t("sweep.chaotic_density.title", lang=lang), fontsize=16, pad=14)
+    _setup_interleaved_axes(
+        ax,
+        Nz,
+        cutoffs,
+        data_slots,
+        gap_slots,
+        label_fontsize=label_fontsize,
+        tick_fontsize=tick_fontsize,
+        ytick_step=ytick_step,
+        xtick_step=xtick_step,
+    )
+    if show_title:
+        ax.set_title(t("sweep.chaotic_density.title", lang=lang), fontsize=title_fontsize, pad=14)
 
     # Mark point of maximum density
     slot_total = data_slots + gap_slots
@@ -783,10 +1022,10 @@ def plot_chaotic_density(
         x_max,
         y_max,
         marker="o",
-        markersize=10,
+        markersize=marker_size,
         markerfacecolor="none",
         markeredgecolor="black",
-        markeredgewidth=2.0,
+        markeredgewidth=max(1.0, marker_size / 5.0),
         linestyle="none",
         zorder=10,
     )

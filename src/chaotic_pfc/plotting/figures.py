@@ -79,9 +79,15 @@ def setup_rc():
         plt.rcParams.update(
             {
                 "text.usetex": True,
-                "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
+                # mathptmx gives Times for *both* text and math, matching
+                # the article classes (IEEEtran / SIMAC's mathptmx). Without
+                # it this branch renders Computer Modern, which clashes with
+                # the surrounding body text.
+                "text.latex.preamble": (
+                    r"\usepackage{amsmath}\usepackage{amssymb}\usepackage{mathptmx}"
+                ),
                 "font.family": "serif",
-                "font.serif": ["Computer Modern Roman"],
+                "font.serif": ["Times", "Nimbus Roman", "Times New Roman"],
                 "svg.fonttype": "path",
                 "axes.unicode_minus": False,
                 "axes.formatter.use_mathtext": False,

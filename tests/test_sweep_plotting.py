@@ -611,13 +611,15 @@ class TestFig2PolyCollection(unittest.TestCase):
         # yticks: _YTICKS = arange(0, 1.01, 0.1)
         np.testing.assert_array_almost_equal(ax.get_yticks(), _YTICKS, decimal=10)
 
-        # xticks: Nz = [1, 2, 4], tick_vals = [1, 5]
-        # 5 not in Nz, so only label for 1 at center = 0*4 + 1 = 1
+        # xticks: taps = [2, 3, 5] -> Nz = [1, 2, 4]. The default step of
+        # 5 matches nothing and a step of 2 only reaches [2, 4], so
+        # _pick_xticks halves down to 1 and every order is labelled at
+        # its slot centre rather than leaving a bare axis.
         xticks = ax.get_xticks()
-        self.assertEqual(len(xticks), 1)
-        self.assertAlmostEqual(xticks[0], 1.0, places=10)
+        self.assertEqual(len(xticks), 3)
+        np.testing.assert_array_almost_equal(xticks, [1.0, 5.0, 9.0], decimal=10)
         xticklabels = [t.get_text() for t in ax.get_xticklabels()]
-        self.assertEqual(xticklabels, ["1"])
+        self.assertEqual(xticklabels, ["1", "2", "4"])
 
         fig.clear()
 
