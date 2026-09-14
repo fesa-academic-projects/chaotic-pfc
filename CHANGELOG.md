@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.8.0] - 2026-05-23
+## [Unreleased]
+
+## [0.8.0] - 2026-09-13
 
 ### Added
 - Property-based testing with Hypothesis: 11 invariants for Hénon maps, Lyapunov exponents,
@@ -43,6 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interleaved layout in `plot_heatmap_continuous` and `plot_difficulty_map`.
 - `validate-pyproject` pre-commit hook.
 - Python 3.14 support in CI and classifiers.
+- ASCII text-message generator (`text_message`) encoding a string as an NRZ BPSK
+  bit stream, and a `--text` flag on `comm-ideal`, `comm-fir`, and `comm-order-n`
+  (default `"hello"` via `CommConfig.message_text`).
+- `chaotic-pfc run paper-figures` subcommand rendering the SIMAC and JCIS
+  camera-ready figures at their final printed size; it replaces the standalone
+  `tools/paper_figures.py` script.
+- `CITATION.cff` (CFF 1.2.0) listing the five authors with ORCIDs, plus a
+  `cffconvert` pre-commit hook validating it.
 
 ### Changed
 - `CHANGELOG.md` fully conforms to Keep a Changelog 1.1.0 with reference links.
@@ -78,6 +88,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `np.random.seed` replaced with `np.random.default_rng` in benchmarks.
 - Pre-commit: ruff bumped to v0.15.14; `validate-pyproject` hook added; mypy
   configured as `language: system`.
+- `comm-ideal`, `comm-fir`, and `comm-order-n` transmit the ASCII text message
+  instead of a periodic square wave; `to_namespace()` exposes the text so
+  `run all` keeps working.
+- Minimum supported Python raised to 3.12 (`requires-python`, classifiers, CI).
+- Publication typography restored in generated figures: parallel workers
+  re-apply `setup_rc()`, and the `usetex` branch loads `mathptmx` so the LaTeX
+  and mathtext paths both target Times.
+- `sweep plot` meshes rasterized and saved at dpi=600 from `fig.bbox_inches`,
+  shrinking SVG size and save time; `sweep plot --all` renders in parallel.
+- Sweep kernel sped up: single-vector Lyapunov estimator with hybrid fallback,
+  Benettin block reorthonormalisation (K=10), and divergence checks hoisted out
+  of the hot loop.
+- Remaining PT-BR prose translated (`internals`, `architecture`) and
+  double-escaped math in the translations fixed.
+- Version, README, and AUTHORS aligned to 0.8.0 and `CITATION.cff`; AUTHORS now
+  identifies every contributor by ORCID.
 
 ### Removed
 - DCSK and EF-DCSK from project scope (module, CLI, i18n keys, SVG figures,
@@ -131,6 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Various cross-reference fixes in `transmitter`, `signals`, `channel`,
   `lyapunov`, `config`, and `sweep_plotting` docstrings.
 - DCSK references cleaned from all docstrings, READMEs, and documentation pages.
+- Numba bindings typed under the new `prange`-as-class stubs.
+- Matplotlib stub gaps in the panel-label measurement path silenced for mypy.
 
 ## [0.7.0] - 2026-05-10
 
