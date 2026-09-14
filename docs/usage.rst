@@ -68,7 +68,15 @@ chain:
    chaotic-pfc run comm-order-n     # order-N Hénon + FIR channel
 
 Each produces a :math:`4 \times 2` grid of time-domain and PSD plots
-for the message, carrier, received signal, and recovered message.
+for the message, carrier, received signal, and recovered message. The
+information-bearing message is an ASCII text encoded as an NRZ BPSK bit
+stream (by default ``"hello"``), so the transmitted waveform looks like
+real digital data rather than a periodic square wave. Override it with
+``--text`` and set the samples-per-bit hold time with ``--period``:
+
+.. code-block:: bash
+
+   chaotic-pfc run comm-ideal --text "chaos" --period 40
 
 Add ``--save`` to write figures to ``figures/``. Use ``--lang pt``
 for Portuguese figure labels.
@@ -248,6 +256,26 @@ Produces 8 ``.tex`` files per language under ``data/analysis_output/tables/{pt,e
 
 All tables use ``booktabs`` rules and inline LaTeX math. Captions, column
 headers, and filter names are resolved via the i18n system.
+
+Paper figures
+~~~~~~~~~~~~~
+
+Renders the SIMAC and JCIS figures at their final printed size (so the
+requested point sizes are the point sizes on the page):
+
+.. code-block:: bash
+
+   chaotic-pfc run paper-figures
+
+Emits PDF and SVG under ``paper-figures/simac/`` and
+``paper-figures/jcis/``. Restrict to one manuscript or customise the
+locations/formats with the flags:
+
+.. code-block:: bash
+
+   # Only the JCIS figures, SVG only, custom directories
+   chaotic-pfc run paper-figures --only jcis --formats svg \
+       --data-dir data/sweeps --output-dir paper-figures
 
 Language support
 ----------------

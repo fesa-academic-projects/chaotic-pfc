@@ -35,6 +35,7 @@ from . import (
     comm_ideal,
     comm_order_n,
     lyapunov,
+    paper_figures,
     run_all,
     sensitivity,
     sweep,
@@ -50,6 +51,7 @@ EXPERIMENTS = (
     lyapunov,
     sweep,
     analysis,
+    paper_figures,
     run_all,
 )
 

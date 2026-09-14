@@ -47,6 +47,7 @@ class TestExperimentsRegistered(unittest.TestCase):
         "comm-order-n",
         "lyapunov",
         "analysis",
+        "paper-figures",
         "all",
     )
 

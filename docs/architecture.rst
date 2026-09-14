@@ -49,7 +49,8 @@ Package layout
         ├── comm_order_n.py              # order-N Hénon + FIR channel
         ├── lyapunov.py                  # Lyapunov spectra
         ├── sweep/                       # sweep compute / plot / beta-sweep / plot-3d
-        └── analysis.py                  # statistical report
+        ├── analysis.py                  # statistical report
+        └── paper_figures.py             # camera-ready SIMAC/JCIS figures
 
 Data flow
 ---------
