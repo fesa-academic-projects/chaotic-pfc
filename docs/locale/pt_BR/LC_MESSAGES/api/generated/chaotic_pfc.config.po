@@ -7,7 +7,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-05-23 22:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -365,10 +365,10 @@ msgstr "Directory for ensemble CSV output."
 
 #: chaotic_pfc.config.SweepConfig:3 of
 msgid ""
-"Used by :mod:`chaotic_pfc.sweep`. The full grid is ``len(orders) × "
+"Used by :mod:`chaotic_pfc.analysis.sweep`. The full grid is ``len(orders) × "
 "n_cutoffs`` points; at the defaults this is 4 000."
 msgstr ""
-"Used by :mod:`chaotic_pfc.sweep`. The full grid is ``len(orders) × "
+"Used by :mod:`chaotic_pfc.analysis.sweep`. The full grid is ``len(orders) × "
 "n_cutoffs`` points; at the defaults this is 4 000."
 
 #: chaotic_pfc.config.SweepConfig:8 of

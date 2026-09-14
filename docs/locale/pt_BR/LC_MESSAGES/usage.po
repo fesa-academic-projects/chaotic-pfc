@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-23 21:24-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
@@ -229,11 +229,11 @@ msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
 #: ../../usage.rst:167
 msgid ""
 "Runs sweeps for every :math:`\\beta` in the interval for each filter type"
-" under the Kaiser window. Results go to ``data/sweeps/kaiser/``."
+" under the Kaiser window. Results go to ``data/sweeps/beta/``."
 msgstr ""
 "Executa varreduras para cada :math:`\\beta` no intervalo para cada tipo "
 "de filtro sob a janela Kaiser. Os resultados vão para "
-"``data/sweeps/kaiser/``."
+"``data/sweeps/beta/``."
 
 #: ../../usage.rst:177
 msgid "3-D visualisation (requires plotly)"

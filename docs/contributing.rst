@@ -180,7 +180,7 @@ Public API
 ----------
 
 The canonic public API is defined in
-:mod:`chaotic_pfc.__init__` via the ``__all__`` list (62 symbols).
+:mod:`chaotic_pfc.__init__` via the ``__all__`` list (75 symbols).
 All names in ``__all__`` are re-exported at the top level:
 
 .. code-block:: python
@@ -229,10 +229,11 @@ This project follows **Semantic Versioning** (SemVer):
 * **MINOR**: backwards-compatible new functionality.
 * **PATCH**: backwards-compatible bug fixes.
 
-The version is stored in two places:
+The version is stored in three places, which must stay in sync:
 
 * ``pyproject.toml``: ``project.version`` field.
 * ``src/chaotic_pfc/_version.py``: ``__version__`` string.
+* ``docs/conf.py``: ``version`` and ``release`` strings.
 
 The ``[Unreleased]`` section of ``CHANGELOG.md`` is renamed to the
 version number and date on release. See ``RELEASING.md`` in the

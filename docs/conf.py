@@ -17,7 +17,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 # Project information
 # ─────────────────────────────────────────────────────────────────────────
 project = "chaotic-pfc"
-author = "Roger Freitas Pereira"
+author = (
+    "Kauê de Souza Silva, Roger Freitas Pereira, Marcos Felipe Correa Soares, "
+    "Guilherme Rodrigues dos Santos, and Vinícius da Silva Borges"
+)
 copyright = f"{datetime.now().year}, {author} and contributors"
 # Read the Docs injects READTHEDOCS_LANGUAGE per project (e.g. "en", "pt-br").
 # Locally, fall back to SPHINX_LANGUAGE (set by Makefile/CLI) or English.

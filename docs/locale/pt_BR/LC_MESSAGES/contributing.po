@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: chaotic-pfc 0.6.2\n"
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-10 22:11-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
@@ -243,11 +243,11 @@ msgstr "API pública"
 #: ../../contributing.rst:182
 msgid ""
 "The canonic public API is defined in :mod:`chaotic_pfc.__init__` via the "
-"``__all__`` list (62 symbols). All names in ``__all__`` are re-exported "
+"``__all__`` list (75 symbols). All names in ``__all__`` are re-exported "
 "at the top level:"
 msgstr ""
 "A API pública canônica é definida em :mod:`chaotic_pfc.__init__` via a "
-"lista ``__all__`` (62 símbolos). Todos os nomes em ``__all__`` são "
+"lista ``__all__`` (75 símbolos). Todos os nomes em ``__all__`` são "
 "reexportados no nível superior:"
 
 #: ../../contributing.rst:190
@@ -331,8 +331,8 @@ msgid "**PATCH**: backwards-compatible bug fixes."
 msgstr "**PATCH** — correções de bugs compatíveis com versões anteriores."
 
 #: ../../contributing.rst:232
-msgid "The version is stored in two places:"
-msgstr "A versão é armazenada em dois lugares:"
+msgid "The version is stored in three places, which must stay in sync:"
+msgstr "A versão é armazenada em três lugares, que devem ficar em sincronia:"
 
 #: ../../contributing.rst:234
 msgid "``pyproject.toml``: ``project.version`` field."
@@ -341,6 +341,10 @@ msgstr "``pyproject.toml`` — campo ``project.version``."
 #: ../../contributing.rst:235
 msgid "``src/chaotic_pfc/_version.py``: ``__version__`` string."
 msgstr "``src/chaotic_pfc/_version.py`` — string ``__version__``."
+
+#: ../../contributing.rst:236
+msgid "``docs/conf.py``: ``version`` and ``release`` strings."
+msgstr "``docs/conf.py`` — strings ``version`` e ``release``."
 
 #: ../../contributing.rst:237
 msgid ""

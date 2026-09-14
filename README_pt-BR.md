@@ -127,13 +127,13 @@ chaotic-pfc/
 │   ├── lyapunov/                  Tabelas CSV do protocolo ensemble
 │   └── sweeps/                    Checkpoints .npz versionados das varreduras
 ├── figures/                       Figuras finais (SVG para o artigo, PNG para preview)
-└── scripts/
-    └── benchmark.py               Benchmarks de performance para operações principais
+└── benchmarks/
+    └── standalone.py             Benchmarks de performance para operações principais
 ```
 
 ### API pública
 
-O namespace `chaotic_pfc` reexporta 78 símbolos que formam a API pública
+O namespace `chaotic_pfc` reexporta 75 símbolos que formam a API pública
 estável. Eles são importáveis diretamente de `chaotic_pfc`:
 
 ```python
@@ -167,6 +167,8 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep beta-sweep`   | Varredura Kaiser β: agrega resultados de Lyapunov por β. |
 | `chaotic-pfc run sweep plot-3d`      | Volume 3-D interativo das varreduras Kaiser β via Plotly. |
 | `chaotic-pfc run analysis`           | Análise estatística dos resultados da varredura. |
+| `chaotic-pfc run analysis plot-chaotic-map` | União binária das regiões caóticas entre varreduras. |
+| `chaotic-pfc run analysis plot-chaotic-density` | Densidade de caos: concordância entre configurações. |
 | `chaotic-pfc run analysis export-tables` | Exporta tabelas LaTeX bilíngues (top-k, rankings, sweet spots, Kaiser consolidado) para PFC/publicação. |
 | `chaotic-pfc run paper-figures`      | Figuras SIMAC e JCIS em tamanho final de impressão. |
 | `chaotic-pfc run all`                | Pipeline completo, em ordem. |

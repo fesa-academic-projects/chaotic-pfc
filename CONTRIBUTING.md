@@ -115,10 +115,10 @@ Slow tests are marked with `@pytest.mark.slow` and can be skipped with `pytest -
 
 ### Benchmarking
 
-A lightweight benchmark script lives at `scripts/benchmark.py`. It measures wall-clock time for core operations (Henon maps, FIR bank, Lyapunov exponents) and serves as a sanity check that performance hasn't regressed after refactors. Run it before tagging a release:
+A lightweight benchmark script lives at `benchmarks/standalone.py`. It measures wall-clock time for core operations (Henon maps, FIR bank, Lyapunov exponents) and serves as a sanity check that performance hasn't regressed after refactors. Run it before tagging a release:
 
 ```bash
-python scripts/benchmark.py
+python benchmarks/standalone.py
 ```
 
 ### Public API

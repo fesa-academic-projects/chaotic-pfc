@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Quick performance benchmarks for core operations.
 
-Usage:  python scripts/benchmark.py
+Usage:  python benchmarks/standalone.py
 
 All benchmarks run with Numba JIT acceleration when available
 (``pip install -e '.[fast]'``). Without Numba, the same code

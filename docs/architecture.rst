@@ -12,8 +12,8 @@ Package layout
 
 .. code-block:: text
 
-    chaotic_pfc                          # top-level namespace (~90 public symbols)
-    ├── _version.py                      # single source of truth: __version__
+    chaotic_pfc                          # top-level namespace (~75 public symbols)
+    ├── _version.py                      # __version__ (mirrors pyproject.toml / docs/conf.py)
     ├── _compat.py                       # Numba compatibility layer (no-op fallback)
     ├── _i18n.py                         # bilingual figure labels (pt / en)
     ├── config.py                        # centralised dataclass configuration
@@ -49,7 +49,7 @@ Package layout
         ├── comm_order_n.py              # order-N Hénon + FIR channel
         ├── lyapunov.py                  # Lyapunov spectra
         ├── sweep/                       # sweep compute / plot / beta-sweep / plot-3d
-        ├── analysis.py                  # statistical report
+        ├── analysis.py                  # statistical report + table/chaotic-region exports
         └── paper_figures.py             # camera-ready SIMAC/JCIS figures
 
 Data flow

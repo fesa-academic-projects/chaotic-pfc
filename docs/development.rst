@@ -43,7 +43,7 @@ Project structure
     ├── src/chaotic_pfc/          # package source code
     ├── tests/                    # test suite (mirrors src/ structure)
     ├── docs/                     # Sphinx documentation (English + pt_BR)
-    ├── scripts/                  # utility scripts (benchmark.py)
+    ├── benchmarks/               # standalone + pytest-benchmark suites
     ├── data/                     # Lyapunov output CSVs, sweep .npz checkpoints
     ├── figures/                  # generated SVG/PNG figures
     ├── .github/                  # CI workflows + issue templates
@@ -144,12 +144,12 @@ Documentation
 -------------
 
 The documentation is built with Sphinx and hosted on Read the Docs.
-Output goes to ``docs/_build/html/`` with each language in its own
-subdirectory.
+Output goes to ``docs/_build/html/`` (English) and
+``docs/_build/html/pt_BR/`` (Portuguese).
 
 .. code-block:: bash
 
-    # Build English HTML          → _build/html/en/
+    # Build English HTML          → _build/html/
     make docs
 
     # Build Portuguese HTML       → _build/html/pt_BR/
@@ -171,7 +171,7 @@ subdirectory.
     make docs-epub-pt
 
     # Open in browser
-    firefox docs/_build/html/en/index.html
+    firefox docs/_build/html/index.html
     firefox docs/_build/html/pt_BR/index.html
 
 To update translations after changing English sources:

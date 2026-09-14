@@ -49,7 +49,7 @@ docs-epub-pt:  ## Build Sphinx EPUB documentation (Portuguese)
 	cd docs && ../$(SPHINXBUILD) -b epub . _build/epub -D language=pt_BR
 
 benchmark:  ## Run performance benchmarks
-	python scripts/benchmark.py
+	python benchmarks/standalone.py
 
 clean:  ## Remove build and cache artifacts
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

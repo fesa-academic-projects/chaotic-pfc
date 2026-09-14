@@ -1,7 +1,7 @@
 # Sphinx Makefile for chaotic-pfc documentation
 #
 # Available targets:
-#   html          Build English HTML        → _build/html/en/
+#   html          Build English HTML        → _build/html/
 #   html-pt       Build Portuguese HTML     → _build/html/pt_BR/
 #   html-all      Build both languages
 #   clean         Remove build artifacts and generated stubs
@@ -31,7 +31,7 @@ clean:
 # ─────────────────────────────────────────────────────────────────────
 
 html:
-	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)/html/en" \
+	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)/html" \
 		-D language=en $(SPHINXOPTS) $(O)
 
 html-pt:

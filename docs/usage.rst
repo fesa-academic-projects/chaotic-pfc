@@ -149,8 +149,8 @@ Generates classification figures from saved ``.npz`` checkpoints:
 
 .. code-block:: bash
 
-   # Save figures without displaying
-   chaotic-pfc run sweep plot --all --save --no-display
+   # Plot without opening a display (figures are always written)
+   chaotic-pfc run sweep plot --all --no-display
 
 Produces (per combination):
 
@@ -173,13 +173,13 @@ Runs the Lyapunov sweep for a range of Kaiser :math:`\beta` values:
    chaotic-pfc run sweep beta-sweep --beta-min 2.0 --beta-max 10.0 --beta-step 0.5
 
 Runs sweeps for every :math:`\beta` in the interval for each filter
-type under the Kaiser window. Results go to ``data/sweeps/kaiser/``.
+type under the Kaiser window. Results go to ``data/sweeps/beta/``.
 
 .. code-block:: bash
 
-   # Adaptive mode saves significant time on beta-sweeps
+   # Quick mode (~seconds, reduced grid) for smoke testing
    chaotic-pfc run sweep beta-sweep --beta-min 2.0 --beta-max 10.0 \
-       --beta-step 0.5 --adaptive --tol 1e-3
+       --beta-step 0.5 --quick
 
 3-D visualisation (requires plotly)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,14 +204,14 @@ found under ``data/sweeps/``:
 
 #. **Summary table**: one row per sweep with chaotic/periodic/divergent percentages.
 #. **Filter-type comparison**: aggregates per filter type (lowpass, highpass, bandpass, bandstop).
-#. **Best chaos-preserving filters**: ranked by chaotic coverage.
 #. **Lambda-max distribution**: histogram with skewness statistics.
 #. **Transition boundaries**: first chaotic cutoff per filter order.
 #. **Spectral robustness (chaos margin)**: width of the chaotic region.
 #. **Spearman correlation**: (order, cutoff) vs. :math:`\lambda_{\max}`.
-#. **Bootstrap 95% CI**: confidence intervals for chaotic proportion.
-#. **Optimal parameters**: (order, cutoff) pairs yielding the highest :math:`\lambda_{\max}`.
+#. **Bootstrap 95% CI**: confidence interval for the mean :math:`\lambda_{\max}`.
+#. **Best and optimal parameters**: top-5 chaotic coverage and highest :math:`\lambda_{\max}` points.
 #. **Kaiser beta evolution**: :math:`\lambda_{\max}` as function of :math:`\beta`.
+#. **Interpretation**: summary takeaways.
 
 .. code-block:: bash
 
@@ -220,6 +220,19 @@ found under ``data/sweeps/``:
 
    # Analyse a specific sweep directory
     chaotic-pfc run analysis --data-dir data/sweeps
+
+Chaotic-region maps
+~~~~~~~~~~~~~~~~~~~
+
+Renders cross-sweep figures from the same checkpoints:
+
+.. code-block:: bash
+
+   # Binary union of chaotic regions (chaotic or not)
+   chaotic-pfc run analysis plot-chaotic-map --sweep-dir data/sweeps
+
+   # Density map: how many configurations agree on chaos at each point
+   chaotic-pfc run analysis plot-chaotic-density --sweep-dir data/sweeps
 
 Export tables for PFC/article
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,23 +294,24 @@ Language support
 ----------------
 
 The CLI supports bilingual figure labels via the ``--lang`` flag or the
-``CHAOTIC_PFC_LANG`` environment variable:
+``CHAOTIC_PFC_LANG`` environment variable (which sets the default):
 
 .. code-block:: bash
 
-   # English labels (default)
-   chaotic-pfc run attractors --lang en
-
-   # Portuguese (Brazil) labels
+   # Portuguese (Brazil) labels (default)
    chaotic-pfc run attractors --lang pt
 
-   # Set default language via environment variable
-   export CHAOTIC_PFC_LANG=pt
+   # English labels
+   chaotic-pfc run attractors --lang en
+
+   # Change the default for every command
+   export CHAOTIC_PFC_LANG=en
    chaotic-pfc run attractors
 
 The flag is supported by ``attractors``, ``sensitivity``,
-``comm-ideal``, ``comm-fir``, ``comm-order-n``, and
-``run all``.
+``comm-ideal``, ``comm-fir``, ``comm-order-n``, ``sweep plot``,
+``analysis plot-chaotic-map``, ``analysis plot-chaotic-density``,
+``analysis export-tables``, and ``run all``.
 
 Further reading
 ---------------

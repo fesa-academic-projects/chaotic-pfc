@@ -36,7 +36,7 @@ cutoff frequency: classifying regions of the parameter space as chaotic,
 periodic, or divergent (figure above).
 
 The project is organised as an installable Python package (`chaotic_pfc`)
-with numbered scripts that reproduce each experiment. The heavy Lyapunov
+with a unified CLI that reproduces each experiment. The heavy Lyapunov
 sweep is JIT-compiled with Numba and parallelised over the `(order, cutoff)`
 grid.
 
@@ -127,13 +127,13 @@ chaotic-pfc/
 │   ├── lyapunov/                  CSV tables from the ensemble protocol
 │   └── sweeps/                    Versioned .npz checkpoints from long sweeps
 ├── figures/                       Final figures (SVG for the paper, PNG for preview)
-└── scripts/
-    └── benchmark.py               Performance benchmarks for core operations
+└── benchmarks/
+    └── standalone.py             Performance benchmarks for core operations
 ```
 
 ### Public API
 
-The top-level `chaotic_pfc` namespace reexports 78 symbols that form the
+The top-level `chaotic_pfc` namespace reexports 75 symbols that form the
 stable public API. They are importable from `chaotic_pfc` directly:
 
 ```python
@@ -167,6 +167,8 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep beta-sweep`   | Kaiser β-sweep: aggregate per-β Lyapunov results. |
 | `chaotic-pfc run sweep plot-3d`      | Interactive 3-D volume of Kaiser β-sweeps via Plotly. |
 | `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
+| `chaotic-pfc run analysis plot-chaotic-map` | Binary union of chaotic regions across all sweeps. |
+| `chaotic-pfc run analysis plot-chaotic-density` | Chaos density: agreement across configurations. |
 | `chaotic-pfc run analysis export-tables` | Export bilingual LaTeX tables (top-k, rankings, sweet spots, consolidated Kaiser) for PFC/publication. |
 | `chaotic-pfc run paper-figures`      | Camera-ready SIMAC and JCIS figures at final printed size. |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
