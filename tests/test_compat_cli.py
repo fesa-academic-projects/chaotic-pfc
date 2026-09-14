@@ -1,4 +1,4 @@
-"""tests/test_cli_smoke.py — End-to-end smoke tests for CLI subcommands.
+"""tests/test_compat_cli.py — End-to-end smoke tests for CLI subcommands.
 
 Complements :mod:`tests.test_cli` (parser-level checks) by actually
 executing each subcommand in-process via :func:`chaotic_pfc.cli.main`
@@ -262,8 +262,8 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
 
     def test_adaptive_args_forwarded_to_run_sweep(self):
         """``run_compute`` must forward ``adaptive``/``Nmap_min``/``tol``
-        to :func:`chaotic_pfc.sweep.run_sweep`. We monkey-patch the
-        symbol on the source module (``chaotic_pfc.sweep``); the CLI
+        to :func:`chaotic_pfc.analysis.sweep.run_sweep`. We monkey-patch the
+        symbol on the source module (``chaotic_pfc.analysis.sweep``); the CLI
         does ``from chaotic_pfc.analysis.sweep import run_sweep`` *inside*
         ``run_compute`` so the patch must precede that local import."""
         import argparse

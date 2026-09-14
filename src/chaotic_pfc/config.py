@@ -189,7 +189,7 @@ class PlotConfig:
 class SweepConfig:
     """Parameters for the 2-D (order, cutoff) Lyapunov sweep.
 
-    Used by :mod:`chaotic_pfc.sweep`. The full grid is
+    Used by :mod:`chaotic_pfc.analysis.sweep`. The full grid is
     ``len(orders) × n_cutoffs`` points; at the defaults this is 4 000.
 
     Attributes

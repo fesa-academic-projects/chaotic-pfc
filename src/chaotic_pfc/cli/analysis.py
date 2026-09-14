@@ -32,9 +32,6 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         "--data-dir", default="data/sweeps", help="Root sweep directory (default: data/sweeps)"
     )
     p.add_argument(
-        "--report", action="store_true", help="Generate comprehensive statistical report"
-    )
-    p.add_argument(
         "--json",
         default="data/analysis_summary.json",
         help="Output JSON path (default: data/analysis_summary.json)",

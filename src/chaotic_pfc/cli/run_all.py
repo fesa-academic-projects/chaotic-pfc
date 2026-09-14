@@ -98,7 +98,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Run the sweep compute step in quick mode (seconds instead of hours).",
     )
     # Adaptive Lyapunov early-stop. Defaults to off to preserve
-    # bit-exactness with previous releases. See cli/sweep.py for the
+    # bit-exactness with previous releases. See cli/sweep/_compute.py for the
     # full justification of the default Nmap_min / tol values.
     p.add_argument(
         "--adaptive",

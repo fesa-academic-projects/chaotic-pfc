@@ -54,12 +54,16 @@ def add_save_display_flags(parser: argparse.ArgumentParser) -> None:
 
 
 def add_lang_flag(parser: argparse.ArgumentParser) -> None:
-    """Register ``--lang`` flag for figure language (pt or en)."""
+    """Register ``--lang`` flag for figure language (pt or en).
+
+    The default honours the ``CHAOTIC_PFC_LANG`` environment variable and
+    falls back to ``"pt"``.
+    """
     parser.add_argument(
         "--lang",
         choices=["pt", "en"],
-        default="pt",
-        help="Language for figure titles and labels (default: pt)",
+        default=os.environ.get("CHAOTIC_PFC_LANG", "pt"),
+        help="Language for figure titles and labels (default: pt or $CHAOTIC_PFC_LANG)",
     )
 
 

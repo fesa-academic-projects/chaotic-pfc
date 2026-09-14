@@ -47,9 +47,9 @@ def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
         dest="kaiser_beta",
         help="β parameter of the Kaiser window (default: 5.0). Ignored unless --window=kaiser.",
     )
-    # Adaptive Lyapunov early-stop. See chaotic_pfc.sweep.run_sweep for the
-    # full criterion. Defaults match the calibrated values from
-    # docs/adaptive-calibration: Nmap_min=500, tol=1e-3 give a ~3.6× speedup
+    # Adaptive Lyapunov early-stop. See chaotic_pfc.analysis.sweep.run_sweep for the
+    # full criterion. Defaults match the calibrated values documented in
+    # docs/internals.rst: Nmap_min=500, tol=1e-3 give a ~3.6× speedup
     # with mean |Δλ| < 0.001 vs. the fixed-Nmap reference.
     p.add_argument(
         "--adaptive",

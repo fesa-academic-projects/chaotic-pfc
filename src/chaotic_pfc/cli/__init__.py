@@ -6,7 +6,9 @@ Unified command-line interface for the chaotic_pfc package.
 The parser layout is ``chaotic-pfc run <experiment> [options]``, where
 ``<experiment>`` is one of the pipeline stages (``attractors``,
 ``sensitivity``, ``comm-ideal``, ``comm-fir``, ``comm-order-n``,
-``lyapunov``, ``sweep compute``, ``sweep plot``, ``all``).
+``lyapunov``, ``sweep {compute,plot,beta-sweep,plot-3d}``,
+``analysis [export-tables|plot-chaotic-map|plot-chaotic-density]``,
+``paper-figures``, ``all``).
 
 Each experiment lives in its own submodule and exposes two functions:
 
