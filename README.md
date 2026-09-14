@@ -15,7 +15,7 @@
 
 Chaos-based digital communication system using Pecora-Carroll
 synchronisation with FIR-filtered Hénon map.
-Undergraduate final project (*Trabalho de Conclusão de Curso*).
+Undergraduate final project (PFC).
 
 <p align="center">
   <img src="figures/sweeps/Hamming (lowpass)/fig2_classification_interleaved.svg" width="600" alt="Lyapunov classification map: Hamming lowpass">
@@ -167,7 +167,7 @@ from chaotic_pfc.analysis.sweep_plotting_3d import plot_3d_beta_volume
 | `chaotic-pfc run sweep beta-sweep`   | Kaiser β-sweep: aggregate per-β Lyapunov results. |
 | `chaotic-pfc run sweep plot-3d`      | Interactive 3-D volume of Kaiser β-sweeps via Plotly. |
 | `chaotic-pfc run analysis`           | Statistical analysis of sweep results (summary, rankings, bootstrap CIs). |
-| `chaotic-pfc run analysis export-tables` | Export bilingual LaTeX tables (top-k, rankings, sweet spots, consolidated Kaiser) for TCC/publication. |
+| `chaotic-pfc run analysis export-tables` | Export bilingual LaTeX tables (top-k, rankings, sweet spots, consolidated Kaiser) for PFC/publication. |
 | `chaotic-pfc run paper-figures`      | Camera-ready SIMAC and JCIS figures at final printed size. |
 | `chaotic-pfc run all`                | Full pipeline, in order. |
 
