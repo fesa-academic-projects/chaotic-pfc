@@ -21,6 +21,11 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--mu", type=float, default=cfg.comm.mu)
     p.add_argument("--period", type=int, default=cfg.comm.message_period)
     p.add_argument(
+        "--text",
+        default=cfg.comm.message_text,
+        help="ASCII message text encoded as ±1 bits (default: 'hello').",
+    )
+    p.add_argument(
         "--cutoff", type=float, default=cfg.channel.cutoff, help="External channel cutoff"
     )
     p.add_argument("--taps", type=int, default=cfg.channel.num_taps, help="External channel taps")
@@ -55,7 +60,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.comms.receiver import receive_order_n
     from chaotic_pfc.comms.transmitter import transmit_order_n
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.dynamics.signals import binary_message
+    from chaotic_pfc.dynamics.signals import text_message
     from chaotic_pfc.plotting.figures import plot_comm_grid
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
@@ -74,13 +79,13 @@ def run(args: argparse.Namespace) -> int:
     x0 = 0.5 * rng.random(Nc)
     y0 = 0.5 * rng.random(Nc)
 
-    m = binary_message(args.N, period=args.period)
+    m = text_message(args.text, args.N, bit_period=args.period)
     s, _ = transmit_order_n(m, c, mu=args.mu, a=a, b=b, x0=x0)
     r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
     m_hat, _ = receive_order_n(r, c, mu=args.mu, a=a, b=b, y0=y0)
 
     mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)
-    print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}")
+    print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}  text={args.text!r}")
     print(f"    MSE (n > {cfg.comm.transient}): {mse:.4e}")
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)

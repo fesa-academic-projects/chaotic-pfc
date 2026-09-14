@@ -20,6 +20,11 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument("--N", type=int, default=cfg.comm.N)
     p.add_argument("--mu", type=float, default=cfg.comm.mu)
     p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument(
+        "--text",
+        default=cfg.comm.message_text,
+        help="ASCII message text encoded as ±1 bits (default: 'hello').",
+    )
     p.add_argument("--cutoff", type=float, default=cfg.channel.cutoff)
     p.add_argument("--taps", type=int, default=cfg.channel.num_taps)
     add_save_display_flags(p)
@@ -38,7 +43,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.comms.receiver import receive
     from chaotic_pfc.comms.transmitter import transmit
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
-    from chaotic_pfc.dynamics.signals import binary_message
+    from chaotic_pfc.dynamics.signals import text_message
     from chaotic_pfc.plotting.figures import plot_comm_grid
 
     a, b = cfg.comm.henon.a, cfg.comm.henon.b
@@ -48,7 +53,7 @@ def run(args: argparse.Namespace) -> int:
     if args.save:
         fdir.mkdir(parents=True, exist_ok=True)
 
-    m = binary_message(args.N, period=args.period)
+    m = text_message(args.text, args.N, bit_period=args.period)
     s = transmit(m, mu=args.mu, a=a, b=b, x0=0.0, y0=0.0)
     r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
 
@@ -56,7 +61,9 @@ def run(args: argparse.Namespace) -> int:
     m_hat = receive(r, mu=args.mu, a=a, b=b, y0=rng.random(), z0=rng.random())
 
     mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
-    print(f"[04] FIR channel  |  N={args.N:,}  mu={args.mu}  wc/pi={args.cutoff}  taps={args.taps}")
+    print(
+        f"[04] FIR channel  |  N={args.N:,}  mu={args.mu}  wc/pi={args.cutoff}  taps={args.taps}  text={args.text!r}"
+    )
     print(f"    MSE (n > {tr}): {mse:.4e}")
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)

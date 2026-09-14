@@ -47,7 +47,11 @@ class CommConfig:
         Modulation depth used by the transmitter and receiver. Must
         match on both ends.
     message_period
-        Period of the default binary message, in samples.
+        Period of the default binary message, in samples. Also used as
+        the samples-per-bit hold time of :func:`text_message`.
+    message_text
+        Default ASCII text carried by :func:`text_message` in the
+        ``comm-*`` experiments.
     transient
         Number of samples discarded at the start of each run before
         computing the MSE metric. Lets the local oscillator lock into
@@ -59,6 +63,7 @@ class CommConfig:
     N: int = 1_000_000
     mu: float = 0.01
     message_period: int = 20
+    message_text: str = "hello"
     transient: int = 200
     henon: HenonConfig = field(default_factory=HenonConfig)
 
@@ -264,6 +269,7 @@ class ExperimentConfig:
             N=self.comm.N,
             mu=self.comm.mu,
             period=self.comm.message_period,
+            text=self.comm.message_text,
             cutoff=self.channel.cutoff,
             taps=self.channel.num_taps,
             Nc=self.internal_fir.num_taps,
