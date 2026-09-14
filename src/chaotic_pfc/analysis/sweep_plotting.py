@@ -225,9 +225,13 @@ def _draw_panel_label(
     # Reserving a fraction of the figure height instead would leave a
     # gap that scales with the panel, which reads as a stray caption.
     fig.canvas.draw()
-    renderer = fig.canvas.get_renderer()
+    # get_renderer lives on the concrete canvas (e.g. FigureCanvasAgg),
+    # not on FigureCanvasBase, so the matplotlib stubs miss it.
+    renderer = fig.canvas.get_renderer()  # type: ignore[attr-defined]
     bbox = ax.xaxis.get_tightbbox(renderer)
-    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]
+    # get_tightbbox returns None only for an empty axis; the draw pass
+    # above guarantees the x-axis has a measurable tight bbox.
+    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]  # type: ignore[union-attr]
     gap = 5.0 / (fig.get_figheight() * 72.0)
     box = ax.get_position()
     fig.text(
