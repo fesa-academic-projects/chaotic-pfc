@@ -12,6 +12,7 @@
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![CodeQL](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/github-code-scanning/codeql)
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/1217486370.svg)](https://doi.org/10.5281/zenodo.22740317)
 
 Sistema de comunicação digital caótico baseado em sincronização
 Pecora-Carroll com mapa de Hénon filtrado por FIR.

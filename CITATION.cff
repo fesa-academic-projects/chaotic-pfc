@@ -18,6 +18,7 @@ authors:
   - family-names: "da Silva Borges"
     given-names: "Vinícius"
     orcid: "https://orcid.org/0000-0001-5546-6842"
+doi: 10.5281/zenodo.22740318
 version: 0.8.0
 license: BSD-3-Clause
 repository-code: "https://github.com/fesa-academic-projects/chaotic-pfc"
