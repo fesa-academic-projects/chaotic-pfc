@@ -87,7 +87,7 @@ from chaotic_pfc.dynamics.maps import (
     henon_order_n,
     henon_standard,
 )
-from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
+from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message, text_message
 from chaotic_pfc.dynamics.spectral import psd_normalised
 
 __all__ = [
@@ -161,6 +161,7 @@ __all__ = [
     "sinusoidal_message",
     "summary_table",
     "sweet_spot_per_filter",
+    "text_message",
     "top_k_per_filter",
     "transition_boundary",
     "transmit",

@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message
+from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message, text_message
 
 
 class TestBinaryMessage(unittest.TestCase):
@@ -23,6 +23,42 @@ class TestBinaryMessage(unittest.TestCase):
     def test_invalid(self):
         with self.assertRaises(ValueError):
             binary_message(100, period=7)
+
+
+class TestTextMessage(unittest.TestCase):
+    def test_length(self):
+        m = text_message("hello", 1000, bit_period=20)
+        self.assertEqual(len(m), 1000)
+
+    def test_values(self):
+        m = text_message("chaos", 200, bit_period=5)
+        self.assertTrue(set(np.unique(m)).issubset({-1.0, 1.0}))
+
+    def test_ascii_encoding(self):
+        m = text_message("A", 8, bit_period=1)
+        np.testing.assert_array_equal(m, [-1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0])
+
+    def test_bit_hold(self):
+        m = text_message("A", 16, bit_period=2)
+        self.assertEqual(m[0], m[1])
+        self.assertEqual(m[2], m[3])
+
+    def test_irregular_not_square_wave(self):
+        m = text_message("hello", 400, bit_period=10)
+        sq = binary_message(400, period=10)
+        self.assertFalse(np.array_equal(m, sq))
+
+    def test_invalid_bit_period(self):
+        with self.assertRaises(ValueError):
+            text_message("hi", 100, bit_period=0)
+
+    def test_empty_text_raises(self):
+        with self.assertRaises(ValueError):
+            text_message("", 100, bit_period=20)
+
+    def test_non_ascii_raises(self):
+        with self.assertRaises(UnicodeEncodeError):
+            text_message("café", 100, bit_period=20)
 
 
 class TestSinusoidalMessage(unittest.TestCase):
