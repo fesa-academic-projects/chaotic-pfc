@@ -254,10 +254,12 @@ Se você utilizar o chaotic-pfc em sua pesquisa, por favor cite:
 
 ```bibtex
 @software{chaotic_pfc_2026,
-  author       = {Pereira, Roger Freitas and dos Santos, Guilherme Rodrigues
-                  and Silva, Kauê de Souza and Soares, Marcos Felipe Correa},
-  title        = {chaotic-pfc: Pecora-Carroll chaos-based communication
-                  with FIR-filtered Hénon map},
+  author       = {de Souza Silva, Kauê and Freitas Pereira, Roger and
+                  Correa Soares, Marcos Felipe and
+                  Rodrigues dos Santos, Guilherme and
+                  da Silva Borges, Vinícius},
+  title        = {chaotic-pfc: parametric characterization of the
+                  filtered Hénon map},
   year         = {2026},
   publisher    = {GitHub},
   url          = {https://github.com/fesa-academic-projects/chaotic-pfc},

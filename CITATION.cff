@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "chaotic-pfc: parametric characterization of the filtered Hénon map"
+abstract: "Python package for parametric sweeps of the Hénon map with internal FIR filters, with Lyapunov-based dynamic classification."
+authors:
+  - family-names: "de Souza Silva"
+    given-names: "Kauê"
+    orcid: "https://orcid.org/0009-0009-1283-0996"
+  - family-names: "Freitas Pereira"
+    given-names: "Roger"
+    orcid: "https://orcid.org/0009-0000-5624-7422"
+  - family-names: "Correa Soares"
+    given-names: "Marcos Felipe"
+    orcid: "https://orcid.org/0009-0009-9968-2227"
+  - family-names: "Rodrigues dos Santos"
+    given-names: "Guilherme"
+    orcid: "https://orcid.org/0009-0004-0281-8663"
+  - family-names: "da Silva Borges"
+    given-names: "Vinícius"
+    orcid: "https://orcid.org/0000-0001-5546-6842"
+version: 0.8.0
+license: BSD-3-Clause
+repository-code: "https://github.com/fesa-academic-projects/chaotic-pfc"
+type: software
+keywords:
+  - chaos
+  - Hénon map
+  - FIR filters
+  - Lyapunov exponent

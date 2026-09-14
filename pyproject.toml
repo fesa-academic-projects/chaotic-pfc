@@ -25,6 +25,7 @@ authors = [
     { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
     { name = "Kauê de Souza Silva", email = "kaue.moelas.com@gmail.com" },
     { name = "Marcos Felipe Correa Soares", email = "marcosfelipe.soares2014@gmail.com" },
+    { name = "Vinícius da Silva Borges" },
 ]
 dependencies = [
     "numpy>=1.26",
