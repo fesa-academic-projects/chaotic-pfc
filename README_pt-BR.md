@@ -11,7 +11,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
-[![DOI](https://zenodo.org/badge/1217486370.svg)](https://doi.org/10.5281/zenodo.22740317)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22740317.svg)](https://doi.org/10.5281/zenodo.22740317)
 
 Sistema de comunicação digital caótico baseado em sincronização
 Pecora-Carroll com mapa de Hénon filtrado por FIR.
@@ -253,17 +253,18 @@ pre-commit run --all-files
 Se você utilizar o chaotic-pfc em sua pesquisa, por favor cite:
 
 ```bibtex
-@software{chaotic_pfc_2026,
-  author       = {de Souza Silva, Kauê and Freitas Pereira, Roger and
-                  Correa Soares, Marcos Felipe and
-                  Rodrigues dos Santos, Guilherme and
-                  da Silva Borges, Vinícius},
-  title        = {chaotic-pfc: parametric characterization of the
-                  filtered Hénon map},
-  year         = {2026},
-  publisher    = {GitHub},
-  url          = {https://github.com/fesa-academic-projects/chaotic-pfc},
-  note         = {Projeto Final de Curso (PFC), FESA}
+@software{chaoticPFC2026,
+  author    = {Silva, Kau\^e de Souza and Pereira, Roger Freitas and
+               Soares, Marcos Felipe Correa and Santos, Guilherme Rodrigues dos and
+               Borges, Vin\'icius da Silva},
+  title     = {chaotic-pfc: Parametric Characterization of the Filtered
+               H\'enon Map},
+  year      = {2026},
+  publisher = {Zenodo},
+  version   = {0.8.0},
+  doi       = {10.5281/zenodo.22740317},
+  url       = {https://doi.org/10.5281/zenodo.22740317},
+  note      = {BSD-3-Clause license}
 }
 ```
 

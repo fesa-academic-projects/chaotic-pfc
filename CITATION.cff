@@ -18,8 +18,16 @@ authors:
   - family-names: "da Silva Borges"
     given-names: "Vinícius"
     orcid: "https://orcid.org/0000-0001-5546-6842"
-doi: 10.5281/zenodo.22740318
+doi: 10.5281/zenodo.22740317
 version: 0.8.0
+date-released: "2026-09-14"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22740317
+    description: Concept DOI, resolves to the latest version
+  - type: doi
+    value: 10.5281/zenodo.22740318
+    description: DOI of version 0.8.0
 license: BSD-3-Clause
 repository-code: "https://github.com/fesa-academic-projects/chaotic-pfc"
 type: software
