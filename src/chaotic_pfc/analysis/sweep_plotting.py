@@ -2,7 +2,7 @@
 sweep_plotting.py
 =================
 Figures for Lyapunov classification maps produced by
-:mod:`chaotic_pfc.sweep`.
+:mod:`chaotic_pfc.analysis.sweep`.
 
 Three plot types are provided:
 
@@ -16,7 +16,7 @@ Three plot types are provided:
    converges quickly (light) vs. where it needs the full budget
    (dark) — a "difficulty map" of the parameter space.
 
-All three accept a :class:`~chaotic_pfc.sweep.SweepResult` (or its
+All three accept a :class:`~chaotic_pfc.analysis.sweep.SweepResult` (or its
 individual arrays for the first two) and optionally a ``save_path``.
 They return the :class:`matplotlib.figure.Figure` so callers can
 compose or display them. The module also re-uses the RC params from
@@ -593,6 +593,7 @@ def plot_difficulty_map(
     cmap: str = "viridis",
     data_slots: int = 3,
     gap_slots: int = 1,
+    lang: str = "pt",
 ) -> Figure:
     """Heatmap of Lyapunov iterations actually used at each grid point.
 
@@ -610,7 +611,7 @@ def plot_difficulty_map(
     Parameters
     ----------
     result
-        A :class:`~chaotic_pfc.sweep.SweepResult` produced with
+        A :class:`~chaotic_pfc.analysis.sweep.SweepResult` produced with
         ``adaptive=True``. The function relies on
         ``result.n_iters_used`` and on ``result.metadata['Nmap_min']``
         / ``result.metadata['Nmap']`` for the colour-bar limits.
@@ -621,6 +622,8 @@ def plot_difficulty_map(
         perceptually uniform and prints well in greyscale.
     data_slots, gap_slots
         Interleaved-column parameters.
+    lang
+        Language for the colour-bar label (``"pt"`` or ``"en"``).
 
     Raises
     ------
@@ -690,7 +693,7 @@ def plot_difficulty_map(
         rasterized=True,
         antialiased=False,
     )
-    cbar = fig.colorbar(pcm, ax=ax, label="Lyapunov iterations used")
+    cbar = fig.colorbar(pcm, ax=ax, label=t("sweep.difficulty.cbar", lang=lang))
     cbar.ax.tick_params(labelsize=12)
 
     _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
@@ -1166,7 +1169,7 @@ def plot_all(
 
     if _has_difficulty_data(result):
         path = out_dir / f"{DIFFICULTY_FIGURE_FILENAME}.{fmt}"
-        fig = plot_difficulty_map(result, save_path=path)
+        fig = plot_difficulty_map(result, save_path=path, lang=lang)
         if close_figures:
             plt.close(fig)
         paths.append(path)

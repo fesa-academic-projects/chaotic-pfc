@@ -167,7 +167,7 @@ def plot_3d_beta_volume(
         )
 
     fig.update_layout(
-        title="Kaiser β-sweep — λ_max(N_z, ω_c, β)",
+        title="Kaiser β: λ_max(N_z, ω_c, β)",
         scene=dict(
             xaxis_title="N_z",
             yaxis_title="ω_c / π",

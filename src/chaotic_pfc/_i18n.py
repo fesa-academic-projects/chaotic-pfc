@@ -86,6 +86,10 @@ _STRINGS: dict[str, dict[str, str]] = {
         "pt": "Número de configurações caóticas",
         "en": "Number of chaotic configurations",
     },
+    "sweep.difficulty.cbar": {
+        "pt": "Iterações de Lyapunov usadas",
+        "en": "Lyapunov iterations used",
+    },
     # ── Analysis tables ────────────────────────────────────────────────
     "analysis.tables.top_k.caption": {
         "pt": "Top-3 janelas por tipo de filtro (área caótica).",
