@@ -7,3 +7,6 @@
 
 # Livro sem DOI atribuido pela editora; ISBN registrado na entrada.
 Oppenheim2009
+
+# Livro sem DOI atribuido pela editora; ISBN registrado na entrada.
+Sprott2003

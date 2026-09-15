@@ -200,9 +200,16 @@ class SweepConfig:
         Iterations accumulated into the Lyapunov estimator.
     n_initial
         Number of random initial conditions averaged per grid point.
+    n_bootstrap
+        Number of bootstrap resamples used when computing the regional
+        confidence intervals of the Lyapunov exponent (default 1000).
     order_lo, order_hi
         Filter-order range, ``order_hi`` exclusive. Defaults to
         ``range(2, 42)`` → 40 orders.
+    n_z_max
+        Maximum filter order ``N_z`` swept in the experiments (default
+        40); equivalently, the number of coefficients runs up to
+        ``n_z_max + 1``.
     n_cutoffs
         Number of cutoff frequencies sampled linearly in ``(0, 1)``.
     default_window, default_filter_type
@@ -223,8 +230,10 @@ class SweepConfig:
     Nitera: int = 500
     Nmap: int = 3000
     n_initial: int = 25
+    n_bootstrap: int = 1000
     order_lo: int = 2
     order_hi: int = 42
+    n_z_max: int = 40
     n_cutoffs: int = 100
     default_window: str = "hamming"
     default_filter_type: str = "lowpass"

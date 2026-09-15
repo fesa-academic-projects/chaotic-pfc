@@ -8,6 +8,8 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin
 
+from chaotic_pfc.config import DEFAULT_CONFIG
+
 from ._kernel import _build_task_order, _sweep_kernel
 from ._types import _KAISER_BETA, FILTER_TYPES, WINDOWS, SweepResult
 
@@ -209,8 +211,11 @@ def run_sweep(
         kernel_tol = 0.0
 
     if orders is None:
+        order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
         orders = (
-            np.arange(3, 43, 2) if filter_type in ("highpass", "bandstop") else np.arange(2, 42)
+            np.arange(3, order_hi + 1, 2)
+            if filter_type in ("highpass", "bandstop")
+            else np.arange(2, order_hi)
         )
     if cutoffs is None:
         cutoffs = np.linspace(1e-5, 1.0 - 1e-5, 100)

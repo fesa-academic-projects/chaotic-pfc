@@ -28,7 +28,11 @@ from typing import TypedDict
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc.config import DEFAULT_CONFIG
+
 from .sweep import FILTER_TYPES, SweepResult, load_sweep
+
+_DEFAULT_N_BOOTSTRAP = DEFAULT_CONFIG.sweep.n_bootstrap
 
 
 class SummaryRow(TypedDict):
@@ -282,7 +286,7 @@ def area_summary(sweep_result: SweepResult) -> AreaSummary:
 def lmax_statistics(
     sweep_result: SweepResult,
     region: str = "chaotic",
-    n_bootstrap: int = 1000,
+    n_bootstrap: int = _DEFAULT_N_BOOTSTRAP,
     seed: int = 42,
 ) -> LmaxStats:
     """Compute descriptive statistics of :math:`\\lambda_{\\max}` for a subset of grid points.

@@ -836,14 +836,16 @@ CONFIG_EXPECTATIONS: tuple[tuple[str, str, float, tuple[str, ...] | None, tuple[
         "sub:grid",
         "maximum filter order N_z",
         40.0,
-        None,
-        ("sweep.order_max", "sweep.n_z_max", "sweep.order_hi"),
+        ("sweep", "n_z_max"),
+        (),
     ),
     ("sub:grid", "bandwidth Delta omega", 0.05, ("sweep", "bandwidth"), ()),
     ("sub:ensemble", "seed", 42.0, ("seed",), ()),
-    ("sub:lyap", "divergence threshold X_max", 1.0e6, None, ("sweep.x_max", "lyapunov.x_max")),
+    # The article no longer asserts a divergence threshold: the sweep kernel
+    # flags a cell as divergent on non-finite state detection (NaN/Inf), so
+    # there is no X_max constant to locate and the check is omitted here.
     ("sub:ensemble", "initial-condition cube edge", 0.1, ("lyapunov", "perturbation"), ()),
-    ("sub:stats", "bootstrap resamples", 1000.0, None, ("sweep.n_bootstrap", "sweep.n_resamples")),
+    ("sub:stats", "bootstrap resamples", 1000.0, ("sweep", "n_bootstrap"), ()),
 )
 
 
