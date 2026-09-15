@@ -1,0 +1,9 @@
+# Keys exempt from the "every reference needs a DOI" rule (audit check C2).
+# One BibTeX key per line. Lines starting with "#" are comments.
+#
+# Leave this empty unless a reference legitimately cannot carry a DOI, for
+# example an unpublished manuscript or a standard with no registered DOI.
+# Do not add keys here to silence a finding without a documented reason.
+
+# Livro sem DOI atribuido pela editora; ISBN registrado na entrada.
+Oppenheim2009

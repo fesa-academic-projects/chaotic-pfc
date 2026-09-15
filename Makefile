@@ -1,4 +1,4 @@
-.PHONY: help install test test-fast lint format format-check typecheck check-all docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
+.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -25,6 +25,13 @@ typecheck:  ## Run mypy static type checker
 	mypy src/chaotic_pfc
 
 check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
+
+PAPER_DIR ?= jcis
+PAPER_TEX ?= $(PAPER_DIR)/article.tex
+PAPER_BIB ?= $(PAPER_DIR)/references.bib
+
+check-paper:  ## Audit the JCIS manuscript sources against the repository
+	python tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
 
 SPHINXBUILD = .venv/bin/sphinx-build
 
