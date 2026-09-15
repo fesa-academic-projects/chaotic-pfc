@@ -88,7 +88,7 @@ the two-dimensional H\'enon map with internal FIR filters, considering
 four filter types (lowpass, highpass, bandpass, and bandstop) and seven
 design windows, with a dedicated sweep over the Kaiser window. The
 largest Lyapunov exponent is estimated by the tangent-map method with
-Gram--Schmidt orthonormalization over an ensemble of initial conditions
+Modified Gram--Schmidt orthonormalization over an ensemble of initial conditions
 centered at the equilibrium point of the expanded system, and the
 protocol is validated against the standard map. Bootstrap confidence
 intervals on the exponent quantify the statistical confidence of the
@@ -170,9 +170,9 @@ filters. These works establish that the chaotic regime is not guaranteed to
 survive filtering and must be verified case by case---the starting point of
 the present study.
 
-Whereas~\cite{BorgesCNSNS2024} characterized the filtered H\'enon map as a
-function of the number of FIR coefficients and the placement of the filter
-zeros---essentially a lowpass-oriented study---the present investigation
+Whereas~\cite{BorgesCNSNS2024} characterized the filtered H\'enon map across
+different zero-placement geometries of the FIR filter with a fixed design
+window, the present investigation
 treats \emph{frequency selectivity} and \emph{window design} as the primary
 axes. In addition to lowpass FIR filters, highpass, bandpass, and bandstop
 filters are considered, each designed through seven distinct windows, with a
@@ -185,12 +185,11 @@ chaotic coverage for lowpass, highpass, and bandpass filters, but the
 relation \emph{reverses} for bandstop, where the low-attenuation rectangular
 window dominates. Aggregating the 124 sweeps further exposes a
 configuration-robust region of the order--cutoff plane in which chaos
-persists across windows and filter types---a concrete operating
-recommendation for bandlimited CBCS, rather than a purely per-case
-verification. Relative to the previously published numerical
+persists across windows and filter types. Relative to the previously published numerical
 characterizations of the filtered H\'enon map by Borges \textit{et
-al.}~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024}---restricted to
-lowpass FIR filters and, at most, two design windows---the present work adds
+al.}~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024}, which vary the
+zero-placement geometry of the FIR filter with a fixed design window, the
+present work adds
 two directions proper to computer engineering: (i)~a statistical
 characterization of the chaotic coverage, with bootstrap confidence
 intervals on the Lyapunov exponent; and (ii)~a description of the
@@ -203,14 +202,16 @@ The objective of this work is to characterize systematically the conditions
 under which the chaotic regime is preserved in the H\'enon map with an
 internal FIR filter, sweeping the order--cutoff frequency plane for four
 filter types and seven design windows. To this end, the largest Lyapunov
-exponent is estimated by the tangent-map method with Gram--Schmidt
+exponent is estimated by the tangent-map method with Modified Gram--Schmidt
 orthonormalization and validated against the standard H\'enon map; the
 resulting orbits are classified into high-resolution dynamic maps for the
 four filter types and seven windows; the effect of the Kaiser-window shape
 parameter $\beta_K$ on the chaotic coverage is assessed; the chaotic-coverage
 estimates are accompanied by bootstrap confidence intervals on the exponent;
 and the whole pipeline is documented and released as a reproducible
-artifact~\cite{chaoticPFC2026}.
+artifact~\cite{chaoticPFC2026}. This work covers the filter order, the cutoff
+frequency, the filter type, and the design window; other dimensions of the
+parameter space are left as future work enabled by the released infrastructure.
 
 The remainder of this paper is organized as follows. Section~\ref{sec:theory}
 presents the theoretical background (H\'enon map, expanded system with FIR
@@ -332,7 +333,7 @@ $\mathbf{J}(n)$ depends explicitly on the filter coefficients $\{c_j\}$,
 showing that the entire interaction between the linear dynamics introduced
 by the filter and the quadratic nonlinearity of the map is concentrated in
 that state equation. This structure partially explains why the total gain
-$G = \sum_j c_j$ is the most decisive scalar parameter of the dynamic
+$G = \sum_j c_j$ is a relevant scalar parameter of the dynamic
 behavior of the expanded system~\cite{BorgesCNSNS2024}.
 
 % ---- 2.2 ----
@@ -610,7 +611,8 @@ Three architectural decisions were adopted in the pipeline. First,
 Just-In-Time (JIT) compilation of the numerical cores via Numba~\cite{Numba},
 which translates annotated Python functions into machine code through LLVM,
 with a reduction of one to two orders of magnitude in execution time relative
-to pure Python, as observed in package microbenchmarks during development.
+to the pure-Python fallback, as measured by the package
+benchmarks~\cite{chaoticPFC2026}.
 Second, explicit parallelization over the $(N_z,\omega_c/\pi)$ grid by means
 of \texttt{prange} loops, exploiting all the cores available on the host
 machine. Third, versioning of the sweep checkpoints as compressed NumPy files
@@ -969,31 +971,22 @@ absence of a divergent region at low orders.}
 \label{fig:bandstop}
 \end{figure}
 
-The contrast among the four filter types admits a single mechanistic
-explanation through the total gain $G = \sum_j c_j$, which is exactly the
-frequency response of the FIR filter at $\omega = 0$, i.e., its DC
-gain~\cite{Oppenheim2009}. Lowpass and bandstop filters pass the DC component,
-so $G \approx 1$; highpass and bandpass filters reject it, so $G \approx 0$.
-Because the positive equilibrium point $\mathbf{p}^+$ of the expanded system
-depends on $G$---as established analytically by Borges \textit{et
-al.}~\cite{BorgesCNSNS2024} and recalled in Subsection~\ref{sub:henon}---the two
-groups behave differently. For $G \approx 1$ (lowpass, bandstop), $\mathbf{p}^+$
-remains close to the fixed point of the canonical H\'enon map, and a bounded,
-structured dynamics is available over a wide portion of the grid; for
-$G \approx 0$ (highpass, bandpass), $\mathbf{p}^+$ is driven toward regions in
-which the term $\alpha - x_3^2$ grows without bound, so divergence dominates and
-the chaotic set shrinks and fragments, surviving only where the passband
-partially restores the effective gain---at low $\omega_c/\pi$ for the highpass
-filter (Fig.~\ref{fig:highpass}) and in disconnected slivers for the bandpass
-filter (Fig.~\ref{fig:bandpass}). The same argument accounts for the bandstop
-filter's apparent paradox: with $G \approx 1$, bounded orbits inherit a
-well-defined equilibrium and are therefore predominantly chaotic, which explains
-its highest conditional coverage ($\rho_c^{\text{fin}} = 65.2\%$), while the
-narrow rejection band combined with the even-order restriction still pushes a
-large fraction of the grid into divergence at higher orders, depressing the
-absolute coverage to $5.9\%$. The lowpass/highpass asymmetry is thus not an
-artifact of the maps but a direct consequence of where the filter places its
-gain in frequency.
+The four filter types differ substantially in the measured composition of the
+parameter grid. Pooling the 124 sweeps, the counts per type are: lowpass,
+$20{,}906$ chaotic, $17{,}701$ periodic, and $85{,}393$ divergent cells out of
+$124{,}000$ ($68.87\%$ divergent); highpass, $2{,}900$, $54{,}902$, and
+$4{,}198$ out of $62{,}000$ ($6.77\%$); bandpass, $10{,}219$, $100{,}990$, and
+$12{,}791$ out of $124{,}000$ ($10.32\%$); and bandstop, $1{,}598$, $3{,}035$,
+and $57{,}367$ out of $62{,}000$ ($92.53\%$). A cell is marked divergent when
+at least one of the 25 initial conditions produces a non-finite state during the
+$500$ burn-in iterations. In the bandpass case, the chaotic set is limited
+predominantly by periodic orbits rather than by divergence ($100{,}990$
+periodic against $12{,}791$ divergent cells). The total gain
+$G = \sum_j c_j$ equals the filter frequency response at $\omega = 0$, i.e., its
+DC gain~\cite{Oppenheim2009}, and the positive equilibrium point
+$\mathbf{p}^+$ of the expanded system depends on $G$, as established
+analytically by Borges \textit{et al.}~\cite{BorgesCNSNS2024} and recalled in
+Subsection~\ref{sub:henon}.
 
 % ---- 4.4 ----
 \subsection{Aggregate Analysis and Chaotic Density}\label{sub:density}
@@ -1187,8 +1180,9 @@ are summarized in the following section.
 % ============================================================
 The dynamics of the H\'enon map with FIR filters inserted in the feedback loop
 were investigated numerically, extending the results of Borges \textit{et
-al.}~\cite{Borges2022sbrt} and~\cite{BorgesCNSNS2024}---restricted to lowpass
-filters and a reduced set of windows---to a higher-dimensional design space:
+al.}~\cite{Borges2022sbrt} and~\cite{BorgesCNSNS2024}, which vary the
+zero-placement geometry of the FIR filter with a fixed design window, to a
+higher-dimensional design space:
 four filter types (lowpass, highpass, bandpass, and bandstop) and seven windows
 (rectangular, Bartlett, Hamming, Hann, Blackman, Blackman--Harris, and Kaiser
 with a dedicated sweep of the shape parameter $\beta_K$).
@@ -1225,12 +1219,10 @@ generators: given the finely interleaved transition boundaries and the
 existence of \textit{shrimps} inside the chaotic regions, the design of CBCS with
 filtering cannot start solely from the spectral specification of the filter; it
 requires explicit verification of the dynamics of the resulting generator by
-means of the classification maps produced here. A first-order screening rule
-nonetheless emerges from the analysis: filters whose DC gain $G=\sum_j c_j$ is
-close to unity (lowpass, bandstop) tend to keep the equilibrium point---and hence
-a usable chaotic region---well defined, whereas filters that reject the DC
-component ($G\approx 0$: highpass, bandpass) drive the system toward divergence
-and preserve chaos only in narrow regions of the parameter space.
+means of the classification maps produced here. The divergent fraction of the
+grid measured over the 124 sweeps ranges from $6.77\%$ (highpass) and $10.32\%$
+(bandpass) to $68.87\%$ (lowpass) and $92.53\%$ (bandstop), with the counts
+reported in Subsection~\ref{sub:maps}.
 
 \textit{Acknowledged limitations.} The sweeps cover $N_z\le 40$ and horizons of
 $N_{\text{map}}\le 3{,}000$ iterations; much higher orders and unbounded horizons
@@ -1240,7 +1232,12 @@ qualitative transitions in the conclusions for these two filter types. The choic
 of the canonical parameters $(\alpha,\beta) = (1.4,0.3)$ of the underlying map was
 not swept; other pairs in the parameter space of the H\'enon
 map~\cite{Gallas1993} may present qualitatively distinct behaviors under
-filtering.
+filtering. The regional mean $\bar\lambda_1$ is computed only over the initial
+conditions that survive the accumulation window: initial conditions that diverge
+after the burn-in are discarded from the average, so $\lambda_1$ is estimated
+over the survivors. The sampling neighborhood of the initial conditions is a cube
+of edge $0.1$, in contrast to the sphere of radius $0.01$ used by Borges
+\textit{et al.}~\cite{BorgesCNSNS2024}.
 
 \textit{Future work.} Three directions are highlighted: (a)~sweeping the band
 width $\Delta\omega$ as an independent variable for bandpass and bandstop filters,
