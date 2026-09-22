@@ -21,7 +21,7 @@
 
 cfgv==3.5.0
 contourpy==1.4.0
-coverage==7.16.0
+coverage==7.16.1
 cycler==0.12.1
 distlib==0.4.3
 filelock==3.32.6
