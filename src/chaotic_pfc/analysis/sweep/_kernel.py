@@ -127,10 +127,15 @@ def _norm_accumulate_v(v, Ns, lyap_sum):
 
 # Adaptive early-stop: shared by both n12 and nN kernels.
 @njit(cache=True, inline="always")
-def _adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used):
-    """Evaluate convergence at one checkpoint. Returns (prev_est, streak, n_used, should_break)."""
+def _adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, prev_est, streak, n_used):
+    """Evaluate convergence at one checkpoint. Returns (prev_est, streak, n_used, should_break).
+
+    ``n_use`` is the number of leading ``lyap_sum`` columns folded into the
+    running estimate: ``Ns`` for the max-over-spectrum modes and ``1`` for
+    the single-column (col-0) mode.
+    """
     cur = -1e30
-    for k in range(Ns):
+    for k in range(n_use):
         val = lyap_sum[k] / n_done
         if val > cur:
             cur = val
@@ -145,10 +150,17 @@ def _adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak
 
 
 @njit(cache=True)
-def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta):
+def _lyap_online_core(
+    xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta, n_use=0
+):
     """Full-spectrum reference: shared adaptive Lyapunov loop with Benettin block.
 
     ``_step_id`` is 0 for the n12 kernel (Ns ∈ {1, 2}) or 1 for nN (Ns ≥ 3).
+
+    ``n_use`` selects how many leading columns are reduced at the adaptive
+    checkpoints and in the returned estimate: ``0`` (default) means ``Ns``
+    (max over the full spectrum), ``1`` means column 0 only (the single-vector
+    estimate evaluated with the full tangent matrix).
 
     The tangent vectors are propagated without MGS for ``_BENETTIN_K``
     iterations, then reorthonormalised once per block.  This reduces the
@@ -165,6 +177,9 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
        transparently recomputed with this full-spectrum kernel via the
        hybrid fallback.
     """
+    if n_use <= 0:
+        n_use = Ns
+
     for i in range(Ns):
         for j in range(Ns):
             ww[0, i, j] = 1.0 if i == j else 0.0
@@ -225,7 +240,7 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
                 and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
             ):
                 prev_est, streak, n_used, should_break = _adaptive_checkpoint(
-                    lyap_sum, Ns, n_done, Nitera_min, tol, prev_est, streak, n_used
+                    lyap_sum, Ns, n_use, n_done, Nitera_min, tol, prev_est, streak, n_used
                 )
                 if should_break:
                     break
@@ -238,12 +253,12 @@ def _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c
         _mgs_accumulate(ww[tick], Ns, lyap_sum)
 
     best = np.nan
-    for k in range(Ns):
+    for k in range(n_use):
         if np.isnan(lyap_sum[k]):
             break
     else:
         best = -1e30
-        for k in range(Ns):
+        for k in range(n_use):
             val = lyap_sum[k] / n_used
             if val > best:
                 best = val
@@ -319,7 +334,7 @@ def _lyap_online_core_v(xx, vv, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id,
                 and (n_done - Nitera_min) % _ADAPTIVE_CHECKPOINT_EVERY == 0
             ):
                 prev_est, streak, n_used, should_break = _adaptive_checkpoint(
-                    lyap_sum, 1, n_done, Nitera_min, tol, prev_est, streak, n_used
+                    lyap_sum, 1, 1, n_done, Nitera_min, tol, prev_est, streak, n_used
                 )
                 if should_break:
                     break
@@ -384,9 +399,9 @@ def _step_n12_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
 
 
 @njit(cache=True)
-def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
+def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta, n_use=0):
     """Lyapunov kernel for Ns ∈ {1, 2}. Delegates to :func:`_lyap_online_core`."""
-    return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, 2, 0, c, alpha, beta)
+    return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, 2, 0, c, alpha, beta, n_use)
 
 
 @njit(cache=True, inline="always")
@@ -461,9 +476,11 @@ def _step_nN_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
 
 
 @njit(cache=True)
-def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta):
+def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta, n_use=0):
     """Lyapunov kernel for Ns ≥ 3. Delegates to :func:`_lyap_online_core`."""
-    return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, 1, c, alpha, beta)
+    return _lyap_online_core(
+        xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, 1, c, alpha, beta, n_use
+    )
 
 
 def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
@@ -520,11 +537,21 @@ def _sweep_kernel(
     n_initial: int,
     alpha: float,
     beta: float,
+    fallback_mode: int = 1,
 ) -> tuple[NDArray, NDArray, NDArray, NDArray]:
     """Parallel inner sweep. Returns (h, h_std, n_iters_mean, n_fallback), all (Ncoef, Ncut).
 
+    ``fallback_mode`` selects the recomputation policy for marginal cells
+    (|mean| < ``_VONLY_MARGIN``):
+
+    * ``0`` — no recomputation (``n_fallback`` stays 0 everywhere).
+    * ``1`` — recompute with the full-spectrum kernel and return the maximum
+      over the spectrum (default; unchanged behaviour).
+    * ``2`` — recompute with the full-spectrum kernel but return and adapt on
+      column 0 only.
+
     Each cell is first computed with the single-vector estimator (O(Ns) per
-    iteration). If the cell's mean |λ| < 5e-3, it is recomputed with the
+    iteration). Under modes 1 and 2 marginal cells are recomputed with the
     full-spectrum kernel (O(Ns^2) per iteration) to eliminate the tiny
     probability of classification-sign flips near the transition boundary.
     """
@@ -656,11 +683,12 @@ def _sweep_kernel(
                 n_iters_mean[i, j] = iters_total / count
 
                 # Hybrid fallback: recompute marginal cells with full spectrum
-                if abs(mean) < _VONLY_MARGIN:
+                if fallback_mode != 0 and abs(mean) < _VONLY_MARGIN:
                     ww = np.empty((2, dim, dim))
                     lyap_sum_full = np.empty(dim)
                     full_samples = np.full(n_initial, np.nan)
                     full_iters = np.zeros(n_initial, dtype=np.int64)
+                    n_use_full = 1 if fallback_mode == 2 else 0
 
                     for ci in range(n_initial):
                         noise = perturbations[i, j, ci, :Ns]
@@ -694,6 +722,7 @@ def _sweep_kernel(
                                 c,
                                 alpha,
                                 beta,
+                                n_use_full,
                             )
                             full_samples[ci] = lam
                             full_iters[ci] = n_used
@@ -725,6 +754,7 @@ def _sweep_kernel(
                                 c,
                                 alpha,
                                 beta,
+                                n_use_full,
                             )
                             full_samples[ci] = lam
                             full_iters[ci] = n_used

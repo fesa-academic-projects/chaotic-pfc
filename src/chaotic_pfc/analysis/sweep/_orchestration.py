@@ -143,6 +143,7 @@ def run_sweep(
     adaptive: bool = False,
     Nmap_min: int = 500,
     tol: float = 1e-3,
+    fallback_mode: int = 1,
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 
@@ -182,6 +183,11 @@ def run_sweep(
         Minimum iterations before the adaptive criterion may fire.
     tol
         Convergence tolerance for the adaptive criterion.
+    fallback_mode
+        Policy for recomputing marginal cells (``|λ| < _VONLY_MARGIN``):
+        ``0`` disables recomputation, ``1`` (default) recomputes with the
+        full spectrum and returns its maximum, ``2`` recomputes with the
+        full spectrum but returns and adapts on column 0 only.
 
     Returns
     -------
@@ -192,6 +198,9 @@ def run_sweep(
     --------
     :doc:`/source/algorithms/sweep` : Parallel architecture and divergence handling.
     """
+    if fallback_mode not in (0, 1, 2):
+        raise ValueError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
+
     if adaptive:
         if Nmap_min < 1:
             raise ValueError(f"Nmap_min must be >= 1, got {Nmap_min}")
@@ -263,6 +272,7 @@ def run_sweep(
             2,
             alpha,
             beta,
+            fallback_mode,
         )
 
     h, h_std, n_iters_used, n_fallback = _sweep_kernel(
@@ -279,6 +289,7 @@ def run_sweep(
         n_initial,
         alpha,
         beta,
+        fallback_mode,
     )
 
     return SweepResult(
@@ -300,6 +311,7 @@ def run_sweep(
             "adaptive": adaptive,
             "Nmap_min": Nmap_min if adaptive else None,
             "tol": tol if adaptive else None,
+            "fallback_mode": fallback_mode,
             "n_fallback": int(np.sum(n_fallback)),
         },
     )
