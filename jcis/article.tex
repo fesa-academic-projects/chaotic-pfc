@@ -378,6 +378,38 @@ transmitted spectrum to the channel passband \emph{before} transmission is
 therefore not an optional refinement but a precondition for coherent
 detection over bandlimited channels~\cite{Eisencraft2009,Fontes2016}.
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{Figures/fig_comm_ideal.png}
+\caption{Ideal-channel communication over $N=10^{6}$ samples with a $\pm1$ NRZ
+BPSK message ($\mu=0.01$, bit period of 20 samples): message $m[n]$,
+transmitted $s[n]$, received $r[n]$, and recovered $\hat{m}[n]$ (left, time
+domain) with their normalised Welch PSDs (right). The channel is ideal
+(identity, zero delay).}
+\label{fig:comm_ideal}
+\end{figure*}
+
+Figure~\ref{fig:comm_ideal} shows the argument on a single configuration, an
+ideal distortion-free channel. The left column gives the message $m[n]$, the
+transmitted carrier $s[n]$, the received signal $r[n]$, and the recovered
+estimate $\hat{m}[n]$ in the time domain, and the right column gives their
+normalised Welch spectra. Here the received signal is a copy of the
+transmitted one, and the recovered spectrum $\hat{\mathcal{M}}(\omega)$ follows
+the message spectrum $\mathcal{M}(\omega)$; the residual mean squared error
+between $m[n]$ and $\hat{m}[n]$ is $8.7\times 10^{-31}$, that is, machine
+precision rather than exact equality.
+
+A band-limited channel, modelled as a 201-tap linear-phase FIR filter with a
+group delay of 100 samples, separates the two remaining scenarios once that
+delay is compensated in the error metric. Without a filter in the feedback loop
+the coherent receiver does not recover the message, and the bit error rate is
+0.4324. With the internal FIR filter in the feedback loop, the same
+band-limited channel gives a bit error rate of 0 and a residual mean squared
+error of $2.0\times 10^{-5}$; the spectral pre-shaping of the loop, described
+above, is what confines the transmitted spectrum to the passband. These numbers
+describe this configuration ($N=10^{6}$, $\mu=0.01$, bit period of 20 samples)
+and are reported as motivation.
+
 The FIR branch of~\eqref{eq:filtro} implements exactly this pre-shaping
 inside the feedback loop, and its two equivalent descriptions make the
 frequency-domain interpretation explicit. In the time domain,
