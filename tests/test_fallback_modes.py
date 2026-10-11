@@ -12,6 +12,7 @@ import pytest
 from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank, run_sweep, save_sweep
 from chaotic_pfc.analysis.sweep._kernel import (
     _adaptive_checkpoint,
+    _fixed_point_positive,
     _henon_n12_inplace,
     _henon_nN_inplace,
     _lyap_online_core_v,
@@ -23,12 +24,6 @@ from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
 ALPHA, BETA = 1.4, 0.3
 NITERA, NMAP = 500, 3000
-
-
-def _fixed_point(gain, alpha=ALPHA, beta=BETA):
-    """Same expression as ``_sweep_kernel`` (cancellation-free form)."""
-    disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
-    return 2.0 * alpha / ((1.0 - beta) + disc**0.5)
 
 
 def _dims(Ns):
@@ -45,7 +40,7 @@ def _burn_in(noise, Ns, c, gain):
     Returns the state (row 0 of a (2, dim) array) or None if the burn-in
     produced a non-finite state.
     """
-    p1 = _fixed_point(gain)
+    p1 = _fixed_point_positive(gain, ALPHA, BETA)
     p2, p3 = p1, gain * p1
     dim = _dims(Ns)
     xx = np.empty((2, dim))
@@ -152,7 +147,7 @@ def _marginal_states():
 
 @pytest.mark.parametrize("gain", [0.0, 1e-15, 1e-12, 1e-8, 1e-4, 0.5, 1.0, 2.0])
 def test_fixed_point_is_positive_root(gain):
-    p = _fixed_point(gain)
+    p = _fixed_point_positive(gain, ALPHA, BETA)
     if gain == 0.0:
         ref = ALPHA / (1.0 - BETA)
     else:
@@ -165,7 +160,7 @@ def test_fixed_point_is_positive_root(gain):
 def test_fixed_point_is_fixed_by_henon_map(gain):
     # 5-tap filter with DC gain equal to ``gain``.
     c = gain * np.array([0.1, 0.2, 0.3, 0.25, 0.15])
-    p = _fixed_point(gain)
+    p = _fixed_point_positive(gain, ALPHA, BETA)
     x = np.array([p, p, gain * p, p, p])
     x_new = np.empty(5)
     _henon_nN_inplace(x, x_new, ALPHA, BETA, c)

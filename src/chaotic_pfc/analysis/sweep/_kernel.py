@@ -77,6 +77,12 @@ def _henon_nN_inplace(x, x_new, alpha, beta, c):
         x_new[k] = x[k - 1]
 
 
+@njit(cache=True, inline="always")
+def _fixed_point_positive(gain, alpha, beta):
+    disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
+    return 2.0 * alpha / ((1.0 - beta) + disc**0.5)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Lyapunov kernels — buffer-reusing, structure-aware J@W
 # ═══════════════════════════════════════════════════════════════════════════
@@ -578,8 +584,7 @@ def _sweep_kernel(
         # It is evaluated in a cancellation-free rationalised form so it
         # stays accurate as G -> 0, with limiting value alpha / (1 - beta)
         # at G = 0.  This form is exact for every G.
-        disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
-        p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
+        p1 = _fixed_point_positive(gain, alpha, beta)
         p2 = p1
         p3 = gain * p1
 
