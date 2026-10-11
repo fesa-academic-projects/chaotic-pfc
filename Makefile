@@ -33,6 +33,9 @@ PAPER_BIB ?= $(PAPER_DIR)/references.bib
 check-paper:  ## Audit the JCIS manuscript sources against the repository
 	python tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
 
+jcis-figures:  ## Regenerate the JCIS figures not produced by other commands
+	python tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
+
 SPHINXBUILD = .venv/bin/sphinx-build
 
 docs:  ## Build Sphinx HTML documentation (English)
