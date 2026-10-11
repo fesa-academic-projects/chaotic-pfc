@@ -1,14 +1,14 @@
 %% ============================================================
 %% Journal of Communication and Information Systems (JCIS)
-%% Submission version -- IEEE Transactions two-column template.
+%% Final version after the advisor's review and the source check of
+%% 2026-10-07 (IEEE Transactions two-column template).
 %%
-%% JCIS requires the IEEE Transactions template in two-column
-%% format, English text, a DOI for every reference, and the ORCID
-%% of every author at submission time.
+%% Compile with:  pdflatex -shell-escape -> bibtex -> pdflatex -shell-escape (x2)
+%% Figures are SVG files included with the svg package (needs Inkscape).
+%% Requires:      IEEEtran.cls, IEEEtran.bst, ReferenciasJCIS_Revisado.bib
 %%
-%% Compile with:  pdflatex -> bibtex -> pdflatex -> pdflatex
-%% Requires:      IEEEtran.cls and IEEEtran.bst (ship with the
-%%                official IEEE template) and referencias.bib.
+%% Comments "% [Item N]" refer to the advisor's numbered comments in
+%% the annotated PDF; "% [E-mail N]" refers to his e-mail.
 %% ============================================================
 \documentclass[journal]{IEEEtran}
 
@@ -26,23 +26,26 @@
 \usepackage{array}
 \usepackage{booktabs}
 
-% ---- Figures / subfigures ----
+% ---- Figures ----
 \usepackage{graphicx}
-\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[inkscapelatex=false]{svg}  % figures in SVG (compile with -shell-escape; requires Inkscape)
 
 % ---- Misc ----
 \usepackage{textcomp}
 \usepackage{stfloats}
 \usepackage{url}
-\usepackage{cite}            % proper IEEE-style numeric citation sorting
+\usepackage{cite}
+\usepackage{xcolor}
 \hyphenation{Lya-pu-nov non-li-near}
+
 
 \begin{document}
 
 % ============================================================
-% TITLE AND AUTHORS
+% TITLE AND AUTHORS (unchanged)
 % ============================================================
-\title{Analysis of the Chaotic Regime in the Filtered H\'enon Map}
+\title{Analysis of the Chaotic Regime in the Filtered\\ H\'enon Map: Effect of FIR Filter Type\\ and Design Window}
+
 \author{Kau\^e~de~Souza~Silva,
         Roger~Freitas~Pereira,
         Marcos~Felipe~Correa~Soares,
@@ -67,183 +70,157 @@ S\~ao Bernardo do Campo, SP, Brazil. He is the academic advisor of this
 work. ORCID: 0000-0001-5546-6842 (e-mail: viniciussbrg@gmail.com).}%
 }
 
-% Running headers (edit volume/number once JCIS assigns them)
 \markboth{Journal of Communication and Information Systems,~Vol.~XX, No.~X, Month~Year}%
 {Silva \MakeLowercase{\textit{et al.}}: Analysis of the Chaotic Regime in the Filtered H\'enon Map}
 
 \maketitle
 
 % ============================================================
-% ABSTRACT
+% ABSTRACT  [Items 1, 2, 3, 4]
 % ============================================================
 \begin{abstract}
 The insertion of finite impulse response (FIR) filters in the feedback
-loop of chaotic generators is a known strategy for bandwidth
-limitation in chaos-based communication systems (CBCS). However, the
-interplay between the nonlinearity of the generating map and the
-linearity of the filter may disrupt the chaotic regime, compromising the
-application. This work systematically characterizes, by means of
-numerical simulations, the conditions under which chaos is preserved in
-the two-dimensional H\'enon map with internal FIR filters, considering
-four filter types (lowpass, highpass, bandpass, and bandstop) and seven
-design windows, with a dedicated sweep over the Kaiser window. The
-largest Lyapunov exponent is estimated from the tangent-map dynamics by
-propagating one tangent vector with periodic renormalization over an ensemble of
-initial conditions anchored at the equilibrium point of the expanded system, with
-a full-basis Modified Gram--Schmidt recomputation of marginal cells, and the
-protocol is validated against the standard H\'enon map. Bootstrap confidence
-intervals on the exponent quantify the statistical confidence of the
-chaotic-coverage estimates. The implementation is delivered as an open-source Python
-package with JIT-compiled cores via Numba and dedicated data-versioning
-and automated-testing infrastructure. Results show that FIR filters do
-not eliminate the chaotic regime but rather reorganize it into
-geometrically intricate regions of the parameter space---interleaving chaotic,
-periodic, and divergent zones---whose shape
-depends systematically on the filter type and the design window
-employed.
+loop of chaotic generators is a known strategy for bandwidth limitation in
+chaos-based communication systems (CBCS). Although the filter does not
+prevent master-slave synchronization, its interaction with the nonlinearity
+of the generating map may destroy the chaotic behavior, so the presence of
+chaos must be verified for each design. This work investigates, by means of
+numerical simulations, the conditions under which chaos is preserved in the
+two-dimensional H\'enon map with internal FIR filters, considering four
+filter types (lowpass, highpass, bandpass, and bandstop) and seven design
+windows, including a sweep of the Kaiser shape parameter. Points of the
+order-cutoff plane whose orbits become unbounded are classified as
+divergent. The remaining points are classified as chaotic when the largest
+Lyapunov exponent, which measures the average exponential rate at which
+nearby orbits separate, is positive, and as periodic when it is negative.
+The results show that filtering does not eliminate the chaotic regime but
+reorganizes it in the parameter space in a way that depends on both the
+filter type and the design window. Therefore, the spectral specification of
+the filter alone does not ensure a chaotic generator, and the dynamics must
+be verified for each design.
 \end{abstract}
 
+% [Item 5]
 \begin{IEEEkeywords}
-Chaos-based communication systems, H\'enon map, FIR filters, Lyapunov
-exponent.
+Chaos-based communication systems, chaotic synchronization, H\'enon map,
+FIR filters, window design, Lyapunov exponent.
 \end{IEEEkeywords}
 
 % ============================================================
 \section{Introduction}\label{sec:intro}
 % ============================================================
-\IEEEPARstart{I}{nformation} security in communication systems has
-traditionally been provided by encryption techniques at the upper layers
-of the reference model. In parallel, physical-layer security seeks to
-exploit the characteristics of the medium and of the transmitted signal
-itself in order to hinder interception by unauthorized receivers, without
-relying exclusively on upper-layer encryption~\cite{Mukherjee2014}.
-In this context, chaos-based communication systems (CBCS) are among the
-approaches under study: by employing chaotic signals as information
-carriers, they exploit properties such as the wideband spectrum and the
-noise-like appearance of these signals~\cite{Baptista2021}.
+% [Items 6, 7, 8, 9] Paragraph 1: chaotic signals and their use as carriers
+\IEEEPARstart{D}{eterministic} discrete-time chaotic signals are bounded in
+amplitude, aperiodic, and exhibit sensitive dependence on initial conditions
+(SDIC), so that orbits starting arbitrarily close separate, on average
+exponentially fast~\cite{Alligood1996}. They also have a broadband spectrum
+and a noise-like appearance, which motivates their use as carriers in
+communication systems~\cite{Baptista2021}. Among the advantages usually
+attributed to such carriers are the difficulty of interception by
+unauthorized receivers, which places them among the physical-layer security
+approaches~\cite{Mukherjee2014}, the spreading of the transmitted spectrum,
+and, for some modulation schemes such as differential chaos shift keying
+(DCSK), robustness to multipath fading~\cite{Kaddoum2016}. This
+interest grew after Pecora and Carroll~\cite{Pecora1990} showed that two
+identical chaotic systems can be synchronized despite SDIC, when the
+receiver is driven by state variables of the transmitter.
 
-A deterministic discrete-time chaotic signal has three characteristics
-that distinguish it from classical periodic or stochastic
-signals~\cite{Alligood1996}: it is amplitude-bounded, aperiodic, and
-exhibits sensitive dependence on initial conditions (SDIC), that is, two
-orbits initially arbitrarily close diverge exponentially in phase space
-after a finite time~\cite{Henon1976}. These properties motivated, starting
-from the seminal work of Pecora and Carroll~\cite{Pecora1990}, the use of
-chaotic signals in telecommunications and signal processing. Pecora and
-Carroll~\cite{Pecora1990} showed that two identical chaotic-signal
-generators can be synchronized, despite SDIC, when the receiver is driven
-by state variables of the transmitter. Such synchronization-based schemes
-fall within the broader class of \emph{coherent} CBCS, as opposed to
-\emph{non-coherent} architectures, which recover the transmitted
-information from statistical or structural properties of the received
-signal without reconstructing a synchronized replica at the
-receiver~\cite{Kaddoum2016}. Since then, multiple CBCS
-applications have been proposed: modulation schemes~\cite{Baptista2021},
-image coding and encryption~\cite{Sabatini2020}, systems based on
-three-dimensional attractors~\cite{Souza2019}, and, more recently, schemes
-with chaotic phase-locked loops~\cite{Silva2025sbrt}.
+% [Items 10, 11, 12] Paragraph 2: how a CBCS transmits information
+In chaos-based communication systems (CBCS), the message is embedded in a
+chaotic carrier at the transmitter and recovered at the receiver. In
+coherent CBCS, the receiver synchronizes a replica of the transmitter
+generator with the received signal and uses it to extract the message.
+Non-coherent architectures, in contrast, recover the information from
+statistical or structural properties of the received signal without a
+synchronized replica~\cite{Kaddoum2016}. Examples of CBCS include chaotic
+modulation schemes~\cite{Baptista2021}, image coding and
+encryption~\cite{Sabatini2020}, systems based on three-dimensional
+attractors~\cite{Souza2019}, and phase-locked loops for systems based on
+chaotic attractors~\cite{Silva2025sbrt}.
 
-A fundamental issue when applying chaotic signals to communication systems
-is the spectral width. Because transmission channels are always
-band-limited, it is necessary to know and \emph{limit} the bandwidth of the
-transmitted chaotic signals---not to control it arbitrarily, but to confine
-it within the channel passband~\cite{Eisencraft2011}. To this end,
-Eisencraft \textit{et al.}~\cite{Eisencraft2009} proposed the use of
-discrete-time linear filters embedded in the chaotic-signal generator, and
-Fontes \textit{et al.}~\cite{Fontes2016} consolidated the approach by
-showing that inserting the filter does not prevent chaotic synchronization.
-The behavior of the system under additional practical limitations, such as
-the digitalization of the numerical representation, was later investigated
-by Borges \textit{et al.}~\cite{Borges2021sbrt}.
+% [Items 13--18] Paragraph 3: band limitation, filter in the loop, four types
+The broadband spectrum of chaotic signals, however, conflicts with the fact
+that practical channels are band-limited. If the spectrum of the transmitted
+signal is not confined to the channel passband, the distortion introduced by
+the channel prevents the receiver from synchronizing, and the message is
+lost~\cite{Eisencraft2011}. To overcome this limitation, Eisencraft
+\textit{et al.}~\cite{Eisencraft2009} proposed inserting a discrete-time
+linear filter in the feedback loop of the chaotic generator, and Fontes and
+Eisencraft~\cite{Fontes2016} showed that the filter does not prevent
+synchronization, a result already indicated in~\cite{Eisencraft2009}.
+Further practical limitations, such as finite-precision digital
+implementation, were investigated by Borges and
+Eisencraft~\cite{Borges2021sbrt}. The lowpass case corresponds to a baseband
+channel, but other spectral masks arise in practice. Highpass filtering
+removes the DC component of the chaotic signal, which carries no information
+and is blocked by AC-coupled channels. Bandpass filtering confines the signal
+to an allocated band, and bandstop filtering creates a spectral notch to
+avoid narrowband interference or to coexist with other
+systems~\cite{Li2013uwb}. From a dynamical standpoint, these four types also span the
+range of DC gains $G$ of the filter, which determines the fixed point of the
+expanded system~\cite{BorgesCNSNS2024}.
 
-A central question in this approach is whether the signals generated by the
-system with an inserted filter remain chaotic, given that the filter
-modifies the dynamics of the original generating map. This question has been
-investigated by Borges and Eisencraft~\cite{Borges2022sbrt,BorgesCSF2022},
-who showed numerically, for low-order FIR filters, that the filter
-coefficients affect the behavior of the generated signals, with phenomena
-such as bifurcation cascades, coexistence of attractors, crises, and
-periodicity islands of the \textit{shrimp} type~\cite{Gallas1993}. Borges
-\textit{et al.}~\cite{BorgesCNSNS2024} extended the analysis to FIR filters
-with a larger number of coefficients and different zero placements, and
-Borges \textit{et al.}~\cite{Borges2024sbrt} to second-order all-pole
-filters. These works establish that the chaotic regime is not guaranteed to
-survive filtering and must be verified case by case---the starting point of
-the present study.
+% [Items 19, 20] Paragraph 4: why the question is necessary and the gap
+Inserting a filter in the feedback loop, however, changes the dynamics of the
+generator, and nothing guarantees that the transmitted signal remains
+chaotic. Once the unfiltered pair synchronizes, the filter preserves
+synchronization for any choice of coefficients~\cite{BorgesTese2026}, but it
+may destroy the chaotic behavior of the generator. Borges and Eisencraft
+showed numerically that the coefficients determine whether the generated
+signals are chaotic, periodic, or divergent, for a two-coefficient
+filter~\cite{BorgesCSF2022} and for lowpass filters of increasing
+order~\cite{Borges2022sbrt}, with bifurcation cascades, coexisting
+attractors, crises, and shrimp-shaped periodic islands~\cite{Gallas1993}.
+Borges \textit{et al.} extended this analysis to FIR filters with more
+coefficients and different zero placements~\cite{BorgesCNSNS2024} and to
+second-order all-pole filters~\cite{Borges2024sbrt}. The preservation of
+chaos must therefore be verified for each filter design. It remains open
+which combinations of filter type, design window, order, and cutoff
+frequency keep the generator chaotic, and this is the question addressed
+here.
 
-Whereas~\cite{BorgesCNSNS2024} characterized the filtered H\'enon map across
-different zero-placement geometries of the FIR filter with a fixed design
-window, the present investigation
-treats \emph{frequency selectivity} and \emph{window design} as the primary
-axes. In addition to lowpass FIR filters, highpass, bandpass, and bandstop
-filters are considered, each designed through seven distinct windows, with a
-dedicated parametric sweep of the Kaiser shape parameter~\cite{Kaiser1980}.
-Through high-resolution dynamic classification maps in the filter
-order--cutoff frequency plane, we show that the preservation of chaos is
-governed, in a structured and only partly monotonic way, by the filter type
-and the design window: stopband attenuation correlates positively with
-chaotic coverage for lowpass, highpass, and bandpass filters, but the
-relation \emph{reverses} for bandstop, where the low-attenuation rectangular
-window dominates. Aggregating the 124 sweeps further exposes a
-configuration-robust region of the order--cutoff plane in which chaos
-persists across windows and filter types. Relative to the previously published numerical
-characterizations of the filtered H\'enon map by Borges \textit{et
-al.}~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024}, which vary the
-zero-placement geometry of the FIR filter with a fixed design window, the
-present work adds
-two directions proper to computer engineering: (i)~a statistical
-characterization of the chaotic coverage, with bootstrap confidence
-intervals on the Lyapunov exponent; and (ii)~a description of the
-computational architecture of the implemented pipeline---a Python package
-with cores compiled by Numba~\cite{Numba}, parallelization over the
-parameter grid, checkpoint versioning, and automated testing---as a
-condition for scientific reproducibility.
+% [Item 21] Paragraph 5: what this work does (single paragraph; the list of
+% contributions was moved to Section V)
+Previous studies varied the coefficients of a two-coefficient
+filter~\cite{BorgesCSF2022}, the zero placement of the FIR
+filter~\cite{BorgesCNSNS2024}, and the order and cutoff frequency of lowpass
+filters designed with the Hamming and Blackman
+windows~\cite{Borges2022sbrt,BorgesCNSNS2024}.
+In practice, however, an FIR filter is specified by its frequency response
+and designed by a method such as windowing, so the filter type and the design
+window are natural design choices. This work investigates how these two
+choices affect the preservation of chaos in the H\'enon map with an internal
+FIR filter. Lowpass, highpass, bandpass, and bandstop filters are designed
+with seven windows, including a sweep of the Kaiser shape
+parameter~\cite{Kaiser1980}, and for each configuration the filter order and
+the cutoff frequency are varied to build maps that classify the generated
+signals as chaotic, periodic, or divergent. The parameters of the H\'enon map
+and the bandwidth of the bandpass and bandstop filters are kept fixed.
 
-The objective of this work is to characterize systematically the conditions
-under which the chaotic regime is preserved in the H\'enon map with an
-internal FIR filter, sweeping the order--cutoff frequency plane for four
-filter types and seven design windows. To this end, the largest Lyapunov
-exponent is estimated from the tangent-map dynamics by propagating one tangent
-vector with periodic renormalization, with a full-basis Modified Gram--Schmidt
-recomputation of marginal cells, and validated against the standard H\'enon map; the
-resulting orbits are classified into high-resolution dynamic maps for the
-four filter types and seven windows; the effect of the Kaiser-window shape
-parameter $\beta_K$ on the chaotic coverage is assessed; the chaotic-coverage
-estimates are accompanied by bootstrap confidence intervals on the exponent;
-and the whole pipeline is documented and released as a reproducible
-artifact~\cite{chaoticPFC2026}. This work covers the filter order, the cutoff
-frequency, the filter type, and the design window; other dimensions of the
-parameter space are left as future work enabled by the released infrastructure.
-
-The remainder of this paper is organized as follows. Section~\ref{sec:theory}
-presents the theoretical background (H\'enon map, expanded system with FIR
-filter, the frequency-domain rationale for feedback filtering, design
-windows, and Lyapunov exponent); Section~\ref{sec:method}
-describes the experimental methodology, including the computational
-architecture of the pipeline; Section~\ref{sec:results} presents and
-discusses the results; and Section~\ref{sec:conclusion} summarizes the
-conclusions and proposes future work.
+% Paragraph 6: organization of the paper (updated)
+The remainder of this paper is organized as follows.
+Section~\ref{sec:prelim} presents the preliminary concepts: the H\'enon map,
+the H\'enon map with an FIR filter in the feedback loop, the largest Lyapunov
+exponent, the FIR design windows, and the synchronization argument that
+motivates the study. Section~\ref{sec:method} describes the methodology,
+Section~\ref{sec:results} presents and discusses the results, and
+Section~\ref{sec:conclusion} summarizes the conclusions, the contributions of
+the work, and future directions.
 
 % ============================================================
-\section{Theoretical Background}\label{sec:theory}
+% [E-mail 6] "Theoretical Background" -> "Preliminary Concepts"
+\section{Preliminary Concepts}\label{sec:prelim}
 % ============================================================
-This section presents the theoretical tools used throughout the work, in
-the order in which they will be mobilized in the following sections.
-Subsection~\ref{sub:henon} defines the two-dimensional H\'enon map, its
-expanded version under internal FIR filtering, and the corresponding
-Jacobian matrix. Subsection~\ref{sub:freq} motivates, from a master--slave
-synchronization standpoint, why the feedback filter must be specified and
-evaluated in the frequency domain. Subsection~\ref{sub:windows} describes
-the seven FIR design windows considered. Subsection~\ref{sub:lyap}
-formalizes the Lyapunov exponent, the tangent-map recursion with
-Gram--Schmidt orthogonalization, and the adopted dynamic-classification
-criterion.
+This section introduces the concepts needed to follow the rest of the paper.
+The H\'enon map is presented first and then extended with an FIR filter in
+the feedback loop. The largest Lyapunov exponent, used to classify the
+signals generated by both systems, comes next, followed by the windows used
+to design the filter and by the synchronization argument that motivates the
+study.
 
-% ---- 2.1 ----
-\subsection{H\'enon Map and Expanded System With FIR Filter}\label{sub:henon}
-The two-dimensional H\'enon map~\cite{Henon1976} is the discrete dynamical
-system adopted in this work as the chaotic generator. In its standard
-two-dimensional form, it is written as
+% ---- II-A ----  [E-mail 7]: only the Hénon map, with a figure
+\subsection{H\'enon Map}\label{sub:henon}
+Consider the H\'enon map~\cite{Henon1976}
 \begin{equation}
   \begin{cases}
     x_1(n+1) = \alpha - x_1^2(n) + \beta\, x_2(n), \\
@@ -251,41 +228,88 @@ two-dimensional form, it is written as
   \end{cases}
   \label{eq:henon}
 \end{equation}
-where $\alpha$ and $\beta$ are real parameters. For $\alpha = 1.4$ and
-$\beta = 0.3$, the map produces a strange attractor whose largest Lyapunov
-exponent is $\lambda_1\approx 0.42$ and whose fractal dimension is
-$\approx 1.26$~\cite{Alligood1996,BorgesCSF2022,Henon1976}. The Lyapunov
-exponent measures the average exponential rate at which two nearby orbits
-separate and thus quantifies the SDIC; it is formally defined in
-Subsection~\ref{sub:lyap}, and for the present purposes it is enough to note
-that a positive $\lambda_1$ is the signature of chaos. From the
-dissipative relation $\det\mathbf{J} = -\beta$, with $|\beta|<1$, follows
-the identity $\lambda_1 + \lambda_2 = \ln|\beta|$, valid for the
-two-dimensional system and used here as a consistency test for the
-implemented Lyapunov estimator (Subsection~\ref{sub:validation}).
+where $n\in\{0,1,2,\ldots\}$ is the discrete time, $x_1(n)$ and $x_2(n)$ are
+the state variables, and $\alpha$ and $\beta$ are real parameters. Grouping
+the state variables in the vector $\mathbf{x}(n)=[x_1(n)\;\,x_2(n)]^{T}$,
+where $(\cdot)^{T}$ denotes transposition, \eqref{eq:henon} can be written
+compactly as $\mathbf{x}(n+1)=\mathbf{F}(\mathbf{x}(n))$. The sequence of
+states $\{\mathbf{x}(n)\}_{n\ge 0}$ obtained by iterating $\mathbf{F}$ from an
+initial condition $\mathbf{x}(0)$ is called an \emph{orbit}~\cite{Alligood1996}.
 
-As proposed by Eisencraft \textit{et al.}~\cite{Eisencraft2009} and
-Fontes \textit{et al.}~\cite{Fontes2016}, the bandwidth of the generated
-signals can be limited by filtering $x_1(n)$ through an FIR filter
-with $N_s$ coefficients $c_j$, $0\le j\le N_s-1$, according to
-\eqref{eq:filtro}:
+Depending on the parameters and on the initial condition, an orbit may
+converge to a fixed point, converge to a periodic orbit, behave chaotically,
+or diverge~\cite{Alligood1996}. A \emph{fixed point} is a state
+$\mathbf{x}^\star$ left unchanged by one iteration,
+$\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$, so that an orbit started at
+$\mathbf{x}^\star$ stays there for all $n$. An orbit is \emph{bounded} when
+there is a finite $M$ such that $\|\mathbf{x}(n)\|\le M$ for all $n$, and
+\emph{divergent} otherwise~\cite{Alligood1996}. For \eqref{eq:henon}, the
+condition $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$ gives two fixed
+points, of which the positive one is used as the reference state in this
+work.
+
+\begin{figure}[!t]
+\centering
+\includesvg[width=\columnwidth]{Figures/fig_henon_signals}
+\caption{Segments of $x_1(n)$ obtained from \eqref{eq:henon} with
+$x_1(0)=x_2(0)=0$ (solid blue) and $x_1(0)=0$, $x_2(0)=0.001$ (dashed red).
+(a)~$\alpha=1.4$, $\beta=0.3$: chaotic signal. (b)~$\alpha=0.9$, $\beta=0.3$:
+periodic signal (period~2).}
+\label{fig:henon}
+\end{figure}
+
+Fig.~\ref{fig:henon} illustrates the chaotic and the periodic behaviors with
+segments of $x_1(n)$ generated from two initial conditions that differ by
+$10^{-3}$ in $x_2(0)$, as in~\cite{Borges2022sbrt}. In
+Fig.~\ref{fig:henon}(a), with $\alpha=1.4$ and $\beta=0.3$, the signal is
+aperiodic and, although the two initial conditions are nearly
+indistinguishable, the distance between them first exceeds $0.1$ at $n=11$
+and reaches order one at $n=18$; this is the SDIC of chaotic signals. In Fig.~\ref{fig:henon}(b),
+with $\alpha=0.9$ and $\beta=0.3$, both orbits converge to the same period-2
+orbit, which alternates between $x_1\approx1.08$ and $x_1\approx-0.38$, and
+the difference between the initial conditions is lost.
+Throughout this work, $\alpha=1.4$ and $\beta=0.3$ are adopted; for these
+classical values, \eqref{eq:henon} has a strange attractor of fractal
+dimension $\approx1.26$~\cite{Sprott2003}.
+
+% ---- II-B ----  [E-mail 8]: expanded system with the FIR filter
+\subsection{H\'enon Map With an FIR Filter in the Feedback Loop}\label{sub:expanded}
+This subsection defines the filter, the expanded system obtained when the
+filter is inserted in the map, and the quantities of that system used in the
+rest of the paper. To limit the bandwidth of the generated signal, Eisencraft
+\textit{et al.}~\cite{Eisencraft2009} and Fontes and
+Eisencraft~\cite{Fontes2016} proposed filtering $x_1(n)$ with a finite
+impulse response (FIR) filter and feeding the filter output back into the
+map. The output of the filter is
 \begin{equation}
   x_3(n) = \sum_{j=0}^{N_s-1} c_j\, x_1(n-j),
   \label{eq:filtro}
 \end{equation}
-and feeding $x_3(n)$ back into the system in place of $x_1(n)$ in the
-nonlinear term. The filter order is $N_z = N_s - 1$, equal to the
-number of zeros of the transfer function~\cite{Oppenheim2009}. Because the
-filter in \eqref{eq:filtro} depends on the $N_s$ most recent values of
-$x_1$, the instantaneous pair $(x_1,x_2)$ is no longer a complete state of
-the system: the past samples $x_1(n-1),\ldots,x_1(n-N_s+1)$ must also be
-stored for the next iteration to be determined. To recover a first-order
-(memoryless) description, these delayed samples are kept as
-\emph{auxiliary state variables} $x_4,\ldots,x_{N_s}$, each of which simply
-holds a one-step delay of the preceding variable. With this augmentation,
-for $N_s>3$, the system is written in the expanded state-space form of
-Borges \textit{et al.}~\cite{Borges2022sbrt,BorgesCNSNS2024}, reproduced in
-\eqref{eq:expandido}:
+where $c_j$, $0\le j\le N_s-1$, are the $N_s$ filter coefficients. The filter
+order is $N_z=N_s-1$, equal to the number of zeros of the transfer function
+obtained by taking the $z$-transform of~\eqref{eq:filtro} with zero initial
+conditions~\cite{Oppenheim2009},
+\begin{equation}
+  H(z)=\frac{X_3(z)}{X_1(z)}=\sum_{j=0}^{N_s-1} c_j\, z^{-j}.
+  \label{eq:tf}
+\end{equation}
+
+Evaluating $H(z)$ on the unit circle, $z=e^{j\omega}$, gives the frequency
+response $H(e^{j\omega})$, where $\omega\in[0,\pi]$ is the normalized angular
+frequency in rad/sample. The frequency response fixes the passband, the
+transition width, and the stopband attenuation delivered by a given set of
+coefficients~\cite{Oppenheim2009}. In this work, it is specified by the filter
+type (lowpass, highpass, bandpass, or bandstop) and by a cutoff frequency
+$\omega_c$. Its value at $\omega=0$ is the DC gain of the filter,
+$G=H(e^{j0})=\sum_{j}c_j$~\cite{Oppenheim2009}.
+
+The filtered signal $x_3(n)$ replaces $x_1(n)$ in the nonlinear term
+of~\eqref{eq:henon}. Because~\eqref{eq:filtro} depends on the past samples
+$x_1(n-1),\ldots,x_1(n-N_s+1)$, the pair $(x_1,x_2)$ is no longer a complete
+state of the system. These samples are therefore stored as auxiliary state
+variables $x_4,\ldots,x_{N_s}$, each holding a one-step delay of the
+preceding one. For $N_s\ge3$, the resulting expanded system
+is~\cite{Borges2022sbrt,BorgesCNSNS2024}
 \begin{equation}
   \begin{cases}
     x_1(n+1) = \alpha - x_3^2(n) + \beta\, x_2(n), \\
@@ -297,28 +321,64 @@ Borges \textit{et al.}~\cite{Borges2022sbrt,BorgesCNSNS2024}, reproduced in
   \end{cases}
   \label{eq:expandido}
 \end{equation}
-where the last two lines are precisely the delay chain that stores the
-filter memory.
-The dimension of the expanded system is $K = N_s$ (equal to the number of
-coefficients); for $N_s=1$ (identity filter $c_0=1$) the original
-two-dimensional map~\eqref{eq:henon} is recovered. A \emph{fixed point}
-(also called an \emph{equilibrium point}) of a discrete map $\mathbf{F}$ is a
-state $\mathbf{x}^\star$ that is left unchanged by one iteration,
-$\mathbf{x}^\star = \mathbf{F}(\mathbf{x}^\star)$; an orbit started exactly at
-$\mathbf{x}^\star$ stays there for all $n$~\cite{Alligood1996}. For the
-two-dimensional map~\eqref{eq:henon}, solving
-$\mathbf{x}^\star = \mathbf{F}(\mathbf{x}^\star)$ gives two fixed points,
-of which the positive one is the relevant reference state. The same
-condition applied to the expanded system~\eqref{eq:expandido} defines its
-positive fixed point $\mathbf{p}^+$, which depends on the
-total gain $G = \sum_j c_j$ of the filter---equal to the filter gain
-at $\omega = 0$, i.e., its DC gain~\cite{Oppenheim2009}---and can be obtained
-analytically following~\cite{BorgesCNSNS2024}; this property is used in the
-initialization of the ensemble of initial conditions
-(Subsection~\ref{sub:ensemble}).
+whose dimension is $K=N_s$; for $N_s=3$, the terms in $x_4,\ldots,x_{N_s}$
+are absent. For $N_s\le2$, the filter output $x_3(n)=c_0x_1(n)+c_1x_2(n)$ (with
+$c_1=0$ for $N_s=1$) is a function of the current state, so no auxiliary
+variable is needed and the system keeps dimension $K=2$:
+\begin{equation}
+  \begin{cases}
+    x_1(n+1) = \alpha - \bigl(c_0x_1(n)+c_1x_2(n)\bigr)^2 + \beta\, x_2(n), \\
+    x_2(n+1) = x_1(n).
+  \end{cases}
+  \label{eq:expandido2}
+\end{equation}
+For $N_s=1$ and $c_0=1$, the filter is the identity and the original
+map~\eqref{eq:henon} is recovered. Equations~\eqref{eq:expandido}
+and~\eqref{eq:expandido2} are the forms implemented in the
+package~\cite{chaoticPFC2026}.
 
-The Jacobian matrix of system~\eqref{eq:expandido}, evaluated at instant
-$n$, is given by~\cite{Borges2022sbrt,BorgesCNSNS2024}
+As for~\eqref{eq:henon}, the fixed points of~\eqref{eq:expandido} are the
+solutions of $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$, where
+$\mathbf{F}$ now denotes the right-hand side of~\eqref{eq:expandido}. At a
+fixed point all delayed samples are equal, $x_1=x_2=x_4=\cdots=x_{N_s}=p$, and
+$x_3=Gp$, which gives $G^2p^2+(1-\beta)p-\alpha=0$~\cite{BorgesCNSNS2024,BorgesTese2026}.
+Its positive root is written here as
+\begin{equation}
+  p^{+} = \frac{2\alpha}{(1-\beta)+\sqrt{(1-\beta)^2+4\alpha G^2}},
+  \label{eq:pfixo}
+\end{equation}
+which is algebraically equal to the usual form
+$\bigl[-(1-\beta)+\sqrt{(1-\beta)^2+4\alpha G^2}\bigr]/(2G^2)$ but avoids the
+cancellation of that form when $G\to0$, as in highpass and bandpass filters,
+for which~\eqref{eq:pfixo} tends to $\alpha/(1-\beta)$. The positive fixed
+point is $\mathbf{p}^+=[p^+\;\,p^+\;\,Gp^+\;\,p^+\cdots p^+]^T$ (or
+$[p^+\;\,p^+]^T$ for $N_s\le2$); it depends on the filter only through its DC
+gain $G$ and is used to initialize the simulations
+(Section~\ref{sub:estimator}).
+
+% ---- II-C ----  [E-mail 9, second]: largest Lyapunov exponent
+% (adapted from Borges and Eisencraft, SBrT 2022, Sec. III)
+\subsection{Largest Lyapunov Exponent}\label{sub:lyap}
+The sensitivity of a system to its initial conditions can be quantified by
+how fast two very close states move apart as they evolve. Lyapunov proposed
+measuring this separation under the assumption that it grows exponentially,
+so that the Lyapunov exponent is the natural logarithm of the average rate at
+which two nearby orbits separate~\cite{Alligood1996,Borges2022sbrt}. An
+exponent equal to $\ln2$ along a given direction, for instance, means that the
+distance between the orbits doubles, on average, at each iteration in that
+direction, whereas a negative exponent means that the orbits approach each
+other. The SDIC of a chaotic signal is therefore measured by the Lyapunov
+exponent: a computationally generated signal that is bounded, aperiodic, and
+has at least one positive Lyapunov exponent is chaotic~\cite{Alligood1996}.
+
+A map of dimension $K$ has $K$ Lyapunov exponents, one for each direction of
+the state space, denoted in decreasing order by
+$\lambda_1\ge\lambda_2\ge\cdots\ge\lambda_K$. They are computed from the
+\emph{Jacobian matrix} $\mathbf{J}(n)$, the $K\times K$ matrix of partial
+derivatives $[\mathbf{J}(n)]_{ik}=\partial F_i/\partial x_k$ evaluated at
+$\mathbf{x}(n)$, which describes how a small perturbation of the state is
+transformed in one iteration~\cite{Alligood1996}. For the expanded
+system~\eqref{eq:expandido}, it is~\cite{Borges2022sbrt,BorgesCNSNS2024}
 \begin{equation}
   \mathbf{J}(n) = \begin{pmatrix}
     0 & \beta & -2x_3(n) & 0 & \cdots & 0 \\
@@ -330,596 +390,487 @@ $n$, is given by~\cite{Borges2022sbrt,BorgesCNSNS2024}
   \end{pmatrix},
   \label{eq:jacobiana}
 \end{equation}
-of dimension $K\times K$ with $K=N_s$. Only the third row of
-$\mathbf{J}(n)$ depends explicitly on the filter coefficients $\{c_j\}$,
-showing that the entire interaction between the linear dynamics introduced
-by the filter and the quadratic nonlinearity of the map is concentrated in
-that state equation. This structure partially explains why the total gain
-$G = \sum_j c_j$ is a relevant scalar parameter of the dynamic
-behavior of the expanded system~\cite{BorgesCNSNS2024}.
+in which only the third row depends on the filter coefficients; for
+$N_s\le2$, $\mathbf{J}(n)$ is the $2\times2$ Jacobian
+of~\eqref{eq:expandido2}. For the map~\eqref{eq:henon}, $\det\mathbf{J}(n)=-\beta$
+for every $n$, so its two exponents satisfy
+$\lambda_1+\lambda_2=\ln|\beta|$~\cite{Alligood1996}, an identity used in
+Section~\ref{sub:validation} to validate the implementation.
 
-% ---- 2.2 ----
-\subsection{Frequency-Domain Rationale for Filtering the Feedback Loop}\label{sub:freq}
-The reason the filter in~\eqref{eq:filtro} must be designed and evaluated in
-the frequency domain, rather than treated as an arbitrary linear
-combination of past samples, becomes clear once~\eqref{eq:henon} is
-embedded in a coherent chaos-based communication architecture of the
-master--slave type~\cite{Pecora1990}. Let $\mathbf{x}(n)$ and
-$\mathbf{y}(n)$ denote the state vectors of an autonomous transmitter
-(master) and a driven receiver (slave), respectively, and let
-$\mathbf{e}(n)\triangleq\mathbf{y}(n)-\mathbf{x}(n)$ be the synchronization
-error. When the nonlinearity acts on a single scalar carrier extracted
-from the state---as in~\eqref{eq:henon}, where that role is played by
-$x_1(n)$---the error dynamics reduce to the linear recursion
-\begin{equation}
-  \mathbf{e}(n+1) = \mathbf{A}\,\mathbf{e}(n),
-  \label{eq:syncerror}
-\end{equation}
-where $\mathbf{A}$ is the synchronization matrix; synchronization is
-attained whenever every eigenvalue $\lambda_k(\mathbf{A})$, $1\le k\le K$,
-lies strictly inside the unit circle, $|\lambda_k(\mathbf{A})|<1$
-~\cite{BorgesTese2026}. Under an ideal, distortion-free channel this
-condition is sufficient for the receiver to track the transmitter
-asymptotically and for the transmitted message to be recovered without
-degradation, apart from an initial transient.
-
-Real transmission channels, however, are never distortion-free: physical
-limitations of the medium impose a finite passband, so the channel acts as
-a filter that reshapes the spectrum of the transmitted
-signal~\cite{Eisencraft2011}. Because chaotic carriers spread their energy
-continuously over a wide band rather than concentrating it on a few
-spectral lines~\cite{Baptista2021}, even a modest truncation of that
-spectrum is enough to unsettle the coherent receiver: the driven
-(slave) system no longer evolves under the same effective nonlinearity as
-the master, the synchronization error ceases to vanish, and the recovered
-message estimate no longer tracks the original waveform, in either the
-time or the frequency domain~\cite{BorgesTese2026}. Confining the
-transmitted spectrum to the channel passband \emph{before} transmission is
-therefore not an optional refinement but a precondition for coherent
-detection over bandlimited channels~\cite{Eisencraft2009,Fontes2016}.
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=\textwidth]{Figures/fig_comm_ideal.png}
-\caption{Ideal-channel communication over $N=10^{6}$ samples with a $\pm1$ NRZ
-BPSK message ($\mu=0.01$, bit period of 20 samples): message $m[n]$,
-transmitted $s[n]$, received $r[n]$, and recovered $\hat{m}[n]$ (left, time
-domain) with their normalised Welch PSDs (right). The channel is ideal
-(identity, zero delay).}
-\label{fig:comm_ideal}
-\end{figure*}
-
-Figure~\ref{fig:comm_ideal} shows the argument on a single configuration, an
-ideal distortion-free channel. The left column gives the message $m[n]$, the
-transmitted carrier $s[n]$, the received signal $r[n]$, and the recovered
-estimate $\hat{m}[n]$ in the time domain, and the right column gives their
-normalised Welch spectra. Here the received signal is a copy of the
-transmitted one, and the recovered spectrum $\hat{\mathcal{M}}(\omega)$ follows
-the message spectrum $\mathcal{M}(\omega)$; the residual mean squared error
-between $m[n]$ and $\hat{m}[n]$ is $8.7\times 10^{-31}$, that is, machine
-precision rather than exact equality.
-
-A band-limited channel, modelled as a 201-tap linear-phase FIR filter with a
-group delay of 100 samples, separates the two remaining scenarios once that
-delay is compensated in the error metric. Without a filter in the feedback loop
-the coherent receiver does not recover the message, and the bit error rate is
-0.4324. With the internal FIR filter in the feedback loop, the same
-band-limited channel gives a bit error rate of 0 and a residual mean squared
-error of $2.0\times 10^{-5}$; the spectral pre-shaping of the loop, described
-above, is what confines the transmitted spectrum to the passband. These numbers
-describe this configuration ($N=10^{6}$, $\mu=0.01$, bit period of 20 samples)
-and are reported as motivation.
-
-The FIR branch of~\eqref{eq:filtro} implements exactly this pre-shaping
-inside the feedback loop, and its two equivalent descriptions make the
-frequency-domain interpretation explicit. In the time domain,
-$x_3(n)$ is a finite convolution of $x_1(n)$ with the coefficients
-$\{c_j\}$; taking the $z$-transform of~\eqref{eq:filtro} under zero
-initial conditions yields the transfer function $H(z) = X_3(z)/X_1(z) =
-\sum_{j=0}^{N_s-1} c_j z^{-j}$, whose evaluation on the unit circle,
-$H(e^{j\omega})$, is the frequency response that fixes the passband,
-transition width, and stopband attenuation actually delivered by a given
-choice of $\{c_j\}$~\cite{Oppenheim2009}. It is this frequency response,
-not the raw coefficient values, that must be matched to the channel
-bandwidth---which is precisely why the filter order $N_z$ and the cutoff
-frequency $\omega_c$, rather than the individual $c_j$, are adopted as the
-sweep variables of the present study (Subsection~\ref{sub:grid}), and why
-the design method reviewed in Subsection~\ref{sub:windows} operates
-directly on that frequency response.
-
-Embedding the filter in the feedback path, rather than only at the channel
-interface, has a further consequence for the synchronization matrix
-$\mathbf{A}$ itself, formalized next.
-
-\begin{lemma}[Synchronizability under FIR feedback filtering, adapted
-from~\cite{BorgesTese2026}]\label{lem:sync}
-Let the master--slave pair satisfy the synchronization condition
-$|\lambda_k(\mathbf{A})|<1$, $1\le k\le K$. Inserting an FIR filter of
-order $N_z$ in the feedback path, as in~\eqref{eq:expandido}, enlarges the
-synchronization matrix to dimension $(K+N_z)\times(K+N_z)$ by adding only
-null eigenvalues. Hence the original condition remains sufficient,
-independently of the coefficients $\{c_j\}$.
-\end{lemma}
-
-By Lemma~\ref{lem:sync}, synchronizability of the
-master--slave pair is preserved for \emph{any} choice of coefficients
-$\{c_j\}$, provided the unfiltered pair already synchronizes---a
-guarantee that holds regardless of how aggressively the filter shapes the
-spectrum. This result, however, concerns only the linear stability of
-the error recursion~\eqref{eq:syncerror}; it says nothing about whether the master's own
-trajectory $\mathbf{x}(n)$ remains chaotic once the same coefficients
-$\{c_j\}$ are fed back nonlinearly through~\eqref{eq:expandido} and enter
-the Jacobian in~\eqref{eq:jacobiana}. Synchronization and chaoticity are
-thus two logically independent requirements: the former is guaranteed by
-construction, while the latter---as already anticipated in
-Section~\ref{sec:intro} and demonstrated numerically for low-order filters
-by Borges \textit{et al.}~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024}---is
-not. Consequently, a frequency-domain specification of $H(z)$ that merely
-fits the channel passband cannot, by itself, certify that the filtered
-generator remains a valid chaotic source; it must be complemented by the
-explicit dynamical verification developed in the remainder of this paper.
-This distinction motivates treating the window used to synthesize $H(z)$
-as a first-class design variable, reviewed next.
-
-% ---- 2.3 ----
-\subsection{FIR Design Windows}\label{sub:windows}
-The FIR filters are designed by the method of windowing the ideal impulse
-response~\cite{Oppenheim2009,Harris1978}, a technique that establishes a
-direct trade-off between stopband attenuation and transition-band width.
-Seven windows are investigated, as summarized in Table~\ref{tab:windows}.
-The attenuation values listed there are the peak side-lobe levels of each
-window's discrete-time Fourier transform, measured relative to the main-lobe
-peak; in the windowing method this side-lobe level fixes the minimum stopband
-attenuation that the resulting FIR filter can attain~\cite{Harris1978,Oppenheim2009}.
-The values grow from $21$~dB for the rectangular window---whose abrupt
-truncation of the impulse response produces strong side lobes---to $92$~dB for
-the four-term Blackman--Harris window, whose cosine-sum coefficients are
-chosen precisely to cancel side lobes~\cite{Harris1978}; this gain in
-attenuation is paid for with a wider main lobe and therefore a wider
-transition band.
-
-The Hamming window is adopted as a historical reference because it was used
-in the original works of Fontes \textit{et al.}~\cite{Fontes2016} and Borges
-and Eisencraft~\cite{Borges2022sbrt} on the filtered H\'enon map. The
-Kaiser window~\cite{Kaiser1980}, parameterized by $\beta_K\ge 0$, allows the
-trade-off between attenuation and transition width to be varied continuously
-without changing the filter order---for $\beta_K = 0$ it degenerates into the
-rectangular window, and typical values $\beta_K\in[2,14]$ yield windows whose
-attenuations correspond to those of the Bartlett, Hamming, Blackman, or
-Blackman--Harris windows~\cite{Oppenheim2009}.
-
-\begin{table}[!t]
-\caption{FIR Windows Evaluated and Their Typical Stopband Attenuations\label{tab:windows}}
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Window} & \textbf{Atten. (dB)} & \textbf{Characteristic} \\
-\midrule
-Rectangular (boxcar)          & 21       & Minimum reference \\
-Bartlett                      & 25       & Triangular \\
-Hamming                       & 41       & Standard reference \\
-Hann                          & 44       & Raised cosine \\
-Blackman                      & 74       & High attenuation \\
-Blackman--Harris              & 92       & Maximum attenuation \\
-Kaiser ($\beta_K$ variable)   & variable & Parametric \\
-\bottomrule
-\end{tabular}
-
-\vspace{2pt}
-{\footnotesize Source: adapted from~\cite{Harris1978} and~\cite{Oppenheim2009}.}
-\end{table}
-
-The seven selected windows cover a broad spectrum of trade-offs between
-transition-band width and stopband attenuation: the rectangular window as
-the worst case, the Bartlett and Hann windows as classical intermediates,
-the Hamming window as the reference adopted in the previous filtered-H\'enon
-literature~\cite{Fontes2016,Borges2022sbrt}, and the Blackman and
-Blackman--Harris windows as representatives of high-attenuation
-windows---under the hypothesis that greater spectral attenuation favors the
-preservation of the chaotic regime by reducing side-lobe leakage into the
-rejected band. The Kaiser window, with $\beta_K$ swept over 25 values,
-provides a continuous path connecting these regimes. The design of the
-coefficients $\{c_j\}$ is carried out by the \texttt{firwin} routine of the
-SciPy library~\cite{Virtanen2020}.
-
-% ---- 2.4 ----
-\subsection{Lyapunov Exponent and Dynamic Classification}\label{sub:lyap}
-By \emph{sensitivity} here we mean the sensitive dependence on initial
-conditions (SDIC) introduced in Section~\ref{sec:intro}: how fast two orbits
-that start arbitrarily close to each other drift apart as the system evolves.
-This rate is made quantitative by the Lyapunov exponent, defined as the
-natural logarithm of the average factor by which the separation between two
-nearby orbits is multiplied at each iteration. An exponent equal to $\ln 2$
-along a given coordinate means, for example, that the distance between the
-orbits doubles at every iteration in that direction, on
-average~\cite{Alligood1996,Wolf1985}; a negative exponent means the orbits
-converge in that direction. For a discrete system of dimension $K$ there are
-$K$ such exponents, one per coordinate of the tangent space, and the SDIC of
-the generated signals is characterized by the largest of them, $\lambda_1$.
-
-The tangent-map method is adopted~\cite{Alligood1996,Wolf1985}. Consider a
-unit-radius hypersphere centered at the initial condition $\mathbf{x}(0)$,
-represented by a matrix $\mathbf{U}$ whose columns are orthonormal vectors.
-At each iteration, this hypersphere is transformed into an ellipsoid by the
-product of the Jacobian matrix $\mathbf{J}(n)$ of the expanded system, given
-by \eqref{eq:jacobiana}. To avoid numerical divergence or collapse of the
-axes along the iterations, Gram--Schmidt orthogonalization is applied at each
-step to the set
-$\{\mathbf{J}(n)\mathbf{w}_1(n),\ldots,\mathbf{J}(n)\mathbf{w}_K(n)\}$. The
-recursion of the orthonormal basis is therefore
-\begin{equation}
-  \begin{split}
-    \mathbf{y}_k(n+1) ={}& \mathbf{J}(n)\,\mathbf{w}_k(n) \\
-    &- \sum_{j=1}^{k-1}\bigl\langle\mathbf{J}(n)\mathbf{w}_k(n),\,
-    \mathbf{w}_j(n+1)\bigr\rangle\,\mathbf{w}_j(n+1),
-  \end{split}
-  \label{eq:tangentrec}
-\end{equation}
-\begin{equation}
-  \mathbf{w}_k(n+1) = \frac{\mathbf{y}_k(n+1)}{\|\mathbf{y}_k(n+1)\|},
-  \qquad 1\le k\le K,
-  \label{eq:tangentnorm}
-\end{equation}
-where the summation in~\eqref{eq:tangentrec} implements the Gram--Schmidt
-orthogonalization against the vectors already orthogonalized in the same
-iteration, and the normalization in~\eqref{eq:tangentnorm} preserves the
-orthonormal character of the basis along the iterations; $K$ is the
-dimension of the expanded system~\cite{Borges2022sbrt}. The Lyapunov
-exponent in the $k$-th direction is then
+The exponents are computed by the tangent-map
+method~\cite{Alligood1996,Borges2022sbrt}. A hypersphere of unit radius
+centered at $\mathbf{x}(0)$ is represented by a matrix $\mathbf{U}$ whose
+columns are its orthogonal axes. Each iteration of the map turns the
+hypersphere into an ellipsoid, and after $n$ iterations the axes of the
+ellipsoid are the columns of
+$\mathbf{J}(n-1)\cdots\mathbf{J}(1)\mathbf{J}(0)\mathbf{U}$. Computing the
+lengths of these axes directly is numerically inadequate, because directions
+that are stretched and directions that are compressed produce very large and
+very small numbers. Instead, the growth of each axis is computed at every
+iteration, and the axes are orthonormalized again before the next one, in the
+following steps~\cite{Alligood1996}:
+\begin{enumerate}
+  \item Choose an orthonormal basis $\{\mathbf{w}_1(0),\ldots,\mathbf{w}_K(0)\}$
+  and compute $\mathbf{z}_k(0)=\mathbf{J}(0)\mathbf{w}_k(0)$, $1\le k\le K$.
+  These vectors are axes of the new ellipsoid, but they are not necessarily
+  orthogonal.
+  \item Orthogonalize them by the Gram--Schmidt process,
+  \begin{equation}
+    \mathbf{y}_k(1)=\mathbf{z}_k(0)-\sum_{i=1}^{k-1}
+    \frac{\mathbf{z}_k(0)\cdot\mathbf{y}_i(1)}{\|\mathbf{y}_i(1)\|^2}\,
+    \mathbf{y}_i(1),
+    \label{eq:gs}
+  \end{equation}
+  where ``$\cdot$'' denotes the scalar product.
+  \item Normalize the vectors, $\mathbf{w}_k(1)=\mathbf{y}_k(1)/\|\mathbf{y}_k(1)\|$,
+  which gives the orthonormal basis for the next iteration.
+  \item Apply the Jacobian at the next point of the orbit,
+  $\mathbf{z}_k(1)=\mathbf{J}(1)\mathbf{w}_k(1)$, and repeat steps~2 and~3.
+  After $n$ repetitions, the vectors $\mathbf{y}_k(1),\ldots,\mathbf{y}_k(n)$
+  are available.
+\end{enumerate}
+The Lyapunov exponent in the $k$-th direction is then
 \begin{equation}
   \lambda_k = \lim_{n\to\infty}
   \frac{\ln\|\mathbf{y}_k(1)\| + \cdots + \ln\|\mathbf{y}_k(n)\|}{n}.
   \label{eq:lyap}
 \end{equation}
 
-The \emph{orbit} of an initial condition $\mathbf{x}(0)$ is the sequence of
-states $\{\mathbf{x}(n)\}_{n\ge 0}$ produced by iterating the map; it is
-\emph{bounded} when there exists a finite $M$ such that
-$\|\mathbf{x}(n)\|\le M$ for all $n$, and \emph{divergent} otherwise. The
-dynamic classification adopted for each point of the parameter grid is
+Only the largest exponent, $\lambda_1$, is used in this work. A positive
+$\lambda_1$ for a bounded signal is strong evidence of chaos, because a
+bounded orbit with $\lambda_1>0$ could otherwise only converge to an unstable
+periodic orbit~\cite{Alligood1996}. For $\alpha=1.4$ and $\beta=0.3$, the map
+\eqref{eq:henon} has
+$\lambda_1\approx0.42$~\cite{Sprott2003}.
+
+Based on these concepts, each orbit is classified as
 \begin{equation}
   \begin{cases}
-    \lambda_1 > 0    & \rightarrow \text{chaotic}, \\
-    \lambda_1 \le 0  & \rightarrow \text{periodic or stationary},
+    \text{divergent}, & \text{if the orbit is unbounded},\\
+    \text{chaotic},   & \text{if it is bounded and } \lambda_1 > 0, \\
+    \text{periodic},  & \text{if it is bounded and } \lambda_1 \le 0,
   \end{cases}
   \label{eq:criterio}
 \end{equation}
-\textit{conditioned} on the boundedness of the orbit. The case
-$\lambda_1\le 0$ groups two asymptotically non-chaotic behaviors:
-convergence to an equilibrium point (fixed point) of the
-system---defined in Subsection~\ref{sub:henon} as the state
-$\mathbf{x}^\star$ satisfying $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$---and
-convergence to a periodic orbit~\cite{Alligood1996}. Both are grouped into
-the ``periodic or stationary'' class, because the criterion of this work
-distinguishes only the presence ($\lambda_1>0$) or absence
-($\lambda_1\le 0$) of chaos, and not the specific period of the limit orbit.
-First, however, it is necessary to separate the orbits that remain bounded
-from those that escape: the regime is classified as \textit{divergent} when the
-state evolves to a non-finite value (NaN or infinity) at some iteration. In
-that case, $\lambda_1$ is discarded, since the boundedness hypothesis underlying
-\eqref{eq:lyap} no longer holds.
+where the periodic class also includes convergence to a fixed point, because
+the criterion distinguishes only the presence or absence of chaos and not the
+period of the limit orbit. The numerical detection of unbounded orbits is
+described in Section~\ref{sub:metrics}.
 
-The criteria and equations presented in this section underpin the
-experimental methodology described next, in which \eqref{eq:lyap} is
-evaluated by numerical simulation over a dense grid of the filter parameter
-space.
+% ---- II-D ----  [E-mail 9]: design windows
+\subsection{FIR Design Windows}\label{sub:windows}
+This subsection describes how the coefficients $c_j$ are obtained and which
+design windows are compared. The coefficients are obtained by the window
+method~\cite{Oppenheim2009,Harris1978}: the impulse response of the ideal
+filter, which is infinitely long, is conveniently delayed and truncated by a
+window of $N_s$ samples. The shape of the window sets a trade-off between the
+stopband attenuation and the width of the transition band of the resulting
+filter: windows with lower side lobes give higher attenuation at the cost of
+a wider transition band~\cite{Harris1978}.
+
+Seven windows are considered (Table~\ref{tab:windows}). The values listed
+are the peak side-lobe levels of the discrete-time Fourier transform of each
+window, relative to the main-lobe peak~\cite{Harris1978}; in the window
+method, lower side lobes give higher stopband attenuation of the designed
+filter~\cite{Oppenheim2009}. The values range from $13$~dB for the
+rectangular window, whose abrupt truncation produces strong side lobes, to
+$92$~dB for the four-term Blackman--Harris window, whose cosine-sum
+coefficients are chosen to cancel side lobes~\cite{Harris1978}.
+
+\begin{table}[!t]
+\caption{FIR Windows Evaluated and Their Peak Side-Lobe Levels\label{tab:windows}}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Window} & \textbf{Side lobe (dB)} & \textbf{Characteristic} \\
+\midrule
+Rectangular (boxcar)          & $-13$    & Minimum reference \\
+Bartlett                      & $-27$    & Triangular \\
+Hann                          & $-32$    & Raised cosine \\
+Hamming                       & $-43$    & Standard reference \\
+Blackman                      & $-58$    & High attenuation \\
+Blackman--Harris              & $-92$    & Maximum attenuation \\
+Kaiser ($\beta_K$ variable)   & variable & Parametric \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\footnotesize Source: adapted from~\cite{Harris1978}.}
+\end{table}
+
+The seven windows cover a broad range of this trade-off: the rectangular
+window as the worst case; the Bartlett and Hann windows as classical
+intermediate cases; the Hamming window, adopted as a reference because it was
+used in the previous works on the filtered H\'enon
+map~\cite{Fontes2016,Borges2022sbrt}; and the Blackman and Blackman--Harris
+windows as high-attenuation cases. They were chosen under the hypothesis that
+greater spectral attenuation favors the preservation of chaos by reducing
+side-lobe leakage into the rejected band. The Kaiser
+window~\cite{Kaiser1980} has a shape parameter $\beta_K\ge0$ that varies the
+trade-off continuously without changing the filter order: for $\beta_K=0$ it
+is the rectangular window, and for $\beta_K\in[2,14]$ its peak side-lobe
+level, computed here for a window of 101 samples, goes from about $-19$~dB to
+$-106$~dB, a range that contains the side-lobe levels of the Bartlett, Hann,
+Hamming, Blackman, and Blackman--Harris windows in
+Table~\ref{tab:windows}. The sweep of $\beta_K$ therefore provides a
+continuous path between the fixed windows.
+
+% ---- II-E ----  Motivation: synchronization versus chaos (former II-B),
+% condensed; terms adjusted as requested in Item 19.
+\subsection{Synchronization Versus Chaos: Motivation}\label{sub:sync}
+This subsection explains why a filter in the feedback loop is needed in
+coherent CBCS and why its presence makes the verification of chaos necessary.
+It is a motivation for the study: the sweeps of Sections~\ref{sec:method}
+and~\ref{sec:results} do not transmit any message.
+
+In a coherent CBCS of the master--slave type~\cite{Pecora1990}, let
+$\mathbf{x}(n)$ and $\mathbf{y}(n)$ denote the states of the transmitter
+(master) and of the receiver (slave), and let
+$\mathbf{e}(n)\triangleq\mathbf{y}(n)-\mathbf{x}(n)$ be the synchronization
+error. When the nonlinearity acts on a single scalar signal extracted from
+the state, as $x_1(n)$ in~\eqref{eq:henon}, the error obeys the linear
+recursion
+\begin{equation}
+  \mathbf{e}(n+1) = \mathbf{A}\,\mathbf{e}(n),
+  \label{eq:syncerror}
+\end{equation}
+where $\mathbf{A}$ is the synchronization matrix. Synchronization is attained
+when every eigenvalue $\gamma_k$ of $\mathbf{A}$ lies strictly inside the unit
+circle, $|\gamma_k|<1$~\cite{BorgesTese2026}. Over an ideal,
+distortion-free channel, this condition is enough for the receiver to track
+the transmitter and for the message to be recovered after an initial
+transient.
+
+Real channels, however, have a finite passband and act as filters that
+reshape the spectrum of the transmitted signal~\cite{Eisencraft2011}. Because
+chaotic carriers spread their energy continuously over a wide
+band~\cite{Baptista2021}, even a moderate truncation of the spectrum makes the
+slave evolve under a different effective nonlinearity, so the synchronization
+error no longer vanishes and the recovered message no longer follows the
+original one~\cite{BorgesTese2026}. Confining the transmitted spectrum to the
+channel passband before transmission is therefore a precondition for coherent
+detection over band-limited channels~\cite{Eisencraft2009,Fontes2016}.
+
+\begin{figure*}[!t]
+\centering
+\includesvg[width=\textwidth]{Figures/fig_comm_ideal}
+\caption{Illustration used as motivation: ideal-channel communication over
+$N=10^{6}$ samples with the generator~\eqref{eq:henon}, a $\pm1$ NRZ BPSK
+message (ASCII text ``hello'', bit period of 20 samples), and transmitted
+signal $s[n]=x_1[n]+\mu\,m[n]$ with modulation depth $\mu=0.01$: message
+$m[n]$, transmitted $s[n]$, received $r[n]$, and recovered $\hat{m}[n]$
+(left, time domain) with their normalized Welch PSDs (right). The channel is
+ideal (identity, zero delay); the initial transient of $\hat{m}[n]$ is the
+synchronization of the slave.}
+\label{fig:comm_ideal}
+\end{figure*}
+
+Figs.~\ref{fig:comm_ideal} and~\ref{fig:comm_bl} illustrate this argument.
+In both, the message encodes the ASCII text ``hello'' (8 bits per character,
+$+1$ for bit 1 and $-1$ for bit 0), each bit is held for 20 samples, and the
+block is repeated to fill $N=10^{6}$ samples. The mean squared error between
+$m[n]$ and $\hat{m}[n]$ excludes the first 200 samples, which contain the
+synchronization transient, and the bit error rate (BER) decides each bit by
+the sign of the mean of $\hat{m}[n]$ over its 20 samples. Over the ideal
+channel (Fig.~\ref{fig:comm_ideal}), the received signal is a copy of the
+transmitted one, the recovered spectrum $\hat{\mathcal{M}}(\omega)$ follows
+the message spectrum $\mathcal{M}(\omega)$, and the mean squared error is
+$8.7\times10^{-31}$, that is, machine precision.
+
+In Fig.~\ref{fig:comm_bl}, the channel is a 201-tap linear-phase lowpass FIR
+filter designed with the Hamming window and cutoff $0.99\,\pi$, whose group
+delay of 100 samples is compensated in the metrics. Even this channel, which
+removes only the highest frequencies, prevents synchronization when the
+generator is the map~\eqref{eq:henon} without a filter in the loop
+(Fig.~\ref{fig:comm_bl}(a)): the BER is 0.4324. When the generator has an
+FIR filter in the loop (9 coefficients, $N_z=8$, $\omega_c=0.5\,\pi$, Hamming
+window) and the transmitted carrier is the filtered variable $x_3$, the same
+channel gives a BER of 0 and a mean squared error of $2.0\times10^{-5}$
+(Fig.~\ref{fig:comm_bl}(b)). These numbers refer only to this configuration
+and are reported as motivation.
+
+\begin{figure}[!t]
+\centering
+\includesvg[width=\columnwidth]{Figures/fig_comm_bandlimited}
+\caption{Illustration used as motivation: recovered message $\hat{m}[n]$
+(clipped to $\pm3$) and delayed message $m[n-100]$ over a lowpass FIR channel
+(201 taps, Hamming window, cutoff $0.99\,\pi$). (a)~Generator~\eqref{eq:henon}
+without a filter in the loop, BER $=0.4324$. (b)~Generator with an FIR filter
+in the loop ($N_z=8$, $\omega_c=0.5\,\pi$, Hamming window), BER $=0$.}
+\label{fig:comm_bl}
+\end{figure}
+
+Inserting the filter in the feedback loop, rather than only at the channel
+interface, also changes the synchronization matrix $\mathbf{A}$, as stated
+next.
+
+\begin{lemma}[Preservation of synchronization under FIR feedback filtering,
+adapted from~\cite{BorgesTese2026}]\label{lem:sync}
+Let the unfiltered master--slave pair satisfy the synchronization condition
+$|\gamma_k|<1$ for every eigenvalue $\gamma_k$ of $\mathbf{A}$. Inserting
+the same FIR filter in the feedback loop of the master and of the slave, as
+in~\eqref{eq:expandido}, only adds null eigenvalues to the synchronization
+matrix. Hence the original condition remains valid, independently of the
+coefficients $c_j$~\cite{Fontes2016,BorgesTese2026}.
+\end{lemma}
+
+\textit{Proof sketch.} The nonlinearity of master and slave is driven by the
+same transmitted signal, so it cancels in the error, and the filter states
+(the filter output and its delay line) do not feed back into the error of the
+original states. Ordering the error vector as [original states; filter
+states], the synchronization matrix is block lower triangular, with diagonal
+blocks $\mathbf{A}$ and a shift matrix of zero diagonal. Its eigenvalues are
+therefore those of $\mathbf{A}$ together with zeros~\cite{BorgesTese2026}
+(Theorem~3.1; the block-triangular argument is detailed for IIR filters in
+its Theorems~6.1 and~6.2).
+
+
+By Lemma~\ref{lem:sync}, the filter preserves the synchronization of the
+master--slave pair for any choice of coefficients, provided that the
+unfiltered pair synchronizes. The lemma concerns only the linear stability of
+the error recursion~\eqref{eq:syncerror}, however, and says nothing about
+whether the master's own orbit remains chaotic once the same coefficients
+enter the nonlinear dynamics~\eqref{eq:expandido} and its
+Jacobian~\eqref{eq:jacobiana}. Synchronization and chaotic behavior are thus
+independent requirements: the former is guaranteed by construction, whereas
+the latter is not, as shown numerically
+in~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024}. A frequency response
+$H(e^{j\omega})$ that fits the channel passband does not ensure, by itself,
+that the filtered generator remains chaotic. The dynamics of each design must
+be verified, which is the purpose of the methodology described next.
 
 % ============================================================
+% [E-mail 10] Methodology only after all concepts are defined.
+% Condensed from eight to five subsections; no content removed.
 \section{Methodology}\label{sec:method}
 % ============================================================
-This section describes the experimental methodology, organized so that each
-design decision is introduced before it is used. Subsection~\ref{sub:arch}
-discusses the computational architecture that makes the parameter sweep
-tractable; Subsection~\ref{sub:types} lists the filter types and windows
-evaluated; Subsection~\ref{sub:grid} specifies the sweep grid;
-Subsection~\ref{sub:estimator} details the implementation of the Lyapunov
-estimator; Subsection~\ref{sub:ensemble} describes the ensemble of initial
-conditions and the global parameters; Subsection~\ref{sub:metrics} defines the
-chaotic-coverage metrics; Subsection~\ref{sub:stats} introduces the statistical
-quantification; and Subsection~\ref{sub:repro} summarizes the reproducibility
-infrastructure.
+The research adopts a quantitative-experimental approach: for each filter
+design, the expanded system~\eqref{eq:expandido} is simulated, $\lambda_1$ is
+estimated, and each grid point is classified by~\eqref{eq:criterio}. All the
+tools were implemented in the open-source Python package
+\texttt{chaotic\_pfc} (BSD-3-Clause license)~\cite{chaoticPFC2026}.
 
-The research adopts a quantitative-experimental approach. All the tooling
-was implemented in the Python package \texttt{chaotic\_pfc}, released as
-open source under the BSD-3-Clause license~\cite{chaoticPFC2026}, with sweep
-cores compiled via Numba~\cite{Numba} for parallel execution over the
-parameter grid. Each submodule referenced in this section corresponds to a
-module of the package, and the technical documentation in Sphinx is
-published via Read the Docs~\cite{chaoticPFC2026}.
-
-% ---- 3.1 ----
-\subsection{Computational Architecture of the Pipeline}\label{sub:arch}
-Systems with SDIC impose characteristic computational constraints that
-deserve treatment within the scope of computer engineering. Reliable
-estimation of $\lambda_1$ requires long simulation horizons (hundreds to
-thousands of iterations per orbit) and an ensemble of initial conditions to
-mitigate sensitivity to transients~\cite{Wolf1985}. Parametric sweeps in the
-$(N_z,\omega_c/\pi)$ plane, even at moderate resolution, generate thousands
-of independent points, each with its own ensemble: for a
-$40\times 100\times 25$ grid (filter order, cutoff frequency, initial
-conditions), a single sweep demands $10^5$ evaluations of the Lyapunov
-estimator.
-
-Three architectural decisions were adopted in the pipeline. First,
-Just-In-Time (JIT) compilation of the numerical cores via Numba~\cite{Numba},
-which translates annotated Python functions into machine code through LLVM,
-with a reduction of one to two orders of magnitude in execution time relative
-to the pure-Python fallback, as measured by the package
-benchmarks~\cite{chaoticPFC2026}.
-Second, explicit parallelization over the $(N_z,\omega_c/\pi)$ grid by means
-of \texttt{prange} loops, exploiting all the cores available on the host
-machine. Third, versioning of the sweep checkpoints as compressed NumPy files
-(\texttt{.npz}), allowing figures and tables to be recomputed without redoing
-the sweeps---a scientific-reproducibility requirement recommended for
-published computational artifacts.
-
-The per-iteration cost of the production single-vector estimator is
-$\mathcal{O}(K)$, where $K = N_s = N_z+1$ is the dimension of the expanded
-system. The full-spectrum kernel used to recompute the marginal cells and in the
-validation is more expensive, being dominated by the QR (Modified
-Gram--Schmidt) orthogonalization, $\mathcal{O}(K^3)$ per step, and by the
-Jacobian--basis product, $\mathcal{O}(K^2)$ per step. For $N_{\text{IC}}$
-initial conditions and up to $N_{\text{map}}$ accumulation iterations, the
-full-spectrum cost per grid point is
-$\mathcal{O}(N_{\text{IC}}\cdot N_{\text{map}}\cdot K^3)$. For high orders
-($N_z=40$, $K=41$), $N_{\text{map}}=3{,}000$ and $N_{\text{IC}}=25$, this
-estimate approaches $5\times 10^9$ floating-point operations per grid point,
-making JIT compilation a practical requirement rather than a luxury.
-
-% ---- 3.2 ----
-\subsection{Filter Types and Windows Evaluated}\label{sub:types}
-Four FIR filter types are investigated: lowpass, highpass, bandpass, and
-bandstop, all designed by the windowing method with the seven windows listed
-in Table~\ref{tab:windows}. For the band filters (bandpass and bandstop), the
-total width is fixed at $\Delta\omega = 0.05\,\pi$, distributed symmetrically
-around the center frequency $\omega_c$. This value is a deliberate compromise.
-On the normalized axis $\omega/\pi\in(0,1)$ it corresponds to a band of $5\%$
-of the available range, which spans about five steps of the cutoff grid (100
-values over the open interval, Subsection~\ref{sub:grid}); the band is
-therefore narrow enough to keep the filter clearly frequency-selective---a
-genuine bandpass or bandstop rather than a near-allpass---yet wide enough to
-be resolved by the sweep and to admit a non-degenerate pass/stop band at every
-$\omega_c$. Fixing $\Delta\omega$ also isolates the effect of the single
-geometric parameter under study, the center frequency $\omega_c$; the band
-width is left as an independent variable for future work
+% ---- III-A ----  (former III-B and III-C)
+\subsection{Filter Types and Parameter Grid}\label{sub:grid}
+Four filter types are designed with the seven windows of
+Table~\ref{tab:windows} by the routine \texttt{firwin} of the SciPy
+library~\cite{Virtanen2020}. For lowpass and highpass filters, $\omega_c$ is
+the cutoff frequency; for bandpass and bandstop filters, it is the center of a
+band of fixed total width $\Delta\omega=0.05\,\pi$, placed symmetrically around
+$\omega_c$. On the normalized axis $\omega/\pi\in(0,1)$, this width is $5\%$
+of the range and spans about five steps of the cutoff grid, so the band is
+narrow enough to keep the filter frequency-selective and wide enough to be
+resolved by the sweep at every $\omega_c$. Fixing $\Delta\omega$ also isolates
+the effect of $\omega_c$; the width is left as a variable for future work
 (Section~\ref{sec:conclusion}).
 
-The design of the coefficients is carried out by
-\texttt{scipy.signal.firwin}, wrapped by the FIR-design routines of the
-package. For
-highpass and bandstop filters, the parity restriction of the windowing method
-requires $N_z$ to be even~\cite{Oppenheim2009}, otherwise the filter ceases to
-have a null response at the desired frequency; this restriction is honored by
-the package when building the grid. For a small subset of the configurations
-(the Hann and Bartlett windows with lowpass and bandpass filters), the design
-routine returns non-finite coefficients for part of the grid; those cells are
-classified as divergent on account of the filter design, not the map dynamics.
+Because it is the frequency response, and not the individual coefficients,
+that must be matched to the channel (Section~\ref{sub:sync}), the sweep
+variables are the filter order $N_z$ and the cutoff frequency $\omega_c$. For
+lowpass and bandpass filters, $N_z\in\{1,2,\ldots,40\}$ and 100 values of
+$\omega_c/\pi$ linearly spaced in the open interval $(0,1)$ are swept, giving
+$4{,}000$ grid points per window--filter configuration. For highpass and
+bandstop filters, the parity restriction of the window method requires even
+$N_z$~\cite{Oppenheim2009}, because a filter with an odd order has a forced
+zero at $\omega=\pi$, which a passband that includes $\omega=\pi$ does not
+allow; thus
+$N_z\in\{2,4,\ldots,40\}$, with $2{,}000$ points per configuration. The six
+fixed windows give $4\times6=24$ configurations, and the Kaiser window is
+swept over 25 values of $\beta_K\in[2.0,14.0]$, with step $0.5$, for the four
+filter types, adding 100 configurations, for a total of 124 sweeps and
+$372{,}000$ grid points. For the Hann and Bartlett windows with lowpass and
+bandpass filters, \texttt{firwin} returns non-finite coefficients for part of
+the grid; these points are classified as divergent because of the filter
+design, not of the map dynamics.
 
-% ---- 3.3 ----
-\subsection{Parameter Sweep Grid}\label{sub:grid}
-For lowpass and bandpass filters, $N_z\in\{1,2,\ldots,40\}$ is swept with 100
-values of normalized cutoff frequency $\omega_c/\pi$ linearly spaced in the
-open interval $(0,1)$, totaling $4{,}000$ points per window--filter
-configuration. For highpass and bandstop filters, the parity restriction of
-the windowing method requires $N_z$ to be even~\cite{Oppenheim2009}, reducing
-the set to $N_z\in\{2,4,\ldots,40\}$, with $2{,}000$ points per configuration.
-For the Kaiser window, an additional dedicated sweep covers
-$\beta_K\in[2.0,14.0]$ with step $0.5$ (25 values) for the four filter types,
-totaling 100 additional Kaiser configurations. Adding the combinations with
-fixed windows ($4\times 6 = 24$), the experiment covers 124 sweeps.
-
-% ---- 3.4 ----
-\subsection{Lyapunov Estimator: Implementation}\label{sub:estimator}
-Algorithm~\ref{alg:lyap} summarizes the implementation of the Lyapunov
-estimator used to generate the results of this work, based on the tangent-map
-formulation of Wolf \textit{et al.}~\cite{Wolf1985} adapted to
-system~\eqref{eq:expandido}. The production sweeps propagate a single tangent
-vector and renormalize it once every ten iterations, instead of at every
-iteration, which reduces the per-iteration cost from $\mathcal{O}(K^3)$ to
-$\mathcal{O}(K)$; the period between renormalizations follows the practice
-established since Benettin \textit{et al.}~\cite{Benettin1980a,Benettin1980b}.
-Cells whose single-vector estimate of $\lambda_1$ falls below a small margin
-($5\times 10^{-3}$) are recomputed with the full-spectrum kernel, which
-reorthonormalizes the complete tangent basis with the Modified Gram--Schmidt
-algorithm, so that the classification near the transition boundary is not
-decided by the single-vector approximation. The Modified Gram--Schmidt algorithm
-is used because it is numerically more stable than the classical one when the
-tangent vectors become nearly parallel after many iterations.
+% ---- III-B ----  (former III-D and III-E)
+\subsection{Lyapunov Estimator and Initial Conditions}\label{sub:estimator}
+Computing all $K$ exponents by the method of Section~\ref{sub:lyap} costs
+$\mathcal{O}(K^3)$ operations per iteration, dominated by the Gram--Schmidt
+orthogonalization. Since only $\lambda_1$ is needed, the sweeps propagate a
+single tangent vector, multiplied by $\mathbf{J}(n)$ at each iteration and
+renormalized once every ten iterations, which reduces the cost to
+$\mathcal{O}(K)$ per iteration. The formulation follows Wolf
+\textit{et al.}~\cite{Wolf1985}, and the use of a renormalization period
+follows Benettin \textit{et al.}~\cite{Benettin1980a,Benettin1980b}.
+Algorithm~\ref{alg:lyap} summarizes the procedure.
 
 \begin{algorithm}[!t]
-\caption{Single-vector Lyapunov estimation with periodic renormalization.}\label{alg:lyap}
+\caption{Single-vector estimation of $\lambda_1$ with periodic renormalization.}\label{alg:lyap}
 \begin{algorithmic}[1]
-\STATE \textbf{Input:} initial condition $\mathbf{x}_0$; burn-in iterations $N_{\text{burn}}$; accumulation cap $N_{\text{map}}$; convergence tolerance $\varepsilon$.
-\STATE $\mathbf{w}\leftarrow\mathbf{e}_1$;\; $s\leftarrow 0$;\; $\mathbf{x}\leftarrow\mathbf{x}_0$.
+\STATE \textbf{Input:} initial condition $\mathbf{x}_0$; burn-in iterations $N_{\text{burn}}$; accumulation cap $N_{\text{map}}$; tolerance $\varepsilon$.
+\STATE $\mathbf{w}\leftarrow[1\;0\;\cdots\;0]^T$;\; $s\leftarrow 0$;\; $\mathbf{x}\leftarrow\mathbf{x}_0$.
 \FOR{$i=1$ \TO $N_{\text{burn}}$}
-  \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(discard transient).
+  \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(discard transient)
 \ENDFOR
 \FOR{$i=1$ \TO $N_{\text{map}}$}
-  \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(orbit evolution).
+  \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(orbit evolution)
   \IF{$\mathbf{x}$ is non-finite}
-    \STATE \textbf{return} \textsc{NaN} \quad(divergent orbit).
+    \STATE \textbf{return} NaN \quad(divergent orbit)
   \ENDIF
-  \STATE $\mathbf{w}\leftarrow\mathbf{J}(\mathbf{x})\,\mathbf{w}$ \quad(tangent-vector evolution).
+  \STATE $\mathbf{w}\leftarrow\mathbf{J}(\mathbf{x})\,\mathbf{w}$ \quad(tangent-vector evolution)
   \IF{$i$ is a multiple of 10}
-    \STATE $n\leftarrow\|\mathbf{w}\|$;\; $s\mathrel{+}{=}\ln\max(n,10^{-300})$;\; $\mathbf{w}\leftarrow\mathbf{w}/n$ \quad(normalization).
-    \STATE \textit{(early stop)} every 100 iterations, if the variation of $\lambda_1=s/i$ stayed below $\varepsilon$ for two consecutive checkpoints and $i\ge 500$, terminate.
+    \STATE $r\leftarrow\|\mathbf{w}\|$;\; $s\leftarrow s+\ln\max(r,10^{-300})$;\; $\mathbf{w}\leftarrow\mathbf{w}/r$
+    \STATE every 100 iterations with $i\ge500$: stop if $s/i$ varied less than $\varepsilon$ in two consecutive checks
   \ENDIF
 \ENDFOR
-\IF{$|\lambda_1|$ lies below the marginal margin}
-  \STATE recompute the cell with the full-spectrum kernel (Modified Gram--Schmidt on all columns).
+\IF{$|s/i|<5\times10^{-3}$}
+  \STATE recompute with all $K$ exponents (modified Gram--Schmidt)
 \ENDIF
-\STATE \textbf{return} $s/i$.
+\STATE \textbf{return} $\lambda_1=s/i$
 \end{algorithmic}
 \end{algorithm}
 
-The early-stop step substantially reduces the computational cost while
-preserving the adopted classification criterion: the criterion of \textit{two} consecutive checkpoints
-mitigates premature stops in windows of chaotic intermittency (in which
-$\lambda_1$ oscillates for hundreds of iterations before stabilizing), and the
-full-spectrum recomputation of the marginal cells removes the classification
-risk introduced by the periodic renormalization. Recomputing the 372{,}000
-cells of the study, 34{,}147 ($9.18\%$) were handled by the full-spectrum kernel.
+Points whose single-vector estimate satisfies $|\lambda_1|<5\times10^{-3}$ are
+recomputed with all $K$ exponents, using the modified Gram--Schmidt
+algorithm, which is numerically more stable than the classical one when the
+tangent vectors become nearly parallel. In this way, the classification near
+the chaotic--periodic boundary does not depend on the single-vector
+approximation; $34{,}147$ of the $372{,}000$ grid points ($9.18\%$) were
+recomputed. Accumulation stops early when the estimate of $\lambda_1$ varies
+less than the tolerance $\varepsilon=10^{-3}$ in two consecutive checks, made every
+100 iterations after the 500th. Requiring two checks avoids premature stops in
+windows of chaotic intermittency, in which $\lambda_1$ oscillates for hundreds
+of iterations before stabilizing.
 
-% ---- 3.5 ----
-\subsection{Ensemble of Initial Conditions and Global Parameters}\label{sub:ensemble}
-For each grid point $(N_z,\omega_c)$, 25 initial conditions are sampled
-uniformly in a half-open cube of edge $\epsilon = 0.1$: each component of the
-initial state is displaced from the positive equilibrium point $\mathbf{p}^+$ of
-the expanded system by $\epsilon\,U$, with $U\sim\mathcal{U}[0,1)$, so that it
-lies in $[p_k^+,p_k^++0.1)$ componentwise. The equilibrium point is computed
-analytically from the
-total gain $G=\sum_j c_j$~\cite{BorgesCNSNS2024}. The estimator of
-Subsection~\ref{sub:estimator} is run with $N_{\text{burn}} = 500$ discard
-iterations before accumulation over $N_{\text{map}} = 3{,}000$ iterations. The
-value reported for the point is the mean of $\lambda_1$ over the ensemble,
-classified according to criterion~\eqref{eq:criterio}.
+For each grid point $(N_z,\omega_c)$, $N_{\text{IC}}=25$ initial conditions are
+drawn near the positive fixed point $\mathbf{p}^+$ of the expanded system
+(Section~\ref{sub:expanded}): each component is $p_k^++0.1\,U$, with $U$
+uniformly distributed in $[0,1)$. For each initial condition,
+$N_{\text{burn}}=500$ iterations are discarded as transient, and $\lambda_1$ is
+accumulated for at most $N_{\text{map}}=3{,}000$ iterations. The value
+assigned to the grid point is the mean of $\lambda_1$ over the initial
+conditions.
 
-The choice of $N_{\text{burn}} = 500$ stems from the estimate of the
-characteristic relaxation time to the attractor in the standard H\'enon map
-($\sim 1/\lambda_1\approx 2.4$ iterations), with an ample margin to accommodate
-longer transients in configurations close to bifurcation boundaries. In
-production, $N_{\text{map}} = 3{,}000$ acts as a cap rather than as the horizon
-actually used: the adaptive criterion stops the accumulation once $\lambda_1$
-stabilizes, and the effective horizon recorded per configuration has median
-between approximately $700$ and $1{,}200$ iterations, with a floor of $700$; the
-cap is reached in at most $0.06\%$ of the cells, in only two of the 124
-configurations.
+The value $N_{\text{burn}}=500$ is much longer than the transients of the
+unfiltered map and accommodates longer transients near bifurcation
+boundaries. The value
+$N_{\text{map}}$ acts as a cap: with early stopping, the median number of
+accumulated iterations per configuration lies between about $700$ and
+$1{,}200$, with a floor of $700$, and the cap is reached in at most $0.06\%$ of
+the points, in only two of the 124 configurations. In all experiments,
+$\alpha=1.4$, $\beta=0.3$,
+and the seed of the pseudo-random generator is 42.
 
-In all experiments: $\alpha = 1.4$ and $\beta = 0.3$ (standard parameters of
-the H\'enon map); $\beta_K = 5.0$ in the general Kaiser-window sweep; and the
-pseudo-random generator seed fixed at $42$, for reproducibility.
+% ---- III-C ----  (former III-F)
+\subsection{Classification and Chaotic-Coverage Metrics}\label{sub:metrics}
+Each grid point is classified by~\eqref{eq:criterio}. Numerically, an orbit is
+taken as unbounded when its state becomes non-finite (NaN or infinity); from
+that iteration on, every term of~\eqref{eq:lyap} is non-finite, so the
+simulation can be stopped. The divergence rule has three steps. First, the
+estimator returns a non-finite value for an initial condition as soon as its
+state becomes non-finite. Second, a grid point is divergent when at least one
+of its 25 initial conditions becomes non-finite during the burn-in. Third, an
+initial condition that becomes non-finite only after the burn-in is
+discarded, and the value of the grid point is the mean of $\lambda_1$ over the
+remaining initial conditions. Points with non-finite filter coefficients
+(Section~\ref{sub:grid}) are also divergent.
 
-% ---- 3.6 ----
-\subsection{Chaotic Coverage Metrics}\label{sub:metrics}
-Each grid point is labelled, by the criterion of Subsection~\ref{sub:lyap}, as
-chaotic, periodic/stationary, or divergent. The divergence rule operates in three
-steps. First, for a single initial condition, the estimator returns a non-finite
-value if the state becomes non-finite at any iteration of the accumulation window.
-Second, a cell is marked divergent when at least one of the 25 initial conditions
-produces a non-finite state during the $500$ burn-in iterations. Third, an initial
-condition that becomes non-finite after the burn-in is discarded from the average,
-so the value reported for the cell is the mean of $\lambda_1$ over the surviving
-initial conditions. Let $N_{\text{grid}}$ be the total
-number of grid points, $N_b$ the number of points whose orbit is bounded
-(chaotic or periodic, i.e., non-divergent), and $N_c$ the number of chaotic
-points. Two complementary chaotic-coverage metrics are then reported. The
-\emph{conditional} fraction $\rho_c^{\text{fin}} = N_c/N_b$ is the share of
-chaotic points among the bounded ones; it measures the propensity to chaos
-once numerical stability is ensured, deliberately excluding the divergent
-region so that it is not artificially deflated. The \emph{absolute} fraction
-$\rho_c^{\text{abs}} = N_c/N_{\text{grid}}$ is taken over the whole grid and
-measures the usable fraction of the design space. The two metrics answer
-different design questions: $\rho_c^{\text{fin}}$ is relevant when the designer
-can adjust $N_z$ and $\omega_c$ to reach a specific non-divergent operating
-point, whereas $\rho_c^{\text{abs}}$ is relevant when a broad operating range
-with few divergent configurations is sought. The difference in grid size
-($4{,}000$ points for lowpass and bandpass against $2{,}000$ for highpass and
-bandstop) follows from the parity restriction on $N_z$ inherent to the
-windowing method~\cite{Oppenheim2009}; the comparisons between filter types use
-fractions precisely to neutralize this difference in sample size.
+Let $N_{\text{grid}}$ be the number of grid points of a configuration, $N_b$
+the number of bounded (chaotic or periodic) points, and $N_c$ the number of
+chaotic points. The \emph{conditional} fraction
+$\rho_c^{\text{fin}}=N_c/N_b$ is the share of chaotic points among the bounded
+ones; it measures the tendency to chaos once divergence is excluded and is
+relevant when $N_z$ and $\omega_c$ can be adjusted to reach a non-divergent
+operating point. The \emph{absolute} fraction
+$\rho_c^{\text{abs}}=N_c/N_{\text{grid}}$ is the share of the whole design
+space that yields a chaotic generator and is relevant when a broad operating
+range is sought. Using fractions also makes the comparison between filter
+types independent of their different grid sizes (Section~\ref{sub:grid}).
 
-% ---- 3.7 ----
-\subsection{Statistical Treatment of the Sweep Results}\label{sub:stats}
-The statistical characterization operates at two distinct levels, which are
-kept separate to avoid ambiguity. At the \emph{point} level, the value of
-$\lambda_1$ reported for each grid point $(N_z,\omega_c)$ is the mean over the
-ensemble of $N_{\text{IC}}=25$ initial conditions (Subsection~\ref{sub:ensemble}),
-and the per-point ensemble dispersion is retained as metadata. At the
-\emph{regional} level, the chaotic region of a given window--filter
-configuration is summarized by the mean, standard deviation, and a $95\%$
-confidence interval of $\lambda_1$ computed \emph{over the set of chaotic grid
-points} of that configuration (sample size equal to $N_c$). It is this regional
-mean---not the per-point ensemble mean---whose confidence interval is reported
-in Tables~\ref{tab:best} and~\ref{tab:ranking}; consequently, the standard
-deviation $\sigma_{\lambda_1}$ measures the spatial homogeneity of the chaotic
-region rather than estimation noise at a single point. The interval is obtained
-by nonparametric bootstrap~\cite{EfronTibshirani1993} with $1{,}000$ resamples
-and a fixed seed ($42$), so that it quantifies the sampling variability of the
-regional mean over the chaotic set. The corresponding routines are in the
-module \texttt{chaotic\_pfc/analysis/stats.py} of the released
-package~\cite{chaoticPFC2026}.
+% ---- III-D ----  (former III-G)
+\subsection{Statistical Treatment}\label{sub:stats}
+Two levels are kept separate. At the \emph{point} level, the value of
+$\lambda_1$ of each grid point is the mean over its $N_{\text{IC}}$ initial
+conditions, and the dispersion over the ensemble is stored as metadata. At the
+\emph{regional} level, the chaotic region of each configuration is summarized
+by the mean $\bar\lambda_1$ and the standard deviation $\sigma_{\lambda_1}$ of
+$\lambda_1$ over its $N_c$ chaotic points; thus $\sigma_{\lambda_1}$ measures
+how homogeneous $\lambda_1$ is across the chaotic region, not the estimation
+noise at one point. A $95\%$ confidence interval for $\bar\lambda_1$ is
+obtained by nonparametric bootstrap~\cite{EfronTibshirani1993} with $1{,}000$
+resamples and seed 42. These regional statistics are the ones reported in
+Tables~\ref{tab:best} and~\ref{tab:ranking}. Because the chaotic points are
+selected by $\lambda_1>0$, this interval is positive by construction, and
+because neighboring grid points are correlated, the i.i.d.\ bootstrap
+underestimates the uncertainty; the interval is therefore used only to
+describe dispersion. The robustness of the classification is assessed by
+three other checks: the fraction of chaotic points whose ensemble mean of
+$\lambda_1$ exceeds two standard errors, $2s/\sqrt{N_{\text{IC}}}$, where $s$
+is the standard deviation of $\lambda_1$ over the initial conditions of the
+point; the sensitivity of $N_c$ to the classification threshold ($0$,
+$10^{-3}$, and $5\times10^{-3}$); and the repetition of the configurations of
+Table~\ref{tab:best} with ten seeds of the initial-condition generator (1 to
+9 and 42).
 
-% ---- 3.8 ----
-\subsection{Reproducibility Infrastructure}\label{sub:repro}
-Each complete sweep generates a \texttt{.npz} file containing the tensor
-$h=\lambda_1(N_z,\omega_c)$ averaged over the ensemble, its per-cell standard
-deviation \texttt{h\_desvio}, the coefficient orders and the coefficient bank
-(\texttt{coef}), the cutoff grid \texttt{wcorte}, the window and filter-type
-labels, the effective iteration count \texttt{n\_iters\_used}, and a
-\texttt{metadata} block with the simulation parameters ($N_{\text{burn}}$,
-$N_{\text{map}}$, number of initial conditions, $\alpha$, $\beta$, seed, Kaiser
-$\beta_K$, the adaptive-stop settings, and the fallback count); the
-chaotic/periodic/divergent classification is derived from $h$. The files are
-versioned in \texttt{data/sweeps/}, allowing figures and tables to be
-recomputed without recomputing the sweeps.
-Automated tests (in \texttt{tests/}) verify, at each repository commit: the
-identity $\lambda_1+\lambda_2 = \ln|\beta|$ in the canonical map, the accuracy
-of the $\lambda_1$ estimate against published reference
-values~\cite{Wolf1985,Sprott2003}, and the consistency of the designed filters
-(coefficient sum, zero placement). Continuous integration runs the tests at
-each code change.
+% ---- III-E ----  (former III-A and III-H, plus file paths from former IV-G)
+\subsection{Computational Architecture and Reproducibility}\label{sub:impl}
+Reliable estimates of $\lambda_1$ require long simulations and an ensemble of
+initial conditions~\cite{Wolf1985}, and each sweep has thousands of grid
+points: a $40\times100$ grid with 25 initial conditions requires $10^5$ runs of
+the estimator. For the full-spectrum recomputation, the cost per grid point is
+$\mathcal{O}(N_{\text{IC}}\cdot N_{\text{map}}\cdot K^3)$, which for $N_z=40$
+($K=41$) approaches $5\times10^{9}$ floating-point operations. Three decisions
+make the study tractable. First, the numerical cores are compiled just in time
+by Numba~\cite{Numba}, which translates Python functions into machine code
+through LLVM and reduced the execution time by one to two orders of magnitude
+relative to pure Python in the package benchmarks~\cite{chaoticPFC2026}.
+Second, the grid points are processed in parallel on all processor cores with
+\texttt{prange} loops. Third, each sweep is stored as a compressed NumPy
+(\texttt{.npz}) file, so that figures and tables can be regenerated without
+repeating the sweeps.
 
-All the infrastructure described here is available as open source under the
-BSD-3-Clause license~\cite{chaoticPFC2026}, with a Git version tag and a
-\texttt{CITATION.cff} file following the FORCE11 recommendations for the
-citation of scientific software. The technical documentation in Sphinx is
-published on Read the Docs and contains the description of each module, with
-usage examples and the API reference.
+Each \texttt{.npz} file contains the ensemble mean of $\lambda_1$ per grid
+point and its standard deviation, the filter orders and coefficients, the
+cutoff grid, the window and filter-type labels, the number of iterations
+actually used, and the simulation parameters ($N_{\text{burn}}$,
+$N_{\text{map}}$, number of initial conditions, $\alpha$, $\beta$, seed,
+$\beta_K$, early-stop settings, and number of recomputed points). The files
+are versioned in \texttt{data/sweeps/}; the figures are generated by
+\path{src/chaotic_pfc/analysis/sweep_plotting.py} and the statistics by
+\path{chaotic_pfc/analysis/stats.py}. Automated tests in \texttt{tests/},
+run by continuous integration at every change of the code, verify the
+identity $\lambda_1+\lambda_2=\ln|\beta|$ for~\eqref{eq:henon}, the value of
+$\lambda_1$ against published references~\cite{Wolf1985,Sprott2003}, and the
+designed filters (coefficient sum and zero placement). The package has a Git
+version tag, a \texttt{CITATION.cff} file following the FORCE11
+recommendations for software citation, and Sphinx documentation published on
+Read the Docs~\cite{chaoticPFC2026}.
 
 % ============================================================
 \section{Results and Discussion}\label{sec:results}
 % ============================================================
-This section presents and discusses the results of the parametric sweeps
-conducted according to the methodology of Section~\ref{sec:method}.
-Subsection~\ref{sub:validation} validates the Lyapunov estimator against the
-standard, unfiltered H\'enon map; Subsection~\ref{sub:classification} consolidates the
-configurations of greatest chaotic coverage by filter type;
-Subsections~\ref{sub:maps} and~\ref{sub:density} detail the classification
-maps and the aggregate density; Subsection~\ref{sub:beta} addresses the effect
-of the Kaiser-window parameter $\beta_K$; Subsection~\ref{sub:ranking} reports
-the statistical significance of the estimates and the ranking of the
-combinations; and Subsection~\ref{sub:cost} discusses the computational cost
-and reproducibility. Results original to this work are reported in direct
-prose; observations that reproduce previous findings of Borges and Eisencraft
-\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024} are marked as ``confirms''
-or ``is consistent with''; statements from the general literature are marked
-with a reference to their source.
+This section presents the results of the 124 sweeps. Observations that
+reproduce previous findings on the filtered H\'enon
+map~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024} are marked as
+``confirms'' or ``is consistent with''; the remaining results are original to
+this work.
 
-% ---- 4.1 ----
-\subsection{Estimator Validation}\label{sub:validation}
-The estimation protocol was validated on the \emph{standard} H\'enon
-map---the original, unfiltered two-dimensional map of \eqref{eq:henon} with
-the classical parameters $\alpha=1.4$, $\beta=0.3$ (recovered by setting
-$N_s = 1$, $c_0 = 1$), often referred to as the \emph{canonical} case---for
-which the literature establishes
-$\lambda_1\approx 0.42$~\cite{Alligood1996,BorgesCSF2022,Wolf1985}.
-The run with the parameters described in Section~\ref{sec:method} (ensemble of
-25 initial conditions, $N_{\text{burn}} = 500$, $N_{\text{map}} = 3{,}000$,
-seed 42, early stop disabled) reproduced $\bar\lambda_1 = 0.4182$, with a
-relative error below $10^{-2}$. This level of accuracy is sufficient to
-distinguish the dynamic regimes defined in~\eqref{eq:criterio}. In addition,
-the identity $\lambda_1 + \lambda_2 = \ln|\beta|$---a direct consequence of the
-dissipation of the map---was satisfied to machine precision in all unfiltered
-configurations tested, confirming the algorithmic correctness of the estimator
-independently of the published reference value. This validation was performed
-with the full-spectrum estimator, which propagates the complete tangent basis
-with Modified Gram--Schmidt orthogonalization, whereas the parameter sweeps of
-Section~\ref{sec:results} used the single-vector production path. In the
-subsequent sweeps, the early stop (Subsection~\ref{sub:estimator}) is enabled to
-reduce the computational cost.
+% ---- IV-A ----
+\subsection{Validation of the Estimator}\label{sub:validation}
+The estimator was first validated on the map~\eqref{eq:henon} without filter
+($N_s=1$, $c_0=1$), with $\alpha=1.4$ and $\beta=0.3$, for which
+$\lambda_1\approx0.42$~\cite{Wolf1985,Sprott2003}. With the
+ensemble of Section~\ref{sub:estimator} and early stopping disabled, it gave
+$\bar\lambda_1=0.4182$, with a relative error below $10^{-2}$, which is enough
+to separate the classes of~\eqref{eq:criterio}. The identity
+$\lambda_1+\lambda_2=\ln|\beta|$ (Section~\ref{sub:lyap}) was satisfied to
+machine precision in all unfiltered configurations tested, which confirms the
+correctness of the estimator independently of the reference value. This
+validation used the full-spectrum estimator; the sweeps use the single-vector
+path of Algorithm~\ref{alg:lyap}, with early stopping.
 
-% ---- 4.2 ----
-\subsection{Dynamic Classification of the Parameter Space}\label{sub:classification}
-Table~\ref{tab:best} consolidates, for each filter type, the configuration
-that maximizes the absolute number of chaotic points $N_c$ in the parametric
-sweep, considering both the fixed-coefficient windows and the Kaiser window
-with the $\beta_K$ that maximizes $N_c$. As a comparative reference, the
-second configuration in decreasing order of $N_c$ is also reported (a fixed
-window for lowpass, highpass, and bandpass; Kaiser for bandstop, in which the
-first position is occupied by the rectangular window).
+% ---- IV-B ----
+\subsection{Configurations With Largest Chaotic Coverage}\label{sub:classification}
+Table~\ref{tab:best} shows, for each filter type, the configuration that
+maximizes $N_c$, considering both the fixed windows and the Kaiser window with
+the $\beta_K$ that maximizes $N_c$. The second configuration in decreasing
+order of $N_c$ is also shown: a fixed window for lowpass, highpass, and
+bandpass filters, and the Kaiser window for the bandstop filter, whose first
+position is the rectangular window.
 
 \begin{table*}[!t]
-\caption{Configuration of Largest $N_c$ per Filter Type, With Mean, Standard Deviation, and Confidence Interval of $\lambda_1$\label{tab:best}}
+\caption{Configurations of Largest $N_c$ per Filter Type, With Mean, Standard Deviation, and Confidence Interval of $\lambda_1$ Over the Chaotic Points\label{tab:best}}
 \centering
 \begin{tabular}{llrrrrrc}
 \toprule
@@ -943,226 +894,256 @@ Bandstop  & Rectangular               & 118 & 65.2\% &  5.9\% & 0.0709 & 0.0491 
 
 \vspace{2pt}
 {\footnotesize 95\% confidence intervals obtained by
-bootstrap~\cite{EfronTibshirani1993}. Full per-configuration tables are regenerated from the versioned
-checkpoints by the released package~\cite{chaoticPFC2026}.}
+bootstrap~\cite{EfronTibshirani1993}. Full per-configuration tables are
+regenerated from the versioned sweep files by the released
+package~\cite{chaoticPFC2026}.}
 \end{table*}
 
-The Kaiser window leads in three of the four filter types, both in
-$\rho_c^{\text{fin}}$ and in $\rho_c^{\text{abs}}$. However, this comparison
-must be interpreted with caution, since each fixed window corresponds to a
-single coefficient configuration per grid point, whereas the Kaiser window was
-evaluated at 25 values of $\beta_K$, giving it a higher sampling density.
-Disregarding Kaiser, the Blackman--Harris window is the dominant reference for
-lowpass, highpass, and bandpass, which is consistent with its higher spectral
-attenuation (92\,dB). Excluding Kaiser, over the six fixed windows ($n=6$), the
-Spearman correlation between stopband attenuation and chaotic coverage, with its
-exact two-sided permutation p-value over the $720$ permutations, is $\rho=+0.94$
-($p=0.0167$) for lowpass, $+0.83$ ($p=0.0583$) for highpass, $+0.94$
-($p=0.0167$) for bandpass, and $-0.37$ ($p=0.4972$) for bandstop; eight tests
-were performed in total.
+The Kaiser window has the largest $N_c$ in three of the four filter types,
+in both $\rho_c^{\text{fin}}$ and $\rho_c^{\text{abs}}$. Repeating the
+configurations of Table~\ref{tab:best} with ten seeds gives, as mean $\pm$
+standard deviation of $N_c$, $975.3\pm2.7$ (Kaiser) and $957.8\pm3.9$
+(Blackman--Harris) for lowpass, $147.6\pm1.2$ and $142.9\pm2.1$ for highpass,
+and $435.8\pm3.5$ and $418.6\pm3.8$ for bandpass; the Kaiser configuration
+has the larger $N_c$ for every seed. For bandstop, the values are
+$116.8\pm2.5$ (rectangular) and $57.0\pm2.2$ (Kaiser). The ordering in
+Table~\ref{tab:best} is therefore not a seed effect. The comparison must still
+be read with caution, because each fixed window is a single configuration,
+whereas the Kaiser window was evaluated at 25 values of $\beta_K$ and the best
+one was selected (Section~\ref{sub:beta}). Among the fixed
+windows, Blackman--Harris is the best for lowpass, highpass, and bandpass
+filters, which is consistent with its lowest side lobes ($-92$\,dB). Over
+the six fixed windows ($n=6$), the Spearman correlation coefficient $r_s$
+between the side-lobe attenuation of Table~\ref{tab:windows} and $N_c$, with
+its exact two-sided permutation $p$-value over the $720$ permutations, is
+$r_s=+0.83$ ($p=0.0583$) for lowpass, $+0.77$ ($p=0.1028$) for highpass,
+$+1.00$ ($p=0.0028$) for bandpass, and $-0.26$ ($p=0.6583$) for bandstop.
+The correlation is computed on $N_c$, not on $\rho_c^{\text{fin}}$, and no
+correction is applied for the four tests with $n=6$. It is significant at the
+$5\%$ level only for the bandpass filter, which remains significant with a
+Bonferroni correction ($0.05/4=0.0125$). For lowpass filters designed with the
+Hamming and Blackman windows, Borges and Eisencraft~\cite{Borges2022sbrt}
+observed similar curves of $\lambda_1$ versus cutoff frequency and concluded
+that the window seemed to have little influence on the generation of chaos.
+In the present sweep, in contrast, the Blackman window gives $801$ chaotic
+points and the Hamming window $450$ (Table~\ref{tab:ranking}). The two studies
+differ in the grid of orders and cutoff frequencies, in the ensemble of
+initial conditions (10 drawn in $[0,1]$ in~\cite{Borges2022sbrt}, 25 drawn
+near $\mathbf{p}^+$ here), and in the comparison criterion (curves of
+$\lambda_1$ there, counts of chaotic points here). The lowpass filter with
+the Hamming window also corresponds to Experiment~V of~\cite{BorgesCNSNS2024},
+which swept the same range of $N_z$.
+% [Item 23] ";" replaced by "."
 
-The bandstop filter constitutes a particular case: the rectangular window
-reaches $\rho_c^{\text{fin}} = 65.2\%$, the highest conditional fraction among
-all filter types. The bandstop filter rejects only a narrow band
-($\Delta\omega = 0.05\,\pi$) away from $\omega=0$, so its DC gain
-$G=\sum_j c_j$ remains close to unity. In absolute terms, however, its coverage
-is modest ($\rho_c^{\text{abs}} = 5.9\%$) because a large share of the grid is
-divergent at higher orders, as detailed in Subsection~\ref{sub:maps}.
+The bandstop filter behaves differently: with the rectangular window it
+reaches $\rho_c^{\text{fin}}=65.2\%$, the highest conditional fraction among
+the four filter types for this window ($19.5\%$ lowpass, $3.7\%$ bandpass,
+$1.3\%$ highpass), but its absolute coverage is only
+$\rho_c^{\text{abs}}=5.9\%$, because a large share of its grid is divergent at
+higher orders (Section~\ref{sub:maps}). Since this filter rejects only a
+narrow band ($\Delta\omega=0.05\,\pi$) away from $\omega=0$, its DC gain $G$
+remains close to one. The lowpass filter with the Kaiser window
+($\beta_K=13.5$) reaches the highest absolute coverage among the 124
+configurations, $\rho_c^{\text{abs}}=24.5\%$, about $4.2$ times that of the
+rectangular bandstop filter, or $8.3$ times in number of chaotic points ($979$
+against $118$).
 
-The lowpass filter with the Kaiser window ($\beta_K=13.5$) reaches the highest
-absolute coverage among the 124 window--filter combinations swept in this work,
-with $\rho_c^{\text{abs}} = 24.5\%$ against the $5.9\%$ of the bandstop---a
-ratio of approximately $4.2\times$ in absolute coverage, or $8.3\times$ in the
-number of chaotic points ($979$ against $118$).
-
-% ---- 4.3 ----
+% ---- IV-C ----
 \subsection{Classification Maps}\label{sub:maps}
-Figures~\ref{fig:lowpass}--\ref{fig:bandstop} present the dynamic
-classification maps in the $(N_z,\omega_c/\pi)$ plane for the configuration of
-largest $N_c$ of each filter type, colored according to
-criterion~\eqref{eq:criterio}: red for chaotic, blue for periodic, and gray
-for divergent.
-
-The dynamic reading of these maps reinforces, now across four filter types and
-seven windows, two observations previously reported by Borges \textit{et
-al.}~\cite{BorgesCNSNS2024,BorgesCSF2022}. First, the total filter gain
-$G = \sum_j c_j$ scales the positive fixed point $\mathbf{p}^+$
-of the expanded system, corroborating the analytical dependence of
-$\mathbf{p}^+$ on $G$ established in~\cite{BorgesCNSNS2024}. Second,
-the thin boundaries between chaotic and periodic regions are period-doubling
-bifurcation cascades, and the periodic islands inside the chaotic regions are
-\textit{shrimps}~\cite{Gallas1993}---periodic structures characteristic of
-two-dimensional quadratic maps, whose occurrence in the filtered H\'enon map
-was first documented by Borges and Eisencraft~\cite{BorgesCSF2022}; our sweeps
-confirm that they persist across all four filter types studied here.
+Figs.~\ref{fig:lowpass}--\ref{fig:bandstop} show the classification maps in
+the $(N_z,\omega_c/\pi)$ plane for the configuration of largest $N_c$ of each
+filter type, with chaotic points in red, periodic points in blue, and
+divergent points in gray. In the lowpass map (Fig.~\ref{fig:lowpass}), chaos
+lies below a boundary in $\omega_c/\pi$ that decreases with $N_z$, and the
+orbits diverge above it. For $N_z$ from 3 to 7, chaotic points reach
+$\omega_c/\pi\approx1$ (up to $0.78$ for $N_z=4$), whereas the largest
+chaotic cutoff is $0.44$ for $N_z=10$, $0.14$ for $N_z=20$, and $0.06$ for
+$N_z=40$; for $N_z=1$ and $2$ no point is chaotic. In the highpass map
+(Fig.~\ref{fig:highpass}), chaos concentrates at $\omega_c/\pi\le0.26$ for
+$N_z\ge6$ and spans the whole cutoff range only for $N_z=4$
+($0.38\le\omega_c/\pi\le1$); the largest $\lambda_1$, $0.106$, occurs at
+$N_z=6$ and $\omega_c/\pi=0.01$, the lower edge of the swept interval. The
+lowpass and highpass filters therefore differ mainly in how the chaotic
+region depends on $N_z$: at high orders, both have chaos only at low cutoff
+frequencies. The bandpass map (Fig.~\ref{fig:bandpass}) shows a fragmented
+chaotic region, more sensitive to $\omega_c$, which is consistent with the
+narrow band imposed by the filter. In the bandstop map
+(Fig.~\ref{fig:bandstop}), chaos appears in isolated bands and divergence
+dominates the grid: only $N_z=2$ has no divergent points, and for $N_z=4$, 8,
+12, and 16 the whole row diverges.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{Figures/kaiser_b13p5_lowpass_classification_interleaved.png}
-\caption{Lowpass, Kaiser ($\beta_K=13.5$). A wide chaotic region for
-$\omega_c/\pi\gtrsim 0.2$, with periodicity islands (\textit{shrimps}) at low
-orders. The divergent region grows with $N_z$.}
+\includesvg[width=\columnwidth]{Figures/kaiser_b13p5_lowpass_classification_interleaved}
+\caption{Classification map for the lowpass filter, Kaiser window
+($\beta_K=13.5$). Chaos lies below a cutoff boundary that decreases with
+$N_z$, with divergence above it; periodic islands (shrimps) appear at low
+orders.}
 \label{fig:lowpass}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{Figures/kaiser_b11p5_highpass_classification_interleaved.png}
-\caption{Highpass, Kaiser ($\beta_K=11.5$). Reduced chaotic coverage
-($\rho_c^{\text{abs}}=7.5\%$), concentrated at $\omega_c/\pi\lesssim 0.5$ and
-low orders, with the maximum at the lower edge of the swept interval---behavior opposite to that of the lowpass filter.}
+\includesvg[width=\columnwidth]{Figures/kaiser_b11p5_highpass_classification_interleaved}
+\caption{Classification map for the highpass filter, Kaiser window
+($\beta_K=11.5$). Chaos concentrates at $\omega_c/\pi\le0.26$ for
+$N_z\ge6$ and spans the whole cutoff range only for $N_z=4$
+($\rho_c^{\text{abs}}=7.5\%$).}
 \label{fig:highpass}
 \end{figure}
 
-Figure~\ref{fig:bandpass} shows the map for the bandpass filter with the same
-Kaiser window ($\beta_K=13.5$), in which a fragmented chaotic structure and
-greater sensitivity to variations of $\omega_c$ are observed, consistent with
-the narrow band ($\Delta\omega = 0.05\,\pi$) imposed by the filter.
-
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{Figures/kaiser_b13p5_bandpass_classification_interleaved.png}
-\caption{Bandpass, Kaiser ($\beta_K=13.5$), $\Delta\omega=0.05\,\pi$.
-Fragmented chaotic structure and greater sensitivity to $\omega_c$; maximum
-$\lambda_1$ equal to $0.196$.}
+\includesvg[width=\columnwidth]{Figures/kaiser_b13p5_bandpass_classification_interleaved}
+\caption{Classification map for the bandpass filter, Kaiser window
+($\beta_K=13.5$), $\Delta\omega=0.05\,\pi$. Fragmented chaotic region, more
+sensitive to $\omega_c$; maximum $\lambda_1$ equal to $0.196$.}
 \label{fig:bandpass}
 \end{figure}
 
-Figure~\ref{fig:bandstop}, finally, shows the map for the bandstop filter with
-the rectangular window. Its conditional coverage $\rho_c^{\text{fin}}=65.2\%$ is
-the highest among all evaluated types, even though the absolute coverage is
-modest ($5.9\%$) because of the high fraction of divergent points in the grid.
-
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{Figures/rectangular_bandstop_classification_interleaved.png}
-\caption{Bandstop, rectangular window, $\Delta\omega=0.05\,\pi$. Highest
-$\rho_c^{\text{fin}}$ among all types ($65.2\%$; $\rho_c^{\text{abs}}=5.9\%$);
-absence of a divergent region at low orders.}
+\includesvg[width=\columnwidth]{Figures/rectangular_bandstop_classification_interleaved}
+\caption{Classification map for the bandstop filter, rectangular window,
+$\Delta\omega=0.05\,\pi$ ($\rho_c^{\text{fin}}=65.2\%$,
+$\rho_c^{\text{abs}}=5.9\%$). Only $N_z=2$ has no divergent points.}
 \label{fig:bandstop}
 \end{figure}
 
-The four filter types differ substantially in the measured composition of the
-parameter grid. Pooling the 124 sweeps, the counts per type are: lowpass,
-$20{,}906$ chaotic, $17{,}701$ periodic, and $85{,}393$ divergent cells out of
+These maps are consistent with two observations
+of~\cite{BorgesCNSNS2024,BorgesCSF2022}. First, the DC gain $G$ sets the
+positive fixed point~\eqref{eq:pfixo}, so filter types with different $G$
+place the orbits in different regions of the state
+space~\cite{BorgesCNSNS2024}. Second, the thin boundaries between chaotic and
+periodic regions and the periodic islands inside the chaotic regions resemble
+the period-doubling cascades and the shrimps~\cite{Gallas1993} documented for
+the filtered H\'enon map by Borges and Eisencraft~\cite{BorgesCSF2022}; such
+structures appear in the four filter types studied here.
+
+The filter types also differ in how the grid is divided among the three
+classes. Pooling the 124 sweeps, the numbers of chaotic, periodic, and
+divergent points are: lowpass, $20{,}906$, $17{,}701$, and $85{,}393$ out of
 $124{,}000$ ($68.87\%$ divergent); highpass, $2{,}900$, $54{,}902$, and
 $4{,}198$ out of $62{,}000$ ($6.77\%$); bandpass, $10{,}219$, $100{,}990$, and
 $12{,}791$ out of $124{,}000$ ($10.32\%$); and bandstop, $1{,}598$, $3{,}035$,
-and $57{,}367$ out of $62{,}000$ ($92.53\%$), with cells classified as
-divergent under the rule of Subsection~\ref{sub:metrics}. In the bandpass case,
-the chaotic set is limited
-predominantly by periodic orbits rather than by divergence ($100{,}990$
-periodic against $12{,}791$ divergent cells). The total gain
-$G = \sum_j c_j$ equals the filter frequency response at $\omega = 0$, i.e., its
-DC gain~\cite{Oppenheim2009}, and the positive equilibrium point
-$\mathbf{p}^+$ of the expanded system depends on $G$, as established
-analytically by Borges \textit{et al.}~\cite{BorgesCNSNS2024} and recalled in
-Subsection~\ref{sub:henon}.
+and $57{,}367$ out of $62{,}000$ ($92.53\%$). Chaos is therefore limited
+mainly by divergence in lowpass and bandstop filters and mainly by periodic
+orbits in highpass and bandpass filters. % [Item 13]
+Aggregated over all its configurations, the bandstop filter has
+$\rho_c^{\text{fin}}=34.5\%$ ($1{,}598$ of $4{,}633$ bounded points), below
+the lowpass filter ($54.2\%$) and above the bandpass ($9.2\%$) and highpass
+($5.0\%$) filters; the value of $65.2\%$ is specific to the rectangular
+window. The divergent fraction of $92.53\%$ of the bandstop filter is a result
+of this study and does not constitute a recommendation for the use of this
+filter type.
 
-% ---- 4.4 ----
-\subsection{Aggregate Analysis and Chaotic Density}\label{sub:density}
-From the individual maps, all points classified as chaotic in each of the 124
-sweeps (4 filter types $\times$ 6 fixed windows $+$ 4 types $\times$ 25 values
-of $\beta_K$ of the Kaiser window) were aggregated in the $(N_z,\omega_c/\pi)$
-plane, regardless of the window or filter type. The result is the chaotic
-density map of Figure~\ref{fig:density}, which indicates which regions of the
-parameter space are classified as chaotic in the largest number of
-configurations.
+% ---- IV-D ----
+\subsection{Aggregate Chaotic Density}\label{sub:density}
+To identify the regions of the $(N_z,\omega_c/\pi)$ plane that are chaotic
+regardless of the design, the chaotic points of the 124 sweeps were
+aggregated. Because highpass and bandstop filters have only even $N_z$, a
+grid point with even $N_z$ belongs to 124 configurations and one with odd
+$N_z$ to 62 (lowpass and bandpass only). Fig.~\ref{fig:density} therefore
+shows, at each grid point, the percentage of the configurations containing it
+in which it is chaotic.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{Figures/fig_chaotic_density.png}
-\caption{Aggregate chaotic density over the 124 sweeps. Light tones indicate
-regions that are chaotic in a larger number of configurations; dark tones
-indicate fewer. The marker ($\circ$) highlights the point of maximum density,
-classified as chaotic in 71 of the 124 configurations.}
+\includesvg[width=\columnwidth]{Figures/fig_chaotic_density_norm}
+\caption{Aggregate chaotic density over the 124 sweeps: percentage of the
+configurations containing each grid point in which it is chaotic (124
+configurations for even $N_z$, 62 for odd $N_z$, which have only lowpass and
+bandpass filters). The marker ($\circ$) indicates the maximum, $80.6\%$ at
+$N_z=3$ and $\omega_c/\pi\approx0.34$.}
 \label{fig:density}
 \end{figure}
 
-The density map shows that the regions in which the chaotic regime is sustained
-across most of the windows and filter types are concentrated at intermediate-to-high
-cutoff frequencies and at moderate orders, regardless of the window or filter
-type. For high $N_z$, all configurations converge to similar dynamic
-behavior---a reflection of the approach to the ideal
-filter~\cite{Oppenheim2009}---indicating that the choice of the window is a
-relevant design parameter mainly in the low-to-moderate order ranges.
+For $N_z\ge8$, chaos is most frequent at low cutoff frequencies: on average,
+a grid point is chaotic in $31.3\%$ of the configurations for
+$\omega_c/\pi\le0.1$, in $16.8\%$ for $0.1<\omega_c/\pi\le0.2$, in $5.9\%$
+for $0.2<\omega_c/\pi\le0.4$, and in less than $1.5\%$ above
+$\omega_c/\pi=0.4$. For $N_z\le7$, the fraction varies less with the cutoff,
+from $19.8\%$ to $29.4\%$. The maximum, $80.6\%$, occurs at $N_z=3$ and
+$\omega_c/\pi\approx0.34$ (50 of 62 configurations); among even orders, it
+occurs at $N_z=10$ and $\omega_c/\pi\approx0.11$ (71 of 124, $57.3\%$).
+Odd and even orders are not directly comparable, because the odd ones include
+only the lowpass and bandpass filters, which have more chaotic points; this
+explains the alternation between neighboring columns in
+Fig.~\ref{fig:density}.
 
-The presence of \textit{shrimps}~\cite{Gallas1993,BorgesCSF2022} and of
-bifurcation boundaries that are finely interleaved---formed by period-doubling
-cascades alternating with shrimp-shaped periodic islands at progressively
-smaller scales~\cite{Gallas1993,BorgesCSF2022}---implies that small variations
-of $N_z$ or $\omega_c$ can move a configuration across a regime boundary, so the
-distance from each operating point to the nearest such boundary becomes an
-auxiliary design parameter.
+The choice of window matters mainly at low and moderate orders. The six fixed
+windows give the same class (chaotic, periodic, or divergent) at $25\%$ to
+$29\%$ of the lowpass grid points for $N_z\le10$ and at $88\%$ to $91\%$ for
+$N_z>20$; the corresponding values are $39\%$--$58\%$ and $86\%$--$90\%$ for
+bandpass, $57\%$--$83\%$ and $93\%$--$94\%$ for highpass, and $78\%$--$82\%$
+and $97\%$--$98\%$ for bandstop (points with non-finite coefficients count as
+divergent). This convergence is expected, because the designed filters
+approach the ideal one as $N_z$ grows~\cite{Oppenheim2009}.
 
-% ---- 4.5 ----
-\subsection{Effect of the Kaiser-Window Parameter $\beta_K$}\label{sub:beta}
-The Kaiser window is the only one of the seven evaluated that has a continuous
-shape parameter, $\beta_K$, providing a one-dimensional path through the space
-of windows~\cite{Kaiser1980}: for $\beta_K=0$ it coincides with the rectangular
-window and, as $\beta_K$ grows, the stopband attenuation increases at the
-expense of widening the main lobe~\cite{Oppenheim2009}. This subsection examines
-how the chaotic coverage responds to this parameter, based on the dedicated
-sweep described in Subsection~\ref{sub:types}, in which $\beta_K$ covers the
-interval $[2.0,14.0]$ over 25 values for the four filter types.
+Because the regime boundaries are finely interleaved, with period-doubling
+cascades alternating with shrimps at progressively smaller
+scales~\cite{Gallas1993,BorgesCSF2022}, a small change of $N_z$ or $\omega_c$
+can move a design across a boundary. We therefore suggest, without having
+measured it here, that the distance from an operating point to the nearest
+boundary be considered in the design.
 
-The values of $\beta_K$ that maximize the number of chaotic points $N_c$ per
-filter type, reported in Table~\ref{tab:best}, are $\beta_K=13.5$ for lowpass
-and bandpass, $\beta_K=11.5$ for highpass, and $\beta_K=4.0$ for bandstop. For
-the first three types, the maximum lies at high values of $\beta_K$, where the
-window presents side lobes with strong attenuation~\cite{Oppenheim2009}---behavior
-consistent with the finding of Subsection~\ref{sub:classification} that windows of
-higher spectral attenuation, such as Blackman--Harris, favor the preservation of
-the chaotic regime in these three filter types. For lowpass in particular, it was
-observed that the absolute coverage $\rho_c^{\text{abs}}$ grows sharply with
-$\beta_K$ until it stabilizes at an approximate plateau for $\beta_K$ between about
-$11$ and $14$, a range that contains the value $\beta_K=13.5$ of largest $N_c$.
+% ---- IV-E ----
+\subsection{Effect of the Kaiser Parameter $\beta_K$}\label{sub:beta}
+The values of $\beta_K$ that maximize $N_c$ (Table~\ref{tab:best}) are $13.5$
+for lowpass and bandpass filters, $11.5$ for highpass, and $4.0$ for bandstop.
+For the first three types, the maximum lies at high $\beta_K$, where the side
+lobes of the window are strongly attenuated~\cite{Oppenheim2009}, which is
+consistent with the advantage of the Blackman--Harris window among the fixed
+windows (Section~\ref{sub:classification}). Fig.~\ref{fig:beta} shows
+$\rho_c^{\text{abs}}$ versus $\beta_K$. For the lowpass filter,
+$\rho_c^{\text{abs}}$ grows from $7.1\%$ at $\beta_K=2$ to $23.0\%$ at
+$\beta_K=10$ and stays between $22.9\%$ and $24.5\%$ up to $\beta_K=14$. For
+the bandpass filter, it grows from $4.0\%$ to values between $9.9\%$ and
+$10.9\%$ for $\beta_K\ge10$, and for the highpass filter, from $2.0\%$ to a
+maximum of $7.5\%$ at $\beta_K=11.5$, followed by values between $6.4\%$ and
+$7.0\%$. Differences between neighboring values on these plateaus, such as
+$973$ and $979$ chaotic points for the lowpass filter at $\beta_K=13.0$ and
+$13.5$, are of the order of the seed variability (Section~\ref{sub:classification});
+the $\beta_K$ of largest $N_c$ in Table~\ref{tab:best} is therefore one value
+inside a plateau rather than a sharp optimum.
 
-The distinct behavior of the bandstop filter, whose maximum $N_c$ occurs with the
-rectangular window and, among the Kaiser configurations, at $\beta_K=4.0$
-(Table~\ref{tab:best}), suggests a different interpretation: for filtering
-geometries that remove only a narrow band of the spectrum, the preservation of
-most of the spectral energy in the feedback loop seems to weigh more than the
-depth of the stopband attenuation---a hypothesis coherent with the best
-performance of the rectangular window, of lowest attenuation, in this same
-filter type. This difference reinforces that the effect of $\beta_K$ is not
-monotonic across the four filter types, depending on the geometry of the imposed
-spectral mask.
+\begin{figure}[!t]
+\centering
+\includesvg[width=\columnwidth]{Figures/fig_kaiser_beta}
+\caption{Absolute chaotic coverage $\rho_c^{\text{abs}}$ versus the Kaiser
+shape parameter $\beta_K$ for the four filter types.}
+\label{fig:beta}
+\end{figure}
 
-% ---- 4.6 ----
-\subsection{Statistical Confidence and Configuration Ranking}\label{sub:ranking}
-The previous subsections reported, for each filter type, the configuration of
-greatest chaotic coverage. This subsection quantifies the statistical confidence
-of those estimates and consolidates the ordering of all window--filter
-combinations into a single reference table.
+For the bandstop filter, the largest $N_c$ occurs with the rectangular window
+and, among the Kaiser configurations, at $\beta_K=4.0$, but its curve in
+Fig.~\ref{fig:beta} is nearly flat, between $2.0\%$ and $2.9\%$. One
+hypothesis, not tested here, is that, when the filter removes only a narrow
+band of the spectrum, preserving most of the spectral energy in the feedback
+loop matters more than the depth of the stopband attenuation, which would
+agree with the result of the rectangular window, of lowest attenuation, for
+this filter type. The
+effect of $\beta_K$ is therefore not the same for the four filter types; it
+depends on the spectral mask imposed.
 
-For each combination, the regional mean of $\lambda_1$ over the chaotic grid
-points (sample size $N_c$) is accompanied by a 95\% confidence interval obtained
-by nonparametric bootstrap~\cite{EfronTibshirani1993} with $1{,}000$ resamples
-(seed $42$), as defined in Subsection~\ref{sub:stats}. In all reported chaotic
-configurations, the confidence interval of $\bar\lambda_1$ lies entirely above
-zero---for example, $[0.0223,\,0.0254]$ for lowpass with Kaiser ($\beta_K=13.5$)
-and $[0.0627,\,0.0800]$ for bandstop with the rectangular window
-(Table~\ref{tab:best})---confirming that the regional mean is positive with
-statistical confidence. The standard deviation $\sigma_{\lambda_1}$, being the
-spatial dispersion of $\lambda_1$ over the chaotic region, informs its
-homogeneity: the rectangular bandstop presents the highest value
-($\sigma_{\lambda_1}=0.0491$), reflecting the coexistence of low and high
-$\lambda_1$ in its fragmented chaotic region, while the lowpass with Kaiser
-exhibits a smaller dispersion ($\sigma_{\lambda_1}=0.0231$) over a more
-homogeneous region.
-
-The per-type trends are read directly from the classification maps and the
-per-type sweet spots: in lowpass filters the chaotic region concentrates at
-higher cutoff frequencies, whereas in highpass filters it migrates to low
-cutoff frequencies, with the highpass sweet spot located at
-$\omega_c/\pi\approx 0.01$ (Figs.~\ref{fig:lowpass} and~\ref{fig:highpass}).
-The per-configuration statistics are reproduced by the released
-package~\cite{chaoticPFC2026}.
-
-Table~\ref{tab:ranking} consolidates the ranking of the window--filter
-configurations, considering the six fixed-coefficient windows and the best Kaiser
-window of each filter type, ordered by the number of chaotic points $N_c$.
+% ---- IV-F ----
+\subsection{Statistical Confidence and Ranking}\label{sub:ranking}
+The $95\%$ intervals of $\bar\lambda_1$ in Tables~\ref{tab:best}
+and~\ref{tab:ranking} describe the dispersion of $\lambda_1$ over each chaotic
+region and are positive by construction (Section~\ref{sub:stats}). The
+classification itself is supported by two checks. First, $91.8\%$ of the
+$35{,}623$ chaotic points of the 124 sweeps have an ensemble mean of
+$\lambda_1$ above two standard errors (from $87.9\%$ to $98.3\%$ in the
+configurations of Table~\ref{tab:best}). Second, $N_c$ depends on the
+threshold: raising it from 0 to $10^{-3}$ and to $5\times10^{-3}$ keeps
+$73.1\%$ and $56.9\%$ of the chaotic points, respectively, so many chaotic
+points have small positive $\lambda_1$ and lie near the chaotic--periodic
+boundary. The dispersion $\sigma_{\lambda_1}$ is highest for the rectangular bandstop filter
+($0.0491$), whose fragmented chaotic region mixes low and high values of
+$\lambda_1$, and smaller for the lowpass filter with the Kaiser window
+($0.0231$), whose chaotic region is more homogeneous.
+Table~\ref{tab:ranking} ranks the six fixed windows and the best Kaiser window
+of each filter type by $N_c$.
 
 \begin{table*}[!t]
 \caption{Ranking of the Window--Filter Combinations (Fixed Windows and Best Kaiser per Filter Type), by $N_c$\label{tab:ranking}}
@@ -1204,128 +1185,104 @@ $\rho_c^{\text{fin}}$ & $\bar\lambda_1$ & 95\% CI \\
 \end{tabular}
 
 \vspace{2pt}
-{\footnotesize 95\% intervals by
-bootstrap~\cite{EfronTibshirani1993}. Full per-configuration tables are regenerated from the versioned
-checkpoints by the released package~\cite{chaoticPFC2026}.}
+{\footnotesize 95\% intervals obtained by bootstrap~\cite{EfronTibshirani1993}.
+Full per-configuration tables are regenerated from the versioned sweep files
+by the released package~\cite{chaoticPFC2026}.}
 \end{table*}
 
-The ranking in Table~\ref{tab:ranking} shows that the first six positions are
-all of the lowpass type, confirming it as the filter of greatest absolute
-chaotic coverage, and that highpass and bandstop occupy mostly the lower half of
-the table. A relevant contrast for CBCS design is also observed: although the
-bandstop filter occupies low positions in $N_c$, its configurations present the
-highest values of $\bar\lambda_1$ (up to $0.0929$), indicating that, when
-chaotic, their orbits exhibit greater sensitivity to initial conditions than
-those of the lowpass filter---a potentially desirable property depending on the
-application.
+The first six positions of Table~\ref{tab:ranking} are lowpass filters, which
+confirms this type as the one of largest absolute chaotic coverage, and
+highpass and bandstop filters occupy mostly the lower half of the table. The
+bandstop configurations, although low in $N_c$, have the highest
+$\bar\lambda_1$ (up to $0.0929$): when chaotic, their orbits separate faster
+than those of the lowpass filters. Whether this brings any benefit for
+communication was not evaluated here.
 
-% ---- 4.7 ----
-\subsection{Computational Cost and Reproducibility}\label{sub:cost}
-The complete sweep, comprising 124 window--filter combinations with an average
-grid of 3{,}000 points $\times$ 25 initial conditions, recorded per-cell effective
-accumulation horizons whose sum over the 372{,}000 cells is about
-$2\times 10^{8}$, i.e., of order $5\times 10^{9}$ iterations of the expanded map
-once the $25$-initial-condition ensemble of each cell is counted. With cores
-compiled via Numba~\cite{Numba} and parallelization over the threads available
-on the machine used for the production runs (an 8th-generation Intel Core i7-8550U processor with 4
-physical cores and 8 logical threads, 32\,GB\,of RAM), the complete set of 124
-sweeps took $489$\,s, about $8$\,min, measured end to end. Relative to an
-equivalent pure-Python implementation
-(without JIT), the package microbenchmarks during development
-indicated a reduction of one to two orders of magnitude in execution time---the
-reason for the architectural decision discussed in Subsection~\ref{sub:arch}.
-
-All the infrastructure is versioned in the repository: sweep checkpoints in
-\texttt{data/sweeps/}, figure-generation scripts in
-\texttt{src/chaotic\_pfc/analysis/sweep\_plotting.py}, tests in \texttt{tests/}, and
-documentation in \texttt{docs/} (published on Read the Docs). The
-reproducibility of any figure or table of the present work can be obtained by
-running the corresponding script over the versioned checkpoint, without the
-need to recompute the sweep.
-
-Taken together, the results of the previous subsections consolidate a
-characterization of the parameter space of the FIR-filtered H\'enon map that is
-broader than the one documented in the previous literature; their implications
-are summarized in the following section.
+% ---- IV-G ----
+\subsection{Computational Cost}\label{sub:cost}
+The 124 sweeps comprise $372{,}000$ grid points. The effective accumulation
+horizons recorded per grid point add up to about $2\times10^{8}$ iterations,
+that is, about $5\times10^{9}$ iterations of the expanded map once the 25
+initial conditions of each point are counted. On an 8th-generation Intel Core
+i7-8550U processor (4 physical cores, 8 threads, 32\,GB of RAM), the complete
+set of sweeps took $489$\,s, about $8$\,min, measured end to end. Any figure or
+table of this paper can be reproduced by running the corresponding script over
+the versioned sweep files (Section~\ref{sub:impl}), without recomputing the
+sweeps.
 
 % ============================================================
 \section{Final Remarks}\label{sec:conclusion}
 % ============================================================
-The dynamics of the H\'enon map with FIR filters inserted in the feedback loop
-were investigated numerically, extending the results of Borges \textit{et
-al.}~\cite{Borges2022sbrt} and~\cite{BorgesCNSNS2024}, which vary the
-zero-placement geometry of the FIR filter with a fixed design window, to a
-higher-dimensional design space:
-four filter types (lowpass, highpass, bandpass, and bandstop) and seven windows
-(rectangular, Bartlett, Hamming, Hann, Blackman, Blackman--Harris, and Kaiser
-with a dedicated sweep of the shape parameter $\beta_K$).
+This work investigated numerically how the filter type and the design window
+affect the preservation of chaos in the H\'enon map with an FIR filter in the
+feedback loop. Four filter types (lowpass, highpass, bandpass, and bandstop)
+and seven windows (rectangular, Bartlett, Hamming, Hann, Blackman,
+Blackman--Harris, and Kaiser, with a sweep of its shape parameter $\beta_K$)
+were combined in 124 sweeps of the order--cutoff plane.
 
-It was confirmed that the insertion of the filters can substantially alter the
-nature of the generated signals, producing convergence to stationary regimes,
-periodic orbits, or chaotic behavior, depending on the adopted
-$(N_z,\omega_c/\pi)$ combination. The chaotic regime is not eliminated by the
-filtering, but rather reorganized into well-defined regions of the parameter
-space, dependent on the filter type and the window. For lowpass and bandpass
-filters, the Kaiser window with high $\beta_K$ maximizes the chaotic coverage,
-reaching $\rho_c^{\text{abs}} = 24.5\%$ in the lowpass case---the highest
-absolute coverage among all configurations. For the bandstop filter, the
-rectangular window surpasses the others in conditional terms
-($\rho_c^{\text{fin}} = 65.2\%$), although its absolute coverage is modest
-($5.9\%$).
+The insertion of the filter can change the generated signals from chaotic to
+periodic or divergent, depending on the pair $(N_z,\omega_c)$. The chaotic
+regime is not eliminated by filtering, but reorganized into regions of the
+parameter space whose shape depends on the filter type and the window. For
+lowpass and bandpass filters, windows of high attenuation (Kaiser with high
+$\beta_K$ and Blackman--Harris) give the largest chaotic coverage, with
+$\rho_c^{\text{abs}}=24.5\%$ for the lowpass filter with the Kaiser window,
+the highest among all configurations. For the bandstop filter, the rectangular
+window gives the highest conditional coverage among its configurations
+($\rho_c^{\text{fin}}=65.2\%$),
+although its absolute coverage is only $5.9\%$. The divergent fraction of the
+grid ranges from $6.77\%$ (highpass) and $10.32\%$ (bandpass) to $68.87\%$
+(lowpass) and $92.53\%$ (bandstop). For $N_z\ge8$, chaos is most frequent
+at low cutoff frequencies ($\omega_c/\pi\le0.1$), and the choice of window
+matters mainly at low and moderate orders.
 
-The aggregate analysis over the 124 sweeps revealed that the regions in which
-the chaotic regime is sustained across most of the windows and filter types are
-concentrated at intermediate-to-high cutoff frequencies and moderate orders. The
-bootstrap confidence intervals on $\lambda_1$ place the regional mean of every
-reported chaotic configuration strictly above zero; read per filter
-type from the classification maps, the chaotic region migrates toward higher
-cutoff frequencies for the lowpass filter and toward lower ones for the highpass
-filter. The presence of
-\textit{shrimps}~\cite{Gallas1993} and of finely interleaved bifurcation
-boundaries reinforces the need for explicit verification of the generator
-dynamics after the insertion of linear filters---the preservation of chaos
-cannot be presumed.
+% [E-mail 5 / Item 21] Contributions stated here, in prose.
+The work makes three contributions. First, it extends the previous studies of
+the filtered H\'enon map~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024},
+in which the filters designed by windowing were lowpass filters with the
+Hamming or the Blackman window, to four filter types and seven design windows, with classification maps that
+show where chaos is preserved in each case. Second, it assesses the robustness of
+the classification with the ensemble standard error of $\lambda_1$, the
+sensitivity of $N_c$ to the classification threshold, and repeated runs with
+ten seeds, which extend the point estimates reported in those studies. Third, it releases an open-source package~\cite{chaoticPFC2026} with
+which all the maps and tables can be reproduced and the study extended.
 
-\textit{Synthesis thesis.} The joint choice of the filter type and the design
-window is a first-order parameter for the dynamic behavior of filtered H\'enon
-generators: given the finely interleaved transition boundaries and the
-existence of \textit{shrimps} inside the chaotic regions, the design of CBCS with
-filtering cannot start solely from the spectral specification of the filter; it
-requires explicit verification of the dynamics of the resulting generator by
-means of the classification maps produced here. The divergent fraction of the
-grid measured over the 124 sweeps ranges from $6.77\%$ (highpass) and $10.32\%$
-(bandpass) to $68.87\%$ (lowpass) and $92.53\%$ (bandstop), with the counts
-reported in Subsection~\ref{sub:maps}.
+Taken together, the results show that the joint choice of filter type and
+design window is an important design factor of the filtered H\'enon
+generator, especially at low and moderate orders, where the six fixed windows
+disagree on the class of up to $75\%$ of the lowpass grid points. Because of the finely interleaved regime boundaries and of
+the shrimps inside the chaotic regions~\cite{Gallas1993}, the design of a
+filtered generator for CBCS cannot start from the spectral specification of
+the filter alone: the dynamics of the resulting generator must be verified
+explicitly, for example with classification maps such as the ones presented
+here.
 
-\textit{Acknowledged limitations.} The sweeps cover $N_z\le 40$ and horizons of
-$N_{\text{map}}\le 3{,}000$ iterations; much higher orders and unbounded horizons
-could reveal additional structures. The band width $\Delta\omega$ was fixed at
-$0.05\,\pi$ for bandpass and bandstop; variations of this parameter may produce
-qualitative transitions in the conclusions for these two filter types. The choice
-of the canonical parameters $(\alpha,\beta) = (1.4,0.3)$ of the underlying map was
-not swept; other pairs in the parameter space of the H\'enon
-map~\cite{Gallas1993} may present qualitatively distinct behaviors under
-filtering. The regional mean $\bar\lambda_1$ is computed only over the initial
-conditions that survive the accumulation window: initial conditions that diverge
-after the burn-in are discarded from the average, so $\lambda_1$ is estimated
-over the survivors.
+The study has limitations. It covers the filter order, the cutoff frequency,
+the filter type, and the design window; other dimensions of the parameter
+space were not swept. The sweeps are limited to $N_z\le40$ and
+$N_{\text{map}}\le3{,}000$ iterations, and higher orders or longer horizons
+could reveal other structures. The band width $\Delta\omega=0.05\,\pi$ of the
+bandpass and bandstop filters was fixed, and its variation may change the
+conclusions for these two types. The map parameters $(\alpha,\beta)=(1.4,0.3)$
+were not swept, and other pairs of the parameter space of the H\'enon
+map~\cite{Gallas1993} may behave differently under filtering. Finally, initial
+conditions that diverge after the burn-in are excluded from the mean of
+$\lambda_1$, which is therefore estimated over the surviving initial
+conditions.
 
-\textit{Future work.} Three directions are highlighted: (a)~sweeping the band
-width $\Delta\omega$ as an independent variable for bandpass and bandstop filters,
-with the possibility of identifying additional transitions and dynamic resonances
-not captured in this study; (b)~extending the parametric-sweep methodology to
-infinite-impulse-response (IIR) filters, whose dynamic behavior is still little
-explored in the literature~\cite{Borges2024sbrt}, with explicit treatment of
-filter stability beyond map stability; and (c)~a systematic spectral
-characterization of all the chaotic configurations identified, measuring occupied
-bandwidth, spectral leakage, and in-band power ratios as auxiliary metrics to
-$\lambda_1$ for the selection of operating points in CBCS.
+Three directions are proposed for future work: (a)~sweeping the band width
+$\Delta\omega$ as an independent variable for bandpass and bandstop filters,
+to identify transitions not captured in this study; (b)~extending the
+methodology to infinite impulse response (IIR) filters, whose dynamic
+behavior is still little explored in the literature~\cite{Borges2024sbrt},
+with explicit treatment of the stability of the filter itself; and
+(c)~measuring the occupied bandwidth, the spectral leakage, and the in-band
+power of the chaotic configurations identified, as metrics complementary to
+$\lambda_1$ for the choice of operating points in CBCS.
 
 % ============================================================
 % REFERENCES
 % ============================================================
-% JCIS requires a DOI for every reference. Keep referencias.bib up to date
-% and add the DOI field to each entry; IEEEtran.bst will render it.
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
