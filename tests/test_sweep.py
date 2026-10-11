@@ -1043,7 +1043,7 @@ class TestSingleVectorExact(unittest.TestCase):
         Nitera, Nmap = 500, 3000
 
         disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
-        p1 = (-(1.0 - beta) + disc**0.5) / (2.0 * gain**2)
+        p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
         p2, p3 = p1, gain * p1
 
         lam_v_all = np.empty(25)
@@ -1136,7 +1136,7 @@ class TestHybridFallback(unittest.TestCase):
         gain = gains[0, 0]
         alpha, beta = 1.4, 0.3
         disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
-        p1 = (-(1.0 - beta) + disc**0.5) / (2.0 * gain**2)
+        p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
         return orders, cutoffs, bank, gains, pert, Ns, c, alpha, beta, p1, gain * p1
 
     def test_fallback_returns_full_spectrum_value(self):

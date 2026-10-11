@@ -158,24 +158,25 @@ def _lyap_online_core(
     ``_step_id`` is 0 for the n12 kernel (Ns ∈ {1, 2}) or 1 for nN (Ns ≥ 3).
 
     ``n_use`` selects how many leading columns are reduced at the adaptive
-    checkpoints and in the returned estimate: ``0`` (default) means ``Ns``
-    (max over the full spectrum), ``1`` means column 0 only (the single-vector
-    estimate evaluated with the full tangent matrix).
+    checkpoints and in the returned estimate: ``0`` (default) means ``Ns``,
+    the maximum over the columns, and ``1`` means column 0 only.  Column 0 is
+    the single-vector estimate of ``_lyap_online_core_v``: both propagate the
+    same tangent vector and accumulate the same norms, so ``n_use=1`` gives
+    that estimate in exact arithmetic.
 
     The tangent vectors are propagated without MGS for ``_BENETTIN_K``
-    iterations, then reorthonormalised once per block.  This reduces the
-    O(Ns^3) MGS cost by a factor ~K while preserving the Lyapunov exponent
-    estimates within early-stop tolerance (typically |Δλ| < 1e-3).
+    iterations, then reorthonormalised once per block.  In exact arithmetic
+    this gives the same exponents as reorthonormalising at every iteration,
+    and it reduces the O(Ns^3) MGS cost by a factor ~K.
     See Benettin et al., Meccanica 15:9–20, 1980.
 
     .. note::
-       This is the full-spectrum path required for computing the complete
-       Lyapunov spectrum.  The single-vector estimator ``_lyap_online_core_v``
-       is used by the sweep kernel and produces identical λ_max except in
-       cells where the Benettin block (K=10) causes adjacent exponents to
-       cross (2.6–19.4 % of finite cells).  Those marginal cells are
-       transparently recomputed with this full-spectrum kernel via the
-       hybrid fallback.
+       At finite horizon the maximum over columns can exceed column 0, because
+       a column k > 0 may show a larger average growth over the run.  The
+       difference between the maximum and column 0 is this finite-horizon
+       effect, not a different exponent.  The sweep kernel uses the
+       single-vector estimator and recomputes marginal cells with this kernel
+       through the hybrid fallback (see ``_sweep_kernel``).
     """
     if n_use <= 0:
         n_use = Ns
@@ -269,22 +270,17 @@ def _lyap_online_core(
 
 @njit(cache=True)
 def _lyap_online_core_v(xx, vv, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta):
-    """Single-vector Lyapunov loop (col 0 only) — standard Benettin estimator.
+    """Single-vector Lyapunov loop (tangent column 0 only), Benettin block K.
 
-    Evolves only the first tangent vector (column 0 of the tangent matrix),
-    which is independent of all other vectors in MGS.  The per-iteration cost
-    is O(Ns) instead of O(Ns^2) for the full spectrum.
+    Propagates one tangent vector and normalises it every ``_BENETTIN_K``
+    iterations, accumulating the log-growth in ``lyap_sum[0]``.  The
+    per-iteration cost is O(Ns) instead of O(Ns^2) for the full spectrum.
 
-    With exact arithmetic (infinite-precision MGS) vector 0 always carries
-    the largest Lyapunov exponent.  In finite-block Benettin-K (K=10) the
-    MGS reorthonormalisation is applied every K iterations instead of every
-    iteration, which can cause adjacent exponents to cross in 2.6–19.4 % of
-    cells (measured across 124 sweeps).  When ``lyap_sum[k] > lyap_sum[0]``
-    for some k > 0, this single-vector estimate will differ from the
-    full-spectrum max.  The difference is at most |Δλ| ≤ 3.5 × 10⁻³ and
-    never flips the sign of any individual IC.  The sweep kernel
-    transparently recomputes marginal cells (|λ| < 5 × 10⁻³) with the
-    full-spectrum kernel to eliminate any residual classification risk.
+    In exact arithmetic this is column 0 of the full-spectrum kernel
+    (``_lyap_online_core`` with ``n_use=1``).  The full-spectrum estimate used
+    by the hybrid fallback takes the maximum over the columns, and at finite
+    horizon a column k > 0 can show a larger average growth than column 0.
+    The two estimates then differ by that finite-horizon effect.
     """
     for i in range(Ns):
         vv[0, i] = 1.0 if i == 0 else 0.0
@@ -573,25 +569,19 @@ def _sweep_kernel(
         c = fir_bank[i, j, :Ns]
         gain = gains[i, j]
 
-        # Fixed-point approximation for IC centring.
+        # Fixed point used to centre the initial conditions.
         #
-        # The true fixed point of the N>=3 filtered Henon system has
-        # state components that are not all equal when G != 1 (the
-        # filter recurrence x_new[2] = c0*x_new[0] + ... forces
-        # x[2] = G*x[0] at equilibrium).  We use the simplified
-        # formula below — exact when G=1, approximate otherwise.
-        # The perturbation spread (0.1 * |noise| per component) is
-        # wide enough to cover the true fixed-point neighbourhood
-        # in practice.  When G=0 the fixed point is ill-defined and
-        # we fall through with p1=p2=p3=0.0.
-        p1 = 0.0
-        p2 = 0.0
-        p3 = 0.0
-        if abs(gain) > 1e-15:
-            disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
-            p1 = (-(1.0 - beta) + disc**0.5) / (2.0 * gain**2)
-            p2 = p1
-            p3 = gain * p1
+        # At equilibrium the filtered Henon system has x1 = x2 = p and
+        # x[2] = G*p (the filter recurrence x_new[2] = c0*x_new[0] + ...
+        # forces x[2] = G*x[0]), where p is the positive root of
+        #     G^2 p^2 + (1 - beta) p - alpha = 0.
+        # It is evaluated in a cancellation-free rationalised form so it
+        # stays accurate as G -> 0, with limiting value alpha / (1 - beta)
+        # at G = 0.  This form is exact for every G.
+        disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
+        p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
+        p2 = p1
+        p3 = gain * p1
 
         h_samples = np.full(n_initial, np.nan)
         iters_samples = np.zeros(n_initial, dtype=np.int64)

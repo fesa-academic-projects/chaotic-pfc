@@ -83,7 +83,7 @@ def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
     denom = ratio**2
 
     disc = (1.0 - beta) ** 2 + 4.0 * alpha * denom
-    xf = ((beta - 1.0) + np.sqrt(disc)) / (2.0 * denom)
+    xf = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
 
     vf = G * xf / (1.0 - H)
     return np.array([xf, xf, vf, vf])
@@ -344,7 +344,7 @@ def fixed_point_stability(
 def _henon2d_fixed_points(alpha: float, beta: float):
     """Both fixed points of the 2-D Hénon map (positive and negative roots)."""
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
-    x_p = ((beta - 1.0) + np.sqrt(disc)) / 2.0
+    x_p = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
     x_n = ((beta - 1.0) - np.sqrt(disc)) / 2.0
     return np.array([x_p, x_p]), np.array([x_n, x_n])
 

@@ -60,12 +60,12 @@ if _ADAPTIVE_CHECKPOINT_EVERY % _BENETTIN_K:
         f"_ADAPTIVE_CHECKPOINT_EVERY={_ADAPTIVE_CHECKPOINT_EVERY}"
     )
 
-# Marginal-zone threshold for the hybrid estimator. Cells whose v-only
-# mean satisfies |lambda| < _VONLY_MARGIN are recomputed with the full
-# spectrum kernel to eliminate classification flips near λ=0.
-# The bound is conservative: the largest |Δλ| measured across 124 sweeps
-# is ~3.5e-3, so any cell with |λ| >= 5e-3 in the v-only path cannot
-# change sign after the full-spectrum correction.
+# Marginal-zone threshold for the hybrid estimator. Cells whose single-vector
+# mean satisfies |lambda| < _VONLY_MARGIN are recomputed with the full-spectrum
+# kernel (fallback_mode 1 or 2). The margin is a heuristic guard against the
+# finite-horizon difference between the two estimators (see
+# _lyap_online_core_v). It is not a bound: it does not guarantee that the sign
+# of the mean is preserved.
 _VONLY_MARGIN: float = 5e-3
 
 
