@@ -5,7 +5,14 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_lang_flag, add_save_display_flags, compute_psds, pick_backend, save_or_show
+from ._common import (
+    add_lang_flag,
+    add_save_display_flags,
+    compute_psds,
+    pick_backend,
+    report_comm_metrics,
+    save_or_show,
+)
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -87,6 +94,9 @@ def run(args: argparse.Namespace) -> int:
     mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)
     print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}  text={args.text!r}")
     print(f"    MSE (n > {cfg.comm.transient}): {mse:.4e}")
+    report_comm_metrics(
+        m, m_hat, transient=cfg.comm.transient, bit_period=args.period, delay=(args.taps - 1) // 2
+    )
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 

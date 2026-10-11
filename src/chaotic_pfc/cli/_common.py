@@ -89,6 +89,43 @@ def compute_psds(
     return omega, psd_m, psd_s, psd_r, psd_mhat
 
 
+def report_comm_metrics(
+    m,
+    m_hat,
+    *,
+    transient: int,
+    bit_period: int,
+    delay: int,
+):
+    """Align, measure and print the communication error metrics.
+
+    *delay* is the applied group delay ``(N_taps - 1) / 2`` (0 for an
+    ideal channel). The cross-correlation estimate is used as a check: a
+    disagreement is reported, never applied silently.
+    """
+    from chaotic_pfc.comms.metrics import comm_metrics, estimate_delay
+
+    est = estimate_delay(m, m_hat, transient=transient)
+    if est["lag"] != delay:
+        # Warn rather than fail on purpose. The check exists to catch a
+        # channel that is not linear-phase (so the theoretical group delay
+        # is wrong). When there is no recovery the correlation is near zero
+        # and the estimated lag fits noise, so aborting the pipeline would
+        # be worse than reporting the disagreement and using the known
+        # theoretical delay.
+        print(f"    WARNING: cross-correlation lag {est['lag']} != applied delay {delay}")
+    met = comm_metrics(m, m_hat, transient=transient, bit_period=bit_period, delay=delay)
+    print(
+        f"    delay={delay}  (corr lag={est['lag']}  corr={est['corr_at_lag']:+.4f}  "
+        f"corr@0={est['corr_at_zero']:+.4f})"
+    )
+    print(
+        f"    MSE={met['mse']:.4e}  sample_err={met['per_sample_error']:.4f}  "
+        f"BER={met['ber']:.4e}  corr={met['correlation']:+.4f}"
+    )
+    return est, met
+
+
 def save_or_show(fig, headless: bool, save_path: str | None, args) -> None:
     """Save figure if *save_path* is given, otherwise display it."""
     import matplotlib.pyplot as plt

@@ -5,7 +5,14 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ._common import add_lang_flag, add_save_display_flags, compute_psds, pick_backend, save_or_show
+from ._common import (
+    add_lang_flag,
+    add_save_display_flags,
+    compute_psds,
+    pick_backend,
+    report_comm_metrics,
+    save_or_show,
+)
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -61,6 +68,7 @@ def run(args: argparse.Namespace) -> int:
     mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
     print(f"[03] Ideal channel  |  N={args.N:,}  mu={args.mu}  T={args.period}  text={args.text!r}")
     print(f"    MSE (n > {tr}): {mse:.4e}")
+    report_comm_metrics(m, m_hat, transient=tr, bit_period=args.period, delay=0)
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 
