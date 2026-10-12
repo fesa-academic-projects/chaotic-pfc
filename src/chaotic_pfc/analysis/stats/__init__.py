@@ -17,6 +17,7 @@ autocompletion and mypy can statically verify the result shape:
 * :class:`LmaxDistribution` — output of :func:`lmax_distribution`
 * :class:`CorrelationMatrix` — output of :func:`correlation_matrix`
 * :class:`BootstrapConfidence` — one entry of :func:`bootstrap_confidence`
+
 .. rubric:: Functions
 
 .. autosummary::

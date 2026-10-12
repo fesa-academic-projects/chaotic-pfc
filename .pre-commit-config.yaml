@@ -15,30 +15,30 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: end-of-file-fixer
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: check-yaml
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: check-toml
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: check-merge-conflict
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: check-added-large-files
         args: ["--maxkb=2500"]
         # The versioned sweep checkpoints and the manuscript PDFs are the only
         # intentionally large tracked files; figures hold vector sources.
         exclude: ^(figures/|data/sweeps/|articles/.*\.pdf$)
       - id: check-ast
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: check-case-conflict
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: debug-statements
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: mixed-line-ending
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
       - id: detect-private-key
-        exclude: ^(figures|data)/
+        exclude: ^(figures/|data/|docs/locale/|articles/[^/]+/Figures/)
 
   # ── Image optimization (manual — run with `make images` or
   #    pre-commit run --hook-stage manual --all-files) ────────────────────
