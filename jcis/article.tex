@@ -15,7 +15,6 @@
 % ---- Math ----
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{amsthm}
-\newtheorem{lemma}{Lemma}
 \interdisplaylinepenalty=2500   % restore IEEEtran page breaks after amsmath
 
 % ---- Algorithms ----
@@ -599,34 +598,9 @@ in the loop ($N_z=8$, $\omega_c=0.52\,\pi$, Hamming window), BER $=0$.}
 \label{fig:comm_bl}
 \end{figure}
 
-Inserting the filter in the feedback loop, rather than only at the channel
-interface, also changes the synchronization matrix $\mathbf{A}$, as stated
-next.
-
-\begin{lemma}[Preservation of synchronization under FIR feedback filtering,
-adapted from~\cite{BorgesTese2026}]\label{lem:sync}
-Let the unfiltered master--slave pair satisfy the synchronization condition
-$|\gamma_k|<1$ for every eigenvalue $\gamma_k$ of $\mathbf{A}$. Inserting
-the same FIR filter in the feedback loop of the master and of the slave, as
-in~\eqref{eq:expandido}, only adds null eigenvalues to the synchronization
-matrix. Hence the original condition remains valid, independently of the
-coefficients $c_j$~\cite{Fontes2016,BorgesTese2026}.
-\end{lemma}
-
-\textit{Proof sketch.} The nonlinearity of master and slave is driven by the
-same transmitted signal, so it cancels in the error, and the filter states
-(the filter output and its delay line) do not feed back into the error of the
-original states. Ordering the error vector as [original states; filter
-states], the synchronization matrix is block lower triangular, with diagonal
-blocks $\mathbf{A}$ and a shift matrix of zero diagonal. Its eigenvalues are
-therefore those of $\mathbf{A}$ together with zeros~\cite{BorgesTese2026}
-(Theorem~3.1; the block-triangular argument is detailed for infinite impulse response (IIR) filters in
-its Theorems~6.1 and~6.2).
-
-
-By Lemma~\ref{lem:sync}, the filter preserves the synchronization of the
-master--slave pair for any choice of coefficients, provided that the
-unfiltered pair synchronizes. The lemma concerns only the linear stability of
+When the same FIR filter is inserted in the feedback loop of the master and of the
+slave, the synchronization condition remains valid for any choice of coefficients
+\cite{Fontes2016,BorgesTese2026}. This result concerns only the linear stability of
 the error recursion~\eqref{eq:syncerror}, however, and says nothing about
 whether the master's own orbit remains chaotic once the same coefficients
 enter the nonlinear dynamics~\eqref{eq:expandido} and its
@@ -1262,7 +1236,7 @@ conditions.
 Three directions are proposed for future work: (a)~sweeping the band width
 $\Delta\omega$ as an independent variable for bandpass and bandstop filters,
 to identify transitions not captured in this study; (b)~extending the
-methodology to IIR filters, whose dynamic
+methodology to infinite impulse response (IIR) filters, whose dynamic
 behavior is still little explored in the literature~\cite{Borges2024sbrt},
 with explicit treatment of the stability of the filter itself; and
 (c)~measuring the occupied bandwidth, the spectral leakage, and the in-band
