@@ -17,8 +17,45 @@ concurrency:
 # Actions will be forced to Node.js 24 by default from June 2nd, 2026.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # Numba writes its JIT artefacts here so a single cache can hold them.
+  NUMBA_CACHE_DIR: ${{ github.workspace }}/.numba_cache
 
 jobs:
+  # ───────────────────────────────────────────────────────────────────────
+  # Build the wheel and sdist once; every other job (and the release) reuses
+  # the ``dist`` artefact instead of rebuilding the package.
+  # ───────────────────────────────────────────────────────────────────────
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build wheel and sdist
+        run: python -m build
+
+      - name: Upload the distribution
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
   # ───────────────────────────────────────────────────────────────────────
   # Lint: Ruff check + format check
   # Fast, independent. Must pass before typecheck or test runs.
@@ -53,6 +90,7 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────
   typecheck:
     name: Type check (mypy)
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -67,10 +105,16 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,fast]"
+          pip install --find-links dist "chaotic-pfc[dev,fast]"
 
       - name: Run mypy
         run: mypy src/chaotic_pfc
@@ -81,7 +125,7 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────
   test:
     name: Unit tests (pytest ${{ matrix.python-version }})
-    needs: [lint, typecheck]
+    needs: [build, lint, typecheck]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -99,10 +143,24 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,fast,viz3d]"
+          pip install --find-links dist "chaotic-pfc[dev,fast,viz3d]"
+
+      - name: Cache Numba JIT artefacts
+        uses: actions/cache@v4
+        with:
+          path: .numba_cache
+          key: numba-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
+          restore-keys: |
+            numba-${{ runner.os }}-py${{ matrix.python-version }}-
 
       - name: Run the unit tests
         run: |
@@ -130,7 +188,7 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────
   baseline:
     name: Numba baseline regression
-    needs: [lint, typecheck]
+    needs: [build, lint, typecheck]
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -145,10 +203,24 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,fast]"
+          pip install --find-links dist "chaotic-pfc[dev,fast]"
+
+      - name: Cache Numba JIT artefacts
+        uses: actions/cache@v4
+        with:
+          path: .numba_cache
+          key: numba-${{ runner.os }}-py3.14-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
+          restore-keys: |
+            numba-${{ runner.os }}-py3.14-
 
       - name: Run the bit-exact sweep baseline
         run: CHAOTIC_PFC_RUN_BASELINE=1 pytest -q tests/test_sweep_regressions.py
@@ -175,10 +247,24 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,fast]"
+          pip install --find-links dist "chaotic-pfc[dev,fast]"
+
+      - name: Cache Numba JIT artefacts
+        uses: actions/cache@v4
+        with:
+          path: .numba_cache
+          key: numba-${{ runner.os }}-py3.14-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
+          restore-keys: |
+            numba-${{ runner.os }}-py3.14-
 
       - name: Run the full pipeline (quick sweep)
         run: chaotic-pfc run all --no-display --quick-sweep
@@ -188,7 +274,7 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────
   notebook:
     name: Tutorial notebook
-    needs: lint
+    needs: [build, lint]
     if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -204,10 +290,24 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[fast,docs]"
+          pip install --find-links dist "chaotic-pfc[fast,docs]"
+
+      - name: Cache Numba JIT artefacts
+        uses: actions/cache@v4
+        with:
+          path: .numba_cache
+          key: numba-${{ runner.os }}-py3.12-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
+          restore-keys: |
+            numba-${{ runner.os }}-py3.12-
 
       - name: Execute the tutorial notebook
         run: |
@@ -235,10 +335,24 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[fast,dev]"
+          pip install --find-links dist "chaotic-pfc[fast,dev]"
+
+      - name: Cache Numba JIT artefacts
+        uses: actions/cache@v4
+        with:
+          path: .numba_cache
+          key: numba-${{ runner.os }}-py3.12-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
+          restore-keys: |
+            numba-${{ runner.os }}-py3.12-
 
       - name: Run benchmarks and compare against baseline
         run: |
@@ -252,6 +366,7 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────
   paper-check:
     name: Manuscript audit (check-paper)
+    needs: build
     if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -267,21 +382,28 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          pip install --find-links dist chaotic-pfc
 
       - name: Audit the manuscript
         run: make check-paper PYTHON=python
 
   # ───────────────────────────────────────────────────────────────────────
-  # Release: build and publish to TestPyPI. Only triggers on version tags.
+  # Release: publish the artefact built by ``build`` to TestPyPI. Only
+  # triggers on version tags, after the tests and the baseline have passed.
   # Uses OIDC trusted publishing — no API token needed.
   # ───────────────────────────────────────────────────────────────────────
   release:
     name: Publish to TestPyPI
-    needs: [lint, typecheck, test, baseline]
+    needs: [lint, typecheck, test, baseline, build]
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
     permissions:
@@ -289,21 +411,11 @@ jobs:
       contents: read
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v7
+      - name: Download the built distribution
+        uses: actions/download-artifact@v7
         with:
-          python-version: "3.14"
-          cache: pip
-          cache-dependency-path: pyproject.toml
-
-      - name: Install build tools
-        run: pip install build
-
-      - name: Build package
-        run: python -m build
+          name: dist
+          path: dist
 
       - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -332,10 +444,16 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Download the package distribution
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
       - name: Install the package and docs dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[docs]"
+          pip install --find-links dist "chaotic-pfc[docs]"
 
       - name: Install gettext (provides msgfmt and msgcat)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq gettext
