@@ -139,12 +139,14 @@ def run(args: argparse.Namespace) -> int:
     def _emit(fig, out_dir: Path, stem: str) -> None:
         out_dir.mkdir(parents=True, exist_ok=True)
         for fmt in formats:
+            extra = {"metadata": {"Date": None, "Creator": None}} if fmt == "svg" else {}
             fig.savefig(
                 out_dir / f"{stem}.{fmt}",
                 dpi=600,
                 facecolor="white",
                 bbox_inches="tight",
                 pad_inches=0.02,
+                **extra,
             )
         plt.close(fig)
 

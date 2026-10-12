@@ -53,7 +53,13 @@ def pct(count: int, total: int, places: int) -> str:
 
 def _save(fig, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, format="svg", facecolor="white", bbox_inches="tight", metadata={"Date": None})
+    fig.savefig(
+        path,
+        format="svg",
+        facecolor="white",
+        bbox_inches="tight",
+        metadata={"Date": None, "Creator": None},
+    )
     plt.close(fig)
 
 
