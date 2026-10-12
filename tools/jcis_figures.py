@@ -100,19 +100,26 @@ def fig_henon_signals(out_dir: Path) -> None:
     ):
         ax.plot(n, x1, color="tab:blue", lw=0.9, label=r"$x_1(0)=x_2(0)=0$")
         ax.plot(n, x2, color="tab:red", lw=0.9, ls="--", label=r"$x_1(0)=0,\ x_2(0)=0.001$")
-        ax.text(
-            0.01,
-            0.92,
+        ax.set_title(
             f"({label})  " + rf"$\alpha={alpha}$, $\beta=0.3$",
-            transform=ax.transAxes,
+            loc="left",
             fontsize=JCIS_LABEL,
-            va="top",
+            pad=2,
         )
         ax.set_ylabel(r"$x_1(n)$", fontsize=JCIS_LABEL)
         ax.tick_params(labelsize=JCIS_TICK)
-    axes[0].legend(fontsize=JCIS_LEGEND, loc="lower left", frameon=False)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        fontsize=JCIS_LEGEND,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.0),
+        ncol=2,
+        frameon=False,
+    )
     axes[1].set_xlabel("$n$", fontsize=JCIS_LABEL)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
     _save(fig, out_dir / "fig_henon_signals.svg")
 
 
@@ -172,21 +179,26 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
         ax.plot(n, np.clip(m_hat[n], -3.0, 3.0), color="tab:blue", lw=0.8, label=r"$\hat m[n]$")
         ax.plot(n, delayed, color="tab:red", lw=0.8, ls="--", label=r"$m[n-100]$")
         ax.set_ylim(-3.2, 3.2)
-        ax.text(
-            0.01,
-            0.95,
+        ax.set_title(
             f"({label}) {descriptions[label]}, BER={bers[label]:.4f}",
-            transform=ax.transAxes,
+            loc="left",
             fontsize=JCIS_LABEL,
-            va="top",
+            pad=2,
         )
         ax.set_ylabel("amplitude", fontsize=JCIS_LABEL)
         ax.tick_params(labelsize=JCIS_TICK)
-    axes[0].legend(
-        fontsize=JCIS_LEGEND, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False, ncol=2
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        fontsize=JCIS_LEGEND,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.0),
+        ncol=2,
+        frameon=False,
     )
     axes[1].set_xlabel("$n$", fontsize=JCIS_LABEL)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
     _save(fig, out_dir / "fig_comm_bandlimited.svg")
 
 

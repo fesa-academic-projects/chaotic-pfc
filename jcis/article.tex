@@ -156,9 +156,9 @@ removes the DC component of the chaotic signal, which carries no information
 and is blocked by AC-coupled channels. Bandpass filtering confines the signal
 to an allocated band, and bandstop filtering creates a spectral notch to
 avoid narrowband interference or to coexist with other
-systems~\cite{Li2013uwb}. From a dynamical standpoint, these four types also span the
-range of DC gains $G$ of the filter, which determines the fixed point of the
-expanded system~\cite{BorgesCNSNS2024}.
+systems~\cite{Li2013uwb}. From a dynamical standpoint, these four types also have different
+gains at zero frequency, which determine the fixed point of the filtered
+map~\cite{BorgesCNSNS2024}.
 
 % [Items 19, 20] Paragraph 4: why the question is necessary and the gap
 Inserting a filter in the feedback loop, however, changes the dynamics of the
@@ -278,8 +278,7 @@ This subsection defines the filter, the expanded system obtained when the
 filter is inserted in the map, and the quantities of that system used in the
 rest of the paper. To limit the bandwidth of the generated signal, Eisencraft
 \textit{et al.}~\cite{Eisencraft2009} and Fontes and
-Eisencraft~\cite{Fontes2016} proposed filtering $x_1(n)$ with a finite
-impulse response (FIR) filter and feeding the filter output back into the
+Eisencraft~\cite{Fontes2016} proposed filtering $x_1(n)$ with an FIR filter and feeding the filter output back into the
 map. The output of the filter is
 \begin{equation}
   x_3(n) = \sum_{j=0}^{N_s-1} c_j\, x_1(n-j),
@@ -678,21 +677,24 @@ fixed windows give $4\times6=24$ configurations, and the Kaiser window is
 swept over 25 values of $\beta_K\in[2.0,14.0]$, with step $0.5$, for the four
 filter types, adding 100 configurations, for a total of 124 sweeps and
 $372{,}000$ grid points. For the Hann and Bartlett windows with lowpass and
-bandpass filters, \texttt{firwin} returns non-finite coefficients for part of
-the grid; these points are classified as divergent because of the filter
-design, not of the map dynamics.
+bandpass filters, \texttt{firwin} returns non-finite coefficients for $N_z=1$, because the
+symmetric two-sample windows are zero; these 100 points per configuration are
+classified as divergent because of the filter design, not of the map dynamics.
 
 % ---- III-B ----  (former III-D and III-E)
 \subsection{Lyapunov Estimator and Initial Conditions}\label{sub:estimator}
 Computing all $K$ exponents by the method of Section~\ref{sub:lyap} costs
 $\mathcal{O}(K^3)$ operations per iteration, dominated by the Gram--Schmidt
-orthogonalization. Since only $\lambda_1$ is needed, the sweeps propagate a
-single tangent vector, multiplied by $\mathbf{J}(n)$ at each iteration and
-renormalized once every ten iterations, which reduces the cost to
-$\mathcal{O}(K)$ per iteration. The formulation follows Wolf
-\textit{et al.}~\cite{Wolf1985}, and the use of a renormalization period
-follows Benettin \textit{et al.}~\cite{Benettin1980a,Benettin1980b}.
-Algorithm~\ref{alg:lyap} summarizes the procedure.
+orthogonalization. As in~\cite{BorgesCNSNS2024}, $\lambda_1$ is taken as the
+largest of the $K$ finite-time exponents. To reduce the cost, the sweeps first
+propagate a single tangent vector, multiplied by $\mathbf{J}(n)$ at each
+iteration and renormalized once every ten iterations, which costs
+$\mathcal{O}(K)$ per iteration (Algorithm~\ref{alg:lyap}); the formulation
+follows Wolf \textit{et al.}~\cite{Wolf1985}, and the renormalization period
+follows Benettin \textit{et al.}~\cite{Benettin1980a,Benettin1980b}. Grid points
+whose mean estimate satisfies $|\lambda_1|<5\times10^{-3}$ are recomputed with
+the full spectrum, using the modified Gram--Schmidt algorithm; $34{,}141$ of the
+$372{,}000$ grid points ($9.18\%$) were recomputed.
 
 \begin{algorithm}[!t]
 \caption{Single-vector estimation of $\lambda_1$ with periodic renormalization.}\label{alg:lyap}
@@ -719,13 +721,6 @@ Algorithm~\ref{alg:lyap} summarizes the procedure.
 \STATE \textbf{return} $\lambda_1=s/i$
 \end{algorithmic}
 \end{algorithm}
-
-As in~\cite{BorgesCNSNS2024}, $\lambda_1$ is taken as the largest of the $K$
-finite-time exponents. To reduce the cost, a single tangent vector is
-propagated first, and grid points whose mean estimate satisfies
-$|\lambda_1|<5\times10^{-3}$ are recomputed with the full spectrum of
-Section~\ref{sub:lyap}, using the modified Gram--Schmidt algorithm;
-$34{,}141$ of the $372{,}000$ grid points ($9.18\%$) were recomputed.
 
 Accumulation stops early when the estimate of $\lambda_1$ varies less than the
 tolerance $\varepsilon=10^{-3}$ in two consecutive checks, made every 100
@@ -939,9 +934,7 @@ reaches $\rho_c^{\text{fin}}=65.2\%$, the highest conditional fraction among
 the four filter types for this window ($19.5\%$ lowpass, $3.7\%$ bandpass,
 $1.3\%$ highpass), but its absolute coverage is only
 $\rho_c^{\text{abs}}=5.9\%$, because a large share of its grid is divergent at
-higher orders (Section~\ref{sub:maps}). Since this filter rejects only a
-narrow band ($\Delta\omega=0.05\,\pi$) away from $\omega=0$, its DC gain $G$
-remains close to one. The lowpass filter with the Kaiser window
+higher orders (Section~\ref{sub:maps}). The lowpass filter with the Kaiser window
 ($\beta_K=13.5$) reaches the highest absolute coverage among the 124
 configurations, $\rho_c^{\text{abs}}=24.5\%$, about $4.2$ times that of the
 rectangular bandstop filter, or $8.3$ times in number of chaotic points ($980$
@@ -960,10 +953,10 @@ chaotic cutoff is $0.44$ for $N_z=10$, $0.14$ for $N_z=20$, and $0.06$ for
 $N_z=40$; for $N_z=1$ and $2$ no point is chaotic. In the highpass map
 (Fig.~\ref{fig:highpass}), chaos concentrates at $\omega_c/\pi\le0.26$ for
 $N_z\ge6$ and spans $0.38\le\omega_c/\pi\le1$ only for $N_z=4$; the largest
-$\lambda_1$, $0.105$, occurs at $N_z=4$ and $\omega_c/\pi\approx0.38$. The
-lowpass and highpass filters therefore differ mainly in how the chaotic
-region depends on $N_z$: at high orders, both have chaos only at low cutoff
-frequencies. The bandpass map (Fig.~\ref{fig:bandpass}) shows a fragmented
+$\lambda_1$, $0.105$, occurs at $N_z=4$ and $\omega_c/\pi\approx0.38$. At high orders, both the lowpass and the highpass filters have
+chaos only at low cutoff frequencies; they differ mainly at low orders, where
+the lowpass filter is chaotic up to $\omega_c/\pi\sim1$ and the highpass filter
+spans a wide cutoff range only for $N_z=4$. The bandpass map (Fig.~\ref{fig:bandpass}) shows a fragmented
 chaotic region, more sensitive to $\omega_c$, which is consistent with the
 narrow band imposed by the filter. In the bandstop map
 (Fig.~\ref{fig:bandstop}), chaos appears in isolated bands and divergence
@@ -1008,15 +1001,11 @@ $\rho_c^{\text{abs}}=5.9\%$). Only $N_z=2$ has no divergent points.}
 \label{fig:bandstop}
 \end{figure}
 
-These maps are consistent with two observations
-of~\cite{BorgesCNSNS2024,BorgesCSF2022}. First, the DC gain $G$ sets the
-positive fixed point~\eqref{eq:pfixo}, so filter types with different $G$
-place the orbits in different regions of the state
-space~\cite{BorgesCNSNS2024}. Second, the thin boundaries between chaotic and
-periodic regions and the periodic islands inside the chaotic regions resemble
-the period-doubling cascades and the shrimps~\cite{Gallas1993} documented for
-the filtered H\'enon map by Borges and Eisencraft~\cite{BorgesCSF2022}; such
-structures appear in the four filter types studied here.
+These maps are consistent with~\cite{BorgesCSF2022}: the thin boundaries between
+chaotic and periodic regions and the periodic islands inside the chaotic regions
+resemble the period-doubling cascades and the shrimps~\cite{Gallas1993} documented
+for the filtered H\'enon map, and such structures appear in the four filter types
+studied here.
 
 The filter types also differ in how the grid is divided among the three
 classes. Pooling the 124 sweeps, the numbers of chaotic, periodic, and
@@ -1059,7 +1048,7 @@ $N_z=3$ and $\omega_c/\pi\approx0.34$.}
 For $N_z\ge8$, chaos is most frequent at low cutoff frequencies: on average,
 a grid point is chaotic in $31.3\%$ of the configurations for
 $\omega_c/\pi\le0.1$, in $16.8\%$ for $0.1<\omega_c/\pi\le0.2$, in $5.9\%$
-for $0.2<\omega_c/\pi\le0.4$, and in less than $1.5\%$ above
+for $0.2<\omega_c/\pi\le0.4$, and in $0.6\%$ above
 $\omega_c/\pi=0.4$. For $N_z\le7$, the fraction varies less with the cutoff,
 from $19.8\%$ to $26.8\%$. The maximum, $80.6\%$, occurs at $N_z=3$ and
 $\omega_c/\pi\approx0.34$ (50 of 62 configurations); among even orders, it
