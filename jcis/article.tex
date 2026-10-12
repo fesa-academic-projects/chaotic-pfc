@@ -727,6 +727,12 @@ $|\lambda_1|<5\times10^{-3}$ are recomputed with the full spectrum of
 Section~\ref{sub:lyap}, using the modified Gram--Schmidt algorithm;
 $34{,}147$ of the $372{,}000$ grid points ($9.18\%$) were recomputed.
 
+Accumulation stops early when the estimate of $\lambda_1$ varies less than the
+tolerance $\varepsilon=10^{-3}$ in two consecutive checks, made every 100
+iterations after the 500th. Requiring two checks avoids premature stops in
+windows of chaotic intermittency, in which $\lambda_1$ oscillates for hundreds
+of iterations before stabilizing.
+
 For each grid point $(N_z,\omega_c)$, $N_{\text{IC}}=25$ initial conditions are
 drawn near the positive fixed point $\mathbf{p}^+$ of the expanded system
 (Section~\ref{sub:expanded}): each component is $p_k^++0.1\,U$, with $U$
@@ -836,6 +842,8 @@ Read the Docs~\cite{chaoticPFC2026}.
 % ============================================================
 \section{Results and Discussion}\label{sec:results}
 % ============================================================
+This section presents the results of the 124 sweeps.
+
 % ---- IV-A ----
 \subsection{Validation of the Estimator}\label{sub:validation}
 The estimator was first validated on the map~\eqref{eq:henon} without filter
