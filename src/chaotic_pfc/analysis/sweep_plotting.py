@@ -116,15 +116,6 @@ def classify(h: NDArray) -> NDArray:
     return out
 
 
-def _axis_cosmetics(ax, ylabel_fs: int = 24) -> None:
-    ax.set_xlabel(r"$N_z$", fontsize=ylabel_fs)
-    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=ylabel_fs)
-    ax.set_yticks(_YTICKS)
-    ax.set_ylim(0.0, 1.0)
-    for yt in _YTICKS:
-        ax.axhline(y=yt, color="black", linewidth=0.4)
-
-
 def _pick_xticks(
     Nz: NDArray,
     slot_total: int,
