@@ -24,13 +24,14 @@ from chaotic_pfc.analysis.sweep_plotting import (
     chaotic_density_norm_table,
     plot_chaotic_density_norm,
 )
-from chaotic_pfc.comms.channel import fir_channel
+from chaotic_pfc.comms.channel import fir_channel, ideal_channel
 from chaotic_pfc.comms.metrics import comm_metrics
 from chaotic_pfc.comms.receiver import receive, receive_order_n
 from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
 from chaotic_pfc.config import DEFAULT_CONFIG as CFG
 from chaotic_pfc.dynamics.maps import henon_generalised
 from chaotic_pfc.dynamics.signals import text_message
+from chaotic_pfc.dynamics.spectral import psd_normalised
 from chaotic_pfc.plotting.figures import setup_rc
 
 JCIS_W = 3.50
@@ -234,9 +235,70 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
     _save(fig, out_dir / "fig_chaotic_density_norm.svg")
 
 
+def fig_comm_ideal(out_dir: Path) -> None:
+    comm, spec = CFG.comm, CFG.spectral
+    a, b, mu = comm.henon.a, comm.henon.b, comm.mu
+    tr = comm.transient
+    m = text_message(comm.message_text, comm.N, bit_period=comm.message_period)
+    s = transmit(m, mu=mu, a=a, b=b, x0=0.0, y0=0.0)
+    r = ideal_channel(s)
+    rng = np.random.default_rng(CFG.seed)
+    m_hat = receive(r, mu=mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+
+    met = comm_metrics(m, m_hat, transient=tr, bit_period=comm.message_period, delay=0)
+    print(
+        f"[fig_comm_ideal] MSE(n>{tr})={np.mean((m[tr:] - m_hat[tr:]) ** 2):.4e} BER={met['ber']:.4f}"
+    )
+
+    def psd(x):
+        return psd_normalised(
+            x, spec.nfft, spec.window_length, window=spec.window, kaiser_beta=spec.kaiser_beta
+        )
+
+    omega, psd_m = psd(m)
+    psd_s = psd(s)[1]
+    psd_r = psd(r)[1]
+    psd_mhat = psd(m_hat)[1]
+
+    win = slice(CFG.plot.time_window_start, CFG.plot.time_window_end)
+    n = np.arange(len(m))[win]
+    rows = [
+        ("(a) $m[n]$", m, (-1.5, 1.5), "tab:blue"),
+        ("(b) $s[n]$", s, (-2.5, 2.5), "tab:blue"),
+        ("(c) $r[n]$", r, (-2.5, 2.5), "tab:blue"),
+        ("(d) $\\hat{m}[n]$", m_hat, (-1.5, 1.5), "tab:blue"),
+    ]
+    spectra = [
+        ("(e) $\\mathcal{M}(\\omega)$", psd_m),
+        ("(f) $S(\\omega)$", psd_s),
+        ("(g) $R(\\omega)$", psd_r),
+        ("(h) $\\hat{\\mathcal{M}}(\\omega)$", psd_mhat),
+    ]
+    fig, axes = plt.subplots(4, 2, figsize=(6.84, 5.88), sharex="col")
+    for row, (label, sig, ylim, color) in enumerate(rows):
+        ax = axes[row, 0]
+        ax.plot(n, sig[win], color=color, lw=0.9)
+        ax.set_ylim(*ylim)
+        ax.set_ylabel(label, fontsize=JCIS_LABEL)
+        ax.grid(alpha=0.3, lw=0.5)
+        ax.tick_params(labelsize=JCIS_TICK)
+    for row, (label, spec_y) in enumerate(spectra):
+        ax = axes[row, 1]
+        ax.plot(omega, spec_y, color="tab:orange", lw=0.9)
+        ax.set_ylabel(label, fontsize=JCIS_LABEL)
+        ax.grid(alpha=0.3, lw=0.5)
+        ax.tick_params(labelsize=JCIS_TICK)
+    axes[3, 0].set_xlabel("$n$", fontsize=JCIS_LABEL)
+    axes[3, 1].set_xlabel(r"$\omega/\pi$", fontsize=JCIS_LABEL)
+    axes[3, 1].set_xlim(0.0, 1.0)
+    fig.tight_layout()
+    _save(fig, out_dir / "fig_comm_ideal.svg")
+
+
 GENERATORS = {
     "henon": fig_henon_signals,
     "comm": fig_comm_bandlimited,
+    "ideal": fig_comm_ideal,
     "kaiser": fig_kaiser_beta,
     "density": fig_chaotic_density_norm,
 }
