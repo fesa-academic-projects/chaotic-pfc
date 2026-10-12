@@ -706,7 +706,9 @@ Table~\ref{tab:windows} by the routine \texttt{firwin} of the SciPy
 library~\cite{Virtanen2020}. For lowpass and highpass filters, $\omega_c$ is
 the cutoff frequency; for bandpass and bandstop filters, it is the center of a
 band of fixed total width $\Delta\omega=0.05\,\pi$, placed symmetrically around
-$\omega_c$. On the normalized axis $\omega/\pi\in(0,1)$, this width is $5\%$
+$\omega_c$. Near the ends of the grid, the band edges are clipped to the interval
+$(0,1)$ of $\omega/\pi$, so the band is narrower and asymmetric for the cutoff
+values closest to $0$ and to $1$. On the normalized axis $\omega/\pi\in(0,1)$, this width is $5\%$
 of the range and spans about five steps of the cutoff grid, so the band is
 narrow enough to keep the filter frequency-selective and wide enough to be
 resolved by the sweep at every $\omega_c$. Fixing $\Delta\omega$ also isolates
@@ -1301,7 +1303,10 @@ could reveal other structures. The band width $\Delta\omega=0.05\,\pi$ of the
 bandpass and bandstop filters was fixed, and its variation may change the
 conclusions for these two types. The map parameters $(\alpha,\beta)=(1.4,0.3)$
 were not swept, and other pairs of the parameter space of the H\'enon
-map~\cite{Gallas1993} may behave differently under filtering. Finally, initial
+map~\cite{Gallas1993} may behave differently under filtering. The value of a grid
+point is the mean of $\lambda_1$ over its initial conditions, so coexisting
+attractors, some chaotic and some periodic, are merged into a single class.
+Finally, initial
 conditions that diverge after the burn-in are excluded from the mean of
 $\lambda_1$, which is therefore estimated over the surviving initial
 conditions.
