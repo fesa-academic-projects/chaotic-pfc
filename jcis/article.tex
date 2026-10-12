@@ -15,6 +15,8 @@
 % ---- Math ----
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \interdisplaylinepenalty=2500   % restore IEEEtran page breaks after amsmath
 
 % ---- Algorithms ----
@@ -283,6 +285,26 @@ map. The output of the filter is
   x_3(n) = \sum_{j=0}^{N_s-1} c_j\, x_1(n-j),
   \label{eq:filtro}
 \end{equation}
+
+% ---- II-B: the generator studied ----
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[font=\footnotesize,
+  blk/.style={draw, rounded corners=1pt, minimum width=1.7cm, minimum height=0.6cm, inner sep=2pt, align=center},
+  io/.style={inner sep=1pt},
+  ar/.style={-{Stealth[length=2mm]}, thick}]
+  \node[blk, minimum width=2.2cm] (henon) at (0,0) {Hénon map \eqref{eq:henon}};
+  \node[blk] (fir) at (3.4,0) {FIR filter $H(z)$};
+  \node[io] (x3) at (5.6,0) {$x_3(n)$};
+  \draw[ar] (henon) -- node[above,io] {$x_1(n)$} (fir);
+  \draw[ar] (fir) -- (x3);
+  \draw[ar] (x3.north) -- (5.6,1.0) -- (0,1.0) -- (henon.north);
+  \node[io] at (2.8,1.0) [above] {feedback into the nonlinear term};
+\end{tikzpicture}
+\caption{Chaotic generator with an FIR filter in the feedback loop, the system
+studied in this work.}
+\label{fig:generator}
+\end{figure}
 where $c_j$, $0\le j\le N_s-1$, are the $N_s$ filter coefficients. The filter
 order is $N_z=N_s-1$, equal to the number of zeros of the transfer function
 obtained by taking the $z$-transform of~\eqref{eq:filtro} with zero initial
@@ -561,6 +583,48 @@ ideal (identity, zero delay); the initial transient of $\hat{m}[n]$ is the
 synchronization of the slave.}
 \label{fig:comm_ideal}
 \end{figure*}
+
+% ---- II-E: block diagram of the CBCS ----
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[font=\footnotesize,
+  blk/.style={draw, rounded corners=1pt, minimum width=1.7cm, minimum height=0.6cm, inner sep=2pt, align=center},
+  io/.style={inner sep=1pt},
+  ar/.style={-{Stealth[length=2mm]}, thick}]
+  \node[io] (m) at (1.6,7.3) {$m(n)$};
+  \node[blk] (enc) at (1.6,6.0) {Encoder};
+  \node[io] (s) at (3.6,6.0) {$s(n)$};
+  \node[blk] (chT) at (3.6,4.6) {Chaotic\\system};
+  \node[blk] (firT) at (0,4.6) {FIR};
+  \draw[ar] (m) -- (enc);
+  \draw[ar] (enc) -- (s);
+  \draw[ar] (s) -- (chT);
+  \draw[ar] (chT) -- node[above,io] {$x_1(n)$} (firT);
+  \draw[ar] (firT.north) -- (0,6.0) -- (enc.west);
+  \node[left,io] at (0,5.4) {$x_3(n)$};
+  \node[blk] (ch) at (5.3,6.0) {Channel};
+  \node[io] (r) at (6.8,6.0) {$r(n)$};
+  \draw[ar] (s) -- (ch);
+  \draw[ar] (ch) -- (r);
+  \node[io] at (1.6,3.9) {Transmitter};
+  \node[io] (mhat) at (1.6,3.2) {$\hat m(n)$};
+  \node[blk] (dec) at (1.6,2.0) {Decoder};
+  \node[blk] (chR) at (3.6,0.6) {Chaotic\\system};
+  \node[blk] (firR) at (0,0.6) {FIR};
+  \draw[thick] (r) -- (6.8,0.6);
+  \draw[ar] (6.8,2.0) -- (dec.east);
+  \draw[ar] (6.8,0.6) -- (chR.east);
+  \draw[ar] (chR) -- node[below,io] {$\hat x_1(n)$} (firR);
+  \draw[ar] (firR.north) -- (0,2.0) -- (dec.west);
+  \node[left,io] at (0,1.3) {$\hat x_3(n)$};
+  \draw[ar] (dec.north) -- (mhat);
+  \node[io] at (1.6,-0.5) {Receiver};
+\end{tikzpicture}
+\caption{Communication system with the same FIR filter in the feedback loops of
+the transmitter and of the receiver. The channel is modeled as in
+Figs.~\ref{fig:comm_ideal} and~\ref{fig:comm_bl}.}
+\label{fig:cbc}
+\end{figure}
 
 Figs.~\ref{fig:comm_ideal} and~\ref{fig:comm_bl} illustrate this argument.
 In both, the message encodes the ASCII text ``hello'' (8 bits per character,
