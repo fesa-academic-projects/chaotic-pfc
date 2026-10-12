@@ -50,7 +50,7 @@ check-paper: check-venv  ## Audit the JCIS manuscript sources against the reposi
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
 	$(PYTHON) tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
 
-paper-pdf: export SOURCE_DATE_EPOCH = $(shell git log -1 --format=%ct)
+paper-pdf: export SOURCE_DATE_EPOCH = $(shell git log -1 --format=%ct -- $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/Figures)
 paper-pdf: export FORCE_SOURCE_DATE = 1
 paper-pdf:  ## Build the JCIS manuscript PDF with a clean SVG conversion cache
 	rm -rf $(PAPER_DIR)/svg-inkscape
