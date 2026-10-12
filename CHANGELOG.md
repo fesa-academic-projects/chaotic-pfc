@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The sweep maintenance scripts (`regenerate_sweeps.py`, `compare_sweeps.py`,
   `report_sweep_stats.py`) moved into the package and are exposed as
   `chaotic-pfc sweeps regenerate|compare|stats`.
+- The JCIS figure generators (`jcis_figures.py`) moved into the package and are
+  exposed as `chaotic-pfc paper figures`; the JCIS classification panels are
+  now defined once (`chaotic_pfc.paper.figures`) and shared with
+  `chaotic-pfc run paper-figures`.
 - `tools/jcis_figures.py` generators for the JCIS classification maps,
   chaotic-density map, Kaiser-β curve, Hénon signals and communication
   figures, including the loop-filter exponent quoted in Fig. 5(b).

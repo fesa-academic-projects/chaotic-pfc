@@ -22,20 +22,8 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import TypedDict
 
-
-class _PanelOptions(TypedDict, total=False):
-    figsize: tuple[float, float]
-    label_fontsize: float
-    tick_fontsize: float
-    legend_fontsize: float
-    ytick_step: float
-    xtick_step: int
-    legend: bool
-    lang: str
-    panel_label_loc: str
-
+from chaotic_pfc.paper.figures import JCIS_FIG, JCIS_FIGURES, JCIS_W, _PanelOptions
 
 # ── SIMAC: 0.48\linewidth of an 18 cm text block ────────────────────────────
 SIMAC_W = 3.40
@@ -50,31 +38,15 @@ SIMAC_PANEL: _PanelOptions = dict(
     panel_label_loc="above left",
 )
 
-# ── JCIS: one IEEEtran column ───────────────────────────────────────────────
-JCIS_W = 3.50
-JCIS_FIG: _PanelOptions = dict(
-    figsize=(JCIS_W, 2.30),
-    label_fontsize=9.0,
-    tick_fontsize=8.0,
-    legend_fontsize=7.5,
-    ytick_step=0.2,
-    xtick_step=10,
-    legend=True,
-    lang="en",
-)
-
 SIMAC_PANELS = [
     ("Hamming (highpass)", "simac_fig1a_hamming_highpass", "(a)"),
     ("Hamming (bandpass)", "simac_fig1b_hamming_bandpass", "(b)"),
     ("Hamming (bandstop)", "simac_fig1c_hamming_bandstop", "(c)"),
 ]
 
-JCIS_FIGURES = [
-    ("kaiser/lowpass/beta_13.50", "kaiser_b13p5_lowpass_classification_interleaved"),
-    ("kaiser/highpass/beta_11.50", "kaiser_b11p5_highpass_classification_interleaved"),
-    ("kaiser/bandpass/beta_13.50", "kaiser_b13p5_bandpass_classification_interleaved"),
-    ("Rectangular (bandstop)", "rectangular_bandstop_classification_interleaved"),
-]
+# The JCIS classification panels (``JCIS_FIG``/``JCIS_FIGURES``) are defined
+# once in ``chaotic_pfc.paper.figures`` and imported above, so the two JCIS
+# deliverables share a single panel list and a single plotting routine.
 
 FORMATS = ("pdf", "svg")
 

@@ -233,19 +233,18 @@ make check-all     # lint + format + typecheck + fast tests
 
 ## Paper and analysis tooling
 
-The `tools/` directory holds the standalone scripts used to produce and check
-the manuscript. Run them with the project venv (`.venv/bin/python`):
+The manuscript and sweep tooling lives in the package and is driven from the
+CLI:
 
-| Script | Purpose |
-|--------|---------|
-| `tools/jcis_figures.py` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
-
-The manuscript numbers and the source audit live in the package and are driven
-from the CLI: `chaotic-pfc paper numbers …` recomputes every number of the
-article from `data/sweeps/`, `chaotic-pfc paper audit …` is the audit behind
-`make check-paper`, and `chaotic-pfc sweeps regenerate|compare|stats` maintains
-the versioned checkpoints (recompute + manifest, diff two trees, dump per-`config`
-statistics).
+| Command | Purpose |
+|---------|---------|
+| `chaotic-pfc paper numbers` | Recompute every number of the manuscript from `data/sweeps/` and emit JSON. |
+| `chaotic-pfc paper audit` | Cross-check `articles/jcis/article.tex` against the bibliography, figures and identity tables (`make check-paper`). |
+| `chaotic-pfc paper figures` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
+| `chaotic-pfc sweeps regenerate` | Recompute the versioned `data/sweeps/` checkpoints and rewrite the `SHA256SUMS` manifest. |
+| `chaotic-pfc sweeps compare` | Compare two sweep directories file by file (bit-exactness after a refactor). |
+| `chaotic-pfc sweeps stats` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
+| `tools/check_pt_br_translations.sh` | Verify the pt-BR narrative documentation catalogues (documentation tooling). |
 
 `articles/jcis/article.pdf` is a derived artifact regenerated reproducibly by
 `make paper-pdf`; its timestamp follows the last commit that touched

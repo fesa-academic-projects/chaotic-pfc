@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import argparse
 
-from chaotic_pfc.paper import audit, numbers
+from chaotic_pfc.paper import audit, figures, numbers
 
 
 def add_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -30,3 +30,4 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     numbers.add_parser(actions)
     audit.add_parser(actions)
+    figures.add_parser(actions)

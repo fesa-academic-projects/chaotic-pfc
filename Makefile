@@ -76,7 +76,7 @@ check-paper: check-venv  ## Audit the JCIS manuscript sources against the reposi
 	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
 
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
-	$(PYTHON) tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
+	$(PYTHON) -m chaotic_pfc paper figures --out-dir $(PAPER_DIR)/Figures
 
 paper-pdf: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
 paper-pdf: export FORCE_SOURCE_DATE = 1

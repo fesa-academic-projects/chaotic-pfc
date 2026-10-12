@@ -313,6 +313,16 @@ the inserted figures and the identity tables, prints a
    chaotic-pfc paper audit --tex articles/jcis/article.tex \
        --bib articles/jcis/references.bib
 
+``chaotic-pfc paper figures`` regenerates the JCIS figures that the other
+commands do not produce (the signals, communication and Kaiser-β panels, the
+normalised density map and the classification maps), writing deterministic
+SVGs to ``--out-dir`` (default ``articles/jcis/Figures``); ``--only`` restricts
+the run to one generator:
+
+.. code-block:: bash
+
+   chaotic-pfc paper figures --out-dir articles/jcis/Figures
+
 Sweep maintenance
 -----------------
 

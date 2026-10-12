@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
+from typing import TypedDict
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -44,6 +45,41 @@ COMM_WINDOW = (2000, 2400)
 FIR_LOOP_CUTOFF = 0.52  # omega_c/pi of the FIR in the loop of Fig. 3(b), lambda_1 > 0.05
 DATA_DIR = Path("data/sweeps")
 FILTER_TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
+
+
+class _PanelOptions(TypedDict, total=False):
+    figsize: tuple[float, float]
+    label_fontsize: float
+    tick_fontsize: float
+    legend_fontsize: float
+    ytick_step: float
+    xtick_step: int
+    legend: bool
+    lang: str
+    panel_label_loc: str
+
+
+# Camera-ready JCIS classification panels (one IEEEtran column). This is the
+# single definition of which classification figures the JCIS deliverables need;
+# ``chaotic-pfc run paper-figures`` imports it from here rather than repeating
+# the list and the plotting call.
+JCIS_FIG: _PanelOptions = dict(
+    figsize=(3.50, 2.30),
+    label_fontsize=9.0,
+    tick_fontsize=8.0,
+    legend_fontsize=7.5,
+    ytick_step=0.2,
+    xtick_step=10,
+    legend=True,
+    lang="en",
+)
+
+JCIS_FIGURES: tuple[tuple[str, str], ...] = (
+    ("kaiser/lowpass/beta_13.50", "kaiser_b13p5_lowpass_classification_interleaved"),
+    ("kaiser/highpass/beta_11.50", "kaiser_b11p5_highpass_classification_interleaved"),
+    ("kaiser/bandpass/beta_13.50", "kaiser_b13p5_bandpass_classification_interleaved"),
+    ("Rectangular (bandstop)", "rectangular_bandstop_classification_interleaved"),
+)
 
 
 def pct(count: int, total: int, places: int) -> str:
@@ -347,7 +383,6 @@ def fig_comm_ideal(out_dir: Path) -> None:
 
 def fig_classification(out_dir: Path) -> None:
     from chaotic_pfc.analysis.sweep_plotting import plot_classification_interleaved
-    from chaotic_pfc.cli.paper_figures import JCIS_FIG, JCIS_FIGURES
 
     for k, (name, stem) in enumerate(JCIS_FIGURES):
         sr = load_sweep(DATA_DIR / name / "variables_lyapunov.npz")
@@ -365,12 +400,20 @@ GENERATORS = {
 }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc paper figures``."""
+    parser = subparsers.add_parser(
+        "figures",
+        help="Generate the JCIS figures that other commands do not produce.",
+        description="Generate the JCIS figures that other commands do not produce.",
+    )
     parser.add_argument("--out-dir", default="articles/jcis/Figures", type=Path)
     parser.add_argument("--only", choices=["all", *GENERATORS], default="all")
-    args = parser.parse_args()
+    parser.set_defaults(_run=run)
 
+
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc paper figures``."""
     setup_rc()
     plt.rcParams["svg.hashsalt"] = SVG_SALT
     names = list(GENERATORS) if args.only == "all" else [args.only]
@@ -378,7 +421,3 @@ def main() -> int:
         GENERATORS[name](args.out_dir)
     print(f"figures written to {args.out_dir}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
