@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Regression and validation tests for the sweep kernel: the partial-divergence
   rule, the non-finite Hann/Bartlett filters at `N_s = 2`, the adaptive
   early-stop streak, and the frequency response of the designed filters.
+- CI job (`baseline`) that runs the bit-exact sweep regression
+  (`CHAOTIC_PFC_RUN_BASELINE=1`) with Numba on every push and pull request.
 
 ### Changed
 - The Lyapunov sweep kernel now inlines the cancellation-free positive fixed

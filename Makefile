@@ -1,4 +1,17 @@
-.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-diff docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
+.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-diff docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
+
+# The test and tooling targets run inside the project virtualenv, where the
+# package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
+VENV ?= .venv
+PYTHON ?= $(VENV)/bin/python
+
+check-venv:  ## Fail with a clear message when the project virtualenv is missing
+	@test -x "$(PYTHON)" || { \
+		echo "error: $(PYTHON) not found."; \
+		echo "create the project virtualenv with:"; \
+		echo "    python -m venv $(VENV) && $(VENV)/bin/pip install -e '.[dev,fast]'"; \
+		exit 1; \
+	}
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -6,23 +19,23 @@ help:  ## Show this help
 install:  ## Install the package with dev dependencies
 	pip install -e ".[dev]"
 
-test:  ## Run the full test suite
-	pytest
+test: check-venv  ## Run the full test suite
+	$(PYTHON) -m pytest
 
-test-fast:  ## Run tests excluding slow ones
-	pytest -m "not slow"
+test-fast: check-venv  ## Run tests excluding slow ones
+	$(PYTHON) -m pytest -m "not slow"
 
-lint:  ## Run Ruff linter
-	ruff check .
+lint: check-venv  ## Run Ruff linter
+	$(PYTHON) -m ruff check .
 
-format:  ## Run Ruff auto-format
-	ruff format .
+format: check-venv  ## Run Ruff auto-format
+	$(PYTHON) -m ruff format .
 
-format-check:  ## Check formatting without changing files
-	ruff format --check .
+format-check: check-venv  ## Check formatting without changing files
+	$(PYTHON) -m ruff format --check .
 
-typecheck:  ## Run mypy static type checker
-	mypy src/chaotic_pfc
+typecheck: check-venv  ## Run mypy static type checker
+	$(PYTHON) -m mypy src/chaotic_pfc
 
 check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
 
@@ -31,11 +44,11 @@ PAPER_TEX ?= $(PAPER_DIR)/article.tex
 PAPER_BIB ?= $(PAPER_DIR)/references.bib
 PAPER_STEM ?= article
 
-check-paper:  ## Audit the JCIS manuscript sources against the repository
-	python tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
+check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
+	$(PYTHON) tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
 
-jcis-figures:  ## Regenerate the JCIS figures not produced by other commands
-	python tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
+jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
+	$(PYTHON) tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
 
 paper-pdf: export SOURCE_DATE_EPOCH = $(shell git log -1 --format=%ct)
 paper-pdf: export FORCE_SOURCE_DATE = 1
@@ -85,7 +98,7 @@ paper-diff:  ## Build a latexdiff PDF against BASE (make paper-diff BASE=<commit
 	cp $(PAPER_DIFF_DIR)/diff.pdf $(PAPER_DIFF_OUT)/JCIS_Diff_$(NAME).pdf
 	@echo "wrote $(PAPER_DIFF_OUT)/JCIS_Diff_$(NAME).pdf"
 
-SPHINXBUILD = .venv/bin/sphinx-build
+SPHINXBUILD = $(VENV)/bin/sphinx-build
 
 docs:  ## Build Sphinx HTML documentation (English)
 	cd docs && ../$(SPHINXBUILD) -b html . _build/html -D language=en -W --keep-going
@@ -107,8 +120,8 @@ docs-epub:  ## Build Sphinx EPUB documentation (English)
 docs-epub-pt:  ## Build Sphinx EPUB documentation (Portuguese)
 	cd docs && ../$(SPHINXBUILD) -b epub . _build/epub -D language=pt_BR
 
-benchmark:  ## Run performance benchmarks
-	python benchmarks/standalone.py
+benchmark: check-venv  ## Run performance benchmarks
+	$(PYTHON) benchmarks/standalone.py
 
 clean:  ## Remove build and cache artifacts
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

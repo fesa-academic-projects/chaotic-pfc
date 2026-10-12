@@ -106,8 +106,7 @@ class TestLyapunovInvariants(unittest.TestCase):
         assume(abs(a - 1.4) < 0.06 and abs(b - 0.3) < 0.06)
         result = lyapunov_henon2d(alpha=a, beta=b, Nitera=500, Ndiscard=200, seed=seed)
 
-        if not np.isfinite(result.lyapunov_max):
-            return  # Orbit diverged — acceptable near chaotic boundary
+        assume(np.isfinite(result.lyapunov_max))
         self.assertGreater(
             result.lyapunov_max, 0.0, f"λ_max ≤ 0 for a={a}, b={b}: {result.lyapunov_max}"
         )
@@ -121,11 +120,12 @@ class TestLyapunovInvariants(unittest.TestCase):
     def test_lyapunov_sum_equals_log_b(self, a, b, seed):
         """λ₁ + λ₂ = ln(b) holds for any (a,b) where orbit stays bounded."""
         result = lyapunov_henon2d(alpha=a, beta=b, Nitera=500, Ndiscard=200, seed=seed)
-        # Only assert if orbit stayed bounded (both exponents finite)
-        if np.all(np.isfinite(result.all_exponents)):
-            computed_sum = float(np.sum(result.all_exponents))
-            expected_sum = float(np.log(b))
-            np.testing.assert_allclose(computed_sum, expected_sum, rtol=1e-4)
+        # Only assert for bounded orbits (both exponents finite); a diverging
+        # orbit is rejected rather than silently skipped.
+        assume(np.all(np.isfinite(result.all_exponents)))
+        computed_sum = float(np.sum(result.all_exponents))
+        expected_sum = float(np.log(b))
+        np.testing.assert_allclose(computed_sum, expected_sum, rtol=1e-4)
 
 
 class TestSignalInvariants(unittest.TestCase):
@@ -186,9 +186,10 @@ class TestAreaSummaryInvariants(unittest.TestCase):
             metadata={"n_initial": 50},
         )
         stats = lmax_statistics(result, region="all_finite", n_bootstrap=100, seed=42)
-        if stats["n_used"] >= 3 and not np.isnan(stats["ci_95_low"]):
-            self.assertLessEqual(stats["ci_95_low"], stats["mean"])
-            self.assertGreaterEqual(stats["ci_95_high"], stats["mean"])
+        assume(stats["n_used"] >= 3)
+        assume(not np.isnan(stats["ci_95_low"]))
+        self.assertLessEqual(stats["ci_95_low"], stats["mean"])
+        self.assertGreaterEqual(stats["ci_95_high"], stats["mean"])
 
 
 SWEEPS_DIR = Path("data/sweeps")

@@ -115,7 +115,7 @@ _SKIPPED_BIB_TYPES = frozenset({"comment", "preamble", "string"})
 
 _CITE_RE = re.compile(r"\\(?P<cmd>[Cc]ite[A-Za-z]*)\*?\s*(?:\[[^\]]*\]\s*)*\{(?P<keys>[^}]*)\}")
 _LABEL_RE = re.compile(r"\\label\s*\{([^}]*)\}")
-_REF_RE = re.compile(r"\\(?:eqref|ref)\s*\{([^}]*)\}")
+_REF_RE = re.compile(r"\\(?:eqref|ref|subref)\s*\{([^}]*)\}")
 _GRAPHICS_RE = re.compile(r"\\includegraphics\s*\*?(?:\s*\[[^\]]*\])*\s*\{([^}]*)\}")
 _INPUT_RE = re.compile(r"\\(?:input|include)\s*\{([^}]*)\}")
 _BIBLIOGRAPHY_RE = re.compile(r"\\bibliography\s*\{([^}]*)\}")
@@ -729,9 +729,7 @@ def _parse_ranking_rows(tabular: str) -> tuple[list[dict], list[str]]:
 
 
 def _compatible_nb(nc: int, grid: int, rho_fin: float) -> list[int]:
-    return [
-        nb for nb in range(nc, grid + 1) if abs(float(pct(nc, nb, 1)) - rho_fin) < 1e-9
-    ]
+    return [nb for nb in range(nc, grid + 1) if abs(float(pct(nc, nb, 1)) - rho_fin) < 1e-9]
 
 
 def _same(value_a: object, value_b: object) -> bool:
