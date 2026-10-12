@@ -38,6 +38,7 @@ FIXED = (
     ("blackman", "Blackman", 58),
     ("blackmanharris", "Blackman--Harris", 92),
 )
+NITERA = 500
 NMAP = 3000
 N_BOOT = 1000
 BOOT_SEED = 42
@@ -326,9 +327,7 @@ def section_density(root: Path, out: dict) -> None:
     def point(kk, jj):
         n = int(n_cont[kk])
         count = round(float(percent[kk, jj]) * n / 100.0)
-        return (
-            f"Nz={nz[kk]}, wc/pi={fmt(wc[jj], 4)}, {fmt(percent[kk, jj], 2)}%, k={count} of n={n}"
-        )
+        return f"Nz={nz[kk]}, wc/pi={fmt(wc[jj], 4)}, {pct(count, n, 1)}%, k={count} of n={n}"
 
     kk, jj = np.unravel_index(np.nanargmax(percent), percent.shape)
     out["DEN.max_global"] = point(kk, jj)
@@ -502,7 +501,14 @@ def seed_runs(root: Path, best: dict) -> dict:
 
 
 def validation_ns1() -> dict:
-    from chaotic_pfc.analysis.sweep._kernel import _henon_n12_inplace, _lyap_online_core_v
+    """Ns=1, c0=1 map with the full-spectrum estimator, early stop off.
+
+    Mirrors the fallback path of the sweep kernel for Ns <= 2: the full
+    tangent matrix (2 x 2) is propagated and reorthonormalised, and the
+    returned value is the largest exponent. The sum of both exponents is
+    compared with ln(beta), which is the log of |det J| per iteration.
+    """
+    from chaotic_pfc.analysis.sweep._kernel import _henon_n12_inplace, _lyap_online_n12
     from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
     alpha, beta = 1.4, 0.3
@@ -511,24 +517,39 @@ def validation_ns1() -> dict:
     disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
     p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
     pert = _precompute_perturbations(np.array([1]), 1, 25, 42)
-    lams = []
+    lams, residuals = [], []
     for ci in range(25):
         noise = pert[0, 0, ci, :1]
         xx = np.empty((2, 2))
         xx[0, 0] = 0.1 * noise[0] + p1
         xx[0, 1] = 0.0
         tick = 0
-        for _ in range(500):
+        for _ in range(NITERA):
             _henon_n12_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
             tick = 1 - tick
         if tick == 1:
             xx[0, 0], xx[0, 1] = xx[1, 0], xx[1, 1]
-        vv = np.empty((2, 2))
-        lv = np.empty(1)
-        lam, _ = _lyap_online_core_v(xx.copy(), vv, lv, NMAP, NMAP, 0.0, 2, 0, c, alpha, beta)
+        ww = np.empty((2, 2, 2))
+        lyap_sum = np.empty(2)
+        lam, n_used = _lyap_online_n12(
+            xx.copy(), ww, lyap_sum, NMAP, NMAP, 0.0, 1, c.copy(), alpha, beta, 0
+        )
         lams.append(float(lam))
+        lam_sum = float((lyap_sum[0] + lyap_sum[1]) / n_used)
+        residuals.append(abs(lam_sum - math.log(beta)))
     mean = float(np.mean(lams))
-    return {"lambda1_mean": fmt(mean, 4), "rel_err_pct": fmt(100 * abs(mean - 0.4192) / 0.4192, 2)}
+    return {
+        "lambda1_mean": fmt(mean, 4),
+        "rel_err_pct": pct_float(abs(mean - 0.4192), 0.4192, 2),
+        "max_sum_residual": f"{max(residuals):.2e}",
+    }
+
+
+def pct_float(num: float, den: float, places: int) -> str:
+    q = Decimal(1).scaleb(-places)
+    return str(
+        (Decimal(repr(100.0 * num)) / Decimal(repr(den))).quantize(q, rounding=ROUND_HALF_UP)
+    )
 
 
 def machine() -> str:
