@@ -26,6 +26,7 @@ from pathlib import Path
 
 import numpy as np
 
+from chaotic_pfc.analysis.stats import lmax_statistics
 from chaotic_pfc.analysis.sweep import load_sweep
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
@@ -122,28 +123,19 @@ def candidates(recs, ft: str) -> list:
     return rows
 
 
-def bootstrap_ci(values: np.ndarray) -> tuple[float, float, float, float]:
-    rng = np.random.default_rng(BOOT_SEED)
-    n = values.size
-    idx = rng.integers(0, n, size=(N_BOOT, n))
-    means = values[idx].mean(axis=1)
-    lo, hi = np.percentile(means, [2.5, 97.5])
-    return float(values.mean()), float(values.std(ddof=1)), float(lo), float(hi)
-
-
 def table2_row(row) -> dict:
+    """Table II/III entry, with the statistics of ``stats.lmax_statistics``."""
     sr = row["sr"]
     c = counts(sr)
-    vals = chaotic_values(sr)
-    mean, std, lo, hi = bootstrap_ci(vals)
+    st = lmax_statistics(sr, region="chaotic", n_bootstrap=N_BOOT, seed=BOOT_SEED)
     return {
         "name": row["name"],
         "nc": c["nc"],
         "rho_fin": pct(c["nc"], c["nb"], 1),
         "rho_abs": pct(c["nc"], c["n"], 1),
-        "mean": fmt(mean, 4),
-        "std": fmt(std, 4),
-        "ci": f"[{fmt(lo, 4)}, {fmt(hi, 4)}]",
+        "mean": fmt(st["mean"], 4),
+        "std": fmt(st["std"], 4),
+        "ci": f"[{fmt(st['ci_95_low'], 4)}, {fmt(st['ci_95_high'], 4)}]",
     }
 
 
@@ -152,9 +144,13 @@ def table2_row(row) -> dict:
 
 def section_recalc(recs, out: dict) -> None:
     total = sum(counts(r)["n"] for r in recs)
-    fb = sum(int(r.metadata["n_fallback"]) for r in recs)
-    out["RECALC.n_fallback"] = str(fb)
-    out["RECALC.pct_fallback"] = pct(fb, total, 2)
+    if all("n_fallback" in r.metadata for r in recs):
+        fb = sum(int(r.metadata["n_fallback"]) for r in recs)
+        out["RECALC.n_fallback"] = str(fb)
+        out["RECALC.pct_fallback"] = pct(fb, total, 2)
+    else:
+        out["RECALC.n_fallback"] = "n/a (metadata without n_fallback)"
+        out["RECALC.pct_fallback"] = "n/a"
     medians, cap_points, cap_cfgs = [], 0, 0
     for r in recs:
         it = np.asarray(r.n_iters_used, dtype=np.float64)
