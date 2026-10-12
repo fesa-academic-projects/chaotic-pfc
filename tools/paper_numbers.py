@@ -589,7 +589,7 @@ def compute(root: Path, extras: bool) -> dict:
 
 def compare(old: dict, new: dict) -> None:
     keys = list(dict.fromkeys(list(new.keys()) + list(old.keys())))
-    print(f"{'rótulo':<42} | {'antigo':<40} | {'novo':<40} | mudou?")
+    print(f"{'rótulo':<36} | antigo | novo | mudou?")
     for k in keys:
         a = old.get(k, "n/a")
         b = new.get(k, "n/a")
@@ -598,7 +598,7 @@ def compare(old: dict, new: dict) -> None:
         if isinstance(b, dict):
             b = json.dumps(b, sort_keys=True)
         changed = "sim" if a != b else "não"
-        print(f"{k:<42} | {str(a)[:40]:<40} | {str(b)[:40]:<40} | {changed}")
+        print(f"{k} | {a} | {b} | {changed}")
 
 
 def main() -> int:
