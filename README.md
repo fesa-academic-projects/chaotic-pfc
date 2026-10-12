@@ -89,7 +89,7 @@ chaotic-pfc run sweep compute --window hamming --filter lowpass
 # Quick smoke test (~seconds)
 chaotic-pfc run sweep compute --window hamming --filter lowpass --quick
 
-# Generate the 4 classification figures (PNG + SVG) from the saved .npz
+# Generate the 3 classification figures (PNG + SVG) from the saved .npz
 chaotic-pfc run sweep plot --window hamming --filter lowpass
 ```
 
@@ -203,21 +203,33 @@ make check-all     # lint + format + typecheck + fast tests
 
 | Target | Action |
 |--------|--------|
-| `make test` | Run full test suite |
-| `make test-fast` | Run tests excluding `@pytest.mark.slow` |
-| `make lint` | Ruff linter |
-| `make format` | Ruff auto-format |
+| `make setup` | Create the venv, install the dev/docs extras and the pre-commit hooks |
+| `make install` | Install the package with dev dependencies and Numba |
+| `make test` | Run the full test suite |
+| `make test-fast` | Run tests excluding slow ones |
+| `make check-all` | Run all quality checks (lint + format + typecheck + fast tests) |
+| `make check-paper` | Audit the JCIS manuscript sources against the repository |
+| `make check-venv` | Fail with a clear message when the project virtualenv is missing |
+| `make lint` | Run Ruff linter |
+| `make format` | Run Ruff auto-format |
 | `make format-check` | Check formatting without changing files |
-| `make typecheck` | mypy static type checker |
-| `make check-all` | lint + format-check + typecheck + test-fast |
+| `make typecheck` | Run mypy static type checker |
 | `make docs` | Build Sphinx HTML documentation (English) |
 | `make docs-pt` | Build Sphinx HTML documentation (Portuguese) |
-| `make docs-pdf` | Build Sphinx PDF documentation |
-| `make docs-epub` | Build Sphinx EPUB documentation |
-| `make benchmark` | Performance benchmarks |
-| `make pre-commit` | Run all pre-commit hooks |
-| `make clean` | Remove cache and build artifacts |
-| `make help` | Show all targets |
+| `make docs-all` | Build Sphinx HTML documentation (both languages) |
+| `make docs-strict` | Build the docs with `-W -n` and run the doctests |
+| `make docs-i18n-check` | Fail when a pt-BR narrative catalogue is stale or untranslated |
+| `make docs-pdf` | Build Sphinx PDF documentation (English) |
+| `make docs-pdf-pt` | Build Sphinx PDF documentation (Portuguese) |
+| `make docs-epub` | Build Sphinx EPUB documentation (English) |
+| `make docs-epub-pt` | Build Sphinx EPUB documentation (Portuguese) |
+| `make paper-pdf` | Build the JCIS manuscript PDF with a clean SVG conversion cache |
+| `make paper-diff` | Build a latexdiff PDF against `BASE` (`make paper-diff BASE=<commit> NAME=<label>`); the manuscript base is the parent of the commit that imported the revised manuscript from Overleaf, found by subject with `git log --grep='from Overleaf'` |
+| `make jcis-figures` | Regenerate the JCIS figures not produced by other commands |
+| `make benchmark` | Run performance benchmarks |
+| `make pre-commit` | Run pre-commit hooks on all files |
+| `make clean` | Remove build and cache artifacts |
+| `make help` | Show this help |
 
 ## Paper and analysis tooling
 
@@ -237,6 +249,10 @@ the manuscript. Run them with the project venv (`.venv/bin/python`):
 `make paper-pdf`; its timestamp follows the last commit that touched
 `jcis/article.tex`, `jcis/references.bib` or `jcis/Figures`, so rebuilding
 without changing those sources yields an identical PDF.
+
+The LaTeX tables written by `chaotic-pfc run analysis export-tables` (and by
+`chaotic-pfc run all`) are versioned under `data/analysis_output/tables/{pt,en}/`
+as the reference output of the analysis step.
 
 ## Documentation
 

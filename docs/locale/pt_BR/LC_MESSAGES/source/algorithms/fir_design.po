@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-12 16:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -167,13 +167,13 @@ msgstr "``bandstop``"
 
 #: ../../source/algorithms/fir_design.rst:69
 msgid ""
-"For bandpass and bandstop, the bandwidth :math:`\\Delta` defaults to "
-":math:`0.05\\,\\pi`; the reduced ``--quick`` smoke-test grid uses "
-":math:`0.0375`."
-msgstr "Para os filtros passa-faixa e rejeita-faixa, a largura de banda :math:`\\Delta` padrão é :math:`0.05\\,\\pi`; a grade reduzida do modo ``--quick`` usa :math:`0.0375`."
+"For bandpass and bandstop, the bandwidth parameter is ``bandwidth=0.05`` "
+"(:math:`\\Delta\\omega = 0.05\\,\\pi` on the :math:`\\omega/\\pi` axis); "
+"the reduced ``--quick`` smoke-test grid uses :math:`0.0375`."
+msgstr "Para os filtros passa-faixa e rejeita-faixa, o parâmetro de largura de banda é ``bandwidth=0.05`` (:math:`\\Delta\\omega = 0.05\\,\\pi` no eixo :math:`\\omega/\\pi`); a grade reduzida do modo ``--quick`` usa :math:`0.0375`."
 
 
-#: ../../source/algorithms/fir_design.rst:73
+#: ../../source/algorithms/fir_design.rst:74
 msgid ""
 "Lowpass is the default because it is the most common configuration in "
 "communication engineering and serves as the baseline for all comparisons."
@@ -181,11 +181,11 @@ msgstr ""
 "Passa-baixas é o padrão porque é a configuração mais comum em engenharia "
 "de comunicação e serve como linha de base para todas as comparações."
 
-#: ../../source/algorithms/fir_design.rst:77
+#: ../../source/algorithms/fir_design.rst:78
 msgid "Windows"
 msgstr "Janelas"
 
-#: ../../source/algorithms/fir_design.rst:79
+#: ../../source/algorithms/fir_design.rst:80
 msgid ""
 "The FIR design uses one of seven window functions to shape the filter's "
 "frequency response:"
@@ -193,174 +193,169 @@ msgstr ""
 "O projeto FIR usa uma de sete funções de janela para moldar a resposta em"
 " frequência do filtro:"
 
-#: ../../source/algorithms/fir_design.rst:85
+#: ../../source/algorithms/fir_design.rst:86
 msgid "Window"
 msgstr "Janela"
 
-#: ../../source/algorithms/fir_design.rst:86
+#: ../../source/algorithms/fir_design.rst:87
 msgid "Key"
 msgstr "Identificador"
 
-#: ../../source/algorithms/fir_design.rst:87
+#: ../../source/algorithms/fir_design.rst:88
 msgid "Stopband attenuation"
 msgstr "Atenuação na banda de rejeição"
 
-
-#: ../../source/algorithms/fir_design.rst:88
+#: ../../source/algorithms/fir_design.rst:89
 msgid "Peak side lobe (window)"
 msgstr "Pico de lóbulo lateral (janela)"
 
-
-#: ../../source/algorithms/fir_design.rst:89
+#: ../../source/algorithms/fir_design.rst:90
 msgid "Ripple"
 msgstr "Ondulação"
 
-#: ../../source/algorithms/fir_design.rst:90
+#: ../../source/algorithms/fir_design.rst:91
 msgid "Hamming"
 msgstr "Hamming"
 
-#: ../../source/algorithms/fir_design.rst:91
+#: ../../source/algorithms/fir_design.rst:92
 msgid "``hamming``"
 msgstr "``hamming``"
 
-#: ../../source/algorithms/fir_design.rst:92
+#: ../../source/algorithms/fir_design.rst:93
 msgid "~53 dB"
 msgstr "~53 dB"
 
-#: ../../source/algorithms/fir_design.rst:93
+#: ../../source/algorithms/fir_design.rst:94
 msgid "−43 dB"
 msgstr "−43 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:94
-#: ../../source/algorithms/fir_design.rst:99
-#: ../../source/algorithms/fir_design.rst:119
+#: ../../source/algorithms/fir_design.rst:95
+#: ../../source/algorithms/fir_design.rst:100
+#: ../../source/algorithms/fir_design.rst:120
 msgid "Moderate"
 msgstr "Moderada"
 
-#: ../../source/algorithms/fir_design.rst:95
+#: ../../source/algorithms/fir_design.rst:96
 msgid "Hann"
 msgstr "Hann"
 
-#: ../../source/algorithms/fir_design.rst:96
+#: ../../source/algorithms/fir_design.rst:97
 msgid "``hann``"
 msgstr "``hann``"
 
-#: ../../source/algorithms/fir_design.rst:97
+#: ../../source/algorithms/fir_design.rst:98
 msgid "~44 dB"
 msgstr "~44 dB"
 
-#: ../../source/algorithms/fir_design.rst:98
+#: ../../source/algorithms/fir_design.rst:99
 msgid "−32 dB"
 msgstr "−32 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:100
+#: ../../source/algorithms/fir_design.rst:101
 msgid "Blackman"
 msgstr "Blackman"
 
-#: ../../source/algorithms/fir_design.rst:101
+#: ../../source/algorithms/fir_design.rst:102
 msgid "``blackman``"
 msgstr "``blackman``"
 
-#: ../../source/algorithms/fir_design.rst:102
+#: ../../source/algorithms/fir_design.rst:103
 msgid "~74 dB"
 msgstr "~74 dB"
 
-#: ../../source/algorithms/fir_design.rst:103
+#: ../../source/algorithms/fir_design.rst:104
 msgid "−58 dB"
 msgstr "−58 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:104
+#: ../../source/algorithms/fir_design.rst:105
 msgid "Low"
 msgstr "Baixa"
 
-#: ../../source/algorithms/fir_design.rst:105
+#: ../../source/algorithms/fir_design.rst:106
 msgid "Blackman-Harris"
 msgstr "Blackman-Harris"
 
-#: ../../source/algorithms/fir_design.rst:106
+#: ../../source/algorithms/fir_design.rst:107
 msgid "``blackmanharris``"
 msgstr "``blackmanharris``"
 
-#: ../../source/algorithms/fir_design.rst:107
+#: ../../source/algorithms/fir_design.rst:108
 msgid "~92 dB"
 msgstr "~92 dB"
 
-#: ../../source/algorithms/fir_design.rst:108
+#: ../../source/algorithms/fir_design.rst:109
 msgid "−92 dB"
 msgstr "−92 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:109
+#: ../../source/algorithms/fir_design.rst:110
 msgid "Very low"
 msgstr "Muito baixa"
 
-#: ../../source/algorithms/fir_design.rst:110
+#: ../../source/algorithms/fir_design.rst:111
 msgid "Rectangular"
 msgstr "Retangular"
 
-#: ../../source/algorithms/fir_design.rst:111
+#: ../../source/algorithms/fir_design.rst:112
 msgid "``boxcar``"
 msgstr "``boxcar``"
 
-#: ../../source/algorithms/fir_design.rst:112
+#: ../../source/algorithms/fir_design.rst:113
 msgid "~13 dB"
 msgstr "~13 dB"
 
-#: ../../source/algorithms/fir_design.rst:113
+#: ../../source/algorithms/fir_design.rst:114
 msgid "−13 dB"
 msgstr "−13 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:114
+#: ../../source/algorithms/fir_design.rst:115
 msgid "High"
 msgstr "Alta"
 
-#: ../../source/algorithms/fir_design.rst:115
+#: ../../source/algorithms/fir_design.rst:116
 msgid "Bartlett"
 msgstr "Bartlett"
 
-#: ../../source/algorithms/fir_design.rst:116
+#: ../../source/algorithms/fir_design.rst:117
 msgid "``bartlett``"
 msgstr "``bartlett``"
 
-#: ../../source/algorithms/fir_design.rst:117
+#: ../../source/algorithms/fir_design.rst:118
 msgid "~25 dB"
 msgstr "~25 dB"
 
-#: ../../source/algorithms/fir_design.rst:118
+#: ../../source/algorithms/fir_design.rst:119
 msgid "−27 dB"
 msgstr "−27 dB"
 
-
-#: ../../source/algorithms/fir_design.rst:120
+#: ../../source/algorithms/fir_design.rst:121
 msgid "Kaiser"
 msgstr "Kaiser"
 
-#: ../../source/algorithms/fir_design.rst:121
+#: ../../source/algorithms/fir_design.rst:122
 msgid "``kaiser``"
 msgstr "``kaiser``"
 
-#: ../../source/algorithms/fir_design.rst:122
+#: ../../source/algorithms/fir_design.rst:123
 msgid "Adjustable via :math:`\\beta`"
 msgstr "Adjustable via :math:`\\beta`"
 
-#: ../../source/algorithms/fir_design.rst:123
 #: ../../source/algorithms/fir_design.rst:124
+#: ../../source/algorithms/fir_design.rst:125
 msgid "Adjustable"
 msgstr "Ajustável"
 
-#: ../../source/algorithms/fir_design.rst:126
+#: ../../source/algorithms/fir_design.rst:127
 msgid ""
 "The **stopband attenuation** column is the attenuation delivered by the "
 "designed filter; the **peak side lobe** column is the level of the window"
 " itself, matching Table I of the article (adapted from [Harris1978]_)."
-msgstr "A coluna **atenuação na banda de rejeição** é a atenuação entregue pelo filtro projetado; a coluna **pico de lóbulo lateral** é o nível da própria janela, conforme a Tabela I do artigo (adaptada de [Harris1978]_)."
+msgstr ""
+"A coluna **atenuação na banda de rejeição** é a atenuação entregue pelo "
+"filtro projetado; a coluna **pico de lóbulo lateral** é o nível da "
+"própria janela, conforme a Tabela I do artigo (adaptada de "
+"[Harris1978]_)."
 
-
-#: ../../source/algorithms/fir_design.rst:131
+#: ../../source/algorithms/fir_design.rst:132
 msgid ""
 "**Kaiser window** deserves special attention.  The shape parameter "
 ":math:`\\beta` controls the trade‑off between main‑lobe width and "
@@ -376,11 +371,11 @@ msgstr ""
 "across :math:`\\beta \\in [2, 14]` in steps of :math:`0.5` for each "
 "filter type."
 
-#: ../../source/algorithms/fir_design.rst:139
+#: ../../source/algorithms/fir_design.rst:140
 msgid "Stability and the fixed point"
 msgstr "Estabilidade e o ponto fixo"
 
-#: ../../source/algorithms/fir_design.rst:141
+#: ../../source/algorithms/fir_design.rst:142
 msgid ""
 "When an FIR filter is inserted into the Hénon feedback loop, the Jacobian"
 " matrix grows from :math:`2 \\times 2` to :math:`K \\times K`, where "
@@ -388,33 +383,43 @@ msgid ""
 "\\le 2`), with :math:`N_s` the number of filter coefficients that feed "
 "back into the dynamics.  The implementation reserves one extra auxiliary "
 "state slot for :math:`N_s = 3`."
-msgstr "Quando um filtro FIR é inserido no laço de realimentação de Hénon, a matriz Jacobiana cresce de :math:`2 \\times 2` para :math:`K \\times K`, onde :math:`K = N_s` para :math:`N_s \\ge 3` (e :math:`K = 2` para :math:`N_s \\le 2`), sendo :math:`N_s` o número de coeficientes do filtro que realimentam a dinâmica.  A implementação reserva um espaço auxiliar extra no estado para :math:`N_s = 3`."
+msgstr ""
+"Quando um filtro FIR é inserido no laço de realimentação de Hénon, a "
+"matriz Jacobiana cresce de :math:`2 \\times 2` para :math:`K \\times K`, "
+"onde :math:`K = N_s` para :math:`N_s \\ge 3` (e :math:`K = 2` para "
+":math:`N_s \\le 2`), sendo :math:`N_s` o número de coeficientes do filtro"
+" que realimentam a dinâmica.  A implementação reserva um espaço auxiliar "
+"extra no estado para :math:`N_s = 3`."
 
-
-#: ../../source/algorithms/fir_design.rst:148
+#: ../../source/algorithms/fir_design.rst:149
 msgid ""
 "The **fixed point** of the combined map‑plus‑filter system solves "
 ":math:`G^2 p^2 + (1 - \\beta) p - \\alpha = 0`, whose positive root is"
-msgstr "O **ponto fixo** do sistema combinado mapa‑mais‑filtro resolve :math:`G^2 p^2 + (1 - \\beta) p - \\alpha = 0`, cuja raiz positiva é"
+msgstr ""
+"O **ponto fixo** do sistema combinado mapa‑mais‑filtro resolve :math:`G^2"
+" p^2 + (1 - \\beta) p - \\alpha = 0`, cuja raiz positiva é"
 
-
-#: ../../source/algorithms/fir_design.rst:151
+#: ../../source/algorithms/fir_design.rst:152
 msgid ""
 "p^{+} = \\frac{2\\alpha}{(1-\\beta) + \\sqrt{(1-\\beta)^2 + 4\\alpha "
 "G^2}},"
-msgstr "p^{+} = \\frac{2\\alpha}{(1-\\beta) + \\sqrt{(1-\\beta)^2 + 4\\alpha G^2}},"
+msgstr ""
+"p^{+} = \\frac{2\\alpha}{(1-\\beta) + \\sqrt{(1-\\beta)^2 + 4\\alpha "
+"G^2}},"
 
-
-#: ../../source/algorithms/fir_design.rst:155
+#: ../../source/algorithms/fir_design.rst:156
 msgid ""
 "with :math:`G = \\sum_k c_k` the DC gain.  This cancellation‑free form is"
 " the one used by the code (it stays accurate as :math:`G \\to 0`).  For "
 "the system to have a bounded attractor, the fixed point must be finite "
 "and the filter must be stable (all poles inside the unit circle)."
-msgstr "com :math:`G = \\sum_k c_k` o ganho DC.  Esta forma sem cancelamento é a usada pelo código (permanece precisa quando :math:`G \\to 0`).  Para que o sistema tenha um atrator limitado, o ponto fixo deve ser finito e o filtro deve ser estável (todos os polos dentro do círculo unitário)."
+msgstr ""
+"com :math:`G = \\sum_k c_k` o ganho DC.  Esta forma sem cancelamento é a "
+"usada pelo código (permanece precisa quando :math:`G \\to 0`).  Para que "
+"o sistema tenha um atrator limitado, o ponto fixo deve ser finito e o "
+"filtro deve ser estável (todos os polos dentro do círculo unitário)."
 
-
-#: ../../source/algorithms/fir_design.rst:160
+#: ../../source/algorithms/fir_design.rst:161
 msgid ""
 "The function :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_max` handles "
 "the 4‑D pole‑filtered variant, which introduces an additional stability "
@@ -425,30 +430,37 @@ msgstr ""
 "parameter (pole radius :math:`r`) that must satisfy :math:`0 \\\\le r < "
 "1`."
 
-#: ../../source/algorithms/fir_design.rst:165
+#: ../../source/algorithms/fir_design.rst:166
 msgid "Known limitations"
 msgstr "Limitações conhecidas"
 
-#: ../../source/algorithms/fir_design.rst:167
+#: ../../source/algorithms/fir_design.rst:168
 msgid ""
 "**Cutoff extremes.**  :math:`\\omega_c \\to 0` produces a filter that "
 "passes almost nothing (all‑stop); :math:`\\omega_c \\to 1` passes almost "
 "everything (all‑pass).  Both extremes degenerate the filter and produce "
 "behaviour indistinguishable from the unfiltered map — the sweep grid "
 "excludes :math:`\\omega_c = 0` and :math:`\\omega_c = 1`."
-msgstr "**Extremos de corte.**  :math:`\\omega_c \\to 0` produz um filtro que quase não passa nada (rejeita tudo); :math:`\\omega_c \\to 1` passa quase tudo (passa-tudo).  Ambos os extremos degeneram o filtro e produzem comportamento indistinguível do mapa sem filtro — a grade da varredura exclui :math:`\\omega_c = 0` e :math:`\\omega_c = 1`."
+msgstr ""
+"**Extremos de corte.**  :math:`\\omega_c \\to 0` produz um filtro que "
+"quase não passa nada (rejeita tudo); :math:`\\omega_c \\to 1` passa quase"
+" tudo (passa-tudo).  Ambos os extremos degeneram o filtro e produzem "
+"comportamento indistinguível do mapa sem filtro — a grade da varredura "
+"exclui :math:`\\omega_c = 0` e :math:`\\omega_c = 1`."
 
-
-#: ../../source/algorithms/fir_design.rst:173
+#: ../../source/algorithms/fir_design.rst:174
 msgid ""
 "**Order limits.**  For :math:`N_z \\ge 40`, the filter design becomes "
 "numerically ill‑conditioned (the window function has extreme values at "
 "the filter edges).  The sweep currently tops at :math:`N_z = 40` "
 "(:math:`N_s = 41`)."
-msgstr "**Limites de ordem.**  Para :math:`N_z \\ge 40`, o projeto do filtro torna-se numericamente mal-condicionado (a função de janela tem valores extremos nas bordas do filtro).  A varredura vai atualmente até :math:`N_z = 40` (:math:`N_s = 41`)."
+msgstr ""
+"**Limites de ordem.**  Para :math:`N_z \\ge 40`, o projeto do filtro "
+"torna-se numericamente mal-condicionado (a função de janela tem valores "
+"extremos nas bordas do filtro).  A varredura vai atualmente até "
+":math:`N_z = 40` (:math:`N_s = 41`)."
 
-
-#: ../../source/algorithms/fir_design.rst:178
+#: ../../source/algorithms/fir_design.rst:179
 msgid ""
 "**DC gain.**  FIR filters designed with ``firwin`` have a DC gain of "
 "approximately 1.0 for lowpass , but not exactly, due to window tapering."
@@ -462,15 +474,17 @@ msgstr ""
 "coeficientes, razão pela qual o banco FIR é pré-computado uma vez em vez "
 "de reconstruído por ponto da grade."
 
-#: ../../source/algorithms/fir_design.rst:185
+#: ../../source/algorithms/fir_design.rst:186
 msgid "References"
 msgstr "Referências"
 
-
-#: ../../source/algorithms/fir_design.rst:187
+#: ../../source/algorithms/fir_design.rst:188
 msgid ""
 "F. J. Harris, \"On the use of windows for harmonic analysis with the "
 "discrete Fourier transform,\" *Proceedings of the IEEE*, vol. 66, no. 1, "
 "pp. 51-83, 1978."
 msgstr ""
+"F. J. Harris, \"On the use of windows for harmonic analysis with the "
+"discrete Fourier transform,\" *Proceedings of the IEEE*, vol. 66, no. 1, "
+"pp. 51-83, 1978."
 

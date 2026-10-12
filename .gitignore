@@ -103,6 +103,7 @@ desktop.ini
 # ─── Sphinx documentation ────────────────────────────────────────────────
 docs/_build/
 docs/api/generated/
+docs/locale/pt_BR/LC_MESSAGES/api/generated/
 _readthedocs/
 _build/
 
@@ -129,6 +130,9 @@ data/analysis_summary.json
 .benchmarks/
 # Large Plotly 3D HTML exports — regenerable via `chaotic-pfc run sweep plot-3d`
 figures/sweeps/beta_sweep_3d_*.html
+
+# Camera-ready figure output — regenerable via `chaotic-pfc run paper-figures`
+paper-figures/
 
 # ─── Reviewer / audit scratch (generated outputs and patch files) ─────────
 # Command outputs and generated .diff patches from the review rounds; these

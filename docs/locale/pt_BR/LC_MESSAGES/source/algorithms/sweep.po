@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-12 16:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -65,13 +65,19 @@ msgid ""
 ":math:`N_s \\in \\{2, \\dots, 41\\}`, i.e. :math:`N_z \\in \\{1, \\dots, "
 "40\\}`. Highpass and bandstop filters require an odd number of taps, so "
 "they sweep :math:`N_z \\in \\{2, 4, \\dots, 40\\}` only."
-msgstr "**Ordens** :math:`N_z = N_s - 1`, onde :math:`N_s` é o número de coeficientes (taps) do filtro FIR.  Filtros passa-baixas e passa-faixa varrem :math:`N_s \\in \\{2, \\dots, 41\\}`, isto é, :math:`N_z \\in \\{1, \\dots, 40\\}`. Filtros passa-altas e rejeita-faixa exigem um número ímpar de coeficientes, portanto varrem apenas :math:`N_z \\in \\{2, 4, \\dots, 40\\}`."
-
+msgstr ""
+"**Ordens** :math:`N_z = N_s - 1`, onde :math:`N_s` é o número de "
+"coeficientes (taps) do filtro FIR.  Filtros passa-baixas e passa-faixa "
+"varrem :math:`N_s \\in \\{2, \\dots, 41\\}`, isto é, :math:`N_z \\in "
+"\\{1, \\dots, 40\\}`. Filtros passa-altas e rejeita-faixa exigem um "
+"número ímpar de coeficientes, portanto varrem apenas :math:`N_z \\in "
+"\\{2, 4, \\dots, 40\\}`."
 
 #: ../../source/algorithms/sweep.rst:28
 msgid "**Cutoffs** :math:`\\omega_c \\in (0, 1)` — normalised cutoff frequency."
-msgstr "**Cortes** :math:`\\omega_c \\in (0, 1)` — frequência de corte normalizada."
-
+msgstr ""
+"**Cortes** :math:`\\omega_c \\in (0, 1)` — frequência de corte "
+"normalizada."
 
 #: ../../source/algorithms/sweep.rst:30
 msgid "For each grid point :math:`(N_z, \\omega_c)`:"
@@ -110,15 +116,20 @@ msgid ""
 ":math:`O(N_s^2)` per iteration.  This eliminates classification flips "
 "near the chaotic/periodic transition while keeping the common-case cost "
 "low."
-msgstr "A varredura usa um **estimador híbrido**: o caminho padrão de vetor único (descrito abaixo) executa em :math:`O(N_s)` por iteração; células cujo :math:`\\lambda_{\\max}` está próximo de zero (:math:`|\\lambda| < 5 \\times 10^{-3}`) são recalculadas de forma transparente com o espectro completo em :math:`O(N_s^2)` por iteração.  Isso elimina inversões de classificação próximas à transição caótico/periódico, mantendo baixo o custo do caso comum."
-
+msgstr ""
+"A varredura usa um **estimador híbrido**: o caminho padrão de vetor único"
+" (descrito abaixo) executa em :math:`O(N_s)` por iteração; células cujo "
+":math:`\\lambda_{\\max}` está próximo de zero (:math:`|\\lambda| < 5 "
+"\\times 10^{-3}`) são recalculadas de forma transparente com o espectro "
+"completo em :math:`O(N_s^2)` por iteração.  Isso elimina inversões de "
+"classificação próximas à transição caótico/periódico, mantendo baixo o "
+"custo do caso comum."
 
 #: ../../source/algorithms/sweep.rst:45
 msgid ""
 "The total cost therefore depends on the fraction :math:`f` of marginal "
 "cells:"
 msgstr "O custo total, portanto, depende da fração :math:`f` de células marginais:"
-
 
 #: ../../source/algorithms/sweep.rst:47
 msgid ""
@@ -149,12 +160,19 @@ msgid ""
 "iteration space following Numba's static schedule.  To prevent load "
 "imbalance (grid points with larger-order filters are proportionally more "
 "expensive), the tasks are ordered by estimated cost before being "
-"interleaved across threads by "
-":func:`~chaotic_pfc.analysis.sweep._kernel._build_task_order`. This keeps"
-" every thread busy for approximately the same wall time without any "
-"inter-process communication overhead."
-msgstr "Toda a varredura executa dentro de um único laço ``numba.prange`` (``_sweep_kernel``). Cada thread recebe um bloco contíguo do espaço de iteração seguindo o escalonamento estático do Numba.  Para evitar desbalanceamento de carga (pontos da grade com filtros de ordem maior são proporcionalmente mais caros), as tarefas são ordenadas por custo estimado antes de serem entrelaçadas entre as threads por ``_build_task_order``. Isso mantém cada thread ocupada por aproximadamente o mesmo tempo de execução, sem nenhuma sobrecarga de comunicação entre processos."
-
+"interleaved across threads by ``_build_task_order``. This keeps every "
+"thread busy for approximately the same wall time without any inter-"
+"process communication overhead."
+msgstr ""
+"Toda a varredura executa dentro de um único laço ``numba.prange`` "
+"(``_sweep_kernel``). Cada thread recebe um bloco contíguo do espaço de "
+"iteração seguindo o escalonamento estático do Numba.  Para evitar "
+"desbalanceamento de carga (pontos da grade com filtros de ordem maior são"
+" proporcionalmente mais caros), as tarefas são ordenadas por custo "
+"estimado antes de serem entrelaçadas entre as threads por "
+"``_build_task_order``. Isso mantém cada thread ocupada por "
+"aproximadamente o mesmo tempo de execução, sem nenhuma sobrecarga de "
+"comunicação entre processos."
 
 #: ../../source/algorithms/sweep.rst:70
 msgid "**Why pre‑generated perturbations?**"
@@ -167,8 +185,13 @@ msgid ""
 " perturbations with :func:`numpy.random.default_rng` seeded by the "
 "user‑supplied seed.  The deterministic perturbation array is passed to "
 "the JIT kernel as a read‑only input."
-msgstr "O ``prange`` do Numba não pode usar o estado aleatório global do NumPy (seria uma condição de corrida).  Em vez disso, o lado Python pré‑gera todas as perturbações das condições iniciais com :func:`numpy.random.default_rng` semeado pela semente fornecida pelo usuário.  O array determinístico de perturbações é passado ao kernel JIT como entrada somente leitura."
-
+msgstr ""
+"O ``prange`` do Numba não pode usar o estado aleatório global do NumPy "
+"(seria uma condição de corrida).  Em vez disso, o lado Python pré‑gera "
+"todas as perturbações das condições iniciais com "
+":func:`numpy.random.default_rng` semeado pela semente fornecida pelo "
+"usuário.  O array determinístico de perturbações é passado ao kernel JIT "
+"como entrada somente leitura."
 
 #: ../../source/algorithms/sweep.rst:79
 msgid "Adaptive early-stop"
@@ -229,7 +252,6 @@ msgstr ""
 msgid "Benettin block reorthonormalisation"
 msgstr "Re-ortonormalização em blocos de Benettin"
 
-
 #: ../../source/algorithms/sweep.rst:104
 #, python-brace-format, python-format
 msgid ""
@@ -243,21 +265,31 @@ msgid ""
 "individual exponents differ by at most :math:`\\sim 10^{-2}` in high-"
 "variance cells and :math:`\\lesssim 10^{-3}` in converged cells — well "
 "within the sampling noise of the ensemble estimate."
-msgstr "A re-ortonormalização de Gram–Schmidt modificado (MGS) a cada iteração responde por ~82% do tempo de CPU do kernel.  Seguindo Benettin et al. (Meccanica **15**:9–20, 1980), os vetores tangentes são propagados sem MGS por :math:`K = 10` iterações consecutivas do mapa e re-ortonormalizados uma vez por bloco.  A fatoração QR de um produto de :math:`K` passos é matematicamente equivalente ao produto dos fatores por iteração para o espectro de Lyapunov (o log do determinante soma corretamente); os expoentes individuais diferem em no máximo :math:`\\sim 10^{-2}` em células de alta variância e :math:`\\lesssim 10^{-3}` em células convergidas — bem dentro do ruído de amostragem da estimativa do ensemble."
-
+msgstr ""
+"A re-ortonormalização de Gram–Schmidt modificado (MGS) a cada iteração "
+"responde por ~82% do tempo de CPU do kernel.  Seguindo Benettin et al. "
+"(Meccanica **15**:9–20, 1980), os vetores tangentes são propagados sem "
+"MGS por :math:`K = 10` iterações consecutivas do mapa e re-"
+"ortonormalizados uma vez por bloco.  A fatoração QR de um produto de "
+":math:`K` passos é matematicamente equivalente ao produto dos fatores por"
+" iteração para o espectro de Lyapunov (o log do determinante soma "
+"corretamente); os expoentes individuais diferem em no máximo :math:`\\sim"
+" 10^{-2}` em células de alta variância e :math:`\\lesssim 10^{-3}` em "
+"células convergidas — bem dentro do ruído de amostragem da estimativa do "
+"ensemble."
 
 #: ../../source/algorithms/sweep.rst:115
 msgid "Safety margins for :math:`K = 10`:"
 msgstr "Margens de segurança para :math:`K = 10`:"
-
 
 #: ../../source/algorithms/sweep.rst:117
 #, python-brace-format
 msgid ""
 "Norm growth per block: :math:`\\sim e^{\\lambda_1 K} \\approx 55` — no "
 "overflow risk in IEEE float64."
-msgstr "Crescimento da norma por bloco: :math:`\\sim e^{\\lambda_1 K} \\approx 55` — sem risco de overflow em float64 IEEE."
-
+msgstr ""
+"Crescimento da norma por bloco: :math:`\\sim e^{\\lambda_1 K} \\approx "
+"55` — sem risco de overflow em float64 IEEE."
 
 #: ../../source/algorithms/sweep.rst:119
 #, python-brace-format
@@ -265,8 +297,10 @@ msgid ""
 "Inter-vector collapse: :math:`\\sim e^{(\\lambda_1 - \\lambda_2) K} "
 "\\approx 5 \\times 10^{8}` for a typical gap of 2 — the MGS resolves this"
 " without loss of orthogonality."
-msgstr "Colapso entre vetores: :math:`\\sim e^{(\\lambda_1 - \\lambda_2) K} \\approx 5 \\times 10^{8}` para um gap típico de 2 — o MGS resolve isso sem perda de ortogonalidade."
-
+msgstr ""
+"Colapso entre vetores: :math:`\\sim e^{(\\lambda_1 - \\lambda_2) K} "
+"\\approx 5 \\times 10^{8}` para um gap típico de 2 — o MGS resolve isso "
+"sem perda de ortogonalidade."
 
 #: ../../source/algorithms/sweep.rst:123
 msgid ""
@@ -276,8 +310,13 @@ msgid ""
 ":math:`N_{\\text{itera}}` is not a multiple of :math:`K` (the warmup "
 "divergence early-exit bypasses the partial block because the Lyapunov sum"
 " is already NaN)."
-msgstr "O período do bloco divide o intervalo de verificação adaptativa (:math:`K \\mid K_{\\text{checkpoint}} = 100`), de modo que toda verificação de convergência cai em um tick de ortonormalização.  Um MGS final de bloco parcial executa quando :math:`N_{\\text{itera}}` não é múltiplo de :math:`K` (a saída antecipada por divergência no aquecimento ignora o bloco parcial porque a soma de Lyapunov já é NaN)."
-
+msgstr ""
+"O período do bloco divide o intervalo de verificação adaptativa (:math:`K"
+" \\mid K_{\\text{checkpoint}} = 100`), de modo que toda verificação de "
+"convergência cai em um tick de ortonormalização.  Um MGS final de bloco "
+"parcial executa quando :math:`N_{\\text{itera}}` não é múltiplo de "
+":math:`K` (a saída antecipada por divergência no aquecimento ignora o "
+"bloco parcial porque a soma de Lyapunov já é NaN)."
 
 #: ../../source/algorithms/sweep.rst:130
 msgid ""
@@ -285,13 +324,16 @@ msgid ""
 " the block scheme reduces the kernel runtime by 3–6× depending on the "
 "fraction of divergent grid points (which short-circuit the Lyapunov loop "
 "early).  On a full bandstop sweep the measured speedup is 5.9×."
-msgstr "Combinado com a varredura diferida de vetores tangentes da seção anterior, o esquema em blocos reduz o tempo de execução do kernel em 3–6×, dependendo da fração de pontos divergentes da grade (que encurtam o laço de Lyapunov).  Em uma varredura rejeita-faixa completa, o ganho medido é de 5,9×."
-
+msgstr ""
+"Combinado com a varredura diferida de vetores tangentes da seção "
+"anterior, o esquema em blocos reduz o tempo de execução do kernel em "
+"3–6×, dependendo da fração de pontos divergentes da grade (que encurtam o"
+" laço de Lyapunov).  Em uma varredura rejeita-faixa completa, o ganho "
+"medido é de 5,9×."
 
 #: ../../source/algorithms/sweep.rst:136
 msgid "Single-vector estimator"
 msgstr "Estimador de vetor único"
-
 
 #: ../../source/algorithms/sweep.rst:138
 msgid ""
@@ -300,8 +342,12 @@ msgid ""
 "be evolved and normalised in isolation, and its growth rate is exactly "
 "the largest Lyapunov exponent.  The per-iteration cost drops from "
 ":math:`O(N_s^2)` (full-spectrum J@W + MGS) to :math:`O(N_s)`."
-msgstr "A primeira coluna da matriz tangente é **independente** de todas as outras colunas na fatoração MGS.  Em aritmética exata, a coluna 0 pode ser evoluída e normalizada isoladamente, e sua taxa de crescimento é exatamente o maior expoente de Lyapunov.  O custo por iteração cai de :math:`O(N_s^2)` (J@W + MGS com espectro completo) para :math:`O(N_s)`."
-
+msgstr ""
+"A primeira coluna da matriz tangente é **independente** de todas as "
+"outras colunas na fatoração MGS.  Em aritmética exata, a coluna 0 pode "
+"ser evoluída e normalizada isoladamente, e sua taxa de crescimento é "
+"exatamente o maior expoente de Lyapunov.  O custo por iteração cai de "
+":math:`O(N_s^2)` (J@W + MGS com espectro completo) para :math:`O(N_s)`."
 
 #: ../../source/algorithms/sweep.rst:144
 #, python-brace-format
@@ -311,13 +357,17 @@ msgid ""
 "evolve only the first tangent vector and accumulate :math:`\\log "
 "\\|\\mathbf{v}\\|` once per Benettin block.  On a full bandstop sweep the"
 " measured speedup vs. the full-spectrum kernel is **3.6×**."
-msgstr "As variantes de kernel :math:`_v` (``_lyap_online_core_v``, ``_propagate_v_n12``, ``_propagate_v_nN``) implementam exatamente isso — evoluem apenas o primeiro vetor tangente e acumulam :math:`\\log \\|\\mathbf{v}\\|` uma vez por bloco de Benettin.  Em uma varredura rejeita-faixa completa, o ganho medido em relação ao kernel de espectro completo é de **3,6×**."
-
+msgstr ""
+"As variantes de kernel :math:`_v` (``_lyap_online_core_v``, "
+"``_propagate_v_n12``, ``_propagate_v_nN``) implementam exatamente isso — "
+"evoluem apenas o primeiro vetor tangente e acumulam :math:`\\log "
+"\\|\\mathbf{v}\\|` uma vez por bloco de Benettin.  Em uma varredura "
+"rejeita-faixa completa, o ganho medido em relação ao kernel de espectro "
+"completo é de **3,6×**."
 
 #: ../../source/algorithms/sweep.rst:151
 msgid "Hybrid fallback for marginal cells"
 msgstr "Fallback híbrido para células marginais"
-
 
 #: ../../source/algorithms/sweep.rst:153
 #, python-brace-format, python-format
@@ -329,20 +379,27 @@ msgid ""
 "column 0) differs from the true :math:`\\lambda_{\\max}` by at most "
 ":math:`3.5 \\times 10^{-3}` — never enough to flip the sign of an "
 "individual IC."
-msgstr "O MGS de bloco finito (:math:`K=10`) pode fazer expoentes adjacentes se cruzarem em 2,6–19,4 % das células finitas (medido em 124 varreduras): :math:`\\text{lyap\\_sum}[k] > \\text{lyap\\_sum}[0]` para algum :math:`k > 0`. Quando isso ocorre, o estimador de vetor único (que sempre escolhe a coluna 0) difere do verdadeiro :math:`\\lambda_{\\max}` em no máximo :math:`3.5 \\times 10^{-3}` — nunca o suficiente para inverter o sinal de uma CI individual."
-
+msgstr ""
+"O MGS de bloco finito (:math:`K=10`) pode fazer expoentes adjacentes se "
+"cruzarem em 2,6–19,4 % das células finitas (medido em 124 varreduras): "
+":math:`\\text{lyap\\_sum}[k] > \\text{lyap\\_sum}[0]` para algum :math:`k"
+" > 0`. Quando isso ocorre, o estimador de vetor único (que sempre escolhe"
+" a coluna 0) difere do verdadeiro :math:`\\lambda_{\\max}` em no máximo "
+":math:`3.5 \\times 10^{-3}` — nunca o suficiente para inverter o sinal de"
+" uma CI individual."
 
 #: ../../source/algorithms/sweep.rst:161
 msgid ""
 "To eliminate the tiny probability of a classification flip near the "
 "transition boundary, the sweep kernel applies a **hybrid strategy**:"
-msgstr "Para eliminar a pequena probabilidade de inversão de classificação próxima à fronteira de transição, o kernel da varredura aplica uma **estratégia híbrida**:"
-
+msgstr ""
+"Para eliminar a pequena probabilidade de inversão de classificação "
+"próxima à fronteira de transição, o kernel da varredura aplica uma "
+"**estratégia híbrida**:"
 
 #: ../../source/algorithms/sweep.rst:164
 msgid "Run the fast :math:`_v` path for all ICs."
 msgstr "Executa o caminho rápido :math:`_v` para todas as CIs."
-
 
 #: ../../source/algorithms/sweep.rst:165
 #, python-brace-format
@@ -350,15 +407,18 @@ msgid ""
 "If the cell's mean :math:`|\\lambda| < 5 \\times 10^{-3}` (the "
 "``_VONLY_MARGIN`` threshold), re-run *all* ICs for that cell with the "
 "full-spectrum kernel."
-msgstr "Se a média da célula for :math:`|\\lambda| < 5 \\times 10^{-3}` (o limiar ``_VONLY_MARGIN``), recalcula *todas* as CIs daquela célula com o kernel de espectro completo."
-
+msgstr ""
+"Se a média da célula for :math:`|\\lambda| < 5 \\times 10^{-3}` (o limiar"
+" ``_VONLY_MARGIN``), recalcula *todas* as CIs daquela célula com o kernel"
+" de espectro completo."
 
 #: ../../source/algorithms/sweep.rst:168
 msgid ""
 "The decision is atomic per cell: no cell mixes estimates from different "
 "estimators."
-msgstr "A decisão é atômica por célula: nenhuma célula mistura estimativas de estimadores diferentes."
-
+msgstr ""
+"A decisão é atômica por célula: nenhuma célula mistura estimativas de "
+"estimadores diferentes."
 
 #: ../../source/algorithms/sweep.rst:171
 #, python-brace-format
@@ -373,13 +433,22 @@ msgid ""
 "have well-separated Lyapunov exponents); lowpass sweeps, where a large "
 "fraction of periodic cells have :math:`|\\lambda|` below the margin, see "
 ":math:`20\\%`–:math:`73\\%`."
-msgstr "A margem (:math:`5 \\times 10^{-3}`) é conservadora: o maior :math:`|\\Delta \\lambda|` medido em 124 varreduras é :math:`3.5 \\times 10^{-3}`, então qualquer célula aceita pelo caminho :math:`_v` (:math:`|\\lambda| \\geq 5 \\times 10^{-3}`) não pode mudar o sinal de classificação após a correção.  A fração de fallback depende fortemente do tipo de filtro: varreduras passa-altas, passa-faixa e rejeita-faixa tipicamente veem :math:`\\sim 0`–:math:`12\\%` das células finitas recaindo (a maioria das células tem expoentes de Lyapunov bem separados); varreduras passa-baixas, em que uma grande fração de células periódicas tem :math:`|\\lambda|` abaixo da margem, veem :math:`20\\%`–:math:`73\\%`."
-
+msgstr ""
+"A margem (:math:`5 \\times 10^{-3}`) é conservadora: o maior "
+":math:`|\\Delta \\lambda|` medido em 124 varreduras é :math:`3.5 \\times "
+"10^{-3}`, então qualquer célula aceita pelo caminho :math:`_v` "
+"(:math:`|\\lambda| \\geq 5 \\times 10^{-3}`) não pode mudar o sinal de "
+"classificação após a correção.  A fração de fallback depende fortemente "
+"do tipo de filtro: varreduras passa-altas, passa-faixa e rejeita-faixa "
+"tipicamente veem :math:`\\sim 0`–:math:`12\\%` das células finitas "
+"recaindo (a maioria das células tem expoentes de Lyapunov bem separados);"
+" varreduras passa-baixas, em que uma grande fração de células periódicas "
+"tem :math:`|\\lambda|` abaixo da margem, veem "
+":math:`20\\%`–:math:`73\\%`."
 
 #: ../../source/algorithms/sweep.rst:183
 msgid "Versioned checkpoint policy"
 msgstr "Política de checkpoints versionados"
-
 
 #: ../../source/algorithms/sweep.rst:185
 msgid ""
@@ -390,13 +459,18 @@ msgid ""
 "reproduces them **bit for bit** with ``fallback_mode=1``.  A change that "
 "breaks this equality is a regression, and the checkpoints must then be "
 "regenerated deliberately with ``tools/regenerate_sweeps.py``."
-msgstr "Os checkpoints ``.npz`` versionados no repositório foram regenerados com o kernel atual (o ponto fixo positivo sem cancelamento e o estimador de Benettin-K) e são canônicos: o teste de regressão ``tests/test_sweep_regressions.py::test_mode1_bitexact_baseline`` os reproduz **bit a bit** com ``fallback_mode=1``.  Uma mudança que quebre essa igualdade é uma regressão, e os checkpoints devem então ser regenerados deliberadamente com ``tools/regenerate_sweeps.py``."
-
+msgstr ""
+"Os checkpoints ``.npz`` versionados no repositório foram regenerados com "
+"o kernel atual (o ponto fixo positivo sem cancelamento e o estimador de "
+"Benettin-K) e são canônicos: o teste de regressão "
+"``tests/test_sweep_regressions.py::test_mode1_bitexact_baseline`` os "
+"reproduz **bit a bit** com ``fallback_mode=1``.  Uma mudança que quebre "
+"essa igualdade é uma regressão, e os checkpoints devem então ser "
+"regenerados deliberadamente com ``tools/regenerate_sweeps.py``."
 
 #: ../../source/algorithms/sweep.rst:196
 msgid "Backend dependence (Numba versus pure Python)"
 msgstr "Dependência do backend (Numba versus Python puro)"
-
 
 #: ../../source/algorithms/sweep.rst:198
 #, python-brace-format
@@ -408,20 +482,27 @@ msgid ""
 "the interpreted one.  On a representative sweep (Kaiser lowpass, "
 ":math:`\\beta_K = 13.5`, :math:`N_s \\in \\{2,\\dots,11\\}`, the 100 "
 "cutoffs, 25 initial conditions, seed 42 — 1000 cells):"
-msgstr "A reprodução bit a bit acima exige Numba.  Sem ele (``NUMBA_DISABLE_JIT=1``, ou o fallback ``chaotic_pfc._compat``) a mesma varredura fornece expoentes estatisticamente equivalentes, mas não idênticos, porque a recorrência tangente compilada arredonda de forma ligeiramente diferente da interpretada.  Em uma varredura representativa (passa-baixas Kaiser, :math:`\\beta_K = 13.5`, :math:`N_s \\in \\{2,\\dots,11\\}`, os 100 cortes, 25 condições iniciais, semente 42 — 1000 células):"
-
+msgstr ""
+"A reprodução bit a bit acima exige Numba.  Sem ele "
+"(``NUMBA_DISABLE_JIT=1``, ou o fallback ``chaotic_pfc._compat``) a mesma "
+"varredura fornece expoentes estatisticamente equivalentes, mas não "
+"idênticos, porque a recorrência tangente compilada arredonda de forma "
+"ligeiramente diferente da interpretada.  Em uma varredura representativa "
+"(passa-baixas Kaiser, :math:`\\beta_K = 13.5`, :math:`N_s \\in "
+"\\{2,\\dots,11\\}`, os 100 cortes, 25 condições iniciais, semente 42 — "
+"1000 células):"
 
 #: ../../source/algorithms/sweep.rst:206
 msgid ""
 "the number of chaotic points is the same in both backends, :math:`N_c = "
 "563`;"
-msgstr "o número de pontos caóticos é o mesmo nos dois backends, :math:`N_c = 563`;"
-
+msgstr ""
+"o número de pontos caóticos é o mesmo nos dois backends, :math:`N_c = "
+"563`;"
 
 #: ../../source/algorithms/sweep.rst:208
 msgid "**no cell changes class** (chaotic / periodic / divergent);"
 msgstr "**nenhuma célula muda de classe** (caótico / periódico / divergente);"
-
 
 #: ../../source/algorithms/sweep.rst:209
 #, python-brace-format
@@ -429,8 +510,11 @@ msgid ""
 "over the cells that are chaotic in both, :math:`|\\Delta\\lambda_1|` is "
 ":math:`1.5 \\times 10^{-4}` on average and at most :math:`3.9 \\times "
 "10^{-3}` — below the :math:`5 \\times 10^{-3}` marginal-cell margin;"
-msgstr "sobre as células caóticas nos dois, :math:`|\\Delta\\lambda_1|` é :math:`1.5 \\times 10^{-4}` em média e no máximo :math:`3.9 \\times 10^{-3}` — abaixo da margem de célula marginal de :math:`5 \\times 10^{-3}`;"
-
+msgstr ""
+"sobre as células caóticas nos dois, :math:`|\\Delta\\lambda_1|` é "
+":math:`1.5 \\times 10^{-4}` em média e no máximo :math:`3.9 \\times "
+"10^{-3}` — abaixo da margem de célula marginal de :math:`5 \\times "
+"10^{-3}`;"
 
 #: ../../source/algorithms/sweep.rst:213
 #, python-format
@@ -438,8 +522,9 @@ msgid ""
 "the raw ``h`` value is bit-identical in 38 % of the cells and differs in "
 "the remaining 62 %, always at the level of the small "
 ":math:`\\Delta\\lambda_1` above."
-msgstr "o valor bruto de ``h`` é bit-idêntico em 38 % das células e difere nos 62 % restantes, sempre no nível do pequeno :math:`\\Delta\\lambda_1` acima."
-
+msgstr ""
+"o valor bruto de ``h`` é bit-idêntico em 38 % das células e difere nos 62"
+" % restantes, sempre no nível do pequeno :math:`\\Delta\\lambda_1` acima."
 
 #: ../../source/algorithms/sweep.rst:217
 msgid ""
@@ -452,8 +537,16 @@ msgid ""
 "bit by LLVM; the map's sensitive dependence then amplifies that ~1 ULP "
 "seed.  Install Numba (the ``[fast]`` extra) whenever the checkpoints must"
 " be reproduced exactly."
-msgstr "A discrepância não está no mapa: ``_henon_n12_inplace`` / ``_henon_nN_inplace``, o ponto fixo, ``log``, ``sqrt`` e produtos escalares são bit-idênticos entre os dois backends.  Ela aparece nos kernels de propagação tangente (``_propagate_v_nN`` e ``_propagate_nN``), cuja recorrência de soma de produtos (``row2 = c1*w0 + cb02*w1 + m22*w2`` mais o acúmulo em ``tail``) é contraída/reassociada no último bit pelo LLVM; a dependência sensível do mapa então amplifica essa diferença de ~1 ULP.  Instale o Numba (o extra ``[fast]``) sempre que os checkpoints precisarem ser reproduzidos exatamente."
-
+msgstr ""
+"A discrepância não está no mapa: ``_henon_n12_inplace`` / "
+"``_henon_nN_inplace``, o ponto fixo, ``log``, ``sqrt`` e produtos "
+"escalares são bit-idênticos entre os dois backends.  Ela aparece nos "
+"kernels de propagação tangente (``_propagate_v_nN`` e ``_propagate_nN``),"
+" cuja recorrência de soma de produtos (``row2 = c1*w0 + cb02*w1 + "
+"m22*w2`` mais o acúmulo em ``tail``) é contraída/reassociada no último "
+"bit pelo LLVM; a dependência sensível do mapa então amplifica essa "
+"diferença de ~1 ULP.  Instale o Numba (o extra ``[fast]``) sempre que os "
+"checkpoints precisarem ser reproduzidos exatamente."
 
 #: ../../source/algorithms/sweep.rst:229
 msgid "Divergence handling (Opção B)"
@@ -465,23 +558,29 @@ msgid ""
 "infinity); from that iteration on every term of the exponent is non-"
 "finite, so the simulation can be stopped.  The divergence rule has three "
 "steps, as in the article:"
-msgstr "Uma órbita é considerada ilimitada quando seu estado se torna não finito (NaN ou infinito); a partir dessa iteração, todo termo do expoente é não finito, de modo que a simulação pode ser interrompida.  A regra de divergência tem três passos, como no artigo:"
-
+msgstr ""
+"Uma órbita é considerada ilimitada quando seu estado se torna não finito "
+"(NaN ou infinito); a partir dessa iteração, todo termo do expoente é não "
+"finito, de modo que a simulação pode ser interrompida.  A regra de "
+"divergência tem três passos, como no artigo:"
 
 #: ../../source/algorithms/sweep.rst:236
 msgid ""
 "**Estimator.** An initial condition whose state becomes non-finite is "
 "reported as non-finite."
-msgstr "**Estimador.** Uma condição inicial cujo estado se torna não finito é reportada como não finita."
-
+msgstr ""
+"**Estimador.** Uma condição inicial cujo estado se torna não finito é "
+"reportada como não finita."
 
 #: ../../source/algorithms/sweep.rst:238
 msgid ""
 "**Burn-in.** A grid point is **divergent** when at least one of its "
 "``n_initial`` initial conditions becomes non-finite during the ``Nitera``"
 " burn-in iterations."
-msgstr "**Burn-in.** Um ponto da grade é **divergente** quando pelo menos uma de suas ``n_initial`` condições iniciais se torna não finita durante as ``Nitera`` iterações de burn-in."
-
+msgstr ""
+"**Burn-in.** Um ponto da grade é **divergente** quando pelo menos uma de "
+"suas ``n_initial`` condições iniciais se torna não finita durante as "
+"``Nitera`` iterações de burn-in."
 
 #: ../../source/algorithms/sweep.rst:241
 msgid ""
@@ -490,10 +589,15 @@ msgid ""
 "the grid point is the mean of :math:`\\lambda_1` over the remaining "
 "initial conditions.  A point whose filter coefficients are non-finite is "
 "also divergent."
-msgstr "**Após o burn-in.** Uma condição inicial que só se torna não finita dentro da janela de estimação ``Nmap`` é **descartada**, e o valor do ponto da grade é a média de :math:`\\lambda_1` sobre as condições iniciais restantes.  Um ponto cujos coeficientes de filtro são não finitos também é divergente."
-
+msgstr ""
+"**Após o burn-in.** Uma condição inicial que só se torna não finita "
+"dentro da janela de estimação ``Nmap`` é **descartada**, e o valor do "
+"ponto da grade é a média de :math:`\\lambda_1` sobre as condições "
+"iniciais restantes.  Um ponto cujos coeficientes de filtro são não "
+"finitos também é divergente."
 
 #: ../../source/algorithms/sweep.rst:247
+#, python-brace-format
 msgid ""
 "The original implementation used a sentinel value :math:`-1 \\times "
 "10^{30}` to mark those points; **Opção B** (applied in v0.7.0) replaces "
@@ -502,8 +606,14 @@ msgid ""
 "from the chaotic/periodic counts (third category: *divergent*), and "
 ":func:`~chaotic_pfc.analysis.stats.lmax_statistics` ignores it when "
 "computing means and confidence intervals."
-msgstr "A implementação original usava um valor sentinela :math:`-1 \\times 10^{30}` para marcar aqueles pontos; a **Opção B** (aplicada na v0.7.0) substitui-o por **NaN**, que se propaga corretamente por todas as funções subsequentes: :func:`~chaotic_pfc.analysis.stats.area_summary` o exclui das contagens caótico/periódico (terceira categoria: *divergente*), e :func:`~chaotic_pfc.analysis.stats.lmax_statistics` o ignora ao calcular médias e intervalos de confiança."
-
+msgstr ""
+"A implementação original usava um valor sentinela :math:`-1 \\times "
+"10^{30}` para marcar aqueles pontos; a **Opção B** (aplicada na v0.7.0) "
+"substitui-o por **NaN**, que se propaga corretamente por todas as funções"
+" subsequentes: :func:`~chaotic_pfc.analysis.stats.area_summary` o exclui "
+"das contagens caótico/periódico (terceira categoria: *divergente*), e "
+":func:`~chaotic_pfc.analysis.stats.lmax_statistics` o ignora ao calcular "
+"médias e intervalos de confiança."
 
 #: ../../source/algorithms/sweep.rst:257
 msgid "Reproducibility"
@@ -518,8 +628,9 @@ msgid ""
 "The user seed (``seed`` kwarg) initialises a single "
 ":func:`numpy.random.default_rng` generator; there are no per‑worker "
 "sub‑seeds."
-msgstr "A semente do usuário (argumento ``seed``) inicializa um único gerador :func:`numpy.random.default_rng`; não há sub-sementes por worker."
-
+msgstr ""
+"A semente do usuário (argumento ``seed``) inicializa um único gerador "
+":func:`numpy.random.default_rng`; não há sub-sementes por worker."
 
 #: ../../source/algorithms/sweep.rst:264
 msgid ""
@@ -533,8 +644,9 @@ msgstr ""
 msgid ""
 "The Numba kernel consumes those pre‑drawn perturbations and holds no "
 "random state of its own, only deterministic arithmetic."
-msgstr "O kernel Numba consome essas perturbações pré-geradas e não mantém estado aleatório próprio, apenas aritmética determinística."
-
+msgstr ""
+"O kernel Numba consome essas perturbações pré-geradas e não mantém estado"
+" aleatório próprio, apenas aritmética determinística."
 
 #: ../../source/algorithms/sweep.rst:269
 msgid ""
@@ -542,8 +654,11 @@ msgid ""
 "``.npz`` files.  This is critical for scientific reproducibility; the CI "
 "pipeline only smoke-tests the orchestration with ``chaotic-pfc run all "
 "--quick-sweep``."
-msgstr "Executar a mesma varredura duas vezes com a mesma semente produz arquivos ``.npz`` byte-idênticos.  Isso é crítico para a reprodutibilidade científica; o pipeline de CI apenas faz um smoke test da orquestração com ``chaotic-pfc run all --quick-sweep``."
-
+msgstr ""
+"Executar a mesma varredura duas vezes com a mesma semente produz arquivos"
+" ``.npz`` byte-idênticos.  Isso é crítico para a reprodutibilidade "
+"científica; o pipeline de CI apenas faz um smoke test da orquestração com"
+" ``chaotic-pfc run all --quick-sweep``."
 
 #: ../../source/algorithms/sweep.rst:275
 msgid "Known limitations"
@@ -571,8 +686,9 @@ msgstr ""
 
 #: ../../source/algorithms/sweep.rst:285
 msgid "**Warmup compilation.**  The first call to ``_sweep_kernel`` triggers"
-msgstr "**Compilação de aquecimento.**  A primeira chamada a ``_sweep_kernel`` dispara"
-
+msgstr ""
+"**Compilação de aquecimento.**  A primeira chamada a ``_sweep_kernel`` "
+"dispara"
 
 #: ../../source/algorithms/sweep.rst:286
 msgid ""

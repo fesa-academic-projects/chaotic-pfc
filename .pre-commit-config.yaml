@@ -26,7 +26,9 @@ repos:
         exclude: ^(figures|data)/
       - id: check-added-large-files
         args: ["--maxkb=2500"]
-        exclude: ^(figures|data)/
+        # The versioned sweep checkpoints and the manuscript PDFs are the only
+        # intentionally large tracked files; figures hold vector sources.
+        exclude: ^(figures/|data/sweeps/|(jcis|articles)/.*\.pdf$)
       - id: check-ast
         exclude: ^(figures|data)/
       - id: check-case-conflict

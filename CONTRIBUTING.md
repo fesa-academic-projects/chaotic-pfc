@@ -97,7 +97,7 @@ The same checks run in CI on every push and pull request. Local pre-commit is a 
 
 ### Docstrings
 
-Public functions, classes, and modules use [NumPy-style docstrings](https://numpydoc.readthedocs.io/en/latest/format.html). They are consumed by Sphinx with the `numpydoc` extension to build the documentation hosted on Read the Docs.
+Public functions, classes, and modules use [NumPy-style docstrings](https://numpydoc.readthedocs.io/en/latest/format.html). They are consumed by Sphinx with the `napoleon` extension (`sphinx.ext.napoleon`) to build the documentation hosted on Read the Docs.
 
 ### Tests
 
@@ -150,7 +150,7 @@ These conventions are working if: diffs contain only changes that trace to the t
 - Auto-generated API reference (`docs/api/generated/`) is **intentionally
   kept in English only**. Translation would create unmaintainable drift as
   docstrings evolve.
-- When adding a new `.rst` page, run `make gettext && make update-po` and
+- When adding a new `.rst` page, run `cd docs && make gettext && make update-po` and
   translate the resulting `.po` file in the corresponding `locale/`
   subdirectory.
 - When changing existing pages, `msgmerge` will mark affected entries as

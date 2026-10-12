@@ -1,4 +1,4 @@
-.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-diff docs docs-strict docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -6,7 +6,7 @@ VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
 
 check-venv:  ## Fail with a clear message when the project virtualenv is missing
-	@test -x "$(PYTHON)" || { \
+	@command -v "$(PYTHON)" >/dev/null 2>&1 || { \
 		echo "error: $(PYTHON) not found."; \
 		echo "create the project virtualenv with:"; \
 		echo "    python -m venv $(VENV) && $(VENV)/bin/pip install -e '.[dev,fast]'"; \
@@ -14,10 +14,26 @@ check-venv:  ## Fail with a clear message when the project virtualenv is missing
 	}
 
 help:  ## Show this help
-	@grep -E '^[a-zA-Z_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-install:  ## Install the package with dev dependencies
-	pip install -e ".[dev]"
+setup:  ## Create the venv, install the dev/docs extras and the pre-commit hooks
+	python -m venv $(VENV)
+	$(VENV)/bin/python -m pip install --upgrade pip
+	$(VENV)/bin/pip install -e ".[dev,fast,docs]"
+	$(VENV)/bin/pre-commit install
+	@echo ""
+	@echo "optional external tools (missing entries are warnings, not failures):"
+	@for entry in "gettext:msgfmt" "pandoc:pandoc" "LibreOffice:soffice"; do \
+		name=$${entry%%:*}; cmd=$${entry##*:}; \
+		if command -v "$$cmd" >/dev/null 2>&1; then \
+			echo "  [ok]   $$name -> $$(command -v $$cmd)"; \
+		else \
+			echo "  [warn] $$name not found ($$cmd); some optional targets will not run"; \
+		fi; \
+	done
+
+install:  ## Install the package with dev dependencies and Numba
+	pip install -e ".[dev,fast]"
 
 test: check-venv  ## Run the full test suite
 	$(PYTHON) -m pytest
@@ -108,9 +124,14 @@ docs-pt:  ## Build Sphinx HTML documentation (Portuguese)
 
 docs-all: docs docs-pt  ## Build Sphinx HTML documentation (both languages)
 
-docs-strict: check-venv  ## Build the docs with -W -n and run the doctests
+docs-strict: check-venv docs-i18n-check  ## Build the docs with -W -n and run the doctests
 	cd docs && ../$(SPHINXBUILD) -W -n --keep-going -b html . _build/strict_html -D language=en
 	cd docs && ../$(SPHINXBUILD) -b doctest . _build/doctest -D language=en
+
+docs-i18n-check: check-venv  ## Fail when a pt-BR narrative catalogue is stale or untranslated
+	SPHINX_BUILD="$(abspath $(SPHINXBUILD))" \
+	SPHINX_INTL="$(abspath $(VENV))/bin/sphinx-intl" \
+	tools/check_pt_br_translations.sh
 
 docs-pdf:  ## Build Sphinx PDF documentation (English)
 	cd docs && ../$(SPHINXBUILD) -b latex . _build/latex -D language=en

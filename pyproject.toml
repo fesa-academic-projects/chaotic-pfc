@@ -21,10 +21,10 @@ keywords = [
     "fir-filter",
 ]
 authors = [
-    { name = "Roger Freitas Pereira", email = "roger_freitas@live.com" },
-    { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
     { name = "Kauê de Souza Silva", email = "kaue.moelas.com@gmail.com" },
+    { name = "Roger Freitas Pereira", email = "roger_freitas@live.com" },
     { name = "Marcos Felipe Correa Soares", email = "marcosfelipe.soares2014@gmail.com" },
+    { name = "Guilherme Rodrigues dos Santos", email = "guilhermerodriguess130@gmail.com" },
     { name = "Vinícius da Silva Borges" },
 ]
 dependencies = [
@@ -70,7 +70,6 @@ docs = [
     "furo>=2024.0",
     "sphinx-copybutton>=0.5",
     "sphinx-intl>=2.0",
-    "nbsphinx>=0.9",
     "jupyter>=1.0",
 ]
 viz3d = [
@@ -95,8 +94,6 @@ markers = [
 # Use 5 rounds so throughput numbers are reliable
 rounds = 5
 timer = "time.perf_counter"
-# Only run benchmarks in the benchmarks/ directory
-include = ["benchmarks/"]
 
 # ───────────────────────────────────────────────────────────────────────────
 # Coverage — measurement config for pytest-cov

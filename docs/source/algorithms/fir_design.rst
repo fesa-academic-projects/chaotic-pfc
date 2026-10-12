@@ -66,8 +66,9 @@ Four pass‑zero configurations are supported:
      - remainder
      - :math:`[\omega_c - \Delta/2,\; \omega_c + \Delta/2]`
 
-For bandpass and bandstop, the bandwidth :math:`\Delta` defaults to
-:math:`0.05\,\pi`; the reduced ``--quick`` smoke-test grid uses
+For bandpass and bandstop, the bandwidth parameter is
+``bandwidth=0.05`` (:math:`\Delta\omega = 0.05\,\pi` on the
+:math:`\omega/\pi` axis); the reduced ``--quick`` smoke-test grid uses
 :math:`0.0375`.
 
 Lowpass is the default because it is the most common configuration in

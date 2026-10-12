@@ -64,6 +64,9 @@ msgid ""
 "Regime in the Filtered Hénon Map: Effect of FIR Filter Type and Design "
 "Window\"* (sources in ``jcis/article.tex``)."
 msgstr ""
+"O manuscrito que faz uso deste pacote é *\"Analysis of the Chaotic Regime "
+"in the Filtered Hénon Map: Effect of FIR Filter Type and Design Window\"* "
+"(fontes em ``jcis/article.tex``)."
 
 #: ../../citing.rst:42
 msgid "License"

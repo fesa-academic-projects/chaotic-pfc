@@ -117,6 +117,7 @@ _CITE_RE = re.compile(r"\\(?P<cmd>[Cc]ite[A-Za-z]*)\*?\s*(?:\[[^\]]*\]\s*)*\{(?P
 _LABEL_RE = re.compile(r"\\label\s*\{([^}]*)\}")
 _REF_RE = re.compile(r"\\(?:eqref|ref|subref)\s*\{([^}]*)\}")
 _GRAPHICS_RE = re.compile(r"\\includegraphics\s*\*?(?:\s*\[[^\]]*\])*\s*\{([^}]*)\}")
+_INCLUDESVG_RE = re.compile(r"\\includesvg\s*\*?(?:\s*\[[^\]]*\])*\s*\{([^}]*)\}")
 _INPUT_RE = re.compile(r"\\(?:input|include)\s*\{([^}]*)\}")
 _BIBLIOGRAPHY_RE = re.compile(r"\\bibliography\s*\{([^}]*)\}")
 
@@ -235,13 +236,14 @@ def _normalise_text(text: str) -> str:
 def _extract_path_commands(text: str) -> list[tuple[str, str, int]]:
     """Return (kind, raw_path, line) for every path-loading command.
 
-    Kinds are ``includegraphics``, ``input`` (for ``\\input``/``\\include``)
-    and ``bibliography``.
+    Kinds are ``includegraphics``, ``includesvg``, ``input`` (for
+    ``\\input``/``\\include``) and ``bibliography``.
     """
     clean = _strip_comments(text)
     commands: list[tuple[str, str, int]] = []
     for kind, pattern in (
         ("includegraphics", _GRAPHICS_RE),
+        ("includesvg", _INCLUDESVG_RE),
         ("input", _INPUT_RE),
         ("bibliography", _BIBLIOGRAPHY_RE),
     ):
@@ -454,7 +456,7 @@ def check_structure(tex_text: str, tex_dir: Path) -> CheckResult:
 
     resolved = 0
     for kind, name, line in targets:
-        if kind == "includegraphics":
+        if kind in ("includegraphics", "includesvg"):
             suffixes = _GRAPHICS_SUFFIXES
         elif kind == "bibliography":
             suffixes = (".bib",)
@@ -543,8 +545,8 @@ def check_figure_language(
 ) -> CheckResult:
     """C5: Portuguese terms in the figures the manuscript inserts.
 
-    By default only the figures reached through ``\\includegraphics`` are
-    checked. Raster inclusions are verified through a sibling vector source
+    Both ``\\includegraphics`` and ``\\includesvg`` inclusions are checked.
+    Raster inclusions are verified through a sibling vector source
     when one exists, otherwise reported as not automatically verifiable.
     ``all_figures`` additionally scans every SVG under ``figures_dir``.
     """
@@ -553,7 +555,7 @@ def check_figure_language(
     unverifiable = 0
 
     for kind, raw, line in _extract_path_commands(tex_text):
-        if kind != "includegraphics":
+        if kind not in ("includegraphics", "includesvg"):
             continue
         target = _resolve_path(tex_dir, raw, _GRAPHICS_SUFFIXES)
         if target is None:

@@ -6,7 +6,7 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 2%   # warn at -0.5%, fail at -2%
+        threshold: 2%   # fail once coverage drops more than 2% below the base
         base: auto
     patch:
       default:

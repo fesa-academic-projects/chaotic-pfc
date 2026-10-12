@@ -89,7 +89,7 @@ chaotic-pfc run sweep compute --window hamming --filter lowpass
 # Teste rápido (~segundos)
 chaotic-pfc run sweep compute --window hamming --filter lowpass --quick
 
-# Gera as 4 figuras de classificação (PNG + SVG) a partir do .npz salvo
+# Gera as 3 figuras de classificação (PNG + SVG) a partir do .npz salvo
 chaotic-pfc run sweep plot --window hamming --filter lowpass
 ```
 
@@ -199,17 +199,29 @@ make check-all     # lint + format + typecheck + testes rápidos
 
 | Comando | Ação |
 |--------|------|
+| `make setup` | Cria o venv, instala os extras dev/docs e os hooks do pre-commit |
+| `make install` | Instala o pacote com as dependências de desenvolvimento e Numba |
 | `make test` | Executa a suíte completa de testes |
-| `make test-fast` | Executa testes excluindo `@pytest.mark.slow` |
-| `make lint` | Ruff linter |
-| `make format` | Ruff auto-format |
-| `make format-check` | Verifica formatação sem alterar arquivos |
-| `make typecheck` | mypy static type checker |
-| `make check-all` | lint + format-check + typecheck + test-fast |
+| `make test-fast` | Executa testes excluindo os lentos |
+| `make check-all` | Executa todas as verificações (lint + format + typecheck + testes rápidos) |
+| `make check-paper` | Audita as fontes do manuscrito JCIS contra o repositório |
+| `make check-venv` | Falha com mensagem clara quando o virtualenv do projeto está ausente |
+| `make lint` | Executa o linter Ruff |
+| `make format` | Aplica o Ruff auto-format |
+| `make format-check` | Verifica a formatação sem alterar arquivos |
+| `make typecheck` | Verificador estático mypy |
 | `make docs` | Compila documentação Sphinx HTML (inglês) |
 | `make docs-pt` | Compila documentação Sphinx HTML (português) |
-| `make docs-pdf` | Compila documentação Sphinx PDF |
-| `make docs-epub` | Compila documentação Sphinx EPUB |
+| `make docs-all` | Compila documentação Sphinx HTML (ambos os idiomas) |
+| `make docs-strict` | Compila a documentação com `-W -n` e roda os doctests |
+| `make docs-i18n-check` | Falha quando um catálogo pt-BR narrativo está desatualizado ou não traduzido |
+| `make docs-pdf` | Compila documentação Sphinx PDF (inglês) |
+| `make docs-pdf-pt` | Compila documentação Sphinx PDF (português) |
+| `make docs-epub` | Compila documentação Sphinx EPUB (inglês) |
+| `make docs-epub-pt` | Compila documentação Sphinx EPUB (português) |
+| `make paper-pdf` | Compila o PDF do manuscrito JCIS com cache limpo de conversão SVG |
+| `make paper-diff` | Compila um PDF de latexdiff contra `BASE` (`make paper-diff BASE=<commit> NAME=<label>`); o estado base do manuscrito é o pai do commit que importou o manuscrito revisado do Overleaf, obtido pelo assunto com `git log --grep='from Overleaf'` |
+| `make jcis-figures` | Regenera as figuras do JCIS não produzidas por outros comandos |
 | `make benchmark` | Benchmarks de performance |
 | `make pre-commit` | Executa todos os hooks de pre-commit |
 | `make clean` | Remove artefatos de build e cache |

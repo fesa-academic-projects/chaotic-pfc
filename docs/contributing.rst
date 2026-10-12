@@ -203,7 +203,7 @@ The project has four optional extras:
 
 * ``[fast]``: **numba** for JIT acceleration.
 * ``[dev]``: **pytest**, **ruff**, **mypy**, **pre-commit**.
-* ``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **myst-parser**, **sphinx-intl**.
+* ``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **sphinx-intl**.
 * ``[viz3d]``: **plotly** for 3-D visualisation.
 
 Optional modules must be importable without their extras. Use lazy

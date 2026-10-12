@@ -300,11 +300,9 @@ msgstr "``[dev]`` — **pytest**, **ruff**, **mypy**, **pre-commit**."
 
 #: ../../contributing.rst:206
 msgid ""
-"``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **myst-parser**,"
-" **sphinx-intl**."
+"``[docs]``: **sphinx**, **furo**, **sphinx-copybutton**, **sphinx-intl**."
 msgstr ""
-"``[docs]`` — **sphinx**, **furo**, **sphinx-copybutton**, **myst-"
-"parser**, **sphinx-intl**."
+"``[docs]`` — **sphinx**, **furo**, **sphinx-copybutton**, **sphinx-intl**."
 
 #: ../../contributing.rst:207
 msgid "``[viz3d]``: **plotly** for 3-D visualisation."

@@ -59,7 +59,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.doctest",
     "sphinx_copybutton",
-    "nbsphinx",
 ]
 
 source_suffix = ".rst"
@@ -230,8 +229,3 @@ class _DuplicateFilter(logging.Filter):
 
 logging.getLogger("sphinx").addFilter(_DuplicateFilter())
 
-# ─────────────────────────────────────────────────────────────────────────
-# nbsphinx — render Jupyter notebooks in the docs without re-executing
-# ─────────────────────────────────────────────────────────────────────────
-nbsphinx_execute = "always"
-nbsphinx_allow_errors = False
