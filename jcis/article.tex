@@ -275,36 +275,89 @@ dimension $\approx1.26$~\cite{Sprott2003}.
 
 % ---- II-B ----  [E-mail 8]: expanded system with the FIR filter
 \subsection{H\'enon Map With an FIR Filter in the Feedback Loop}\label{sub:expanded}
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}[font=\small,
+  blk/.style={draw, rounded corners=1pt, minimum width=1.8cm, minimum height=0.8cm, inner sep=2pt, align=center},
+  enc/.style={blk, minimum width=1.5cm},
+  io/.style={inner sep=1pt},
+  grp/.style={draw, dashed, thick, rounded corners=3pt},
+  ar/.style={-{Stealth[length=2mm]}, thick}]
+  \draw[grp] (0,-0.2) rectangle (5.0,4.8);
+  \node[anchor=east] at (4.85,4.5) {Transmitter};
+  \node[io] (m) at (1.3,4.55) {$m(n)$};
+  \node[enc] (enc) at (1.3,3.0) {Encoder};
+  \draw[ar] (m.south) -- (enc.north);
+  \coordinate (JT) at (3.4,3.0);
+  \draw[ar] (enc.east) -- node[above,io] {$s(n)$} (JT);
+  \fill (JT) circle (1.8pt);
+  \node[blk] (chT) at (3.4,1.2) {Chaotic\\system};
+  \draw[ar] (JT) -- node[right,io] {$s(n)$} (chT.north);
+  \node[blk, minimum width=1.1cm] (firT) at (0.9,1.2) {FIR};
+  \draw[ar] (chT.west) -- node[above,io] {$x_1(n)$} (firT.east);
+  \draw[ar] (firT.north) -- (0.9,2.6);
+  \node[right,io] at (0.95,2.2) {$x_3(n)$};
+  \draw[grp] (0.15,0.4) rectangle (4.6,2.0);
+  \node[io] at (2.4,0.1) {generator studied in this work};
+  \node[blk] (ch) at (7.5,3.0) {Channel};
+  \draw[ar] (JT) -- (ch.west);
+  \node[io] at (4.3,3.25) {$s(n)$};
+  \draw[grp] (10.0,-0.2) rectangle (15.0,4.8);
+  \node[anchor=west] at (10.15,4.5) {Receiver};
+  \coordinate (JR) at (11.6,3.0);
+  \draw[ar] (ch.east) -- (JR);
+  \node[io] at (9.2,3.25) {$r(n)$};
+  \fill (JR) circle (1.8pt);
+  \node[enc] (dec) at (13.7,3.0) {Decoder};
+  \node[io] (mhat) at (13.7,4.55) {$\hat m(n)$};
+  \draw[ar] (dec.north) -- (mhat.south);
+  \draw[ar] (JR) -- node[above,io] {$r(n)$} (dec.west);
+  \node[blk] (chR) at (11.6,1.2) {Chaotic\\system};
+  \draw[ar] (JR) -- node[left,io] {$r(n)$} (chR.north);
+  \node[blk, minimum width=1.1cm] (firR) at (14.1,1.2) {FIR};
+  \draw[ar] (chR.east) -- node[above,io] {$\hat x_1(n)$} (firR.west);
+  \draw[ar] (firR.north) -- (14.1,2.6);
+  \node[io] at (14.05,2.2) [left] {$\hat x_3(n)$};
+\end{tikzpicture}
+\caption{Chaos-based communication system with the same FIR filter in the
+feedback loop of the transmitter and of the receiver. The encoder computes
+$s(n)=x_3(n)+\mu m(n)$, which also drives the chaotic system; the decoder
+computes $\hat m(n)=(r(n)-\hat x_3(n))/\mu$. The dashed block is the generator
+studied in this work (Fig.~\ref{fig:generator}).}
+\label{fig:cbc}
+\end{figure*}
+
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[font=\footnotesize,
+  blk/.style={draw, rounded corners=1pt, minimum width=2.2cm, minimum height=0.8cm, inner sep=2pt, align=center},
+  io/.style={inner sep=1pt},
+  ar/.style={-{Stealth[length=2mm]}, thick}]
+  \node[blk] (henon) at (0,0) {Hénon map \eqref{eq:henon}};
+  \node[blk] (fir) at (3.4,0) {FIR filter $H(z)$};
+  \coordinate (J) at (5.2,0);
+  \draw[ar] (henon) -- node[above,io] {$x_1(n)$} (fir);
+  \draw[thick] (fir.east) -- (J);
+  \draw[ar] (J) -- (5.2,1.0) -- (0,1.0) -- (henon.north);
+  \node[io] at (2.6,1.0) [above] {$x_3(n)$};
+\end{tikzpicture}
+\caption{Generator studied in this work: the dashed block of
+Fig.~\ref{fig:cbc} without message ($\mu=0$), described by~\eqref{eq:expandido}.}
+\label{fig:generator}
+\end{figure}
+
 This subsection defines the filter, the expanded system obtained when the
 filter is inserted in the map, and the quantities of that system used in the
 rest of the paper. To limit the bandwidth of the generated signal, Eisencraft
 \textit{et al.}~\cite{Eisencraft2009} and Fontes and
 Eisencraft~\cite{Fontes2016} proposed filtering $x_1(n)$ with an FIR filter and feeding the filter output back into the
-map. The output of the filter is
+map. Fig.~\ref{fig:cbc} shows this filter in a coherent CBCS, in the transmitter and
+in the receiver; Fig.~\ref{fig:generator} isolates the generator studied in this
+work. The output of the filter is
 \begin{equation}
   x_3(n) = \sum_{j=0}^{N_s-1} c_j\, x_1(n-j),
   \label{eq:filtro}
 \end{equation}
-
-% ---- II-B: the generator studied ----
-\begin{figure}[!t]
-\centering
-\begin{tikzpicture}[font=\footnotesize,
-  blk/.style={draw, rounded corners=1pt, minimum width=1.7cm, minimum height=0.6cm, inner sep=2pt, align=center},
-  io/.style={inner sep=1pt},
-  ar/.style={-{Stealth[length=2mm]}, thick}]
-  \node[blk, minimum width=2.2cm] (henon) at (0,0) {Hénon map \eqref{eq:henon}};
-  \node[blk] (fir) at (3.4,0) {FIR filter $H(z)$};
-  \node[io] (x3) at (5.6,0) {$x_3(n)$};
-  \draw[ar] (henon) -- node[above,io] {$x_1(n)$} (fir);
-  \draw[ar] (fir) -- (x3);
-  \draw[ar] (x3.north) -- (5.6,1.0) -- (0,1.0) -- (henon.north);
-  \node[io] at (2.8,1.0) [above] {feedback into the nonlinear term};
-\end{tikzpicture}
-\caption{Chaotic generator with an FIR filter in the feedback loop, the system
-studied in this work.}
-\label{fig:generator}
-\end{figure}
 where $c_j$, $0\le j\le N_s-1$, are the $N_s$ filter coefficients. The filter
 order is $N_z=N_s-1$, equal to the number of zeros of the transfer function
 obtained by taking the $z$-transform of~\eqref{eq:filtro} with zero initial
@@ -541,7 +594,7 @@ coherent CBCS and why its presence makes the verification of chaos necessary.
 It is a motivation for the study: the sweeps of Sections~\ref{sec:method}
 and~\ref{sec:results} do not transmit any message.
 
-In a coherent CBCS of the master--slave type~\cite{Pecora1990}, let
+In a coherent CBCS of the master--slave type~\cite{Pecora1990} (Fig.~\ref{fig:cbc}), let
 $\mathbf{x}(n)$ denote the state of the transmitter (master) and
 $\hat{\mathbf{x}}(n)$ that of the receiver (slave), and let
 $\mathbf{e}(n)\triangleq\hat{\mathbf{x}}(n)-\mathbf{x}(n)$ be the synchronization
@@ -583,48 +636,6 @@ ideal (identity, zero delay); the initial transient of $\hat{m}[n]$ is the
 synchronization of the slave.}
 \label{fig:comm_ideal}
 \end{figure*}
-
-% ---- II-E: block diagram of the CBCS ----
-\begin{figure}[!t]
-\centering
-\begin{tikzpicture}[font=\footnotesize,
-  blk/.style={draw, rounded corners=1pt, minimum width=1.7cm, minimum height=0.6cm, inner sep=2pt, align=center},
-  io/.style={inner sep=1pt},
-  ar/.style={-{Stealth[length=2mm]}, thick}]
-  \node[io] (m) at (1.6,7.3) {$m(n)$};
-  \node[blk] (enc) at (1.6,6.0) {Encoder};
-  \node[io] (s) at (3.6,6.0) {$s(n)$};
-  \node[blk] (chT) at (3.6,4.6) {Chaotic\\system};
-  \node[blk] (firT) at (0,4.6) {FIR};
-  \draw[ar] (m) -- (enc);
-  \draw[ar] (enc) -- (s);
-  \draw[ar] (s) -- (chT);
-  \draw[ar] (chT) -- node[above,io] {$x_1(n)$} (firT);
-  \draw[ar] (firT.north) -- (0,6.0) -- (enc.west);
-  \node[left,io] at (0,5.4) {$x_3(n)$};
-  \node[blk] (ch) at (5.3,6.0) {Channel};
-  \node[io] (r) at (6.8,6.0) {$r(n)$};
-  \draw[ar] (s) -- (ch);
-  \draw[ar] (ch) -- (r);
-  \node[io] at (1.6,3.9) {Transmitter};
-  \node[io] (mhat) at (1.6,3.2) {$\hat m(n)$};
-  \node[blk] (dec) at (1.6,2.0) {Decoder};
-  \node[blk] (chR) at (3.6,0.6) {Chaotic\\system};
-  \node[blk] (firR) at (0,0.6) {FIR};
-  \draw[thick] (r) -- (6.8,0.6);
-  \draw[ar] (6.8,2.0) -- (dec.east);
-  \draw[ar] (6.8,0.6) -- (chR.east);
-  \draw[ar] (chR) -- node[below,io] {$\hat x_1(n)$} (firR);
-  \draw[ar] (firR.north) -- (0,2.0) -- (dec.west);
-  \node[left,io] at (0,1.3) {$\hat x_3(n)$};
-  \draw[ar] (dec.north) -- (mhat);
-  \node[io] at (1.6,-0.5) {Receiver};
-\end{tikzpicture}
-\caption{Communication system with the same FIR filter in the feedback loops of
-the transmitter and of the receiver. The channel is modeled as in
-Figs.~\ref{fig:comm_ideal} and~\ref{fig:comm_bl}.}
-\label{fig:cbc}
-\end{figure}
 
 Figs.~\ref{fig:comm_ideal} and~\ref{fig:comm_bl} illustrate this argument.
 In both, the message encodes the ASCII text ``hello'' (8 bits per character,
