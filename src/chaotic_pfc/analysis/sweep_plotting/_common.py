@@ -1,0 +1,369 @@
+"""Shared palette, classification and helpers for the sweep figures."""
+
+from __future__ import annotations
+
+from collections.abc import Iterable
+from pathlib import Path
+
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.figure import Figure
+from matplotlib.patches import Patch
+from numpy.typing import NDArray
+
+from chaotic_pfc._i18n import t
+from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+
+# Pull in global RC params (STIX fonts, vector SVG, etc.)
+from chaotic_pfc.plotting.figures import _save as _figures_save
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Palette and discrete classification
+# ═══════════════════════════════════════════════════════════════════════════
+
+COLOR_PERIODIC: str = "#4DBEEE"
+COLOR_CHAOTIC: str = "red"
+COLOR_UNBOUNDED: str = "#E0E0E0"
+COLOR_GAP: str = "white"
+
+_cmap_disc = mcolors.ListedColormap(
+    [
+        COLOR_PERIODIC,
+        COLOR_CHAOTIC,
+        COLOR_UNBOUNDED,
+        COLOR_GAP,
+    ]
+)
+_bounds_disc = [-1.5, -0.5, 0.5, 2.5, 3.5]
+_norm_disc = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
+
+
+def _build_legend_handles(lang: str = "pt") -> list:
+    """Build the discrete-classification legend in the requested language."""
+    return [
+        Patch(
+            facecolor=COLOR_PERIODIC,
+            edgecolor="gray",
+            label=t("sweep.legend.periodic", lang=lang),
+        ),
+        Patch(
+            facecolor=COLOR_CHAOTIC,
+            edgecolor="gray",
+            label=t("sweep.legend.chaotic", lang=lang),
+        ),
+        Patch(
+            facecolor=COLOR_UNBOUNDED,
+            edgecolor="gray",
+            label=t("sweep.legend.unbounded", lang=lang),
+        ),
+    ]
+
+
+_YTICKS = np.arange(0.0, 1.01, 0.1)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Helpers
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def classify(h: NDArray) -> NDArray:
+    """Map raw λ_max values to discrete classes.
+
+    Parameters
+    ----------
+    h
+        Raw λ_max array (NaN where the orbit diverged).
+
+    Returns
+    -------
+    NDArray
+        Array of the same shape as ``h`` where each entry is:
+
+        * ``-1`` — periodic orbit (λ_max ≤ 0)
+        * ``0``  — chaotic orbit (λ_max > 0)
+        * ``2``  — unbounded / divergent (NaN in ``h``)
+
+    The unusual integer codes match the :class:`matplotlib.colors.BoundaryNorm`
+    bins used below.
+    """
+    out = np.full_like(h, np.nan, dtype=np.float64)
+    mask_diverged = np.isnan(h)
+    mask_periodic = (~mask_diverged) & (h <= 0.0)
+    mask_chaotic = (~mask_diverged) & (h > 0.0)
+
+    out[mask_diverged] = 2
+    out[mask_periodic] = -1
+    out[mask_chaotic] = 0
+    return out
+
+
+def _pick_xticks(
+    Nz: NDArray,
+    slot_total: int,
+    data_slots: int,
+    step: int,
+) -> tuple[list[float], list[str]]:
+    """Choose x-tick positions that exist in the swept order grid.
+
+    Highpass and bandstop sweeps only contain odd tap counts, so a
+    naive ``range(step, ..., step)`` with ``step`` even silently yields
+    an axis with no numeric labels at all. The step is halved until at
+    least three ticks land on real grid points.
+    """
+    nz_int = np.asarray(Nz).astype(int)
+    while step >= 1:
+        candidates: Iterable[int] = [1, *list(range(step, int(nz_int[-1]) + 1, step))]
+        positions: list[float] = []
+        labels: list[str] = []
+        for nz_val in candidates:
+            idx = np.where(nz_int == nz_val)[0]
+            if len(idx) > 0:
+                positions.append(idx[0] * slot_total + (data_slots - 1) / 2.0)
+                labels.append(str(nz_val))
+        if len(positions) >= 3 or step == 1:
+            return positions, labels
+        step //= 2
+    return [], []
+
+
+_PANEL_LABEL_CORNERS: dict[str, tuple[float, float, str, str]] = {
+    "upper left": (0.015, 0.975, "left", "top"),
+    "upper right": (0.985, 0.975, "right", "top"),
+    "lower left": (0.015, 0.025, "left", "bottom"),
+    "lower right": (0.985, 0.025, "right", "bottom"),
+}
+
+# Sit just above the top spine, flush with it. No opaque patch: there is
+# no data up here to hide, so a box would only add visual noise.
+_PANEL_LABEL_ABOVE: dict[str, tuple[float, str]] = {
+    "above left": (0.0, "left"),
+    "above": (0.5, "center"),
+    "above right": (1.0, "right"),
+}
+
+
+def _draw_panel_label(
+    fig: Figure,
+    ax: plt.Axes,
+    text: str,
+    fontsize: float,
+    loc: str,
+) -> None:
+    """Draw a sub-panel identifier such as ``"(a)"`` on *ax*."""
+    if loc in _PANEL_LABEL_ABOVE:
+        x, ha = _PANEL_LABEL_ABOVE[loc]
+        ax.text(
+            x,
+            1.0,
+            text,
+            transform=ax.transAxes,
+            ha=ha,
+            va="bottom",
+            fontsize=fontsize,
+            zorder=20,
+        )
+        ax.margins(y=0.0)
+        return
+
+    if loc in _PANEL_LABEL_CORNERS:
+        x, y, ha, va = _PANEL_LABEL_CORNERS[loc]
+        ax.text(
+            x,
+            y,
+            text,
+            transform=ax.transAxes,
+            ha=ha,
+            va=va,
+            fontsize=fontsize,
+            zorder=20,
+            bbox={
+                "facecolor": "white",
+                "edgecolor": "black",
+                "linewidth": 0.6,
+                "boxstyle": "square,pad=0.25",
+            },
+        )
+        return
+
+    if loc != "below":
+        raise ValueError(
+            f"panel_label_loc must be 'below', one of "
+            f"{sorted(_PANEL_LABEL_ABOVE)}, or one of "
+            f"{sorted(_PANEL_LABEL_CORNERS)}; got {loc!r}"
+        )
+
+    # Anchor the identifier a fixed number of points below the real ink
+    # of the x-axis (ticks + label), measured after a draw pass.
+    # Reserving a fraction of the figure height instead would leave a
+    # gap that scales with the panel, which reads as a stray caption.
+    fig.canvas.draw()
+    # get_renderer lives on the concrete canvas (e.g. FigureCanvasAgg),
+    # not on FigureCanvasBase, so the matplotlib stubs miss it.
+    renderer = fig.canvas.get_renderer()  # type: ignore[attr-defined]
+    bbox = ax.xaxis.get_tightbbox(renderer)
+    # get_tightbbox returns None only for an empty axis; the draw pass
+    # above guarantees the x-axis has a measurable tight bbox.
+    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]  # type: ignore[union-attr]
+    gap = 5.0 / (fig.get_figheight() * 72.0)
+    box = ax.get_position()
+    fig.text(
+        box.x0 + box.width / 2.0,
+        y_fig - gap,
+        text,
+        ha="center",
+        va="top",
+        fontsize=fontsize,
+    )
+
+
+def _save(fig: Figure, path: str | Path | None) -> None:
+    """Save figure with sweep-plotting defaults (dpi=600, fixed bbox).
+
+    ``bbox_inches=fig.bbox_inches`` prevents matplotlib from doing a
+    second full render to compute the tight bounding box — every plot
+    function already calls ``fig.tight_layout()`` before saving.
+    """
+    _figures_save(
+        fig,
+        path,
+        dpi=600,
+        bbox_inches=fig.bbox_inches,
+        facecolor="white",
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 1. Continuous heatmap
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArray]:
+    """Load all sweeps under *sweep_dir* and unify to the finest grid.
+
+    Returns (sweeps, Nz, cutoffs) where every sweep has been resampled
+    (nearest-neighbour for orders) to match the largest grid found.
+    """
+    raw: list[SweepResult] = []
+    for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
+        try:
+            raw.append(load_sweep(npz_path))
+        except Exception:
+            continue
+    if not raw:
+        raise FileNotFoundError(
+            f"No sweeps found under {sweep_dir}. "
+            f"Expected subdirectories like '<Window> (<ft>)/variables_lyapunov.npz'."
+        )
+
+    # Determine finest grid (largest number of orders)
+    ref = max(raw, key=lambda sr: len(sr.orders))
+    Nz_fine = np.asarray(ref.orders) - 1
+    cutoffs = np.asarray(ref.cutoffs)
+
+    unified: list[SweepResult] = []
+    for sr in raw:
+        if sr.orders.shape == ref.orders.shape and np.array_equal(sr.orders, ref.orders):
+            unified.append(sr)
+        else:
+            # Resample to fine grid via nearest-neighbour in order space
+            Nz_coarse = np.asarray(sr.orders) - 1
+            h_coarse = np.asarray(sr.h, dtype=np.float64)
+            h_fine = np.full((len(Nz_fine), len(cutoffs)), np.nan, dtype=np.float64)
+            for j, nz in enumerate(Nz_fine):
+                idx = np.argmin(np.abs(Nz_coarse - nz))
+                h_fine[j, :] = h_coarse[idx, :]
+            unified.append(
+                SweepResult(
+                    h=h_fine,
+                    h_std=np.full_like(h_fine, np.nan),
+                    orders=ref.orders.copy(),
+                    cutoffs=cutoffs.copy(),
+                    window=sr.window,
+                    filter_type=sr.filter_type,
+                    metadata=sr.metadata,
+                )
+            )
+    return unified, Nz_fine, cutoffs
+
+
+def _interleaved_expand(
+    data_2d: NDArray,
+    data_slots: int = 3,
+    gap_slots: int = 1,
+    fill_value: float = np.nan,
+) -> NDArray:
+    """Expand (Ncoef, Ncut) into (total_slots, Ncut) with gap columns.
+
+    Gap slots are filled with *fill_value* (default ``NaN``).  Callers
+    that need a visually distinguishable gap colour (e.g. a sentinel
+    below the colour-bar minimum) can pass a custom fill.
+    """
+    Ncoef = data_2d.shape[0]
+    Ncut = data_2d.shape[1]
+    slot_total = data_slots + gap_slots
+    total_slots = Ncoef * slot_total
+    expanded = np.full((total_slots, Ncut), fill_value)
+    for i in range(Ncoef):
+        start = i * slot_total
+        for s in range(data_slots):
+            expanded[start + s, :] = data_2d[i, :]
+    return expanded
+
+
+def _setup_interleaved_axes(
+    ax: plt.Axes,
+    Nz: NDArray,
+    cutoffs: NDArray,
+    data_slots: int = 3,
+    gap_slots: int = 1,
+    label_fontsize: float = 16.0,
+    tick_fontsize: float = 12.0,
+    ytick_step: float = 0.1,
+    xtick_step: int = 5,
+) -> None:
+    """Apply tick marks, vlines, and hlines for an interleaved heatmap."""
+    Ncoef = len(Nz)
+    slot_total = data_slots + gap_slots
+    total_slots = Ncoef * slot_total
+
+    ax.set_xlabel(r"$N_z$", fontsize=label_fontsize)
+    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=label_fontsize)
+    ax.set_yticks(np.arange(0.0, 1.0 + 1e-9, ytick_step))
+    ax.set_ylim(0.0, 1.0)
+    for yt in _YTICKS:
+        ax.axhline(y=yt, color="black", linewidth=0.4)
+
+    ax.grid(False)
+    for i in range(Ncoef + 1):
+        ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
+
+    tick_positions, tick_labels = _pick_xticks(Nz, slot_total, data_slots, xtick_step)
+
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(tick_labels, fontsize=tick_fontsize)
+    ax.tick_params(labelsize=tick_fontsize)
+    ax.set_xlim(-0.5, total_slots - 0.5)
+
+
+def _save_svg(fig: Figure, stem: Path) -> None:
+    """Save *fig* as SVG from *stem*."""
+    _save(fig, stem.with_suffix(".svg"))
+
+
+def _unpack(
+    result: SweepResult | None,
+    h: NDArray | None,
+    orders: NDArray | None,
+    cutoffs: NDArray | None,
+) -> tuple[NDArray, NDArray, NDArray]:
+    """Resolve the two accepted calling conventions into (h, Nz, cutoffs)."""
+    if result is not None:
+        h = result.h
+        orders = result.orders
+        cutoffs = result.cutoffs
+    if h is None or orders is None or cutoffs is None:
+        raise ValueError("Provide either a SweepResult or the (h, orders, cutoffs) triple.")
+    Nz = np.asarray(orders) - 1
+    return np.asarray(h), Nz, np.asarray(cutoffs)
