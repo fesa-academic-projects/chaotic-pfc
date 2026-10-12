@@ -1060,6 +1060,23 @@ $12{,}795$ out of $124{,}000$ ($10.32\%$); and bandstop, $1{,}601$, $3{,}035$,
 and $57{,}364$ out of $62{,}000$ ($92.52\%$). Chaos is therefore limited
 mainly by divergence in lowpass and bandstop filters and mainly by periodic
 orbits in highpass and bandpass filters. % [Item 13]
+
+This grouping follows the DC gain $G$ of the filters, which sets the
+positive fixed point~\eqref{eq:pfixo}. Lowpass and bandstop filters
+have $G = 1$ at every grid point, whereas highpass and bandpass
+filters have $G \approx 0$ except at low orders and at cutoffs close
+to $\omega = 0$, where the designed filter does not remove the DC
+component. Over the 124 sweeps, $99.9\%$ of the $128{,}755$ grid
+points with $|G| < 0.1$ are periodic and only $27$ are chaotic, and
+all $2{,}900$ chaotic points of the highpass filter have
+$|G| \ge 0.1$: a filter that removes the DC component of the
+fed-back signal almost never sustains chaos. A unit DC gain, in
+contrast, does not determine the class: the lowpass filter, with
+$G = 1$ at every point with finite coefficients, has $16.9\%$ chaotic,
+$14.3\%$ periodic, and $68.8\%$ divergent points, so the order, the
+cutoff, and the window decide the class once the DC component is
+preserved.
+
 Aggregated over all its configurations, the bandstop filter has
 $\rho_c^{\text{fin}}=34.5\%$ ($1{,}601$ of $4{,}636$ bounded points), below
 the lowpass filter ($54.2\%$) and above the bandpass ($9.2\%$) and highpass
