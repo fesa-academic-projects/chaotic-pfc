@@ -8,10 +8,10 @@ result of an explicit assertion in the code below.
 Usage::
 
     python tools/audit_paper.py \
-        --tex jcis/article.tex \
-        --bib jcis/references.bib \
+        --tex articles/jcis/article.tex \
+        --bib articles/jcis/references.bib \
         --figures figures/ \
-        [--log jcis/JCIS.log] [--blg jcis/JCIS.blg] [--json out.json]
+        [--log articles/jcis/JCIS.log] [--blg articles/jcis/JCIS.blg] [--json out.json]
 
 Only the Python standard library is used, plus the project's own
 ``chaotic_pfc.config`` for check C7 and the shared rounding helper

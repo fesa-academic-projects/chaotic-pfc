@@ -2,7 +2,7 @@
 
 Writes ``fig_henon_signals``, ``fig_comm_bandlimited``, ``fig_kaiser_beta``
 and ``fig_chaotic_density_norm`` as SVG files in ``--out-dir`` (default
-``jcis/Figures``). Every number is computed from the ``chaotic_pfc`` package
+``articles/jcis/Figures``). Every number is computed from the ``chaotic_pfc`` package
 and the versioned sweeps in ``data/sweeps``; the numbers quoted in the paper
 are printed so that they can be checked against the text.
 
@@ -367,7 +367,7 @@ GENERATORS = {
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--out-dir", default="jcis/Figures", type=Path)
+    parser.add_argument("--out-dir", default="articles/jcis/Figures", type=Path)
     parser.add_argument("--only", choices=["all", *GENERATORS], default="all")
     args = parser.parse_args()
 

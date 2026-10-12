@@ -55,10 +55,22 @@ typecheck: check-venv  ## Run mypy static type checker
 
 check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
 
-PAPER_DIR ?= jcis
+PAPER_DIR ?= articles/jcis
+# Pre-articles/ path, kept for the history- and BASE-dependent targets.
+PAPER_DIR_OLD ?= jcis
 PAPER_TEX ?= $(PAPER_DIR)/article.tex
 PAPER_BIB ?= $(PAPER_DIR)/references.bib
+PAPER_TEX_OLD ?= $(PAPER_DIR_OLD)/article.tex
+PAPER_BIB_OLD ?= $(PAPER_DIR_OLD)/references.bib
 PAPER_STEM ?= article
+
+# Reproducibility stamp: the last commit that *changed the content* of the
+# manuscript sources, ignoring pure renames (the jcis/ -> articles/jcis/ move
+# is an add/delete under a pathspec). Both the old and the new paths are
+# queried so the stamp is stable across the move.
+PAPER_SOURCES = $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/Figures \
+	$(PAPER_TEX_OLD) $(PAPER_BIB_OLD) $(PAPER_DIR_OLD)/Figures
+PAPER_EPOCH = $(shell git log -1 --format=%ct --diff-filter=CMT -- $(PAPER_SOURCES))
 
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
 	$(PYTHON) tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
@@ -66,7 +78,7 @@ check-paper: check-venv  ## Audit the JCIS manuscript sources against the reposi
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
 	$(PYTHON) tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
 
-paper-pdf: export SOURCE_DATE_EPOCH = $(shell git log -1 --format=%ct -- $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/Figures)
+paper-pdf: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
 paper-pdf: export FORCE_SOURCE_DATE = 1
 paper-pdf:  ## Build the JCIS manuscript PDF with a clean SVG conversion cache
 	rm -rf $(PAPER_DIR)/svg-inkscape
@@ -84,18 +96,25 @@ paper-diff:  ## Build a latexdiff PDF against BASE (make paper-diff BASE=<commit
 	@test -n "$(NAME)" || { echo "NAME=<label> is required" >&2; exit 1; }
 	@git rev-parse --verify -q "$(BASE)^{commit}" >/dev/null || { echo "unknown commit: $(BASE)" >&2; exit 1; }
 	rm -rf $(PAPER_DIFF_DIR) && mkdir -p $(PAPER_DIFF_DIR)/old $(PAPER_DIFF_DIR)/Figures $(PAPER_DIFF_OUT)
-	git show $(BASE):$(PAPER_TEX) > $(PAPER_DIFF_DIR)/old/article.tex
-	git show $(BASE):$(PAPER_BIB) > $(PAPER_DIFF_DIR)/old/references.bib
+	@base_tex=$(PAPER_TEX); git cat-file -e $(BASE):$(PAPER_TEX) 2>/dev/null || base_tex=$(PAPER_TEX_OLD); \
+	base_bib=$(PAPER_BIB); git cat-file -e $(BASE):$(PAPER_BIB) 2>/dev/null || base_bib=$(PAPER_BIB_OLD); \
+	echo "paper-diff: BASE=$(BASE) tex=$$base_tex bib=$$base_bib"; \
+	git show $(BASE):$$base_tex > $(PAPER_DIFF_DIR)/old/article.tex; \
+	git show $(BASE):$$base_bib > $(PAPER_DIFF_DIR)/old/references.bib
 	cp $(PAPER_DIR)/Figures/* $(PAPER_DIFF_DIR)/Figures/
 	cp $(PAPER_BIB) $(PAPER_DIFF_DIR)/references.bib
 	for p in $$(grep -o 'Figures/[A-Za-z0-9_.-]*' $(PAPER_DIFF_DIR)/old/article.tex | sort -u); do \
 	  f=$${p#Figures/}; \
 	  [ -e $(PAPER_DIFF_DIR)/$$p ] && continue; \
 	  case "$$f" in *.*) cands="$$f";; *) cands="$$f.svg $$f.pdf $$f.png";; esac; \
+	  found=; \
 	  for c in $$cands; do \
-	    if git cat-file -e $(BASE):$(PAPER_DIR)/Figures/$$c 2>/dev/null; then \
-	      git show $(BASE):$(PAPER_DIR)/Figures/$$c > $(PAPER_DIFF_DIR)/Figures/$$c; break; \
-	    fi; \
+	    for bdir in $(PAPER_DIR)/Figures $(PAPER_DIR_OLD)/Figures; do \
+	      if git cat-file -e $(BASE):$$bdir/$$c 2>/dev/null; then \
+	        git show $(BASE):$$bdir/$$c > $(PAPER_DIFF_DIR)/Figures/$$c; found=1; break; \
+	      fi; \
+	    done; \
+	    [ -n "$$found" ] && break; \
 	  done; \
 	done
 	# No --flatten: it inlines the stale article.bbl and latexdiff then marks its

@@ -62,11 +62,11 @@ msgstr "Versão 0.8.0: `10.5281/zenodo.22740318 <https://doi.org/10.5281/zenodo.
 msgid ""
 "The manuscript that uses this package is *\"Analysis of the Chaotic "
 "Regime in the Filtered Hénon Map: Effect of FIR Filter Type and Design "
-"Window\"* (sources in ``jcis/article.tex``)."
+"Window\"* (sources in ``articles/jcis/article.tex``)."
 msgstr ""
 "O manuscrito que faz uso deste pacote é *\"Analysis of the Chaotic Regime "
 "in the Filtered Hénon Map: Effect of FIR Filter Type and Design Window\"* "
-"(fontes em ``jcis/article.tex``)."
+"(fontes em ``articles/jcis/article.tex``)."
 
 #: ../../citing.rst:42
 msgid "License"

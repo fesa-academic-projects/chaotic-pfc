@@ -36,7 +36,7 @@ Identifiers
 
 The manuscript that uses this package is *"Analysis of the Chaotic Regime
 in the Filtered Hénon Map: Effect of FIR Filter Type and Design Window"*
-(sources in ``jcis/article.tex``).
+(sources in ``articles/jcis/article.tex``).
 
 License
 -------

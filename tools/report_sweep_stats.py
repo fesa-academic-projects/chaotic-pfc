@@ -16,7 +16,7 @@ the mean over the remaining finite ICs (:290-293, :330-335).
 Usage::
 
     python tools/report_sweep_stats.py --sweep-dir data/sweeps \
-        --tex jcis/article.tex --csv /tmp/sweep_stats.csv
+        --tex articles/jcis/article.tex --csv /tmp/sweep_stats.csv
 """
 
 from __future__ import annotations
@@ -335,7 +335,7 @@ def main(argv: list[str] | None = None) -> int:
         prog="report_sweep_stats", description="Per-configuration stats from the .npz checkpoints."
     )
     parser.add_argument("--sweep-dir", default="data/sweeps")
-    parser.add_argument("--tex", default="jcis/article.tex")
+    parser.add_argument("--tex", default="articles/jcis/article.tex")
     parser.add_argument(
         "--csv", required=True, help="CSV output path (keep it out of version control)."
     )

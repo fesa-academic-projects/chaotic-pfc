@@ -247,7 +247,7 @@ jobs:
             --benchmark-compare-fail=mean:25%
 
   # ───────────────────────────────────────────────────────────────────────
-  # Manuscript audit: cross-checks jcis/article.tex against the bibliography,
+  # Manuscript audit: cross-checks articles/jcis/article.tex against the bibliography,
   # figures and identity tables on every push and pull request.
   # ───────────────────────────────────────────────────────────────────────
   paper-check:

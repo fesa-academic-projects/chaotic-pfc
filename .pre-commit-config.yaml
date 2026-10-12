@@ -28,7 +28,7 @@ repos:
         args: ["--maxkb=2500"]
         # The versioned sweep checkpoints and the manuscript PDFs are the only
         # intentionally large tracked files; figures hold vector sources.
-        exclude: ^(figures/|data/sweeps/|(jcis|articles)/.*\.pdf$)
+        exclude: ^(figures/|data/sweeps/|articles/.*\.pdf$)
       - id: check-ast
         exclude: ^(figures|data)/
       - id: check-case-conflict

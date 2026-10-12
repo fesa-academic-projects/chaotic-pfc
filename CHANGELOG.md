@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the
-  manuscript sources, so the committed `jcis/article.pdf` is reproducible
+  manuscript sources, so the committed `articles/jcis/article.pdf` is reproducible
   across unrelated commits.
 
 ## [0.8.0] - 2026-09-13

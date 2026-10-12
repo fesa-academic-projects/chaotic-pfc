@@ -241,14 +241,15 @@ the manuscript. Run them with the project venv (`.venv/bin/python`):
 | `tools/regenerate_sweeps.py` | Recompute the versioned `data/sweeps/` checkpoints with the current kernel. |
 | `tools/compare_sweeps.py` | Compare two sweep directories file by file (bit-exactness after a refactor). |
 | `tools/paper_numbers.py` | Recompute every number of the manuscript from `data/sweeps/` and emit JSON. |
-| `tools/audit_paper.py` | Cross-check `jcis/article.tex` against the bibliography, figures and the identity tables (`make check-paper`). |
+| `tools/audit_paper.py` | Cross-check `articles/jcis/article.tex` against the bibliography, figures and the identity tables (`make check-paper`). |
 | `tools/jcis_figures.py` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
 | `tools/report_sweep_stats.py` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
 
-`jcis/article.pdf` is a derived artifact regenerated reproducibly by
+`articles/jcis/article.pdf` is a derived artifact regenerated reproducibly by
 `make paper-pdf`; its timestamp follows the last commit that touched
-`jcis/article.tex`, `jcis/references.bib` or `jcis/Figures`, so rebuilding
-without changing those sources yields an identical PDF.
+`articles/jcis/article.tex`, `articles/jcis/references.bib` or
+`articles/jcis/Figures`, so rebuilding without changing those sources yields an
+identical PDF.
 
 The LaTeX tables written by `chaotic-pfc run analysis export-tables` (and by
 `chaotic-pfc run all`) are versioned under `data/analysis_output/tables/{pt,en}/`
