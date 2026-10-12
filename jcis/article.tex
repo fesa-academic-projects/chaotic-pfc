@@ -581,9 +581,10 @@ delay of 100 samples is compensated in the metrics. Even this channel, which
 removes only the highest frequencies, prevents synchronization when the
 generator is the map~\eqref{eq:henon} without a filter in the loop
 (Fig.~\ref{fig:comm_bl}(a)): the BER is 0.4324. When the generator has an
-FIR filter in the loop (9 coefficients, $N_z=8$, $\omega_c=0.5\,\pi$, Hamming
-window) and the transmitted carrier is the filtered variable $x_3$, the same
-channel gives a BER of 0 and a mean squared error of $2.0\times10^{-5}$
+FIR filter in the loop (9 coefficients, $N_z=8$, $\omega_c=0.52\,\pi$, Hamming
+window), a chaotic generator with $\lambda_1\approx0.079$, and the transmitted
+carrier is the filtered variable $x_3$, the same
+channel gives a BER of 0 and a mean squared error of $1.9\times10^{-5}$
 (Fig.~\ref{fig:comm_bl}(b)). These numbers refer only to this configuration
 and are reported as motivation.
 
@@ -594,7 +595,7 @@ and are reported as motivation.
 (clipped to $\pm3$) and delayed message $m[n-100]$ over a lowpass FIR channel
 (201 taps, Hamming window, cutoff $0.99\,\pi$). (a)~Generator~\eqref{eq:henon}
 without a filter in the loop, BER $=0.4324$. (b)~Generator with an FIR filter
-in the loop ($N_z=8$, $\omega_c=0.5\,\pi$, Hamming window), BER $=0$.}
+in the loop ($N_z=8$, $\omega_c=0.52\,\pi$, Hamming window), BER $=0$.}
 \label{fig:comm_bl}
 \end{figure}
 
@@ -882,7 +883,9 @@ package~\cite{chaoticPFC2026}.}
 \end{table*}
 
 The Kaiser window has the largest $N_c$ in three of the four filter types,
-in both $\rho_c^{\text{fin}}$ and $\rho_c^{\text{abs}}$. Repeating the
+in both $\rho_c^{\text{fin}}$ and $\rho_c^{\text{abs}}$. For the highpass filter,
+however, this difference is small and is not robust to the classification
+threshold (Section~\ref{sub:ranking}). Repeating the
 configurations of Table~\ref{tab:best} with ten seeds gives, as mean $\pm$
 standard deviation of $N_c$, $975.8\pm2.5$ (Kaiser) and $957.6\pm4.0$
 (Blackman--Harris) for lowpass, $147.7\pm1.3$ and $142.9\pm2.1$ for highpass,
@@ -903,7 +906,10 @@ $+1.00$ ($p=0.0028$) for bandpass, and $-0.37$ ($p=0.4972$) for bandstop.
 The correlation is computed on $N_c$, not on $\rho_c^{\text{fin}}$, and no
 correction is applied for the four tests with $n=6$. It is significant at the
 $5\%$ level only for the bandpass filter, which remains significant with a
-Bonferroni correction ($0.05/4=0.0125$). For lowpass filters designed with the
+Bonferroni correction ($0.05/4=0.0125$). With the thresholds of $10^{-3}$ and
+$5\times10^{-3}$ of Section~\ref{sub:ranking}, the coefficient of the lowpass
+filter rises to $+0.94$ ($p=0.0167$), significant at the $5\%$ level but not after
+the Bonferroni correction. For lowpass filters designed with the
 Hamming and Blackman windows, Borges and Eisencraft~\cite{Borges2022sbrt}
 observed similar curves of $\lambda_1$ versus cutoff frequency and concluded
 that the window seemed to have little influence on the generation of chaos.
@@ -1111,7 +1117,20 @@ configurations of Table~\ref{tab:best}). Second, $N_c$ depends on the
 threshold: raising it from 0 to $10^{-3}$ and to $5\times10^{-3}$ keeps
 $73.1\%$ and $56.9\%$ of the chaotic points, respectively, so many chaotic
 points have small positive $\lambda_1$ and lie near the chaotic--periodic
-boundary. The dispersion $\sigma_{\lambda_1}$ is highest for the rectangular bandstop filter
+boundary. The main comparisons are robust to this threshold, but not all of
+them. With thresholds of $10^{-3}$ and $5\times10^{-3}$, the three largest values
+of $N_c$ remain those of the lowpass filter with the Kaiser window
+($\beta_K=13.5$), Blackman--Harris, and Blackman windows; the Kaiser window keeps
+the largest $N_c$ for the lowpass and bandpass filters, with $\beta_K=14.0$ for the
+bandpass filter at $5\times10^{-3}$; the rectangular window keeps the largest $N_c$
+for the bandstop filter, whose $118$ chaotic points all have
+$\lambda_1>5\times10^{-3}$; and the Spearman coefficient of the bandpass filter
+remains $+1.00$. For the highpass filter, in contrast, the order of the Kaiser and
+Blackman--Harris windows ($149$ against $144$) is reversed at $10^{-3}$, and the
+$\beta_K$ of largest $N_c$ moves from $11.5$ to $13.0$ and $14.0$, so the two windows
+should be regarded as equivalent for this filter type. Below the first three
+positions, the ranking of Table~\ref{tab:ranking} also changes: at $10^{-3}$, the
+bandpass filter with the Kaiser window moves to the fourth position. The dispersion $\sigma_{\lambda_1}$ is highest for the rectangular bandstop filter
 ($0.0492$), whose fragmented chaotic region mixes low and high values of
 $\lambda_1$, and smaller for the lowpass filter with the Kaiser window
 ($0.0231$), whose chaotic region is more homogeneous.
@@ -1163,8 +1182,8 @@ Full per-configuration tables are regenerated from the versioned sweep files
 by the released package~\cite{chaoticPFC2026}.}
 \end{table*}
 
-The first six positions of Table~\ref{tab:ranking} are lowpass filters, which
-confirms this type as the one of largest absolute chaotic coverage, and
+The first six positions of Table~\ref{tab:ranking} are lowpass filters (the first
+three for all thresholds tested), which confirms this type as the one of largest absolute chaotic coverage, and
 highpass and bandstop filters occupy mostly the lower half of the table. The
 bandstop configurations, although low in $N_c$, have the highest
 $\bar\lambda_1$ (up to $0.0933$): when chaotic, their orbits separate faster
