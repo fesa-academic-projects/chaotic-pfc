@@ -67,8 +67,8 @@ Four pass‑zero configurations are supported:
      - :math:`[\omega_c - \Delta/2,\; \omega_c + \Delta/2]`
 
 For bandpass and bandstop, the bandwidth :math:`\Delta` defaults to
-:math:`0.0375` — a narrow band typical of the project's experimental
-setup.
+:math:`0.05\,\pi`; the reduced ``--quick`` smoke-test grid uses
+:math:`0.0375`.
 
 Lowpass is the default because it is the most common configuration in
 communication engineering and serves as the baseline for all comparisons.
@@ -84,36 +84,49 @@ frequency response:
 
    * - Window
      - Key
-     - Sidelobe attenuation
+     - Stopband attenuation
+     - Peak side lobe (window)
      - Ripple
    * - Hamming
      - ``hamming``
      - ~53 dB
+     - −43 dB
      - Moderate
    * - Hann
      - ``hann``
      - ~44 dB
+     - −32 dB
      - Moderate
    * - Blackman
      - ``blackman``
      - ~74 dB
+     - −58 dB
      - Low
    * - Blackman-Harris
      - ``blackmanharris``
      - ~92 dB
+     - −92 dB
      - Very low
    * - Rectangular
      - ``boxcar``
      - ~13 dB
+     - −13 dB
      - High
    * - Bartlett
      - ``bartlett``
      - ~25 dB
+     - −27 dB
      - Moderate
    * - Kaiser
      - ``kaiser``
      - Adjustable via :math:`\beta`
      - Adjustable
+     - Adjustable
+
+The **stopband attenuation** column is the attenuation delivered by the
+designed filter; the **peak side lobe** column is the level of the
+window itself, matching Table I of the article (adapted from
+[Harris1978]_).
 
 **Kaiser window** deserves special attention.  The shape parameter
 :math:`\beta` controls the trade‑off between main‑lobe width and
@@ -126,12 +139,21 @@ Stability and the fixed point
 -----------------------------
 
 When an FIR filter is inserted into the Hénon feedback loop, the
-Jacobian matrix grows from :math:`2 \times 2` to :math:`(2 + N_c)
-\times (2 + N_c)`, where :math:`N_c` is the number of filter
-coefficients that feed back into the dynamics.
+Jacobian matrix grows from :math:`2 \times 2` to :math:`K \times K`,
+where :math:`K = N_s` for :math:`N_s \ge 3` (and :math:`K = 2` for
+:math:`N_s \le 2`), with :math:`N_s` the number of filter coefficients
+that feed back into the dynamics.  The implementation reserves one extra
+auxiliary state slot for :math:`N_s = 3`.
 
-The **fixed point** of the combined map‑plus‑filter system is computed
-by solving a linear system involving the filter coefficients.  For the
+The **fixed point** of the combined map‑plus‑filter system solves
+:math:`G^2 p^2 + (1 - \beta) p - \alpha = 0`, whose positive root is
+
+.. math::
+
+   p^{+} = \frac{2\alpha}{(1-\beta) + \sqrt{(1-\beta)^2 + 4\alpha G^2}},
+
+with :math:`G = \sum_k c_k` the DC gain.  This cancellation‑free form is
+the one used by the code (it stays accurate as :math:`G \to 0`).  For the
 system to have a bounded attractor, the fixed point must be finite
 and the filter must be stable (all poles inside the unit circle).
 
@@ -150,10 +172,18 @@ Known limitations
 
 * **Order limits.**  For :math:`N_z \ge 40`, the filter design becomes
   numerically ill‑conditioned (the window function has extreme values
-  at the filter edges).  The sweep currently tops at :math:`N_z = 41`.
+  at the filter edges).  The sweep currently tops at :math:`N_z = 40`
+  (:math:`N_s = 41`).
 
 * **DC gain.**  FIR filters designed with ``firwin`` have a DC gain
   of approximately 1.0 for lowpass , but not exactly, due to window
   tapering.  The chaotic map is sensitive to the exact coefficient
   magnitudes, which is why the FIR bank is precomputed once rather
   than reconstructed per grid point.
+
+References
+----------
+
+.. [Harris1978] F. J. Harris, "On the use of windows for harmonic analysis
+   with the discrete Fourier transform," *Proceedings of the IEEE*,
+   vol. 66, no. 1, pp. 51-83, 1978.

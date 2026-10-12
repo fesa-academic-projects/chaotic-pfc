@@ -1,8 +1,7 @@
-"""
-__main__.py
-===========
-Thin entry point used by ``python -m chaotic_pfc`` and by the
-``chaotic-pfc`` console script declared in ``pyproject.toml``.
+"""Thin entry point for ``python -m chaotic_pfc`` and the ``chaotic-pfc`` script.
+
+Used by ``python -m chaotic_pfc`` and by the ``chaotic-pfc`` console script
+declared in ``pyproject.toml``.
 
 All CLI logic lives in :mod:`chaotic_pfc.cli`; this module exists only
 so that both entry points delegate to the same place. Keeping it

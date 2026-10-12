@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Kauê de Souza Silva, Roger Freitas Pereira, Marcos
+# Felipe Correa Soares, Guilherme Rodrigues dos Santos, and Vinícius da
+# Silva Borges and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../citing.rst:4
+msgid "Citing"
+msgstr "Como citar"
+
+
+#: ../../citing.rst:6
+msgid ""
+"If you use ``chaotic-pfc`` in your research, please cite the software "
+"release.  The metadata below matches ``CITATION.cff`` in the repository "
+"root."
+msgstr "Se você usar o ``chaotic-pfc`` em sua pesquisa, cite a versão do software.  Os metadados abaixo correspondem ao ``CITATION.cff`` na raiz do repositório."
+
+
+#: ../../citing.rst:11
+msgid "Software"
+msgstr "Software"
+
+
+#: ../../citing.rst:30
+msgid "Identifiers"
+msgstr "Identificadores"
+
+
+#: ../../citing.rst:32
+msgid ""
+"Concept DOI (always resolves to the latest version): "
+"`10.5281/zenodo.22740317 <https://doi.org/10.5281/zenodo.22740317>`_"
+msgstr "DOI conceitual (sempre resolve para a versão mais recente): `10.5281/zenodo.22740317 <https://doi.org/10.5281/zenodo.22740317>`_"
+
+
+#: ../../citing.rst:34
+msgid ""
+"Version 0.8.0: `10.5281/zenodo.22740318 "
+"<https://doi.org/10.5281/zenodo.22740318>`_"
+msgstr "Versão 0.8.0: `10.5281/zenodo.22740318 <https://doi.org/10.5281/zenodo.22740318>`_"
+
+
+#: ../../citing.rst:37
+msgid ""
+"The manuscript that uses this package is *\"Analysis of the Chaotic "
+"Regime in the Filtered Hénon Map: Effect of FIR Filter Type and Design "
+"Window\"* (sources in ``jcis/article.tex``)."
+msgstr ""
+
+#: ../../citing.rst:42
+msgid "License"
+msgstr "Licença"
+
+
+#: ../../citing.rst:44
+msgid "Released under the BSD-3-Clause license; see ``LICENSE``."
+msgstr "Distribuído sob a licença BSD-3-Clause; consulte ``LICENSE``."
+
+

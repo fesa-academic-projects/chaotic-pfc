@@ -63,7 +63,7 @@ Requires **Python 3.12+**.
    pip install -e ".[viz3d]"       # 3-D visualisation with Plotly
 
 The package imports and runs *without* Numba installed: kernels fall back
-to pure Python via :mod:`chaotic_pfc._compat`. Install the ``[fast]`` extra
+to pure Python via ``chaotic_pfc._compat``. Install the ``[fast]`` extra
 for 20–50× speedup on the parameter sweep.
 
 Quick start
@@ -108,6 +108,8 @@ Key experiments
    validation
    development
    contributing
+   citing
+   changelog
    source/algorithms/lyapunov
    source/algorithms/sweep
    source/algorithms/fir_design

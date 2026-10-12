@@ -15,13 +15,13 @@ Symbols glossary
      - Hénon constant term (generalised form)
      - :func:`~chaotic_pfc.dynamics.maps.henon_generalised`,
        :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`
+       ``_sweep_kernel``
 
    * - :math:`\beta`
      - Hénon coupling / dissipation parameter
      - :func:`~chaotic_pfc.dynamics.maps.henon_generalised`,
        :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`
+       ``_sweep_kernel``
 
    * - :math:`a`
      - Hénon nonlinear parameter (classic form)
@@ -38,13 +38,13 @@ Symbols glossary
 
    * - :math:`N_s`
      - Number of FIR filter coefficients (taps)
-     - :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`,
-       :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`
+     - ``_sweep_kernel``,
+       :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`
 
    * - :math:`N_z = N_s - 1`
      - FIR filter order (number of zeros)
-     - :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`,
-       :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`
+     - ``_sweep_kernel``,
+       :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`
 
    * - :math:`N`
      - Number of samples in a transmitted sequence
@@ -53,23 +53,23 @@ Symbols glossary
 
    * - :math:`\omega_c`, :math:`f_c`
      - Normalised cutoff frequency, :math:`\omega_c / \pi \in (0, 1)`
-     - :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`,
+     - :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`,
        :func:`~chaotic_pfc.config.InternalFIRConfig`
 
    * - :math:`c_k`, :math:`b_k`
      - FIR filter coefficients
      - :func:`~chaotic_pfc.dynamics.maps.henon_order_n`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._henon_nN_inplace`
+       ``_henon_nN_inplace``
 
    * - :math:`G`
      - Filter DC gain, :math:`G = \sum_k c_k`
-     - :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`,
-       :func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`
+     - ``_sweep_kernel``,
+       ``_fixed_point``
 
    * - :math:`u_n`
      - FIR filter output, :math:`u_n = \sum_k c_k x_{n-k}`
      - :func:`~chaotic_pfc.dynamics.maps.henon_order_n`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._henon_nN_inplace`
+       ``_henon_nN_inplace``
 
    * - :math:`x_n, y_n`
      - Hénon map state variables
@@ -79,7 +79,7 @@ Symbols glossary
    * - :math:`\lambda_1`, :math:`\lambda_{\max}`
      - Largest Lyapunov exponent
      - :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`
+       ``_sweep_kernel``
 
    * - :math:`s[n]`
      - Transmitted (modulated) signal
@@ -100,8 +100,8 @@ Symbols glossary
 
    * - :math:`\beta_K`
      - Kaiser window shape parameter
-     - :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`,
-       :func:`~chaotic_pfc.cli.sweep._beta.run_beta_sweep`
+     - :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`,
+       ``run_beta_sweep``
 
    * - :math:`N_{\text{discard}}`
      - Burn-in (transient discard) iterations
@@ -111,7 +111,7 @@ Symbols glossary
    * - :math:`N_{\text{IC}}`
      - Number of initial conditions in ensemble
      - :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`,
-       :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`
+       ``_sweep_kernel``
 
    * - :math:`\text{SNR}`, :math:`E_b/N_0`
      - Signal-to-noise ratio (dB)

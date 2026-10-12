@@ -13,6 +13,8 @@ from pathlib import Path
 # ─────────────────────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from chaotic_pfc import __version__ as _pkg_version
+
 # ─────────────────────────────────────────────────────────────────────────
 # Project information
 # ─────────────────────────────────────────────────────────────────────────
@@ -32,8 +34,8 @@ if _rtd_lang:
         language = "pt_BR"
 else:
     language = os.environ.get("SPHINX_LANGUAGE", "en")
-version = "0.8.0"
-release = "0.8.0"
+version = _pkg_version
+release = _pkg_version
 
 # ─────────────────────────────────────────────────────────────────────────
 # i18n / l10n support
@@ -55,6 +57,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.ifconfig",
     "sphinx.ext.todo",
+    "sphinx.ext.doctest",
     "sphinx_copybutton",
     "nbsphinx",
 ]
@@ -71,7 +74,7 @@ autodoc_default_options = {
     "show-inheritance": True,
     "member-order": "bysource",
 }
-autodoc_typehints = "description"
+autodoc_typehints = "none"
 autodoc_member_order = "bysource"
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -150,6 +153,12 @@ epub_show_urls = "footnote"
 epub_language = language
 epub_uid = "chaotic-pfc-docs"
 
+# doctest — run the ``>>>`` examples in the docstrings
+doctest_global_setup = """
+from chaotic_pfc.dynamics.signals import binary_message, text_message
+import numpy as np
+"""
+
 # ─────────────────────────────────────────────────────────────────────────
 # Miscellaneous
 # ─────────────────────────────────────────────────────────────────────────
@@ -162,6 +171,33 @@ exclude_patterns = [
 ]
 
 nitpicky = False
+
+# Nitpicky mode (-n) cannot resolve the NumPy-style type descriptions used in
+# the docstrings (``ndarray, shape (Ncoef, Ncut)`` and similar) or the
+# re-exported type names; those words are literal text, not cross-references.
+nitpick_ignore_regex = [
+    (r"py:class", r"numpy\..*"),
+    (r"py:class", r"scipy\..*"),
+    (r"py:class", r"^(ndarray|NDArray|shape|dim|optional|Ncoef|Ncut)$"),
+    (r"py:class", r"^(Path|Figure|Axes|Patch|PolyCollection)$"),
+    (r"py:class", r"^steps \+ 1$"),
+    (r"py:class", r".*→.*"),
+    (r"py:class", r"^\{.*$"),
+    (r"py:class", r".*\}$"),
+    (r"py:class", r'^".*'),
+    (r"py:class", r"^(argparse|plotly)\..*"),
+    (r"py:class", r"^sys\.argv.*$"),
+    (r"py:data", r"^(WINDOWS|FILTER_TYPES|WINDOW_DISPLAY_NAMES)$"),
+    (r"py:data", r"^(FIGURE_FILENAMES|DIFFICULTY_FIGURE_FILENAME)$"),
+    (r"py:data", r"^(CHAOTIC_MAP_FILENAME|CHAOTIC_DENSITY_FILENAME)$"),
+    (r"py:func", r"^text_message$"),
+    (r"py:func", r"^(run_sweep|psd_normalised|make_classification_legend)$"),
+    (r"py:func", r"^_henon_n4_step_inplace$"),
+    (r"py:func", r"^(chaotic_pfc\._i18n\.t|_build_task_order)$"),
+    (r"py:func", r"^chaotic_pfc\.analysis\.sweep\._kernel\._build_task_order$"),
+    (r"py:mod", r"^chaotic_pfc\.plotting$"),
+    (r"py:obj", r"^tests\.test_cli$"),
+]
 
 suppress_warnings = [
     "autosectionlabel.*",

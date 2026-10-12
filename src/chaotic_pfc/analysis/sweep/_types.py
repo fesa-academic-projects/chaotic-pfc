@@ -10,6 +10,7 @@ from numpy.typing import NDArray
 # Catalogue of supported FIR windows and filter types
 # ───────────────────────────────────────────────────────────────────────────
 
+#: Supported FIR window keys (lower-case).
 WINDOWS: tuple[str, ...] = (
     "hamming",
     "hann",
@@ -20,8 +21,10 @@ WINDOWS: tuple[str, ...] = (
     "bartlett",
 )
 
+#: Supported filter (pass-zero) configurations.
 FILTER_TYPES: tuple[str, ...] = ("lowpass", "highpass", "bandpass", "bandstop")
 
+#: Human-readable display names for each :data:`WINDOWS` key.
 WINDOW_DISPLAY_NAMES: dict[str, str] = {
     "hamming": "Hamming",
     "hann": "Hann",

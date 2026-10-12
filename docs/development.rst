@@ -122,8 +122,11 @@ source module has a corresponding test file.
 * **Slow tests**: marked with ``@pytest.mark.slow``, run full-resolution
   sweeps. Skipped by ``make test-fast``.
 
-Numba-compiled kernels are tested directly (not mocked) to ensure
-bit-exact equivalence between JIT and pure-Python fallback paths.
+Numba-compiled kernels are tested directly (not mocked).  They are
+statistically equivalent to, but not bit-identical with, the pure-Python
+fallback (see :ref:`the backend-dependence note <backend-dependence>`).
+The versioned ``.npz`` checkpoints are reproduced exactly only with
+Numba.
 
 CI/CD
 -----

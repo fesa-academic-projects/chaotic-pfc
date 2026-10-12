@@ -1,4 +1,4 @@
-"""Camera-ready figure generation for the SIMAC and JCIS manuscripts.
+r"""Camera-ready figure generation for the SIMAC and JCIS manuscripts.
 
 Figures are rendered at their *final printed size*, so the font sizes
 requested here are the font sizes that end up on the page. This is the

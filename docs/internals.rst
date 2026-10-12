@@ -16,7 +16,7 @@ time. This section describes the key internal functions.
 Hénon map iterators
 ~~~~~~~~~~~~~~~~~~~
 
-Two private in-place iterator functions live in :mod:`chaotic_pfc.analysis.sweep._kernel`:
+Two private in-place iterator functions live in ``chaotic_pfc.analysis.sweep._kernel``:
 
 ``_henon_n12_inplace(x, x_new, alpha, beta, c)``
   Optimised for 1–2 filter taps. Uses a fixed-size unrolled loop over
@@ -53,8 +53,9 @@ loop.
 Adaptive early-stop mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``_adaptive_checkpoint(lyap_sum, Ns, n_done, Nitera_min, tol, prev_est,
-streak, n_used)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY = 100``
+``_adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol,
+prev_est, streak, n_used)`` is called every
+``_ADAPTIVE_CHECKPOINT_EVERY = 100``
 iterations. It computes the current :math:`\lambda_{\max}` estimate and
 checks whether it has stabilised:
 
@@ -75,16 +76,16 @@ Lyapunov estimator kernels
 ``_lyap_online_n12`` and ``_lyap_online_nN`` are the inner Lyapunov
 estimator kernels. They:
 
-1. Run ``Nitera`` burn-in iterations (trajectory convergence to the
-   attractor).
+1. Evolve the perturbation vectors through the Jacobian (tangent map)
+   and re-orthonormalise them (MGS) every ``_BENETTIN_K`` iterations.
 2. Run ``Nmap`` estimation iterations (or fewer, if adaptive
    early-stop triggers).
-3. At each estimation iteration, evolve the perturbation vectors
-   through the Jacobian (tangent map) and apply MGS.
-4. Return ``(best, n_used)``: the :math:`\lambda_{\max}` estimate for
-   a single initial condition and the number of iterations used. The
-   aggregation across ``n_initial`` independent ICs is performed by
-   ``_sweep_kernel``, which calls these kernels in sequence.
+3. Return ``(best, n_used)``: the :math:`\lambda_{\max}` estimate for
+   a single initial condition and the number of iterations used.
+
+The ``Nitera`` burn-in is applied by ``_sweep_kernel`` *before* these
+kernels are called, and the aggregation across ``n_initial`` independent
+ICs is also performed by ``_sweep_kernel``.
 
 The "online" naming reflects that the estimator updates continuously
 during the trajectory, rather than collecting the full state history
@@ -102,8 +103,8 @@ The ``_build_task_order`` function creates a permuted list of
 ``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different
 orders, ensuring balanced thread load. Without this permutation, a
 naive loop over orders would assign threads to vastly unequal workloads
-(the MGS inner loop scales as :math:`\mathcal{O}(N_s^3)` with filter
-order :math:`N_s`).
+(the MGS inner loop scales as :math:`\mathcal{O}(N_s^3)` with the number
+of filter taps :math:`N_s`).
 
 Fixed-point stability analysis
 ------------------------------
@@ -211,7 +212,7 @@ Beyond the basic :func:`~chaotic_pfc.comms.channel.ideal_channel` and
 Translation layer
 -----------------
 
-:mod:`chaotic_pfc._i18n` provides bilingual figure labels (Portuguese
+``chaotic_pfc._i18n`` provides bilingual figure labels (Portuguese
 and English) without requiring ``gettext`` at runtime. Features:
 
 * Simple dictionary-based lookup via chaotic_pfc._i18n.t.

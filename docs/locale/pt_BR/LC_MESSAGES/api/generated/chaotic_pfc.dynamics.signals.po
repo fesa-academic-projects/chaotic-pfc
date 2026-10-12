@@ -4,44 +4,45 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
 # Translation status: INTENTIONALLY UNTRANSLATED.
 # Auto-generated API reference is maintained in English only.
 # See docs/api/index.rst for rationale.
-"Generated-By: Babel 2.18.0\n"
-
 #: ../../api/generated/chaotic_pfc.dynamics.signals.rst:2
 msgid "chaotic\\_pfc.dynamics.signals"
 msgstr "chaotic\\_pfc.dynamics.signals"
 
-#: chaotic_pfc.dynamics.signals:2 of
-msgid "signals.py"
-msgstr "signals.py"
+
+
+#: chaotic_pfc.dynamics.signals:1 of
+msgid ""
+"Generators for the information-bearing messages of the communication "
+"pipeline."
+msgstr ""
+"Generators for the information-bearing messages of the communication "
+"pipeline."
+
+
 
 #: chaotic_pfc.dynamics.signals:3 of
-msgid ""
-"Generators for the information-bearing messages used throughout the "
-"chaotic communication pipeline."
-msgstr ""
-"Generators for the information-bearing messages used throughout the "
-"chaotic communication pipeline."
+msgid "Three waveforms are provided:"
+msgstr "Three waveforms are provided:"
 
-#: chaotic_pfc.dynamics.signals:6 of
-msgid "Two waveforms are provided:"
-msgstr "Two waveforms are provided:"
 
-#: chaotic_pfc.dynamics.signals:8 of
+
+#: chaotic_pfc.dynamics.signals:5 of
 #, python-brace-format
 msgid ""
 ":func:`binary_message` — a square-wave BPSK-style message taking values "
@@ -49,6 +50,20 @@ msgid ""
 msgstr ""
 ":func:`binary_message` — a square-wave BPSK-style message taking values "
 "in ``{-1, +1}`` with a fixed bit period."
+
+
+
+#: chaotic_pfc.dynamics.signals:7 of
+msgid ""
+":func:`text_message` — an ASCII text encoded as an NRZ BPSK bit stream, "
+"so the transmitted message looks like real digital data instead of a "
+"periodic square wave."
+msgstr ""
+":func:`text_message` — an ASCII text encoded as an NRZ BPSK bit stream, "
+"so the transmitted message looks like real digital data instead of a "
+"periodic square wave."
+
+
 
 #: chaotic_pfc.dynamics.signals:10 of
 msgid ""
@@ -58,19 +73,25 @@ msgstr ""
 ":func:`sinusoidal_message` — a pure cosine/sine probe useful for "
 "spectral-response measurements."
 
+
+
 #: chaotic_pfc.dynamics.signals:13 of
 msgid ""
-"Both functions return NumPy arrays of length ``N`` so they can be fed "
+"All functions return NumPy arrays of length ``N`` so they can be fed "
 "directly to :func:`chaotic_pfc.comms.transmitter.transmit`."
 msgstr ""
-"Both functions return NumPy arrays of length ``N`` so they can be fed "
+"All functions return NumPy arrays of length ``N`` so they can be fed "
 "directly to :func:`chaotic_pfc.comms.transmitter.transmit`."
+
+
 
 #: ../../api/generated/chaotic_pfc.dynamics.signals.rst:8
 msgid "Functions"
 msgstr "Functions"
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:12:<autosummary>:1
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
 msgid ""
 ":py:obj:`binary_message <chaotic_pfc.dynamics.signals.binary_message>`\\ "
 "\\(N\\[\\, period\\]\\)"
@@ -78,12 +99,16 @@ msgstr ""
 ":py:obj:`binary_message <chaotic_pfc.dynamics.signals.binary_message>`\\ "
 "\\(N\\[\\, period\\]\\)"
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:12:<autosummary>:1
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
 #: chaotic_pfc.dynamics.signals.binary_message:1 of
 msgid "Generate a periodic square-wave binary message."
 msgstr "Generate a periodic square-wave binary message."
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:12:<autosummary>:1
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
 msgid ""
 ":py:obj:`sinusoidal_message "
 "<chaotic_pfc.dynamics.signals.sinusoidal_message>`\\ \\(N\\[\\, "
@@ -93,10 +118,31 @@ msgstr ""
 "<chaotic_pfc.dynamics.signals.sinusoidal_message>`\\ \\(N\\[\\, "
 "normalised\\_freq\\]\\)"
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:12:<autosummary>:1
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:1 of
 msgid "Generate a single-tone sinusoidal probe signal."
 msgstr "Generate a single-tone sinusoidal probe signal."
+
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
+msgid ""
+":py:obj:`text_message <chaotic_pfc.dynamics.signals.text_message>`\\ "
+"\\(text\\, N\\, \\*\\[\\, bit\\_period\\]\\)"
+msgstr ""
+":py:obj:`text_message <chaotic_pfc.dynamics.signals.text_message>`\\ "
+"\\(text\\, N\\, \\*\\[\\, bit\\_period\\]\\)"
+
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst:13:<autosummary>:1
+#: chaotic_pfc.dynamics.signals.text_message:1 of
+msgid "Encode *text* as an NRZ BPSK message of length *N*."
+msgstr "Encode *text* as an NRZ BPSK message of length *N*."
+
+
 
 #: chaotic_pfc.dynamics.signals.binary_message:3 of
 #, python-brace-format
@@ -111,15 +157,22 @@ msgstr ""
 "BPSK-style message used by "
 ":func:`chaotic_pfc.comms.transmitter.transmit`."
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst
-#: chaotic_pfc.dynamics.signals.binary_message of
-#, fuzzy
-msgid "Parameters"
-msgstr "Parâmetros"
 
-#: chaotic_pfc.dynamics.signals.binary_message:7 of
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst
+#: chaotic_pfc.dynamics.signals.binary_message
+#: chaotic_pfc.dynamics.signals.text_message of
+msgid "Parameters"
+msgstr "Parameters"
+
+
+
+#: chaotic_pfc.dynamics.signals.binary_message:7
+#: chaotic_pfc.dynamics.signals.text_message:16 of
 msgid "Total number of samples to produce."
 msgstr "Total number of samples to produce."
+
+
 
 #: chaotic_pfc.dynamics.signals.binary_message:8 of
 msgid ""
@@ -129,34 +182,121 @@ msgstr ""
 "Length of one full ``+1`` / ``-1`` cycle. Must be a positive even "
 "integer; each half-cycle holds ``period // 2`` samples."
 
+
+
 #: ../../api/generated/chaotic_pfc.dynamics.signals.rst
-#: chaotic_pfc.dynamics.signals.binary_message of
-#, fuzzy
+#: chaotic_pfc.dynamics.signals.binary_message
+#: chaotic_pfc.dynamics.signals.text_message of
 msgid "Returns"
-msgstr "Retorna"
+msgstr "Returns"
+
+
 
 #: chaotic_pfc.dynamics.signals.binary_message:11 of
 msgid "The message samples, each ``+1.0`` or ``-1.0``."
 msgstr "The message samples, each ``+1.0`` or ``-1.0``."
 
-#: ../../api/generated/chaotic_pfc.dynamics.signals.rst
-#: chaotic_pfc.dynamics.signals.binary_message of
-msgid "Return type"
-msgstr ""
+
 
 #: ../../api/generated/chaotic_pfc.dynamics.signals.rst
-#: chaotic_pfc.dynamics.signals.binary_message of
+#: chaotic_pfc.dynamics.signals.binary_message
+#: chaotic_pfc.dynamics.signals.text_message of
+msgid "Return type"
+msgstr "Return type"
+
+
+
+#: ../../api/generated/chaotic_pfc.dynamics.signals.rst
+#: chaotic_pfc.dynamics.signals.binary_message
+#: chaotic_pfc.dynamics.signals.text_message of
 msgid "Raises"
-msgstr ""
+msgstr "Raises"
+
+
 
 #: chaotic_pfc.dynamics.signals.binary_message:14 of
 msgid "If ``period`` is not a positive even integer."
 msgstr "If ``period`` is not a positive even integer."
 
-#: chaotic_pfc.dynamics.signals.binary_message:17 of
-#, fuzzy
+
+
+#: chaotic_pfc.dynamics.signals.binary_message:17
+#: chaotic_pfc.dynamics.signals.text_message:26 of
 msgid "Examples"
-msgstr "Exemplos"
+msgstr "Examples"
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:3 of
+#, python-brace-format
+msgid ""
+"Each character is converted to its 8-bit ASCII representation, the "
+"resulting bit stream is mapped to ``{+1, -1}`` (bit ``1`` → ``+1``, bit "
+"``0`` → ``-1``) and every bit is held for *bit_period* samples (non-"
+"return-to-zero). The encoded block is tiled to fill exactly ``N`` "
+"samples, mirroring :func:`binary_message`."
+msgstr ""
+"Each character is converted to its 8-bit ASCII representation, the "
+"resulting bit stream is mapped to ``{+1, -1}`` (bit ``1`` → ``+1``, bit "
+"``0`` → ``-1``) and every bit is held for *bit_period* samples (non-"
+"return-to-zero). The encoded block is tiled to fill exactly ``N`` "
+"samples, mirroring :func:`binary_message`."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:9 of
+msgid ""
+"Unlike :func:`binary_message` (a periodic square wave), this produces an "
+"irregular run-length pattern that resembles a real digital transmission, "
+"which is what the ``comm-*`` figures use as their information-bearing "
+"message."
+msgstr ""
+"Unlike :func:`binary_message` (a periodic square wave), this produces an "
+"irregular run-length pattern that resembles a real digital transmission, "
+"which is what the ``comm-*`` figures use as their information-bearing "
+"message."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:14 of
+msgid ""
+"Message text. Must contain only ASCII characters so it can be encoded to "
+"a single byte per character."
+msgstr ""
+"Message text. Must contain only ASCII characters so it can be encoded to "
+"a single byte per character."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:17 of
+msgid "Number of samples each bit is held. Must be a positive integer."
+msgstr "Number of samples each bit is held. Must be a positive integer."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:19 of
+msgid "The BPSK message samples, each ``+1.0`` or ``-1.0``."
+msgstr "The BPSK message samples, each ``+1.0`` or ``-1.0``."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:22 of
+msgid "If ``bit_period`` is not a positive integer or ``text`` is empty."
+msgstr "If ``bit_period`` is not a positive integer or ``text`` is empty."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:23 of
+msgid "If ``text`` contains characters outside the ASCII range."
+msgstr "If ``text`` contains characters outside the ASCII range."
+
+
+
+#: chaotic_pfc.dynamics.signals.text_message:27 of
+msgid "``\"A\"`` encodes to ``0b01000001``; with one sample per bit this is"
+msgstr "``\"A\"`` encodes to ``0b01000001``; with one sample per bit this is"
+
+
 
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:3 of
 msgid ""
@@ -168,9 +308,13 @@ msgstr ""
 "this function through the transmitter/channel/receiver chain shows the "
 "system's gain and phase at one specific frequency."
 
+
+
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:7 of
 msgid "Number of samples to produce."
 msgstr "Number of samples to produce."
+
+
 
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:8 of
 msgid ""
@@ -182,13 +326,19 @@ msgstr ""
 "aliasing (Nyquist at ``f = 0.5``). The default of ``0.1`` gives ten "
 "samples per cycle."
 
+
+
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:12 of
 msgid "The samples ``sin(2π · normalised_freq · n)`` for ``n = 0, 1, …, N − 1``."
 msgstr "The samples ``sin(2π · normalised_freq · n)`` for ``n = 0, 1, …, N − 1``."
 
+
+
 #: chaotic_pfc.dynamics.signals.sinusoidal_message:16 of
 msgid "If *normalised_freq* is not strictly between 0 and 0.5."
 msgstr "If *normalised_freq* is not strictly between 0 and 0.5."
+
+
 
 #~ msgid "Parameters"
 #~ msgstr ""
@@ -210,3 +360,7 @@ msgstr "If *normalised_freq* is not strictly between 0 and 0.5."
 
 #~ msgid "Levanta"
 #~ msgstr "Levanta"
+
+#~ msgid "signals.py"
+#~ msgstr "signals.py"
+

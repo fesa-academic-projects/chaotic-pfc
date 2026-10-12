@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -110,13 +110,15 @@ msgstr ""
 #: ../../usage.rst:70
 msgid ""
 "Each produces a :math:`4 \\times 2` grid of time-domain and PSD plots for"
-" the message, carrier, received signal, and recovered message."
-msgstr ""
-"Cada um produz uma grade :math:`4 \\times 2` de gráficos no domínio do "
-"tempo e de DEP para a mensagem, portadora, sinal recebido e mensagem "
-"recuperada."
+" the message, carrier, received signal, and recovered message. The "
+"information-bearing message is an ASCII text encoded as an NRZ BPSK bit "
+"stream (by default ``\"hello\"``), so the transmitted waveform looks like"
+" real digital data rather than a periodic square wave. Override it with "
+"``--text`` and set the samples-per-bit hold time with ``--period``:"
+msgstr "Cada um produz uma grade :math:`4 \\times 2` de gráficos no domínio do tempo e da PSD para a mensagem, a portadora, o sinal recebido e a mensagem recuperada. A mensagem portadora de informação é um texto ASCII codificado como um fluxo de bits NRZ BPSK (por padrão ``\"hello\"``), de modo que a forma de onda transmitida se parece com dados digitais reais, e não com uma onda quadrada periódica. Substitua-o com ``--text`` e defina o tempo de retenção por bit com ``--period``:"
 
-#: ../../usage.rst:73
+
+#: ../../usage.rst:81
 msgid ""
 "Add ``--save`` to write figures to ``figures/``. Use ``--lang pt`` for "
 "Portuguese figure labels."
@@ -124,27 +126,27 @@ msgstr ""
 "Adicione ``--save`` para salvar as figuras em ``figures/``. Use ``--lang "
 "pt`` para rótulos de figuras em português."
 
-#: ../../usage.rst:77
+#: ../../usage.rst:85
 msgid "Lyapunov spectra"
 msgstr "Espectros de Lyapunov"
 
-#: ../../usage.rst:83
+#: ../../usage.rst:91
 msgid "Computes Lyapunov exponents for 2-D and 4-D systems in four parts:"
 msgstr "Calcula expoentes de Lyapunov para sistemas 2-D e 4-D em quatro partes:"
 
-#: ../../usage.rst:85
+#: ../../usage.rst:93
 msgid "**(A)** 2-D Hénon: single initial condition."
 msgstr "**(A)** Hénon 2-D — condição inicial única."
 
-#: ../../usage.rst:86
+#: ../../usage.rst:94
 msgid "**(B)** 4-D pole-filtered Hénon: single IC."
 msgstr "**(B)** Hénon 4-D com filtro de polos — CI única."
 
-#: ../../usage.rst:87
+#: ../../usage.rst:95
 msgid "**(C)** 2-D Hénon: ensemble protocol with :math:`N_{\\text{CI}}` ICs."
 msgstr "**(C)** Hénon 2-D — protocolo de ensemble com :math:`N_{\\text{CI}}` CIs."
 
-#: ../../usage.rst:88
+#: ../../usage.rst:96
 msgid ""
 "**(D)** 4-D pole-filtered Hénon: ensemble protocol with "
 ":math:`N_{\\text{CI}}` ICs."
@@ -152,19 +154,21 @@ msgstr ""
 "**(D)** Hénon 4-D com filtro de polos — protocolo de ensemble com "
 ":math:`N_{\\text{CI}}` CIs."
 
-#: ../../usage.rst:94
+#: ../../usage.rst:102
 msgid "Saves per-IC CSV tables with 50 initial conditions to ``data/lyapunov/``."
 msgstr "Salva tabelas CSV por CI com 50 condições iniciais em ``data/lyapunov/``."
 
-#: ../../usage.rst:98
+#: ../../usage.rst:106
 msgid "Sweep compute"
 msgstr "Varredura — Computação"
 
-#: ../../usage.rst:100
+#: ../../usage.rst:108
 msgid "Runs the 2-D (filter order, cutoff frequency) Lyapunov sweep:"
-msgstr "Executa a varredura de Lyapunov 2-D (ordem do filtro, frequência de corte):"
+msgstr ""
+"Executa a varredura de Lyapunov 2-D (ordem do filtro, frequência de "
+"corte):"
 
-#: ../../usage.rst:106
+#: ../../usage.rst:114
 msgid ""
 "Results are saved as ``data/sweeps/<display-"
 "name>/variables_lyapunov.npz``."
@@ -172,19 +176,19 @@ msgstr ""
 "Os resultados são salvos como ``data/sweeps/<nome-de-"
 "exibição>/variables_lyapunov.npz``."
 
-#: ../../usage.rst:127
+#: ../../usage.rst:135
 msgid "Sweep plot"
 msgstr "Varredura — Gráficos"
 
-#: ../../usage.rst:129
+#: ../../usage.rst:137
 msgid "Generates classification figures from saved ``.npz`` checkpoints:"
 msgstr "Gera figuras de classificação a partir de checkpoints ``.npz`` salvos:"
 
-#: ../../usage.rst:147
+#: ../../usage.rst:155
 msgid "Produces (per combination):"
 msgstr "Produz (por combinação):"
 
-#: ../../usage.rst:149
+#: ../../usage.rst:157
 #, python-brace-format
 msgid ""
 "**Heatmap**: continuous :math:`\\lambda_{\\max}` over :math:`(N_z, "
@@ -193,7 +197,7 @@ msgstr ""
 "**Mapa de calor** — :math:`\\lambda_{\\max}` contínuo sobre :math:`(N_z, "
 "\\omega_c / \\pi)`."
 
-#: ../../usage.rst:151
+#: ../../usage.rst:159
 msgid ""
 "**Classification interleaved**: discrete map: periodic (blue), chaotic "
 "(red), unbounded (grey)."
@@ -201,7 +205,7 @@ msgstr ""
 "**Classificação intercalada** — mapa discreto: periódico (azul), caótico "
 "(vermelho), ilimitado (cinza)."
 
-#: ../../usage.rst:153
+#: ../../usage.rst:161
 msgid ""
 "**Difficulty map**: adaptive iteration count per grid point (only for "
 "adaptive sweeps)."
@@ -209,7 +213,7 @@ msgstr ""
 "**Mapa de dificuldade** — contagem adaptativa de iterações por ponto da "
 "grade (apenas para varreduras adaptativas)."
 
-#: ../../usage.rst:155
+#: ../../usage.rst:163
 #, python-brace-format
 msgid ""
 "**Beta curves**: :math:`\\lambda_{\\max}` evolution across Kaiser "
@@ -218,15 +222,15 @@ msgstr ""
 "**Curvas beta** — evolução de :math:`\\lambda_{\\max}` ao longo dos "
 "valores de :math:`\\beta` de Kaiser (apenas para varreduras Kaiser)."
 
-#: ../../usage.rst:159
+#: ../../usage.rst:167
 msgid "Beta sweep"
 msgstr "Varredura — Beta"
 
-#: ../../usage.rst:161
+#: ../../usage.rst:169
 msgid "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
 msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
 
-#: ../../usage.rst:167
+#: ../../usage.rst:175
 msgid ""
 "Runs sweeps for every :math:`\\beta` in the interval for each filter type"
 " under the Kaiser window. Results go to ``data/sweeps/beta/``."
@@ -235,11 +239,11 @@ msgstr ""
 "de filtro sob a janela Kaiser. Os resultados vão para "
 "``data/sweeps/beta/``."
 
-#: ../../usage.rst:177
+#: ../../usage.rst:185
 msgid "3-D visualisation (requires plotly)"
 msgstr "Visualização 3-D (requer plotly)"
 
-#: ../../usage.rst:184
+#: ../../usage.rst:192
 msgid ""
 "Opens an interactive 3-D Plotly volume stacking all :math:`\\beta` "
 "surfaces, with configurable camera angle and colour scale."
@@ -247,11 +251,11 @@ msgstr ""
 "Abre um volume 3-D interativo no Plotly empilhando todas as superfícies "
 ":math:`\\beta`, com ângulo de câmera e escala de cores configuráveis."
 
-#: ../../usage.rst:188
+#: ../../usage.rst:196
 msgid "Statistical analysis"
 msgstr "Análise Estatística"
 
-#: ../../usage.rst:194
+#: ../../usage.rst:202
 msgid ""
 "Prints a comprehensive 10-section report summarising all sweep results "
 "found under ``data/sweeps/``:"
@@ -259,7 +263,7 @@ msgstr ""
 "Exibe um relatório abrangente de 10 seções resumindo todos os resultados "
 "de varredura encontrados em ``data/sweeps/``:"
 
-#: ../../usage.rst:197
+#: ../../usage.rst:205
 msgid ""
 "**Summary table**: one row per sweep with chaotic/periodic/divergent "
 "percentages."
@@ -267,7 +271,7 @@ msgstr ""
 "**Tabela de resumo** — uma linha por varredura com percentuais "
 "caótico/periódico/divergente."
 
-#: ../../usage.rst:198
+#: ../../usage.rst:206
 msgid ""
 "**Filter-type comparison**: aggregates per filter type (lowpass, "
 "highpass, bandpass, bandstop)."
@@ -275,41 +279,38 @@ msgstr ""
 "**Comparação por tipo de filtro** — agrega por tipo de filtro (passa-"
 "baixas, passa-altas, passa-faixa, rejeita-faixa)."
 
-#: ../../usage.rst:199
-msgid "**Best chaos-preserving filters**: ranked by chaotic coverage."
-msgstr "**Melhores filtros preservadores de caos**: ranqueados por cobertura caótica."
-
-#: ../../usage.rst:200
+#: ../../usage.rst:207
 msgid "**Lambda-max distribution**: histogram with skewness statistics."
 msgstr "**Distribuição de lambda-max**: histograma com estatísticas de assimetria."
 
-#: ../../usage.rst:201
+#: ../../usage.rst:208
 msgid "**Transition boundaries**: first chaotic cutoff per filter order."
 msgstr "**Fronteiras de transição** — primeiro corte caótico por ordem de filtro."
 
-#: ../../usage.rst:202
+#: ../../usage.rst:209
 msgid "**Spectral robustness (chaos margin)**: width of the chaotic region."
 msgstr "**Robustez espectral (margem de caos)** — largura da região caótica."
 
-#: ../../usage.rst:203
+#: ../../usage.rst:210
 #, python-brace-format
 msgid "**Spearman correlation**: (order, cutoff) vs. :math:`\\lambda_{\\max}`."
 msgstr "**Correlação de Spearman** — (ordem, corte) vs. :math:`\\lambda_{\\max}`."
 
-#: ../../usage.rst:204
-msgid "**Bootstrap 95% CI**: confidence intervals for chaotic proportion."
-msgstr "**IC bootstrap 95%** — intervalos de confiança para a proporção caótica."
-
-#: ../../usage.rst:205
-#, python-brace-format
+#: ../../usage.rst:211
 msgid ""
-"**Optimal parameters**: (order, cutoff) pairs yielding the highest "
+"**Bootstrap 95% CI**: confidence interval for the mean "
 ":math:`\\lambda_{\\max}`."
-msgstr ""
-"**Parâmetros ótimos** — pares (ordem, corte) que produzem o maior "
-":math:`\\lambda_{\\max}`."
+msgstr "**IC bootstrap 95%**: intervalo de confiança para a média :math:`\\lambda_{\\max}`."
 
-#: ../../usage.rst:206
+
+#: ../../usage.rst:212
+msgid ""
+"**Best and optimal parameters**: top-5 chaotic coverage and highest "
+":math:`\\lambda_{\\max}` points."
+msgstr "**Melhores e parâmetros ótimos**: top-5 de cobertura caótica e pontos de maior :math:`\\lambda_{\\max}`."
+
+
+#: ../../usage.rst:213
 #, python-brace-format
 msgid ""
 "**Kaiser beta evolution**: :math:`\\lambda_{\\max}` as function of "
@@ -318,105 +319,173 @@ msgstr ""
 "**Evolução do beta de Kaiser** — :math:`\\lambda_{\\max}` em função de "
 ":math:`\\beta`."
 
-#: ../../usage.rst:217
+#: ../../usage.rst:214
+msgid "**Interpretation**: summary takeaways."
+msgstr "**Interpretação**: conclusões resumidas."
+
+
+#: ../../usage.rst:225
+msgid "Chaotic-region maps"
+msgstr "Mapas de regiões caóticas"
+
+
+#: ../../usage.rst:227
+msgid "Renders cross-sweep figures from the same checkpoints:"
+msgstr "Gera figuras entre varreduras a partir dos mesmos checkpoints:"
+
+
+#: ../../usage.rst:238
 msgid "Export tables for PFC/article"
 msgstr "Exportar tabelas para PFC/artigo"
 
-#: ../../usage.rst:219
+#: ../../usage.rst:240
 msgid "Generate publication-ready LaTeX tables with bilingual support:"
 msgstr "Gera tabelas LaTeX prontas para publicação com suporte bilíngue:"
 
-#: ../../usage.rst:225
+#: ../../usage.rst:246
 #, python-brace-format
 msgid ""
 "Produces 8 ``.tex`` files per language under "
 "``data/analysis_output/tables/{pt,en}/``:"
-msgstr "Produz 8 arquivos ``.tex`` por idioma em ``data/analysis_output/tables/{pt,en}/``:"
+msgstr ""
+"Produz 8 arquivos ``.tex`` por idioma em "
+"``data/analysis_output/tables/{pt,en}/``:"
 
-#: ../../usage.rst:227
+#: ../../usage.rst:248
 msgid "**tab_top_k.tex** — Top-3 windows per filter type (chaotic area)."
 msgstr "**tab_top_k.tex** — Top-3 janelas por tipo de filtro (área caótica)."
 
-#: ../../usage.rst:228
+#: ../../usage.rst:249
 #, python-brace-format
 msgid ""
 "**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
 "statistics and 95% CI."
-msgstr "**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` statistics and 95% CI."
+msgstr ""
+"**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
+"statistics and 95% CI."
 
-#: ../../usage.rst:229
+#: ../../usage.rst:250
 msgid "**tab_full_ranking.tex** — Full 124-entry ranking (longtable)."
 msgstr "**tab_full_ranking.tex** — Ranking completo com 124 entradas (longtable)."
 
-#: ../../usage.rst:230
+#: ../../usage.rst:251
 #, python-brace-format
 msgid ""
 "**tab_sweet_spots.tex** — Grid point with highest "
 ":math:`\\lambda_{\\max}` per filter."
-msgstr "**tab_sweet_spots.tex** — Grid point with highest :math:`\\lambda_{\\max}` per filter."
+msgstr ""
+"**tab_sweet_spots.tex** — Grid point with highest "
+":math:`\\lambda_{\\max}` per filter."
 
-#: ../../usage.rst:231
+#: ../../usage.rst:252
 msgid ""
 "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
 ":math:`\\beta`."
-msgstr "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\\beta`."
+msgstr ""
+"**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
+":math:`\\beta`."
 
-#: ../../usage.rst:232
+#: ../../usage.rst:253
 msgid "**tab_consolidated_extended.tex** — Extended stats, Kaiser consolidated."
-msgstr "**tab_consolidated_extended.tex** — Estatísticas estendidas, Kaiser consolidado."
+msgstr ""
+"**tab_consolidated_extended.tex** — Estatísticas estendidas, Kaiser "
+"consolidado."
 
-#: ../../usage.rst:233
+#: ../../usage.rst:254
 msgid ""
 "**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), "
 "balanced."
-msgstr "**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), balanced."
+msgstr ""
+"**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), "
+"balanced."
 
-#: ../../usage.rst:234
+#: ../../usage.rst:255
 msgid "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
 msgstr "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
 
-#: ../../usage.rst:249
+#: ../../usage.rst:270
 msgid ""
 "All tables use ``booktabs`` rules and inline LaTeX math. Captions, column"
 " headers, and filter names are resolved via the i18n system."
-msgstr "Todas as tabelas usam regras ``booktabs`` e matemática LaTeX inline. Legendas, cabeçalhos de coluna e nomes de filtros são resolvidos via o sistema de i18n."
+msgstr ""
+"Todas as tabelas usam regras ``booktabs`` e matemática LaTeX inline. "
+"Legendas, cabeçalhos de coluna e nomes de filtros são resolvidos via o "
+"sistema de i18n."
 
-#: ../../usage.rst:253
+#: ../../usage.rst:274
+msgid "Paper figures"
+msgstr "Figuras do artigo"
+
+
+#: ../../usage.rst:276
+msgid ""
+"Renders the SIMAC and JCIS figures at their final printed size (so the "
+"requested point sizes are the point sizes on the page):"
+msgstr "Gera as figuras do SIMAC e do JCIS no tamanho final de impressão (de modo que os tamanhos de ponto solicitados sejam os tamanhos na página):"
+
+
+#: ../../usage.rst:283
+msgid ""
+"Emits PDF and SVG under ``paper-figures/simac/`` and ``paper-"
+"figures/jcis/``. Restrict to one manuscript or customise the "
+"locations/formats with the flags:"
+msgstr "Emite PDF e SVG em ``paper-figures/simac/`` e ``paper-figures/jcis/``. Restrinja a um manuscrito ou personalize locais/formatos com as flags:"
+
+
+#: ../../usage.rst:294
 msgid "Language support"
 msgstr "Suporte a idiomas"
 
-#: ../../usage.rst:255
+#: ../../usage.rst:296
 msgid ""
 "The CLI supports bilingual figure labels via the ``--lang`` flag or the "
-"``CHAOTIC_PFC_LANG`` environment variable:"
-msgstr ""
-"A CLI oferece suporte a rótulos de figuras bilíngues via a flag "
-"``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG``:"
+"``CHAOTIC_PFC_LANG`` environment variable (which sets the default):"
+msgstr "A CLI oferece suporte a rótulos de figuras bilíngues via a flag ``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG`` (que define o padrão):"
 
-#: ../../usage.rst:270
+
+#: ../../usage.rst:311
 msgid ""
 "The flag is supported by ``attractors``, ``sensitivity``, ``comm-ideal``,"
-" ``comm-fir``, ``comm-order-n``, and ``run all``."
-msgstr ""
-"A flag é suportada por ``attractors``, ``sensitivity``, ``comm-ideal``, "
-"``comm-fir``, ``comm-order-n`` e ``run all``."
+" ``comm-fir``, ``comm-order-n``, ``sweep plot``, ``analysis plot-chaotic-"
+"map``, ``analysis plot-chaotic-density``, ``analysis export-tables``, and"
+" ``run all``."
+msgstr "A flag é suportada por ``attractors``, ``sensitivity``, ``comm-ideal``, ``comm-fir``, ``comm-order-n``, ``sweep plot``, ``analysis plot-chaotic-map``, ``analysis plot-chaotic-density``, ``analysis export-tables`` e ``run all``."
 
-#: ../../usage.rst:275
+
+#: ../../usage.rst:317
 msgid "Further reading"
 msgstr "Leitura adicional"
 
-#: ../../usage.rst:277
+#: ../../usage.rst:319
 msgid ":doc:`architecture`: how the modules fit together."
 msgstr ":doc:`architecture` — como os módulos se integram."
 
-#: ../../usage.rst:278
+#: ../../usage.rst:320
 msgid ":doc:`internals`: Numba kernels, MGS, adaptive early-stop."
 msgstr ":doc:`internals` — kernels Numba, MGS, parada antecipada adaptativa."
 
-#: ../../usage.rst:279
+#: ../../usage.rst:321
 msgid ":doc:`background`: complete theoretical foundations."
 msgstr ":doc:`background` — fundamentos teóricos completos."
 
-#: ../../usage.rst:280
+#: ../../usage.rst:322
 msgid ":doc:`development`: development environment and tooling."
 msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
+
+#~ msgid ""
+#~ "Each produces a :math:`4 \\times 2` "
+#~ "grid of time-domain and PSD plots"
+#~ " for the message, carrier, received "
+#~ "signal, and recovered message."
+#~ msgstr ""
+#~ "Cada um produz uma grade :math:`4 "
+#~ "\\times 2` de gráficos no domínio "
+#~ "do tempo e de DEP para a "
+#~ "mensagem, portadora, sinal recebido e "
+#~ "mensagem recuperada."
+
+#~ msgid "**Best chaos-preserving filters**: ranked by chaotic coverage."
+#~ msgstr ""
+#~ "**Melhores filtros preservadores de caos**:"
+#~ " ranqueados por cobertura caótica."
+

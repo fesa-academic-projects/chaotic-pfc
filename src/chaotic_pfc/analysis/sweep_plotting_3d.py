@@ -1,7 +1,4 @@
-"""
-sweep_plotting_3d.py
-====================
-Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps.
+"""Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps.
 
 Aggregates a directory of per-β ``.npz`` checkpoints (produced by
 ``chaotic-pfc run sweep beta-sweep``) into a single 3-D volume

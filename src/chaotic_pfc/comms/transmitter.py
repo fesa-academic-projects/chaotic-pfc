@@ -1,9 +1,7 @@
-"""
-transmitter.py
-==============
-Chaos-based modulator. Implements the
-:class:`~chaotic_pfc.comms.protocols.Transmitter` protocol — a callable
-that embeds a message in the state of a Hénon oscillator.
+r"""Chaos-based modulator implementing the transmitter protocol.
+
+The transmitter is a callable that embeds a message in the state of a
+Hénon oscillator.
 
 Two transmitters are provided, mirroring the two receiver modes:
 
@@ -43,7 +41,7 @@ def transmit(
     x0: float = 0.0,
     y0: float = 0.0,
 ) -> NDArray:
-    """Modulate a message onto a 2-D Hénon carrier.
+    r"""Modulate a message onto a 2-D Hénon carrier.
 
     Parameters
     ----------
@@ -81,7 +79,7 @@ def transmit(
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`.
 
-"""
+    """
     N = len(message)
     x1 = np.empty(N + 1)
     x2 = np.empty(N + 1)
@@ -142,7 +140,8 @@ def transmit_order_n(
     :class:`~chaotic_pfc.comms.protocols.Transmitter` because it returns a
     ``(signal, state)`` tuple instead of a single ndarray. Use
     :func:`transmit` (the 2-D variant) for code that types against the
-    Transmitter protocol."""
+    Transmitter protocol.
+    """
     Nc = len(fir_coeffs)
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)

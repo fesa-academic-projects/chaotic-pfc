@@ -1,7 +1,4 @@
-"""
-cli
-===
-Unified command-line interface for the chaotic_pfc package.
+"""Unified command-line interface for the chaotic_pfc package.
 
 The parser layout is ``chaotic-pfc run <experiment> [options]``, where
 ``<experiment>`` is one of the pipeline stages (``attractors``,
@@ -21,7 +18,7 @@ same pattern recursively, producing a two-level parser tree
 (``run → sweep → {compute, plot}``).
 
 Adding a new experiment is a matter of dropping a new submodule here
-and appending its name to :data:`EXPERIMENTS` below.
+and appending its name to ``EXPERIMENTS`` below.
 """
 
 from __future__ import annotations
@@ -109,8 +106,8 @@ def main(argv: list[str] | None = None) -> int:
     Parameters
     ----------
     argv
-        Optional list of arguments. Defaults to :data:`sys.argv[1:]`.
-        Passing an explicit ``argv`` is what makes :mod:`tests.test_cli`
+        Optional list of arguments. Defaults to ``sys.argv[1:]``.
+        Passing an explicit ``argv`` is what makes ``tests.test_cli``
         possible without shelling out to a subprocess.
 
     Returns

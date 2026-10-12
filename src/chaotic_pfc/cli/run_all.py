@@ -1,4 +1,4 @@
-"""Run every experiment in sequence.
+r"""Run every experiment in sequence.
 
 Nested under ``chaotic-pfc run all``. Previously the top-level
 ``run_all.py`` script, which shelled out to each numbered script via

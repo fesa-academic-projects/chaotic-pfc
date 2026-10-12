@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 22:33-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: 2026-05-23 15:30-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -203,8 +203,8 @@ msgstr ""
 #: ../../validation.rst:77
 msgid "The test suite verifies this identity at three parameter sets:"
 msgstr ""
-"A suíte de "
-"testes verifica esta identidade em três conjuntos de parâmetros:"
+"A suíte de testes verifica esta identidade em três conjuntos de "
+"parâmetros:"
 
 #: ../../validation.rst:79
 msgid ":math:`(\\alpha = 1.4, \\; \\beta = 0.3)` — standard chaotic regime"
@@ -242,31 +242,26 @@ msgid "Known limitations"
 msgstr "Limitações conhecidas"
 
 #: ../../validation.rst:99
-#, python-format
 msgid ""
 "**Finite-time convergence.**  Published Lyapunov values correspond to the"
 " asymptotic limit :math:`N_{\\text{itera}} \\to \\infty`.  Our code with "
-":math:`N_{\\text{itera}} = 2\\,000` (the default for sweeps) produces "
-":math:`\\lambda_1 \\approx 0.408` — a 2.4 % deviation from Wolf.  The "
-"error decreases to 0.10 % at :math:`20\\,000` iterations. The default "
-"iteration count is a conscious trade-off between sweep throughput and "
-"per-point accuracy; the analytical identity confirms the implementation "
-"is correct at *any* iteration count."
-msgstr ""
-"**Convergência em tempo finito.**  Os valores de Lyapunov publicados "
-"correspondem ao limite assintótico :math:`N_{\\text{itera}} \\to "
-"\\infty`.  Nosso código com :math:`N_{\\text{itera}} = 2\\,000` (o padrão"
-" para varreduras) produz :math:`\\lambda_1 \\approx 0.408` — um desvio de"
-" 2,4 % em relação a Wolf.  O erro cai para 0,10 % com :math:`20\\,000` "
-"iterações.  A contagem padrão de iterações é uma troca consciente entre "
-"vazão da varredura e precisão por ponto; a identidade analítica confirma "
-"que a implementação está correta em *qualquer* contagem de iterações."
+":math:`N_{\\text{itera}} = 2\\,000` (the default of "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, not of the "
+"order–cutoff sweeps, which use :math:`N_{\\text{burn}} = 500` and "
+":math:`N_{\\text{map}} = 3\\,000`) produces :math:`\\lambda_1 \\approx "
+"0.408` — a 2.4 % deviation from Wolf.  The error decreases to 0.10 % at "
+":math:`20\\,000` iterations. The default iteration count is a conscious "
+"trade-off between sweep throughput and per-point accuracy; the analytical"
+" identity confirms the implementation is correct at *any* iteration "
+"count."
+msgstr "**Convergência em tempo finito.**  Os valores de Lyapunov publicados correspondem ao limite assintótico :math:`N_{\\text{itera}} \\to \\infty`.  Nosso código com :math:`N_{\\text{itera}} = 2\\,000` (o padrão de :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, não das varreduras de ordem–corte, que usam :math:`N_{\\text{burn}} = 500` e :math:`N_{\\text{map}} = 3\\,000`) produz :math:`\\lambda_1 \\approx 0.408` — um desvio de 2,4 % em relação a Wolf.  O erro cai para 0,10 % com :math:`20\\,000` iterações. A contagem padrão de iterações é uma troca consciente entre vazão da varredura e precisão por ponto; a identidade analítica confirma que a implementação está correta em *qualquer* contagem de iterações."
 
-#: ../../validation.rst:108
+
+#: ../../validation.rst:111
 msgid "**Orbit divergence.**  Not every :math:`(a, b)` pair yields a bounded"
 msgstr "**Divergência da órbita.**  Nem todo par :math:`(a, b)` produz um atrator"
 
-#: ../../validation.rst:109
+#: ../../validation.rst:112
 msgid ""
 "attractor.  The test suite uses only parameter sets known to produce "
 "bounded orbits in the long-time limit."
@@ -275,11 +270,11 @@ msgstr ""
 " limitado.  A suíte de testes usa apenas conjuntos de parâmetros "
 "conhecidos por produzir órbitas limitadas no limite de tempo longo."
 
-#: ../../validation.rst:113
+#: ../../validation.rst:116
 msgid "References"
 msgstr "Referências"
 
-#: ../../validation.rst:115
+#: ../../validation.rst:118
 msgid ""
 "A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, \"Determining "
 "Lyapunov exponents from a time series,\" *Physica D: Nonlinear "
@@ -292,10 +287,11 @@ msgstr ""
 "1985. DOI: `10.1016/0167-2789(85)90011-9 "
 "<https://doi.org/10.1016/0167-2789(85)90011-9>`_"
 
-#: ../../validation.rst:120
+#: ../../validation.rst:123
 msgid ""
 "J. C. Sprott, *Chaos and Time-Series Analysis*, Oxford University Press, "
 "2003, Section 5.2. ISBN: 978-0-19-850840-3"
 msgstr ""
 "J. C. Sprott, *Chaos and Time-Series Analysis*, Oxford University Press, "
 "2003, Seção 5.2. ISBN: 978-0-19-850840-3"
+

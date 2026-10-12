@@ -1,6 +1,5 @@
 """Lyapunov exponent computation (text output + optional CSV).
 
-
 * **Part A** — pure 2-D Henon, single perturbed IC, both fixed points.
 * **Part B** — 4-D Pole-filtered Henon, single perturbed IC.
 * **Part C** — 2-D Henon ensemble, ``n_ci`` ICs drawn uniformly in

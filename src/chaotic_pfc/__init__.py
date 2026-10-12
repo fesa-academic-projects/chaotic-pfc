@@ -1,8 +1,4 @@
-"""
-chaotic_pfc
-===========
-Chaotic communication system based on the Henon map.
-"""
+"""Chaotic communication system based on the Henon map."""
 
 from __future__ import annotations
 

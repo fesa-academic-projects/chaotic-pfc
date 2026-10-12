@@ -116,7 +116,7 @@ class AreaSummary(TypedDict):
 
 
 class LmaxStats(TypedDict):
-    """Descriptive statistics of :math:`\\lambda_{\\max}` for a subset of points.
+    r"""Descriptive statistics of :math:`\\lambda_{\\max}` for a subset of points.
 
     Returned by :func:`lmax_statistics`.
     """
@@ -153,7 +153,7 @@ class ConfigRank(TypedDict):
 
 
 class SweetSpot(TypedDict):
-    """Single grid point with the highest :math:`\\lambda_{\\max}` for one filter type.
+    r"""Single grid point with the highest :math:`\\lambda_{\\max}` for one filter type.
 
     Returned per filter type by :func:`sweet_spot_per_filter`.
     """
@@ -213,6 +213,16 @@ def summary_table(
 
     This is the foundation of all downstream analyses — every other
     public function in this module either calls or derives from this table.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+
+    Returns
+    -------
+    list[SummaryRow]
+        One entry per sweep with the statistics listed above.
     """
     rows: list[dict] = []
     for result in _discover_all(data_dir):
@@ -241,7 +251,7 @@ def summary_table(
 
 
 def area_summary(sweep_result: SweepResult) -> AreaSummary:
-    """Compute chaotic-area coverage for a single sweep.
+    r"""Compute chaotic-area coverage for a single sweep.
 
     Classifies each grid point (order, cutoff) as chaotic
     (:math:`\\lambda_{\\max} > 0`, finite), periodic
@@ -289,7 +299,7 @@ def lmax_statistics(
     n_bootstrap: int = _DEFAULT_N_BOOTSTRAP,
     seed: int = 42,
 ) -> LmaxStats:
-    """Compute descriptive statistics of :math:`\\lambda_{\\max}` for a subset of grid points.
+    r"""Compute descriptive statistics of :math:`\\lambda_{\\max}` for a subset of grid points.
 
     Filters the sweep grid by dynamical regime then computes mean,
     median, standard deviation, min, max, and a bootstrap 95%
@@ -389,7 +399,7 @@ def load_all_sweeps(
     Returns
     -------
     dict
-        Mapping from ``(filter_type, window_key)`` to :class:`SweepResult`.
+        Mapping from ``(filter_type, window_key)`` to :class:`~chaotic_pfc.analysis.sweep.SweepResult`.
     """
     sweep_dir = Path(sweep_dir).resolve()
     if sweep_dir in _LOADED_SWEEPS_CACHE:
@@ -574,7 +584,7 @@ def kaiser_beta_optimal(
 def sweet_spot_per_filter(
     sweep_results: dict[tuple[str, str], SweepResult],
 ) -> dict[str, SweetSpot]:
-    """Identify the grid point with the highest :math:`\\lambda_{\\max}` per filter type.
+    r"""Identify the grid point with the highest :math:`\\lambda_{\\max}` per filter type.
 
     For each filter type, scans all available window sweeps and returns
     the exact ``(N_z, omega_c, window)`` where ``lambda_max`` is
@@ -641,6 +651,18 @@ def best_chaos_preserving(
     """Rank sweeps by percentage of chaotic grid points (descending).
 
     Returns the *top_n* entries with the most chaotic coverage.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    top_n
+        Number of top entries to return (default 5).
+
+    Returns
+    -------
+    list[SummaryRow]
+        The ``top_n`` sweeps with the highest chaotic coverage.
     """
     rows = summary_table(data_dir)
     rows.sort(key=lambda r: r["pct_chaotic"], reverse=True)
@@ -655,6 +677,16 @@ def compare_filter_types(
     Returns a ``dict`` keyed by filter type (``"lowpass"``, ...) with
     each value being a :class:`FilterTypeAggregate` containing mean
     percentages and lambda_max across all windows that use that filter type.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+
+    Returns
+    -------
+    dict[str, FilterTypeAggregate]
+        Aggregated statistics keyed by filter type.
     """
     rows = summary_table(data_dir)
     agg: dict[str, list[SummaryRow]] = {ft: [] for ft in FILTER_TYPES}
@@ -685,6 +717,22 @@ def optimal_parameters(
     """Find the (order, cutoff) pairs with the highest λ_max.
 
     Filters results by *window* and *filter_type* if given.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    window
+        Restrict to one window key; ``None`` uses every window.
+    filter_type
+        Restrict to one filter type; ``None`` uses every type.
+    top_n
+        Number of (order, cutoff) pairs to return (default 3).
+
+    Returns
+    -------
+    list[OptimalParams]
+        The ``top_n`` points with the highest ``lambda_max``.
     """
     best: list[dict] = []
     for result in _discover_all(data_dir):
@@ -717,7 +765,20 @@ def export_summary_json(
     data_dir: str | Path = "data/sweeps",
     output: str | Path = "data/analysis_summary.json",
 ) -> Path:
-    """Write the full summary table to a JSON file."""
+    """Write the full summary table to a JSON file.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    output
+        Destination JSON path.
+
+    Returns
+    -------
+    Path
+        The path written.
+    """
     output = Path(output)
     rows = summary_table(data_dir)
     output.write_text(json.dumps(rows, indent=2, default=str))
@@ -733,6 +794,16 @@ def beta_summary(
     """Aggregate per-β statistics for each filter type.
 
     Returns a nested dict: ``{filter_type: {beta: {pct_chaotic, mean_lmax, ...}}}``
+
+    Parameters
+    ----------
+    data_dir
+        Root directory of the Kaiser sweep checkpoints.
+
+    Returns
+    -------
+    dict[str, dict[float, dict]]
+        Aggregated per-β statistics for each filter type.
     """
     out: dict[str, dict[float, dict]] = {}
     for ft in FILTER_TYPES:
@@ -765,6 +836,18 @@ def beta_curve(
 
     Useful for plotting the β-dependence of chaotic coverage.
     Returns empty arrays when *filter_type* is absent from the data.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory of the Kaiser sweep checkpoints.
+    filter_type
+        Filter type to extract (default ``"lowpass"``).
+
+    Returns
+    -------
+    tuple[NDArray, NDArray]
+        ``(betas, pct_chaotic)``; empty arrays when absent.
     """
     summary = beta_summary(data_dir)
     if filter_type not in summary:
@@ -782,6 +865,13 @@ def lmax_distribution(
     bins: int = 50,
 ) -> dict[str, LmaxDistribution]:
     """Histogram of λ_max values per filter type.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    bins
+        Number of histogram bins (default 50).
 
     Returns
     -------
@@ -825,6 +915,15 @@ def transition_boundary(
     For each order, returns the *first* cutoff (lowest frequency) where
     λ_max > 0, or NaN if no chaotic point exists.
 
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    window
+        Restrict to one window key; ``None`` uses every window.
+    filter_type
+        Filter type to analyse (default ``"lowpass"``).
+
     Returns
     -------
     orders : ndarray
@@ -865,6 +964,15 @@ def chaos_margin(
 ) -> tuple[NDArray, NDArray]:
     """For each order, compute the width of the chaotic region in cutoff space.
 
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    window
+        Restrict to one window key; ``None`` uses every window.
+    filter_type
+        Filter type to analyse (default ``"lowpass"``).
+
     Returns
     -------
     orders : ndarray
@@ -898,6 +1006,11 @@ def correlation_matrix(
     data_dir: str | Path = "data/sweeps",
 ) -> CorrelationMatrix:
     """Spearman correlation between (order, cutoff, λ_max) across all sweeps.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
 
     Returns
     -------
@@ -939,6 +1052,15 @@ def bootstrap_confidence(
     seed: int = 42,
 ) -> dict[str, BootstrapConfidence]:
     """Bootstrap 95% CI for mean λ_max per filter type.
+
+    Parameters
+    ----------
+    data_dir
+        Root directory containing the sweep ``.npz`` checkpoints.
+    n_bootstrap
+        Number of bootstrap resamples (default 1000).
+    seed
+        RNG seed for the resampling (default 42).
 
     Returns
     -------

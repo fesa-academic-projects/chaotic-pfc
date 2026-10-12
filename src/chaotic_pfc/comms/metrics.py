@@ -56,6 +56,22 @@ def estimate_delay(
     noise and drifts with the record length; the lag is only meaningful
     once there is a signal to correlate against. Callers should treat a
     small ``corr_at_lag`` as "no delay estimate", not as a measurement.
+
+    Parameters
+    ----------
+    m, m_hat
+        Original and recovered message, shape ``(N,)``.
+    transient
+        Number of leading samples discarded before correlating (the
+        synchronisation transient).
+    max_lag
+        Largest delay scanned, in samples (default 500).
+
+    Returns
+    -------
+    DelayEstimate
+        ``lag`` (argmax of ``|corr|``), ``corr_at_lag`` and
+        ``corr_at_zero``.
     """
     m = np.asarray(m, dtype=float)
     m_hat = np.asarray(m_hat, dtype=float)
@@ -95,6 +111,23 @@ def comm_metrics(
     compared are ``m[n]`` against ``m_hat[n + delay]`` for
     ``n >= transient``. The *transient* value itself is not modified; the
     alignment only shifts the comparison window.
+
+    Parameters
+    ----------
+    m, m_hat
+        Original and recovered message, shape ``(N,)``.
+    transient
+        Number of leading samples discarded (synchronisation transient).
+    bit_period
+        Samples per transmitted bit (the bit hold time).
+    delay
+        Delay of ``m_hat`` with respect to ``m``, in samples.
+
+    Returns
+    -------
+    CommMetrics
+        ``delay``, ``n_samples``, ``mse``, ``per_sample_error``, ``ber``
+        and ``correlation``.
     """
     m = np.asarray(m, dtype=float)
     m_hat = np.asarray(m_hat, dtype=float)

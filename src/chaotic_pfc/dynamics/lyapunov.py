@@ -1,8 +1,4 @@
-"""
-lyapunov.py
-===========
-Lyapunov exponent computation for the Hénon map (2-D) and the Hénon
-map with a pole filter (4-D).
+"""Lyapunov exponent computation for the Hénon and pole-filtered maps.
 
 4-D system:
     x₁[n+1] = α − x₃[n]² + β·x₂[n]
@@ -120,7 +116,13 @@ def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray, x: NDArray) -> N
 
 
 def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
-    """Modified Gram-Schmidt. Returns (Q, norms)."""
+    """Orthonormalise the columns of ``Z`` by modified Gram-Schmidt.
+
+    Returns
+    -------
+    tuple[NDArray, NDArray]
+        The orthonormal columns ``Q`` and the column norms before normalising.
+    """
     _d, n = Z.shape
     Q = np.zeros_like(Z)
     norms = np.zeros(n)
@@ -220,7 +222,7 @@ def lyapunov_max(
     perturbation: float = 0.1,
     seed: int = 42,
 ) -> LyapunovResult:
-    """
+    r"""
     Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map.
 
     Parameters
@@ -299,7 +301,7 @@ def fixed_point_stability(
     pole_radius: float = 0.975,
     w0: float = 0.0,
 ) -> FixedPointInfo:
-    """Quick check: fixed point, eigenvalues, stability (4-D filtered).
+    r"""Quick check: fixed point, eigenvalues, stability (4-D filtered).
 
     Parameters
     ----------
@@ -377,7 +379,7 @@ def lyapunov_henon2d(
     perturbation: float = 0.1,
     seed: int = 42,
 ) -> LyapunovResult:
-    """Compute Lyapunov exponents for the standard 2-D Hénon map.
+    r"""Compute Lyapunov exponents for the standard 2-D Hénon map.
 
     Parameters
     ----------
@@ -639,7 +641,7 @@ def lyapunov_max_ensemble(
     n_initial: int = 20,
     seed: int | None = 42,
 ) -> EnsembleResult:
-    """Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map.
+    r"""Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map.
 
     Parameters
     ----------
@@ -715,7 +717,7 @@ def lyapunov_henon2d_ensemble(
     n_initial: int = 20,
     seed: int | None = 42,
 ) -> EnsembleResult:
-    """Ensemble Lyapunov protocol for the standard 2-D Hénon map.
+    r"""Ensemble Lyapunov protocol for the standard 2-D Hénon map.
 
     Parameters
     ----------

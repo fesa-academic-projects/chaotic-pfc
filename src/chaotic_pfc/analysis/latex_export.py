@@ -65,7 +65,7 @@ def _render_tex(
     *,
     use_longtable: bool = False,
 ) -> str:
-    """Build a complete LaTeX table string.
+    r"""Build a complete LaTeX table string.
 
     Parameters
     ----------
@@ -119,7 +119,7 @@ def export_top_k_table(
     label: str | None = None,
     lang: str | None = None,
 ) -> Path:
-    """Export Categoria A — Top-3 per filter (chaotic area only).
+    r"""Export Categoria A — Top-3 per filter (chaotic area only).
 
     Parameters
     ----------

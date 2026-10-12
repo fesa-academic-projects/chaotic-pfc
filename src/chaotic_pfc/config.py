@@ -1,7 +1,4 @@
-"""
-config.py
-=========
-Centralised configuration for all experiments.
+"""Centralised configuration for all experiments.
 
 The module exposes a single :data:`DEFAULT_CONFIG` object of type
 :class:`ExperimentConfig` that aggregates the per-subsystem settings

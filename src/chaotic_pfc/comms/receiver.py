@@ -1,10 +1,7 @@
-"""
-receiver.py
-===========
-Chaos-synchronisation demodulator. Implements the
-:class:`~chaotic_pfc.comms.protocols.Receiver` protocol — a callable that
-extracts the original message from a transmitted (and possibly
-channel-distorted) carrier.
+r"""Chaos-synchronisation demodulator implementing the receiver protocol.
+
+The receiver is a callable that extracts the original message from a
+transmitted (and possibly channel-distorted) carrier.
 
 Both receivers rely on the Pecora-Carroll synchronisation principle:
 running a second copy of the Hénon oscillator driven by the received
@@ -45,7 +42,7 @@ def receive(
     y0: float = 0.0,
     z0: float = 0.0,
 ) -> NDArray:
-    """Demodulate the carrier ``r`` via 2-D Hénon synchronisation.
+    r"""Demodulate the carrier ``r`` via 2-D Hénon synchronisation.
 
     The local oscillator is driven by ``r`` itself:
 
@@ -85,7 +82,7 @@ def receive(
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`.
 
-"""
+    """
     if mu == 0:
         raise ValueError(
             "mu must be non-zero; received mu=0 which would cause "
@@ -113,7 +110,7 @@ def receive_order_n(
     y0: NDArray | None = None,
     seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
-    """Demodulate the carrier ``r`` via N-th order Hénon synchronisation.
+    r"""Demodulate the carrier ``r`` via N-th order Hénon synchronisation.
 
     Runs a local copy of the N-th order filtered Hénon map driven by
     ``r``, and recovers the message from the difference between the
@@ -152,7 +149,8 @@ def receive_order_n(
     :class:`~chaotic_pfc.comms.protocols.Receiver` because it returns a
     ``(recovered, state)`` tuple instead of a single ndarray. Use
     :func:`receive` (the 2-D variant) for code that types against the
-    Receiver protocol."""
+    Receiver protocol.
+    """
     if mu == 0:
         raise ValueError(
             "mu must be non-zero; received mu=0 which would cause "

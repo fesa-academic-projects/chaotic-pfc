@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Kauê de Souza Silva, Roger Freitas Pereira, Marcos
+# Felipe Correa Soares, Guilherme Rodrigues dos Santos, and Vinícius da
+# Silva Borges and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../changelog.rst:4
+msgid "Changelog"
+msgstr "Registro de alterações"
+
+
+#: ../../changelog.rst:6
+msgid ""
+"The project changelog is maintained in the repository root with `Keep a "
+"Changelog <https://keepachangelog.com/en/1.1.0/>`_ conventions:"
+msgstr "O registro de alterações do projeto é mantido na raiz do repositório com as convenções do `Keep a Changelog <https://keepachangelog.com/en/1.1.0/>`_:"
+
+
+#: ../../changelog.rst:15
+msgid ""
+"It records every notable change, grouped by release, including the "
+"``Unreleased`` section for the current development cycle."
+msgstr "Ele registra cada alteração notável, agrupada por versão, incluindo a seção ``Unreleased`` do ciclo de desenvolvimento atual."
+
+

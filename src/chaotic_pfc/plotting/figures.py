@@ -1,7 +1,4 @@
-"""
-figures.py
-==========
-Publication-quality SVG figures with LaTeX-style labels.
+"""Publication-quality SVG figures with LaTeX-style labels.
 
 Typography is configured via :func:`setup_rc`, which auto-detects
 whether a full LaTeX installation is available on the system:
@@ -52,6 +49,11 @@ def latex_available() -> bool:
     The return value is determined at import time by checking
     ``$PATH`` for the ``latex`` executable.  Set the environment
     variable ``CHAOTIC_PFC_FORCE_LATEX=0`` or ``1`` to override.
+
+    Returns
+    -------
+    bool
+        ``True`` when a ``latex`` executable was found (or forced on).
     """
     return _LATEX_AVAILABLE
 
@@ -312,10 +314,10 @@ def plot_comm_grid(
     save_path: str | None = None,
     lang: str = "pt",
 ) -> Figure:
-    """
-    4×2 grid: left = time domain, right = PSD.
-    Rows: m[n], s[n], r[n], m̂[n].
-    If h_channel is provided, its frequency response is overlaid on PSD_s.
+    """Draw the 4×2 communication grid: time domain (left) and PSD (right).
+
+    Rows are m[n], s[n], r[n] and m̂[n].  If ``h_channel`` is provided, its
+    frequency response is overlaid on the transmitted PSD.
 
     The *opts* dataclass overrides individual keyword arguments when both
     are provided.  See :class:`PlotGridOptions` for grouped defaults.

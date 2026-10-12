@@ -1,7 +1,4 @@
-"""
-spectral.py
-===========
-Power-spectral-density estimation utilities used by the plotting layer.
+"""Power-spectral-density estimation utilities used by the plotting layer.
 
 The single public function, :func:`psd_normalised`, wraps
 :func:`scipy.signal.welch` with the conventions adopted throughout the

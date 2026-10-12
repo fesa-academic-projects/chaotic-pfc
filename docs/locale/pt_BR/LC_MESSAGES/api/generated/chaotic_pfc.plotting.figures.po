@@ -4,60 +4,65 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
 # Translation status: INTENTIONALLY UNTRANSLATED.
 # Auto-generated API reference is maintained in English only.
 # See docs/api/index.rst for rationale.
-"Generated-By: Babel 2.18.0\n"
-
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:2
 msgid "chaotic\\_pfc.plotting.figures"
 msgstr "chaotic\\_pfc.plotting.figures"
 
-#: chaotic_pfc.plotting.figures:2 of
-msgid "figures.py"
-msgstr "figures.py"
 
-#: chaotic_pfc.plotting.figures:3 of
+
+#: chaotic_pfc.plotting.figures:1 of
 msgid "Publication-quality SVG figures with LaTeX-style labels."
 msgstr "Publication-quality SVG figures with LaTeX-style labels."
 
-#: chaotic_pfc.plotting.figures:5 of
+
+
+#: chaotic_pfc.plotting.figures:3 of
 msgid ""
 "Typography is configured via :func:`setup_rc`, which auto-detects whether"
 " a full LaTeX installation is available on the system:"
 msgstr ""
 "Typography is configured via :func:`setup_rc`, which auto-detects whether"
 " a full LaTeX installation is available on the system:"
+
+
+
+#: chaotic_pfc.plotting.figures:6 of
+msgid ""
+"If ``latex`` is found on ``$PATH``, real LaTeX rendering is used "
+"(``usetex=True``, Computer Modern Roman)."
+msgstr ""
+"If ``latex`` is found on ``$PATH``, real LaTeX rendering is used "
+"(``usetex=True``, Computer Modern Roman)."
+
+
 
 #: chaotic_pfc.plotting.figures:8 of
 msgid ""
-"If ``latex`` is found on ``$PATH``, real LaTeX rendering is used "
-"(``usetex=True``, Computer Modern Roman)."
-msgstr ""
-"If ``latex`` is found on ``$PATH``, real LaTeX rendering is used "
-"(``usetex=True``, Computer Modern Roman)."
-
-#: chaotic_pfc.plotting.figures:10 of
-msgid ""
 "Otherwise, mathtext with STIX fonts is used as a fallback that visually "
 "matches LaTeX output without any external dependency."
 msgstr ""
 "Otherwise, mathtext with STIX fonts is used as a fallback that visually "
 "matches LaTeX output without any external dependency."
 
-#: chaotic_pfc.plotting.figures:13 of
+
+
+#: chaotic_pfc.plotting.figures:11 of
 msgid ""
 "The detection can be overridden via the environment variable "
 "``CHAOTIC_PFC_FORCE_LATEX`` (``0`` forces fallback, ``1`` forces real "
@@ -67,17 +72,23 @@ msgstr ""
 "``CHAOTIC_PFC_FORCE_LATEX`` (``0`` forces fallback, ``1`` forces real "
 "LaTeX).  This is useful in CI environments or for debugging."
 
-#: chaotic_pfc.plotting.figures:17 of
+
+
+#: chaotic_pfc.plotting.figures:15 of
 msgid ""
 "All text is converted to vector paths in SVG output so that figures "
 "render identically on any system."
 msgstr ""
 "All text is converted to vector paths in SVG output so that figures "
 "render identically on any system."
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:8
 msgid "Functions"
 msgstr "Functions"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 msgid ""
@@ -86,12 +97,16 @@ msgid ""
 msgstr ""
 ":py:obj:`latex_available "
 "<chaotic_pfc.plotting.figures.latex_available>`\\ \\(\\)"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 #: chaotic_pfc.plotting.figures.latex_available:1 of
 msgid "Return ``True`` if LaTeX is available for figure rendering."
 msgstr "Return ``True`` if LaTeX is available for figure rendering."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 msgid ""
 ":py:obj:`plot_attractor <chaotic_pfc.plotting.figures.plot_attractor>`\\ "
@@ -99,12 +114,16 @@ msgid ""
 msgstr ""
 ":py:obj:`plot_attractor <chaotic_pfc.plotting.figures.plot_attractor>`\\ "
 "\\(X\\, Y\\[\\, title\\, xlabel\\, ...\\]\\)"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 #: chaotic_pfc.plotting.figures.plot_attractor:1 of
 msgid "Plot a phase-space portrait of a 2-D trajectory."
 msgstr "Plot a phase-space portrait of a 2-D trajectory."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 msgid ""
 ":py:obj:`plot_comm_grid <chaotic_pfc.plotting.figures.plot_comm_grid>`\\ "
@@ -113,9 +132,14 @@ msgstr ""
 ":py:obj:`plot_comm_grid <chaotic_pfc.plotting.figures.plot_comm_grid>`\\ "
 "\\(n\\, m\\, s\\, r\\, m\\_hat\\, omega\\, ...\\)"
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
-msgid "4×2 grid: left = time domain, right = PSD."
-msgstr "4×2 grid: left = time domain, right = PSD."
+#: chaotic_pfc.plotting.figures.plot_comm_grid:1 of
+msgid "Draw the 4×2 communication grid: time domain (left) and PSD (right)."
+msgstr "Draw the 4×2 communication grid: time domain (left) and PSD (right)."
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 msgid ""
@@ -126,24 +150,34 @@ msgstr ""
 ":py:obj:`plot_sensitivity "
 "<chaotic_pfc.plotting.figures.plot_sensitivity>`\\ \\(n\\, X1\\, X2\\[\\,"
 " save\\_path\\, lang\\]\\)"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 #: chaotic_pfc.plotting.figures.plot_sensitivity:1 of
 msgid "Overlay two Hénon trajectories to illustrate sensitivity to ICs."
 msgstr "Overlay two Hénon trajectories to illustrate sensitivity to ICs."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 msgid ":py:obj:`setup_rc <chaotic_pfc.plotting.figures.setup_rc>`\\ \\(\\)"
 msgstr ":py:obj:`setup_rc <chaotic_pfc.plotting.figures.setup_rc>`\\ \\(\\)"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:16:<autosummary>:1
 #: chaotic_pfc.plotting.figures.setup_rc:1 of
 msgid "Configure matplotlib for publication-quality LaTeX-style SVG output."
 msgstr "Configure matplotlib for publication-quality LaTeX-style SVG output."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:18
 msgid "Classes"
 msgstr "Classes"
+
+
 
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:21:<autosummary>:1
 msgid ""
@@ -155,10 +189,14 @@ msgstr ""
 "<chaotic_pfc.plotting.figures.PlotGridOptions>`\\ \\(\\[time\\_window\\, "
 "suptitle\\, ...\\]\\)"
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst:21:<autosummary>:1
 #: chaotic_pfc.plotting.figures.PlotGridOptions:1 of
 msgid "Optional styling parameters for :func:`plot_comm_grid`."
 msgstr "Optional styling parameters for :func:`plot_comm_grid`."
+
+
 
 #: chaotic_pfc.plotting.figures.latex_available:3 of
 msgid ""
@@ -170,14 +208,31 @@ msgstr ""
 "the ``latex`` executable.  Set the environment variable "
 "``CHAOTIC_PFC_FORCE_LATEX=0`` or ``1`` to override."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst
-#: chaotic_pfc.plotting.figures.latex_available of
+msgid "Returns"
+msgstr "Returns"
+
+
+
+#: chaotic_pfc.plotting.figures.latex_available:7 of
+msgid "``True`` when a ``latex`` executable was found (or forced on)."
+msgstr "``True`` when a ``latex`` executable was found (or forced on)."
+
+
+
+#: ../../api/generated/chaotic_pfc.plotting.figures.rst
 msgid "Return type"
-msgstr ""
+msgstr "Return type"
+
+
 
 #: chaotic_pfc.plotting.figures.setup_rc:3 of
 msgid "Auto-detects whether a full LaTeX installation is available:"
 msgstr "Auto-detects whether a full LaTeX installation is available:"
+
+
 
 #: chaotic_pfc.plotting.figures.setup_rc:5 of
 msgid ""
@@ -189,6 +244,8 @@ msgstr ""
 "(``usetex=True``, Computer Modern Roman, ``amsmath`` + ``amssymb`` "
 "preamble)."
 
+
+
 #: chaotic_pfc.plotting.figures.setup_rc:8 of
 msgid ""
 "Otherwise, falls back to mathtext with STIX fonts, which visually match "
@@ -196,6 +253,8 @@ msgid ""
 msgstr ""
 "Otherwise, falls back to mathtext with STIX fonts, which visually match "
 "LaTeX without external dependencies."
+
+
 
 #: chaotic_pfc.plotting.figures.setup_rc:11 of
 msgid ""
@@ -205,28 +264,39 @@ msgstr ""
 "The detection can be overridden via ``CHAOTIC_PFC_FORCE_LATEX=0`` or "
 "``=1``."
 
+
+
 #: chaotic_pfc.plotting.figures.setup_rc:14 of
 msgid "All text is converted to vector paths in SVG output."
 msgstr "All text is converted to vector paths in SVG output."
 
+
+
 #: ../../api/generated/chaotic_pfc.plotting.figures.rst
-#, fuzzy
 msgid "Parameters"
-msgstr "Parâmetros"
+msgstr "Parameters"
+
+
 
 #: chaotic_pfc.plotting.figures.plot_attractor:3
 #: chaotic_pfc.plotting.figures.plot_attractor:4 of
 msgid "State-variable trajectories, same length."
 msgstr "State-variable trajectories, same length."
 
+
+
 #: chaotic_pfc.plotting.figures.plot_attractor:5 of
 msgid "Optional figure title. If empty, no title is drawn."
 msgstr "Optional figure title. If empty, no title is drawn."
+
+
 
 #: chaotic_pfc.plotting.figures.plot_attractor:6
 #: chaotic_pfc.plotting.figures.plot_attractor:8 of
 msgid "Axis labels. Defaults use LaTeX-style math for ``x_1`` and ``x_2``."
 msgstr "Axis labels. Defaults use LaTeX-style math for ``x_1`` and ``x_2``."
+
+
 
 #: chaotic_pfc.plotting.figures.plot_attractor:10 of
 msgid ""
@@ -236,18 +306,39 @@ msgstr ""
 "If given, the figure is written to this path. The extension selects the "
 "format (``.svg``, ``.png``, etc.)."
 
-#: ../../api/generated/chaotic_pfc.plotting.figures.rst
-#, fuzzy
-msgid "Returns"
-msgstr "Retorna"
 
-#: chaotic_pfc.plotting.figures.plot_attractor:13 of
+
+#: chaotic_pfc.plotting.figures.plot_attractor:14 of
+msgid "Notes"
+msgstr "Notes"
+
+
+
+#: chaotic_pfc.plotting.figures.plot_attractor:15 of
+msgid ""
+"The scatter artist is rasterized (``rasterized=True``) and the figure is "
+"saved at 300 dpi, so the SVG keeps the axes and text as vectors while the"
+" point cloud becomes a compact raster.  SVG output is deterministic: the "
+"``Date``/``Creator`` metadata are suppressed and a fixed hash salt is "
+"used."
+msgstr ""
+"The scatter artist is rasterized (``rasterized=True``) and the figure is "
+"saved at 300 dpi, so the SVG keeps the axes and text as vectors while the"
+" point cloud becomes a compact raster.  SVG output is deterministic: the "
+"``Date``/``Creator`` metadata are suppressed and a fixed hash salt is "
+"used."
+
+
+
+#: chaotic_pfc.plotting.figures.plot_attractor:20 of
 msgid ""
 "The matplotlib ``Figure`` object. Returned so callers can inspect or "
 "further annotate it before showing / closing."
 msgstr ""
 "The matplotlib ``Figure`` object. Returned so callers can inspect or "
 "further annotate it before showing / closing."
+
+
 
 #: chaotic_pfc.plotting.figures.plot_sensitivity:3 of
 msgid ""
@@ -259,9 +350,13 @@ msgstr ""
 "initial conditions, making visually obvious how they diverge "
 "exponentially — the classic demonstration of chaos."
 
+
+
 #: chaotic_pfc.plotting.figures.plot_sensitivity:7 of
 msgid "Sample index axis, shape ``(N,)``."
 msgstr "Sample index axis, shape ``(N,)``."
+
+
 
 #: chaotic_pfc.plotting.figures.plot_sensitivity:8
 #: chaotic_pfc.plotting.figures.plot_sensitivity:10 of
@@ -272,31 +367,43 @@ msgstr ""
 "Two state trajectories evaluated on ``n``. Typically differing only by "
 "``x0_2 = x0_1 + 1e-4``."
 
+
+
 #: chaotic_pfc.plotting.figures.plot_sensitivity:12 of
 msgid "If given, the figure is written to this path."
 msgstr "If given, the figure is written to this path."
+
+
 
 #: chaotic_pfc.plotting.figures.plot_sensitivity:13 of
 msgid "Language code for the figure title (``\"pt\"`` or ``\"en\"``)."
 msgstr "Language code for the figure title (``\"pt\"`` or ``\"en\"``)."
 
+
+
 #: chaotic_pfc.plotting.figures.plot_sensitivity:15 of
 msgid "The matplotlib ``Figure`` object."
 msgstr "The matplotlib ``Figure`` object."
+
+
 
 #: chaotic_pfc.plotting.figures.PlotGridOptions:3 of
 msgid "All fields have sensible defaults; only override what you need."
 msgstr "All fields have sensible defaults; only override what you need."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:1 of
-msgid ""
-"4×2 grid: left = time domain, right = PSD. Rows: m[n], s[n], r[n], m̂[n]."
-" If h_channel is provided, its frequency response is overlaid on PSD_s."
-msgstr ""
-"4×2 grid: left = time domain, right = PSD. Rows: m[n], s[n], r[n], m̂[n]."
-" If h_channel is provided, its frequency response is overlaid on PSD_s."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:5 of
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:3 of
+msgid ""
+"Rows are m[n], s[n], r[n] and m̂[n].  If ``h_channel`` is provided, its "
+"frequency response is overlaid on the transmitted PSD."
+msgstr ""
+"Rows are m[n], s[n], r[n] and m̂[n].  If ``h_channel`` is provided, its "
+"frequency response is overlaid on the transmitted PSD."
+
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:6 of
 msgid ""
 "The *opts* dataclass overrides individual keyword arguments when both are"
 " provided.  See :class:`PlotGridOptions` for grouped defaults."
@@ -304,38 +411,54 @@ msgstr ""
 "The *opts* dataclass overrides individual keyword arguments when both are"
 " provided.  See :class:`PlotGridOptions` for grouped defaults."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:8 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:9 of
 msgid "Sample indices, shape ``(N,)``."
 msgstr "Sample indices, shape ``(N,)``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:9 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:10 of
 msgid "Original message, shape ``(N,)``."
 msgstr "Original message, shape ``(N,)``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:10 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:11 of
 msgid "Transmitted (modulated) signal, shape ``(N,)``."
 msgstr "Transmitted (modulated) signal, shape ``(N,)``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:11 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:12 of
 msgid "Received signal after the channel, shape ``(N,)``."
 msgstr "Received signal after the channel, shape ``(N,)``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:12 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:13 of
 msgid "Recovered message estimate, shape ``(N,)``."
 msgstr "Recovered message estimate, shape ``(N,)``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:13 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:14 of
 msgid "Normalised frequency axis from :func:`psd_normalised`."
 msgstr "Normalised frequency axis from :func:`psd_normalised`."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:14
+
+
 #: chaotic_pfc.plotting.figures.plot_comm_grid:15
 #: chaotic_pfc.plotting.figures.plot_comm_grid:16
-#: chaotic_pfc.plotting.figures.plot_comm_grid:17 of
+#: chaotic_pfc.plotting.figures.plot_comm_grid:17
+#: chaotic_pfc.plotting.figures.plot_comm_grid:18 of
 msgid "PSD of each signal (same length as *omega*)."
 msgstr "PSD of each signal (same length as *omega*)."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:18 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:19 of
 msgid ""
 ":class:`PlotGridOptions` dataclass with default axis limits, time window,"
 " and title.  Individual keyword arguments override the corresponding "
@@ -345,7 +468,9 @@ msgstr ""
 " and title.  Individual keyword arguments override the corresponding "
 "*opts* fields."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:21 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:22 of
 msgid ""
 "Python ``slice`` selecting which sample range to plot in the time-domain "
 "panels."
@@ -353,13 +478,17 @@ msgstr ""
 "Python ``slice`` selecting which sample range to plot in the time-domain "
 "panels."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:23 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:24 of
 msgid "Figure-level title.  Overrides ``opts.suptitle`` unless empty."
 msgstr "Figure-level title.  Overrides ``opts.suptitle`` unless empty."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:24
-#: chaotic_pfc.plotting.figures.plot_comm_grid:26
-#: chaotic_pfc.plotting.figures.plot_comm_grid:28 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:25
+#: chaotic_pfc.plotting.figures.plot_comm_grid:27
+#: chaotic_pfc.plotting.figures.plot_comm_grid:29 of
 msgid ""
 "Y-axis limits for the time-domain panels.  *y_lim_mhat* defaults to "
 "*y_lim_msg* unless explicitly set."
@@ -367,17 +496,25 @@ msgstr ""
 "Y-axis limits for the time-domain panels.  *y_lim_mhat* defaults to "
 "*y_lim_msg* unless explicitly set."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:30 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:31 of
 msgid "FIR coefficients for overlaying the channel frequency response on PSD_s."
 msgstr "FIR coefficients for overlaying the channel frequency response on PSD_s."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:32 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:33 of
 msgid "If provided, the figure is saved to this path via ``_save()``."
 msgstr "If provided, the figure is saved to this path via ``_save()``."
 
-#: chaotic_pfc.plotting.figures.plot_comm_grid:33 of
+
+
+#: chaotic_pfc.plotting.figures.plot_comm_grid:34 of
 msgid "Language for axis labels (``\"pt\"`` or ``\"en\"``)."
 msgstr "Language for axis labels (``\"pt\"`` or ``\"en\"``)."
+
+
 
 #~ msgid ""
 #~ "All text uses matplotlib's mathtext "
@@ -412,3 +549,10 @@ msgstr "Language for axis labels (``\"pt\"`` or ``\"en\"``)."
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
+
+#~ msgid "figures.py"
+#~ msgstr "figures.py"
+
+#~ msgid "4×2 grid: left = time domain, right = PSD."
+#~ msgstr "4×2 grid: left = time domain, right = PSD."
+

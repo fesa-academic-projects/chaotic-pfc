@@ -57,13 +57,13 @@ The sweep is a data-parallel problem parallelised with Numba:
 
 **Numba prange with load-balanced task ordering.**
 
-The entire sweep runs inside a single :func:`numba.prange` loop
-(:func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`).
+The entire sweep runs inside a single ``numba.prange`` loop
+(``_sweep_kernel``).
 Each thread receives a contiguous block of the iteration space
 following Numba's static schedule.  To prevent load imbalance (grid
 points with larger-order filters are proportionally more expensive),
 the tasks are ordered by estimated cost before being interleaved
-across threads by :func:`~chaotic_pfc.analysis.sweep._kernel._build_task_order`.
+across threads by ``_build_task_order``.
 This keeps every thread busy for approximately the same wall time
 without any inter-process communication overhead.
 
@@ -71,7 +71,7 @@ without any inter-process communication overhead.
 
 Numba's ``prange`` cannot use NumPy's global random state (it would be
 a data race).  Instead, the Python side pre‑generates all initial‑condition
-perturbations using a :class:`~numpy.random.SeedSequence` rooted on the
+perturbations with :func:`numpy.random.default_rng` seeded by the
 user‑supplied seed.  The deterministic perturbation array is passed to the
 JIT kernel as a read‑only input.
 
@@ -141,8 +141,8 @@ be evolved and normalised in isolation, and its growth rate is exactly
 the largest Lyapunov exponent.  The per-iteration cost drops from
 :math:`O(N_s^2)` (full-spectrum J@W + MGS) to :math:`O(N_s)`.
 
-The :math:`_v` kernel variants (:func:`_lyap_online_core_v`,
-:func:`_propagate_v_n12`, :func:`_propagate_v_nN`) implement exactly this
+The :math:`_v` kernel variants (``_lyap_online_core_v``,
+``_propagate_v_n12``, ``_propagate_v_nN``) implement exactly this
 — they evolve only the first tangent vector and accumulate
 :math:`\log \|\mathbf{v}\|` once per Benettin block.  On a full bandstop
 sweep the measured speedup vs. the full-spectrum kernel is **3.6×**.
@@ -163,7 +163,7 @@ transition boundary, the sweep kernel applies a **hybrid strategy**:
 
 1. Run the fast :math:`_v` path for all ICs.
 2. If the cell's mean :math:`|\lambda| < 5 \times 10^{-3}` (the
-   :data:`~chaotic_pfc.analysis.sweep._types._VONLY_MARGIN` threshold),
+   ``_VONLY_MARGIN`` threshold),
    re-run *all* ICs for that cell with the full-spectrum kernel.
 3. The decision is atomic per cell: no cell mixes estimates from
    different estimators.
@@ -190,26 +190,68 @@ reproduces them **bit for bit** with ``fallback_mode=1``.  A change that
 breaks this equality is a regression, and the checkpoints must then be
 regenerated deliberately with ``tools/regenerate_sweeps.py``.
 
+.. _backend-dependence:
+
+Backend dependence (Numba versus pure Python)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The bit-for-bit reproduction above requires Numba.  Without it
+(``NUMBA_DISABLE_JIT=1``, or the ``chaotic_pfc._compat`` fallback) the
+same sweep gives statistically equivalent, but not identical, exponents,
+because the compiled tangent recurrence rounds slightly differently from the
+interpreted one.  On a representative sweep (Kaiser lowpass,
+:math:`\beta_K = 13.5`, :math:`N_s \in \{2,\dots,11\}`, the 100 cutoffs,
+25 initial conditions, seed 42 — 1000 cells):
+
+* the number of chaotic points is the same in both backends,
+  :math:`N_c = 563`;
+* **no cell changes class** (chaotic / periodic / divergent);
+* over the cells that are chaotic in both, :math:`|\Delta\lambda_1|` is
+  :math:`1.5 \times 10^{-4}` on average and at most
+  :math:`3.9 \times 10^{-3}` — below the :math:`5 \times 10^{-3}`
+  marginal-cell margin;
+* the raw ``h`` value is bit-identical in 38 % of the cells and differs in
+  the remaining 62 %, always at the level of the small
+  :math:`\Delta\lambda_1` above.
+
+The discrepancy is not in the map: ``_henon_n12_inplace`` /
+``_henon_nN_inplace``, the fixed point, ``log``, ``sqrt`` and scalar dot
+products are bit-identical between the two backends.  It appears in the
+tangent-propagation kernels
+(``_propagate_v_nN`` and
+``_propagate_nN``), whose sum-of-products recurrence
+(``row2 = c1*w0 + cb02*w1 + m22*w2`` plus the ``tail`` accumulation) is
+contracted/reassociated at the last bit by LLVM; the map's sensitive
+dependence then amplifies that ~1 ULP seed.  Install Numba (the ``[fast]``
+extra) whenever the checkpoints must be reproduced exactly.
+
 Divergence handling (Opção B)
 -----------------------------
 
-The original implementation used a sentinel value :math:`-1 \times 10^{30}`
-to mark grid points where the orbit diverged.  This was problematic: the
-sentinel leaked into downstream statistics, producing spurious
-classifications and biasing aggregate numbers.
+An orbit is taken as unbounded when its state becomes non-finite (NaN or
+infinity); from that iteration on every term of the exponent is
+non-finite, so the simulation can be stopped.  The divergence rule has
+three steps, as in the article:
 
-**Opção B** (applied in v0.7.0) replaces the sentinel with **NaN**.
+1. **Estimator.** An initial condition whose state becomes non-finite is
+   reported as non-finite.
+2. **Burn-in.** A grid point is **divergent** when at least one of its
+   ``n_initial`` initial conditions becomes non-finite during the
+   ``Nitera`` burn-in iterations.
+3. **After the burn-in.** An initial condition that becomes non-finite
+   only inside the ``Nmap`` estimation window is **discarded**, and the
+   value of the grid point is the mean of :math:`\lambda_1` over the
+   remaining initial conditions.  A point whose filter coefficients are
+   non-finite is also divergent.
 
-* The Lyapunov kernel detects overflow/divergence and sets the output to
-  ``NaN`` at that grid point.
-* ``NaN`` propagates correctly through all downstream functions:
-  :func:`~chaotic_pfc.analysis.stats.area_summary` excludes it from
-  the chaotic/periodic counts (third category: *divergent*);
-  :func:`~chaotic_pfc.analysis.stats.lmax_statistics` ignores it when
-  computing means and confidence intervals.
-
-This is both mathematically correct (the exponent is undefined when the
-attractor does not exist) and numerically safer than a magic sentinel.
+The original implementation used a sentinel value
+:math:`-1 \times 10^{30}` to mark those points; **Opção B** (applied in
+v0.7.0) replaces it with **NaN**, which propagates correctly through all
+downstream functions:
+:func:`~chaotic_pfc.analysis.stats.area_summary` excludes it from the
+chaotic/periodic counts (third category: *divergent*), and
+:func:`~chaotic_pfc.analysis.stats.lmax_statistics` ignores it when
+computing means and confidence intervals.
 
 Reproducibility
 ---------------
@@ -240,7 +282,7 @@ Known limitations
 * **Memory.**  The FIR coefficient bank for 40 orders × 100 cutoffs
   requires ~320 KB — negligible.  The bottleneck is CPU, not memory.
 
-* **Warmup compilation.**  The first call to :func:`_sweep_kernel` triggers
+* **Warmup compilation.**  The first call to ``_sweep_kernel`` triggers
    Numba's JIT compilation, which adds a few seconds of startup time.
    The orchestration layer runs a tiny warmup sweep (:code:`warmup=True`)
    so that the actual sweep benefits from the cached native code.

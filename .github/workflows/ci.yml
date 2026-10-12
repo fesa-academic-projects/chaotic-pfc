@@ -311,8 +311,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[docs]"
 
-      - name: Build HTML documentation
-        run: sphinx-build -b html docs docs/_build/html
+      - name: Build HTML documentation (strict)
+        run: sphinx-build -W -n --keep-going -b html docs docs/_build/html
+
+      - name: Run the doctests
+        run: sphinx-build -b doctest docs docs/_build/doctest
 
       - name: Upload docs as artifact
         uses: actions/upload-artifact@v7

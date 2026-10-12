@@ -4,34 +4,39 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-05-23 22:23-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
 # Translation status: INTENTIONALLY UNTRANSLATED.
 # Auto-generated API reference is maintained in English only.
 # See docs/api/index.rst for rationale.
-"Generated-By: Babel 2.18.0\n"
-
 #: ../../api/generated/chaotic_pfc.cli.sweep.rst:2
 msgid "chaotic\\_pfc.cli.sweep"
 msgstr "chaotic\\_pfc.cli.sweep"
+
+
 
 #: chaotic_pfc.cli.sweep:1 of
 msgid "Sweep Lyapunov exponents across (order, cutoff) grid."
 msgstr "Sweep Lyapunov exponents across (order, cutoff) grid."
 
+
+
 #: chaotic_pfc.cli.sweep:3 of
 msgid "Nested under ``chaotic-pfc run sweep ...`` with four sub-subcommands:"
 msgstr "Nested under ``chaotic-pfc run sweep ...`` with four sub-subcommands:"
+
+
 
 #: chaotic_pfc.cli.sweep:5 of
 msgid ""
@@ -43,6 +48,8 @@ msgstr ""
 "filter)`` combinations and save ``.npz`` checkpoints. Originally "
 "``scripts/07_henon_sweep_compute.py``."
 
+
+
 #: chaotic_pfc.cli.sweep:8 of
 msgid ""
 "``plot`` — turn previously saved ``.npz`` checkpoints into the four "
@@ -53,13 +60,19 @@ msgstr ""
 "standard classification figures. Originally "
 "``scripts/08_henon_sweep_plot.py``."
 
+
+
 #: chaotic_pfc.cli.sweep:11 of
 msgid "``beta-sweep`` — run Kaiser β-sweeps across multiple β values."
 msgstr "``beta-sweep`` — run Kaiser β-sweeps across multiple β values."
 
+
+
 #: chaotic_pfc.cli.sweep:12 of
 msgid "``plot-3d`` — render an interactive 3-D surface stack of Kaiser β-sweeps."
 msgstr "``plot-3d`` — render an interactive 3-D surface stack of Kaiser β-sweeps."
+
+
 
 #: chaotic_pfc.cli.sweep:14 of
 msgid ""
@@ -71,33 +84,33 @@ msgstr ""
 "colour maps, format changes) do not require rerunning the multi-hour "
 "sweep."
 
+
+
 #: ../../api/generated/chaotic_pfc.cli.sweep.rst:8
 msgid "Functions"
 msgstr "Functions"
 
+
+
 #: ../../api/generated/chaotic_pfc.cli.sweep.rst:11:<autosummary>:1
 msgid ":py:obj:`add_parser <chaotic_pfc.cli.sweep.add_parser>`\\ \\(subparsers\\)"
 msgstr ":py:obj:`add_parser <chaotic_pfc.cli.sweep.add_parser>`\\ \\(subparsers\\)"
+
+
 
 #: ../../api/generated/chaotic_pfc.cli.sweep.rst:11:<autosummary>:1
 #: chaotic_pfc.cli.sweep.add_parser:1 of
 msgid "Register the ``run sweep`` group with its own sub-subcommands."
 msgstr "Register the ``run sweep`` group with its own sub-subcommands."
 
-#: chaotic_pfc.cli.sweep.add_parser of
-#, fuzzy
-msgid "Parameters"
-msgstr "Parâmetros"
 
-#: chaotic_pfc.cli.sweep.add_parser of
-msgid "Return type"
-msgstr ""
 
 #~ msgid "Parameters"
-#~ msgstr ""
+#~ msgstr "Parâmetros"
 
 #~ msgid "Return type"
 #~ msgstr ""
 
 #~ msgid "Tipo de retorno"
 #~ msgstr "Tipo de retorno"
+

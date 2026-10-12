@@ -11,7 +11,7 @@ from ._types import FILTER_TYPES, WINDOW_DISPLAY_NAMES, SweepResult
 
 
 def save_sweep(result: SweepResult, path: str | Path) -> Path:
-    """Save a :class:`SweepResult` to a compressed ``.npz``."""
+    """Save a :class:`~chaotic_pfc.analysis.sweep.SweepResult` to a compressed ``.npz``."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {

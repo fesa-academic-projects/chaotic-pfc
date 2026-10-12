@@ -1,8 +1,4 @@
-"""
-channel.py
-==========
-Transmission-channel models sitting between the chaotic transmitter and
-the receiver.
+"""Transmission-channel models between the chaotic transmitter and receiver.
 
 Six channels are provided:
 
@@ -48,7 +44,8 @@ def ideal_channel(s: NDArray) -> NDArray:
         An independent copy of ``s``. Mutating the output does not
         affect the input.
 
-    Implements: :class:`~chaotic_pfc.comms.protocols.Channel`."""
+    Implements: :class:`~chaotic_pfc.comms.protocols.Channel`.
+    """
     return s.copy()
 
 
@@ -93,7 +90,8 @@ def fir_channel(
     Unlike :func:`ideal_channel`, this function returns the filter
     taps alongside the filtered signal.  It therefore does **not**
     satisfy :class:`~chaotic_pfc.comms.protocols.Channel` (which
-    expects a single ``NDArray`` return)."""
+    expects a single ``NDArray`` return).
+    """
     h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
     r = lfilter(h, [1.0], s)
     return r, h

@@ -1,8 +1,4 @@
-"""
-maps.py
-=======
-Hénon map variants used as chaotic oscillators throughout the
-communication system.
+r"""Hénon map variants used as chaotic oscillators in the communication system.
 
 Four Henon map variants and one chaotic-sequence generator are provided:
 
@@ -312,7 +308,7 @@ def henon_fir_sequence(
     wc: float = 0.9091,
     window: str = "hamming",
 ) -> NDArray:
-    """Generate a chaotic sequence from the FIR-filtered Hénon map.
+    r"""Generate a chaotic sequence from the FIR-filtered Hénon map.
 
     Iterates the generalised Hénon form ``x[n+1] = a - xf[n]^2 + b * y[n]``,
     ``y[n+1] = x[n]``, where ``xf`` is the current output of an FIR filter
@@ -341,10 +337,11 @@ def henon_fir_sequence(
     ValueError
         If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
 
-    .. deprecated:: 0.8.0
-        This function is no longer used internally.  For filtered
-        chaotic sequences, prefer :func:`henon_order_n` with
-        pre-computed FIR coefficients.
+    Notes
+    -----
+    Deprecated since 0.8.0: no longer used internally.  For filtered
+    chaotic sequences, prefer :func:`henon_order_n` with pre-computed
+    FIR coefficients.
     """
     warnings.warn(
         "henon_fir_sequence is deprecated and will be removed in a "

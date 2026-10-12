@@ -95,6 +95,10 @@ chaotic-pfc run sweep plot --window hamming --filter lowpass
 
 The sweep checkpoints in `data/sweeps/*.npz` are versioned in the repository,
 so plots can be regenerated at any time without rerunning the compute step.
+Reproducing them byte for byte requires Numba (`pip install -e '.[fast]'`);
+without it the exponents are statistically equivalent but not identical (no
+classification changes, with |Δλ₁| ≤ 3.9×10⁻³ in the reference sweep — see
+`docs/source/algorithms/sweep.rst`).
 
 Browse all available commands with `chaotic-pfc run --help` and each
 subcommand's flags with `chaotic-pfc run <name> --help`.

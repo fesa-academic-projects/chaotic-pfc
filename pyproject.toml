@@ -139,6 +139,7 @@ select = [
     "B",   # flake8-bugbear (likely bugs)
     "UP",  # pyupgrade (modernise syntax)
     "SIM", # flake8-simplify (readability)
+    "D",   # pydocstyle (NumPy docstring convention)
     "RUF", # Ruff-specific rules
 ]
 ignore = [
@@ -153,10 +154,16 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 # Tests can use longer lines, unused imports (fixtures), and magic constants
-"tests/**" = ["E501", "F401", "B011"]
+"tests/**" = ["E501", "F401", "B011", "D"]
+# Command-line tools and benchmarks are scripts: no NumPy docstring convention
+"tools/**" = ["D"]
+"benchmarks/**" = ["D"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["chaotic_pfc"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.format]
 quote-style = "double"

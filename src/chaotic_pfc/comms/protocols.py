@@ -31,16 +31,19 @@ from numpy.typing import NDArray
 class Transmitter(Protocol):
     """Any callable that encodes a message into a chaotic carrier signal."""
 
-    def __call__(self, message: NDArray, /, **kwargs: Any) -> NDArray: ...
+    def __call__(self, message: NDArray, /, **kwargs: Any) -> NDArray:
+        """Encode ``message`` and return the chaotic carrier."""
 
 
 class Channel(Protocol):
     """Any callable that propagates a signal through a transmission medium."""
 
-    def __call__(self, sig: NDArray, /, **kwargs: Any) -> NDArray: ...
+    def __call__(self, sig: NDArray, /, **kwargs: Any) -> NDArray:
+        """Propagate ``sig`` through the channel and return the received signal."""
 
 
 class Receiver(Protocol):
     """Any callable that recovers a message from a received chaotic signal."""
 
-    def __call__(self, rx: NDArray, /, **kwargs: Any) -> NDArray: ...
+    def __call__(self, rx: NDArray, /, **kwargs: Any) -> NDArray:
+        """Recover the message from the received signal ``rx``."""

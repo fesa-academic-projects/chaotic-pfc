@@ -180,7 +180,7 @@ Public API
 ----------
 
 The canonic public API is defined in
-:mod:`chaotic_pfc.__init__` via the ``__all__`` list (75 symbols).
+``chaotic_pfc.__init__`` via the ``__all__`` list (75 symbols).
 All names in ``__all__`` are re-exported at the top level:
 
 .. code-block:: python

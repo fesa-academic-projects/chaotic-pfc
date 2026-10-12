@@ -167,9 +167,9 @@ Kaiser), as established by Oppenheim and Schafer
 
 In this architecture, the variable :math:`x_1[n]` in the nonlinearity
 :math:`x_1[n]^2` is replaced by the *filtered* version
-:math:`x_3[n] = \sum_{k=0}^{N_z-1} c_k \, x_1[n-k]`, where
-:math:`c_k` are the FIR coefficients and :math:`N_z` is the filter
-order (number of taps).
+:math:`x_3[n] = \sum_{k=0}^{N_s-1} c_k \, x_1[n-k]`, where
+:math:`c_k` are the :math:`N_s` FIR coefficients and the filter order is
+:math:`N_z = N_s - 1` (the number of zeros).
 
 The result is a **band-limited chaotic signal** whose spectrum is shaped
 by the FIR filter, making it compatible with practical channel bandwidth
@@ -181,17 +181,18 @@ Dimensionality expansion
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Inserting an FIR filter into the feedback loop expands the system
-dimensionality. For a map of order :math:`K` and a filter with
-:math:`N_s` coefficients, the resulting filtered system has dimension:
+dimensionality. For an :math:`N_s`-tap filter the resulting filtered
+system has dimension
 
 .. math::
 
-    K' = K + N_s - 1
+    K = N_s \quad (N_s \ge 3), \qquad K = 2 \quad (N_s \le 2),
 
-For the 2-D Hénon (:math:`K = 2`) with an :math:`N_s`-tap filter, this
-yields a :math:`(N_s + 1)`-dimensional system. The stability analysis
-then requires the Jacobian matrix of the expanded :math:`K'`-dimensional
-system.
+as in the article: the state gathers the two map variables, the filter
+output :math:`x_3` and the delayed samples. The stability analysis then
+requires the Jacobian matrix of the expanded :math:`K \times K` system.
+(The implementation reserves one extra auxiliary state slot when
+:math:`N_s = 3`, which never affects the dynamics.)
 
 Shrimps and bifurcation cascades
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -324,8 +325,8 @@ Numba JIT acceleration
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The inner loop of the Lyapunov computation is
-:math:`\mathcal{O}(N_s^3)` due to the MGS re-orthonormalisation of an
-:math:`N_s`-dimensional perturbation ensemble. Numba JIT compilation
+:math:`\mathcal{O}(N_s^3)` due to the MGS re-orthonormalisation of the
+:math:`N_s` tangent vectors. Numba JIT compilation
 reduces this to practical execution times, enabling sweeps with up to
 :math:`N_s = 41` filter taps, :math:`N_{\text{IC}} = 25` initial
 conditions per grid point, and :math:`N_{\text{itera}} = 3\,000`

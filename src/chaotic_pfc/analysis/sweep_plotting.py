@@ -1,8 +1,4 @@
-"""
-sweep_plotting.py
-=================
-Figures for Lyapunov classification maps produced by
-:mod:`chaotic_pfc.analysis.sweep`.
+"""Figures for the Lyapunov classification maps of :mod:`chaotic_pfc.analysis.sweep`.
 
 Three plot types are provided:
 
@@ -96,11 +92,19 @@ _YTICKS = np.arange(0.0, 1.01, 0.1)
 def classify(h: NDArray) -> NDArray:
     """Map raw λ_max values to discrete classes.
 
-    Returns an array with the same shape as ``h`` where each entry is:
+    Parameters
+    ----------
+    h
+        Raw λ_max array (NaN where the orbit diverged).
 
-    * ``-1`` — periodic orbit (λ_max ≤ 0)
-    * ``0``  — chaotic orbit (λ_max > 0)
-    * ``2``  — unbounded / divergent (NaN in ``h``)
+    Returns
+    -------
+    NDArray
+        Array of the same shape as ``h`` where each entry is:
+
+        * ``-1`` — periodic orbit (λ_max ≤ 0)
+        * ``0``  — chaotic orbit (λ_max > 0)
+        * ``2``  — unbounded / divergent (NaN in ``h``)
 
     The unusual integer codes match the :class:`matplotlib.colors.BoundaryNorm`
     bins used below.
@@ -325,7 +329,7 @@ def plot_heatmap_continuous(
     Parameters
     ----------
     result
-        :class:`SweepResult` to plot.  Mutually exclusive with the
+        :class:`~chaotic_pfc.analysis.sweep.SweepResult` to plot.  Mutually exclusive with the
         ``(h, orders, cutoffs)`` triple.
     h
         Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
@@ -401,7 +405,7 @@ def plot_classification_interleaved(
     Parameters
     ----------
     result
-        :class:`SweepResult` to plot.  Mutually exclusive with the
+        :class:`~chaotic_pfc.analysis.sweep.SweepResult` to plot.  Mutually exclusive with the
         ``(h, orders, cutoffs)`` triple.
     h
         Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
@@ -586,7 +590,7 @@ def plot_difficulty_map(
     gap_slots: int = 1,
     lang: str = "pt",
 ) -> Figure:
-    """Heatmap of Lyapunov iterations actually used at each grid point.
+    r"""Heatmap of Lyapunov iterations actually used at each grid point.
 
     A "difficulty map" of the parameter space: low values mean the
     spectrum estimate converged quickly (strongly chaotic or strongly
@@ -1044,10 +1048,18 @@ def chaotic_density_norm_table(
     is contained in all sweeps and odd ``Nz`` only in lowpass and bandpass.
     Membership is counted order by order, without resampling.
 
-    Returns ``(Nz, cutoffs, percent, n_containing)``. ``percent[k, j]`` is
-    the percentage of the sweeps containing ``Nz[k]`` in which the point
-    ``(Nz[k], cutoffs[j])`` has ``lambda_max > 0``; it is NaN where no sweep
-    contains ``Nz[k]``.
+    Parameters
+    ----------
+    sweep_dir
+        Root directory with the sweep ``.npz`` checkpoints.
+
+    Returns
+    -------
+    tuple[NDArray, NDArray, NDArray, NDArray]
+        ``(Nz, cutoffs, percent, n_containing)``.  ``percent[k, j]`` is the
+        percentage of the sweeps containing ``Nz[k]`` in which the point
+        ``(Nz[k], cutoffs[j])`` has ``lambda_max > 0``; it is NaN where no
+        sweep contains ``Nz[k]``.
     """
     sweep_dir = Path(sweep_dir)
     raw: list[SweepResult] = []
@@ -1104,6 +1116,32 @@ def plot_chaotic_density_norm(
     percentage of the sweeps that contain each grid point and find it
     chaotic (see :func:`chaotic_density_norm_table`). The circle marks the
     global maximum.
+
+    Parameters
+    ----------
+    sweep_dir
+        Root directory with the sweep ``.npz`` checkpoints.
+    cmap
+        Matplotlib colormap name.
+    data_slots, gap_slots
+        Interleaving layout of the x-axis (data and gap slots per column).
+    lang
+        Figure language (``"en"`` or ``"pt"``).
+    figsize
+        Figure size in inches.
+    label_fontsize, tick_fontsize, title_fontsize, cbar_fontsize
+        Font sizes for the labels, ticks, title and colour bar.
+    show_title
+        Draw the figure title when ``True``.
+    marker_size
+        Size of the maximum marker.
+    ytick_step, xtick_step
+        Axis tick spacing.
+
+    Returns
+    -------
+    Figure
+        The matplotlib figure.
     """
     Nz, cutoffs, percent, _ = chaotic_density_norm_table(sweep_dir)
 
@@ -1264,8 +1302,7 @@ def plot_all(
     close_figures: bool = True,
     lang: str = "pt",
 ) -> list[Path]:
-    """Generate the standard figures for a sweep and save them to
-    ``out_dir/<fig>.{fmt}``. Returns the list of written paths.
+    """Generate the standard figures for a sweep, save them, and return their paths.
 
     Always produces the two classification figures listed in
     :data:`FIGURE_FILENAMES`. Additionally produces
@@ -1273,6 +1310,24 @@ def plot_all(
     when ``result`` was generated with ``adaptive=True``: the figure is
     silently skipped for non-adaptive sweeps because it would be
     monochromatic and therefore uninformative.
+
+    Parameters
+    ----------
+    result
+        Sweep result to plot.
+    out_dir
+        Directory for the output files (created if missing).
+    fmt
+        Output format (``"svg"``, ``"png"`` or ``"pdf"``).
+    close_figures
+        Close each figure after saving it.
+    lang
+        Figure language (``"en"`` or ``"pt"``).
+
+    Returns
+    -------
+    list[Path]
+        Paths of the files written.
 
     The output directory is created if it does not exist.
     """

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -152,7 +152,9 @@ msgstr "Forma generalizada"
 msgid ""
 "The system used throughout the library is the generalised form, written "
 "in coupled-oscillator notation:"
-msgstr "O sistema utilizado em toda a biblioteca é a forma generalizada, escrita em notação de oscilador acoplado:"
+msgstr ""
+"O sistema utilizado em toda a biblioteca é a forma generalizada, escrita "
+"em notação de oscilador acoplado:"
 
 #: ../../background.rst:63
 msgid ""
@@ -215,9 +217,10 @@ msgstr ""
 
 #: ../../background.rst:91
 msgid "Phase-space structure resembling a \"boomerang\" or \"seagull wing\" shape"
-msgstr "Phase-space structure resembling a \"boomerang\" or \"seagull wing\" shape"
-"Estrutura no espaço de fase que lembra o formato de um \"bumerangue\" ou "
-"\"asa de gaivota\""
+msgstr ""
+"Phase-space structure resembling a \"boomerang\" or \"seagull wing\" "
+"shapeEstrutura no espaço de fase que lembra o formato de um "
+"\"bumerangue\" ou \"asa de gaivota\""
 
 #: ../../background.rst:94
 msgid "Parameter dependence"
@@ -235,7 +238,9 @@ msgstr ""
 msgid ""
 "For :math:`\\alpha < 1.06`: the system is periodic (the fixed point is "
 "stable)."
-msgstr "Para :math:`\\alpha < 1{,}06`: o sistema é periódico (o ponto fixo é estável)."
+msgstr ""
+"Para :math:`\\alpha < 1{,}06`: o sistema é periódico (o ponto fixo é "
+"estável)."
 
 #: ../../background.rst:101
 msgid ""
@@ -383,23 +388,19 @@ msgstr ""
 "caóticos, Fontes e Eisencraft (2016) propuseram inserir **filtros de "
 "resposta ao impulso finita (FIR)** diretamente no laço de realimentação "
 "do gerador caótico [FontesEisencraft16]_. O projeto do filtro baseia-se "
-"em técnicas clássicas de processamento de sinais: métodos de janelamento"
-" (Hamming, Blackman, Kaiser), conforme estabelecido por Oppenheim e "
+"em técnicas clássicas de processamento de sinais: métodos de janelamento "
+"(Hamming, Blackman, Kaiser), conforme estabelecido por Oppenheim e "
 "Schafer [OppenheimSchafer09]_."
 
 #: ../../background.rst:168
-#, python-brace-format
 msgid ""
 "In this architecture, the variable :math:`x_1[n]` in the nonlinearity "
 ":math:`x_1[n]^2` is replaced by the *filtered* version :math:`x_3[n] = "
-"\\sum_{k=0}^{N_z-1} c_k \\, x_1[n-k]`, where :math:`c_k` are the FIR "
-"coefficients and :math:`N_z` is the filter order (number of taps)."
-msgstr ""
-"Nesta arquitetura, a variável :math:`x_1[n]` na não linearidade "
-":math:`x_1[n]^2` é substituída pela versão *filtrada* :math:`x_3[n] = "
-"\\sum_{k=0}^{N_z-1} c_k \\, x_1[n-k]`, onde :math:`c_k` são os "
-"coeficientes FIR e :math:`N_z` é a ordem do filtro (número de "
-"coeficientes)."
+"\\sum_{k=0}^{N_s-1} c_k \\, x_1[n-k]`, where :math:`c_k` are the "
+":math:`N_s` FIR coefficients and the filter order is :math:`N_z = N_s - "
+"1` (the number of zeros)."
+msgstr "Nesta arquitetura, a variável :math:`x_1[n]` na não linearidade :math:`x_1[n]^2` é substituída pela versão *filtrada* :math:`x_3[n] = \\sum_{k=0}^{N_s-1} c_k \\, x_1[n-k]`, onde :math:`c_k` são os :math:`N_s` coeficientes FIR e a ordem do filtro é :math:`N_z = N_s - 1` (o número de zeros)."
+
 
 #: ../../background.rst:174
 msgid ""
@@ -421,35 +422,31 @@ msgstr "Expansão da dimensionalidade"
 #: ../../background.rst:183
 msgid ""
 "Inserting an FIR filter into the feedback loop expands the system "
-"dimensionality. For a map of order :math:`K` and a filter with "
-":math:`N_s` coefficients, the resulting filtered system has dimension:"
-msgstr ""
-"A inserção de um filtro FIR no laço de realimentação expande a "
-"dimensionalidade do sistema. Para um mapa de ordem :math:`K` e um filtro "
-"com :math:`N_s` coeficientes, o sistema filtrado resultante possui "
-"dimensão:"
+"dimensionality. For an :math:`N_s`-tap filter the resulting filtered "
+"system has dimension"
+msgstr "A inserção de um filtro FIR no laço de realimentação expande a dimensionalidade do sistema. Para um filtro de :math:`N_s` coeficientes, o sistema filtrado resultante possui dimensão"
+
 
 #: ../../background.rst:187
-msgid "K' = K + N_s - 1"
-msgstr "K' = K + N_s - 1"
+msgid "K = N_s \\quad (N_s \\ge 3), \\qquad K = 2 \\quad (N_s \\le 2),"
+msgstr "K = N_s \\quad (N_s \\ge 3), \\qquad K = 2 \\quad (N_s \\le 2),"
+
 
 #: ../../background.rst:191
 msgid ""
-"For the 2-D Hénon (:math:`K = 2`) with an :math:`N_s`-tap filter, this "
-"yields a :math:`(N_s + 1)`-dimensional system. The stability analysis "
-"then requires the Jacobian matrix of the expanded :math:`K'`-dimensional "
-"system."
-msgstr ""
-"Para o Hénon 2-D (:math:`K = 2`) com um filtro de :math:`N_s` "
-"coeficientes, obtém-se um sistema de dimensão :math:`(N_s + 1)`. A "
-"análise de estabilidade então requer a matriz Jacobiana do sistema "
-"expandido de dimensão :math:`K'`."
+"as in the article: the state gathers the two map variables, the filter "
+"output :math:`x_3` and the delayed samples. The stability analysis then "
+"requires the Jacobian matrix of the expanded :math:`K \\times K` system. "
+"(The implementation reserves one extra auxiliary state slot when "
+":math:`N_s = 3`, which never affects the dynamics.)"
+msgstr "como no artigo: o estado reúne as duas variáveis do mapa, a saída do filtro :math:`x_3` e as amostras atrasadas. A análise de estabilidade então exige a matriz Jacobiana do sistema expandido :math:`K \\times K`. (A implementação reserva um espaço auxiliar extra no estado para :math:`N_s = 3`, o que nunca afeta a dinâmica.)"
 
-#: ../../background.rst:197
+
+#: ../../background.rst:198
 msgid "Shrimps and bifurcation cascades"
 msgstr "Shrimps e cascatas de bifurcação"
 
-#: ../../background.rst:199
+#: ../../background.rst:200
 msgid ""
 "Investigations by Borges and Eisencraft (2022) revealed that FIR "
 "filtering introduces unexpected dynamical complexity "
@@ -461,7 +458,7 @@ msgstr ""
 "filtro linear interage de forma não trivial com a não linearidade do "
 "mapa, podendo induzir:"
 
-#: ../../background.rst:204
+#: ../../background.rst:205
 msgid ""
 "**Bifurcation cascades**: sequences of period-doubling transitions that "
 "accumulate toward chaos from a periodic state."
@@ -469,7 +466,7 @@ msgstr ""
 "**Cascatas de bifurcação** — sequências de transições de duplicação de "
 "período conforme os parâmetros do filtro variam."
 
-#: ../../background.rst:206
+#: ../../background.rst:207
 msgid ""
 "**\"Shrimps\"**: islands of periodicity immersed within chaotic regions "
 "of the parameter space. Named for their characteristic shape in "
@@ -479,7 +476,7 @@ msgstr ""
 "espaço de parâmetros. Assim denominadas por seu formato característico em"
 " diagramas de espaço de parâmetros."
 
-#: ../../background.rst:210
+#: ../../background.rst:211
 msgid ""
 "The presence of shrimps is critical for communication security: if the "
 "system enters a periodic regime due to quantisation errors or hardware "
@@ -491,13 +488,13 @@ msgstr ""
 "variações de hardware, o sinal se torna previsível e vulnerável à análise"
 " espectral."
 
-#: ../../background.rst:215
+#: ../../background.rst:216
 msgid ""
 "This interaction motivates the **central research question** of the "
 "project:"
 msgstr "Esta interação motiva a **questão central de pesquisa** do projeto:"
 
-#: ../../background.rst:218
+#: ../../background.rst:219
 msgid ""
 "*Under what conditions does FIR filtering preserve the chaotic regime "
 "necessary for physical-layer security under bandwidth constraints?*"
@@ -505,15 +502,15 @@ msgstr ""
 "*Sob quais condições a filtragem FIR preserva o regime caótico necessário"
 " para a segurança na camada física sob restrições de largura de banda?*"
 
-#: ../../background.rst:222
+#: ../../background.rst:223
 msgid "Lyapunov exponents"
 msgstr "Expoentes de Lyapunov"
 
-#: ../../background.rst:225
+#: ../../background.rst:226
 msgid "Definition"
 msgstr "Definição"
 
-#: ../../background.rst:227
+#: ../../background.rst:228
 #, python-brace-format
 msgid ""
 "The **largest Lyapunov exponent** :math:`\\lambda_{\\max}` quantifies the"
@@ -524,14 +521,17 @@ msgstr ""
 "taxa média de divergência (ou convergência) exponencial de trajetórias "
 "infinitesimalmente próximas no espaço de fase:"
 
-#: ../../background.rst:231
+#: ../../background.rst:232
 msgid ""
 "\\lambda_{\\max} = \\lim_{n \\to \\infty} \\frac{1}{n}\n"
 "\\sum_{k=1}^{n} \\ln \\frac{\\| \\delta \\mathbf{x}_k \\|}\n"
 "                          {\\| \\delta \\mathbf{x}_0 \\|}"
-msgstr "\\lambda_{\\max} = \\lim_{n \\\\to \\infty} \\frac{1}{n}\\n\\sum_{k=1}^{n} \\ln \\frac{\\| \\delta \\mathbf{x}_k \\|}\\n                          {\\| \\delta \\mathbf{x}_0 \\|}"
+msgstr ""
+"\\lambda_{\\max} = \\lim_{n \\\\to \\infty} "
+"\\frac{1}{n}\\n\\sum_{k=1}^{n} \\ln \\frac{\\| \\delta \\mathbf{x}_k "
+"\\|}\\n                          {\\| \\delta \\mathbf{x}_0 \\|}"
 
-#: ../../background.rst:237
+#: ../../background.rst:238
 #, python-brace-format
 msgid ""
 "where :math:`\\delta \\mathbf{x}_k` is the perturbation vector at "
@@ -540,67 +540,67 @@ msgstr ""
 "onde :math:`\\delta \\mathbf{x}_k` é o vetor de perturbação na iteração "
 ":math:`k`, evoluído através do mapa tangente do sistema."
 
-#: ../../background.rst:241
+#: ../../background.rst:242
 msgid "Classification"
 msgstr "Classificação"
 
-#: ../../background.rst:243
+#: ../../background.rst:244
 #, python-brace-format
 msgid "Orbit classification by :math:`\\lambda_{\\max}`"
 msgstr "Classificação de órbitas por :math:`\\lambda_{\\max}`"
 
-#: ../../background.rst:247
+#: ../../background.rst:248
 msgid "Condition"
 msgstr "Condição"
 
-#: ../../background.rst:248
+#: ../../background.rst:249
 msgid "Meaning"
 msgstr "Significado"
 
-#: ../../background.rst:249
+#: ../../background.rst:250
 msgid "Regime"
 msgstr "Regime"
 
-#: ../../background.rst:250
+#: ../../background.rst:251
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} > 0`"
 msgstr ":math:`\\lambda_{\\max} > 0`"
 
-#: ../../background.rst:251
+#: ../../background.rst:252
 msgid "Exponential divergence of nearby trajectories; SDIC present"
 msgstr "Divergência exponencial de trajetórias próximas; SDIC presente"
 
-#: ../../background.rst:252
+#: ../../background.rst:253
 msgid "**Chaotic**"
 msgstr "**Caótico**"
 
-#: ../../background.rst:253
+#: ../../background.rst:254
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} \\leq 0`"
 msgstr ":math:`\\lambda_{\\max} \\\\leq 0`"
 
-#: ../../background.rst:254
+#: ../../background.rst:255
 msgid "Trajectories converge or remain bounded without exponential growth"
 msgstr "Trajetórias convergem ou permanecem limitadas sem crescimento exponencial"
 
-#: ../../background.rst:255
+#: ../../background.rst:256
 msgid "**Periodic / quasiperiodic**"
 msgstr "**Periódico / quase periódico**"
 
-#: ../../background.rst:256
+#: ../../background.rst:257
 #, python-brace-format
 msgid ":math:`\\lambda_{\\max} = \\text{NaN}`"
 msgstr ":math:`\\lambda_{\\max} = \\text{NaN}`"
 
-#: ../../background.rst:257
+#: ../../background.rst:258
 msgid "Trajectory diverged to infinity within the simulation window"
 msgstr "Trajetória divergiu para o infinito dentro da janela de simulação"
 
-#: ../../background.rst:258
+#: ../../background.rst:259
 msgid "**Divergent (unbounded)**"
 msgstr "**Divergente (ilimitado)**"
 
-#: ../../background.rst:262
+#: ../../background.rst:263
 #, python-brace-format
 msgid ""
 "The condition :math:`\\lambda_{\\max} > 0` is the **mathematical "
@@ -613,11 +613,11 @@ msgstr ""
 "Esta é a métrica utilizada em todo o pipeline de varredura para "
 "classificar cada ponto da grade (ordem, corte)."
 
-#: ../../background.rst:268
+#: ../../background.rst:269
 msgid "Combinatorial validation protocol"
 msgstr "Protocolo de validação combinatória"
 
-#: ../../background.rst:270
+#: ../../background.rst:271
 #, python-brace-format
 msgid ""
 "The sweep pipeline estimates :math:`\\lambda_{\\max}` at **every point** "
@@ -630,7 +630,7 @@ msgstr ""
 "corte :math:`\\omega_c`), construindo um mapa de classificação de todo o "
 "espaço de parâmetros. Para cada ponto da grade:"
 
-#: ../../background.rst:275
+#: ../../background.rst:276
 msgid ""
 "1. **FIR bank precomputation**: all filter coefficient sets are computed "
 "once using SciPy's :func:`~scipy.signal.firwin`."
@@ -640,7 +640,7 @@ msgstr ""
 " de zeros) ou via :func:`scipy.signal.firwin` (para projetos com "
 "janelamento)."
 
-#: ../../background.rst:278
+#: ../../background.rst:279
 msgid ""
 "2. **Initial condition generation**: :math:`N_{\\text{IC}}` initial "
 "conditions are sampled from a uniform box around the fixed point."
@@ -650,7 +650,7 @@ msgstr ""
 ":math:`0{,}01` centrada no ponto fixo estável :math:`p^+` do sistema "
 "filtrado."
 
-#: ../../background.rst:281
+#: ../../background.rst:282
 msgid ""
 "3. **Transient discard**: the first :math:`N_{\\text{discard}}` "
 "iterations are discarded to eliminate transient dynamics."
@@ -658,7 +658,7 @@ msgstr ""
 "**Descarte do transiente** — as primeiras :math:`N_{\\text{discard}}` "
 "iterações são descartadas para permitir a convergência ao atrator."
 
-#: ../../background.rst:284
+#: ../../background.rst:285
 msgid ""
 "4. **Lyapunov estimation**: :math:`N_{\\text{itera}}` iterations are "
 "performed, tracking the evolution of :math:`N_s` tangent vectors via "
@@ -668,7 +668,7 @@ msgstr ""
 "acumuladas usando o método do mapa tangente com re-ortonormalização de "
 "Gram-Schmidt Modificado (MGS) a cada passo."
 
-#: ../../background.rst:288
+#: ../../background.rst:289
 msgid ""
 "**Ensemble aggregation**: :math:`\\lambda_{\\max}` is reported as the "
 "mean over all :math:`N_{\\text{IC}}` initial conditions."
@@ -676,11 +676,11 @@ msgstr ""
 "**Agregação de ensemble** — :math:`\\lambda_{\\max}` é reportado como a "
 "média sobre todas as :math:`N_{\\text{IC}}` condições iniciais."
 
-#: ../../background.rst:292
+#: ../../background.rst:293
 msgid "Tangent-map method and Modified Gram-Schmidt"
 msgstr "Método do mapa tangente e Gram-Schmidt Modificado"
 
-#: ../../background.rst:294
+#: ../../background.rst:295
 msgid ""
 "The tangent-map method propagates both the main orbit and a set of "
 "linearised perturbation vectors simultaneously. However, the exponential "
@@ -693,7 +693,7 @@ msgstr ""
 "numérico ou colapso (todos os vetores se alinhando com a autodireção "
 "dominante)."
 
-#: ../../background.rst:300
+#: ../../background.rst:301
 #, python-brace-format
 msgid ""
 "The **Modified Gram-Schmidt (MGS)** procedure is applied at every "
@@ -708,11 +708,11 @@ msgstr ""
 ":math:`\\lambda_{\\max}`. A implementação utiliza fatoração QR compilada "
 "via Numba JIT para desempenho."
 
-#: ../../background.rst:307
+#: ../../background.rst:308
 msgid "Fixed-point stability"
 msgstr "Estabilidade de ponto fixo"
 
-#: ../../background.rst:309
+#: ../../background.rst:310
 msgid ""
 "For the filtered Hénon map, the stability analysis also requires the "
 "Jacobian matrix of the expanded :math:`K'`-dimensional system. Convergent"
@@ -722,7 +722,7 @@ msgstr ""
 "matriz Jacobiana do sistema expandido de dimensão :math:`K'`. Resultados "
 "convergentes de Borges, Silva e Eisencraft (2024) demonstram que:"
 
-#: ../../background.rst:314
+#: ../../background.rst:315
 msgid ""
 "The **fixed-point locations** depend primarily on the total filter gain "
 ":math:`G`."
@@ -730,7 +730,7 @@ msgstr ""
 "A **localização dos pontos fixos** depende primordialmente do ganho total"
 " :math:`G` do filtro."
 
-#: ../../background.rst:316
+#: ../../background.rst:317
 msgid ""
 "The **stability** of these points is highly sensitive to the individual "
 "coefficient distribution and the zero locations of the filter in the "
@@ -740,7 +740,7 @@ msgstr ""
 "individual dos coeficientes e à localização dos zeros do filtro no plano "
 "complexo [BorgesSilvaEisencraft24]_."
 
-#: ../../background.rst:320
+#: ../../background.rst:321
 msgid ""
 "This dependence motivates the need for a systematic (rather than "
 "pointwise) characterisation of the filters employed."
@@ -748,42 +748,34 @@ msgstr ""
 "Essa dependência motiva a necessidade de uma caracterização sistemática "
 "(em vez de pontual) dos filtros empregados."
 
-#: ../../background.rst:324
+#: ../../background.rst:325
 msgid "Numba JIT acceleration"
 msgstr "Aceleração via Numba JIT"
 
-#: ../../background.rst:326
+#: ../../background.rst:327
 msgid ""
 "The inner loop of the Lyapunov computation is :math:`\\mathcal{O}(N_s^3)`"
-" due to the MGS re-orthonormalisation of an :math:`N_s`-dimensional "
-"perturbation ensemble. Numba JIT compilation reduces this to practical "
-"execution times, enabling sweeps with up to :math:`N_s = 41` filter taps,"
-" :math:`N_{\\text{IC}} = 25` initial conditions per grid point, and "
+" due to the MGS re-orthonormalisation of the :math:`N_s` tangent vectors."
+" Numba JIT compilation reduces this to practical execution times, "
+"enabling sweeps with up to :math:`N_s = 41` filter taps, "
+":math:`N_{\\text{IC}} = 25` initial conditions per grid point, and "
 ":math:`N_{\\text{itera}} = 3\\,000` iterations per IC, totalling "
 ":math:`40 \\times 100 = 4\\,000` grid points, each with :math:`25 \\times"
 " 3\\,000 = 75\\,000` orbit evaluations. Without Numba, this would require"
 " tens of hours; with JIT, it completes in minutes on a modern multicore "
 "processor."
-msgstr ""
-"O laço interno do cálculo de Lyapunov é :math:`\\mathcal{O}(N_s^3)` "
-"devido à re-ortonormalização MGS de um ensemble de perturbação de "
-"dimensão :math:`N_s`. A compilação JIT via Numba reduz isso a tempos de "
-"execução práticos, permitindo varreduras com até :math:`N_s = 41` "
-"coeficientes de filtro, :math:`N_{\\text{IC}} = 25` condições iniciais "
-"por ponto da grade e :math:`N_{\\text{itera}} = 3\\,000` iterações por CI, totalizando :math:`40 \\times 100 = 4\\,000` pontos de grade, cada um "
-"com :math:`25 \\times 3\\,000 = 75\\,000` avaliações de órbita. Sem "
-"Numba, isso exigiria dezenas de horas; com JIT, completa-se em minutos em"
-" um processador multicore moderno."
+msgstr "O laço interno do cálculo de Lyapunov é :math:`\\mathcal{O}(N_s^3)` devido à re-ortonormalização MGS dos :math:`N_s` vetores tangentes. A compilação JIT via Numba reduz isso a tempos de execução práticos, permitindo varreduras com até :math:`N_s = 41` coeficientes de filtro, :math:`N_{\\text{IC}} = 25` condições iniciais por ponto da grade e :math:`N_{\\text{itera}} = 3\\,000` iterações por CI, totalizando :math:`40 \\times 100 = 4\\,000` pontos de grade, cada um com :math:`25 \\times 3\\,000 = 75\\,000` avaliações de órbita. Sem Numba, isso exigiria dezenas de horas; com JIT, completa-se em minutos em um processador multicore moderno."
 
-#: ../../background.rst:338
+
+#: ../../background.rst:339
 msgid "Pecora-Carroll synchronisation"
 msgstr "Sincronização de Pecora-Carroll"
 
-#: ../../background.rst:341
+#: ../../background.rst:342
 msgid "Principle"
 msgstr "Princípio"
 
-#: ../../background.rst:343
+#: ../../background.rst:344
 #, python-brace-format
 msgid ""
 "The receiver runs a copy of the transmitter's chaotic oscillator driven "
@@ -797,17 +789,19 @@ msgstr ""
 "estado :math:`\\mathbf{x}(t)`, um subsistema escravo está sincronizado "
 "quando:"
 
-#: ../../background.rst:348
+#: ../../background.rst:349
 msgid ""
 "\\|\\mathbf{x}(t) - \\hat{\\mathbf{x}}(t)\\| \\to 0\n"
 "\\quad \\text{as} \\quad t \\to \\infty"
-msgstr "\\|\\mathbf{x}(t) - \\hat{\\mathbf{x}}(t)\\| \\\\to 0\\n\\quad \\text{as} \\quad t \\\\to \\infty"
+msgstr ""
+"\\|\\mathbf{x}(t) - \\hat{\\mathbf{x}}(t)\\| \\\\to 0\\n\\quad \\text{as}"
+" \\quad t \\\\to \\infty"
 
-#: ../../background.rst:353
+#: ../../background.rst:354
 msgid "where :math:`\\hat{\\mathbf{x}}(t)` is the receiver state."
 msgstr "onde :math:`\\hat{\\mathbf{x}}(t)` é o estado do receptor."
 
-#: ../../background.rst:355
+#: ../../background.rst:356
 msgid ""
 "The **necessary condition** for convergence is that all **conditional "
 "Lyapunov exponents** of the slave subsystem are negative, ensuring that "
@@ -819,15 +813,15 @@ msgstr ""
 "garantindo que perturbações na diferença de estado sejam atenuadas ao "
 "longo das iterações [PecoraCarroll90]_ [Williams01]_."
 
-#: ../../background.rst:361
+#: ../../background.rst:362
 msgid "Receiver equations for the 2-D Hénon"
 msgstr "Equações do receptor para o Hénon 2-D"
 
-#: ../../background.rst:363
+#: ../../background.rst:364
 msgid "For the generalised 2-D Hénon, the receiver state evolves as:"
 msgstr "Para o Hénon 2-D padrão, o estado do receptor evolui como:"
 
-#: ../../background.rst:365
+#: ../../background.rst:366
 msgid ""
 "y_1[n+1] &= \\alpha - r[n]^2 + \\beta \\, y_2[n] \\\\\n"
 "y_2[n+1] &= y_1[n]"
@@ -835,7 +829,7 @@ msgstr ""
 "y_1[n+1] &= 1 - a \\, r[n]^2 + b \\, y_2[n] \\\n"
 "y_2[n+1] &= y_1[n]"
 
-#: ../../background.rst:370
+#: ../../background.rst:371
 msgid ""
 "where :math:`r[n]` is the received (possibly channel-distorted) carrier. "
 "The receiver does **not** use its own :math:`y_1[n]` in the nonlinearity;"
@@ -844,10 +838,10 @@ msgid ""
 msgstr ""
 "onde :math:`r[n]` é a portadora recebida (possivelmente distorcida pelo "
 "canal). O receptor **não** usa seu próprio :math:`y_1[n]` na não "
-"linearidade. Em vez disso, é impulsionado por :math:`r[n]`, que carrega "
-"o estado do transmissor mais a mensagem incorporada."
+"linearidade. Em vez disso, é impulsionado por :math:`r[n]`, que carrega o"
+" estado do transmissor mais a mensagem incorporada."
 
-#: ../../background.rst:375
+#: ../../background.rst:376
 msgid ""
 "After a short transient (typically 200–500 iterations), the receiver "
 "state converges: :math:`y_1[n] \\approx x_1[n]`. The message is then "
@@ -857,12 +851,12 @@ msgstr ""
 "receptor converge: :math:`y_1[n] \\approx x_1[n]`. A mensagem é então "
 "recuperada subtraindo a estimativa local:"
 
-#: ../../background.rst:379
+#: ../../background.rst:380
 #, python-brace-format
 msgid "\\hat{m}[n] \\approx m[n] = \\frac{r[n] - y_1[n]}{\\mu}"
 msgstr "\\hat{m}[n] \\approx m[n] = \\frac{r[n] - y_1[n]}{\\mu}"
 
-#: ../../background.rst:383
+#: ../../background.rst:384
 msgid ""
 "where :math:`\\mu` is the modulation depth (a small positive constant, "
 "typically 0.01)."
@@ -870,75 +864,118 @@ msgstr ""
 "onde :math:`\\mu` é a profundidade de modulação (uma constante positiva "
 "pequena, tipicamente 0,01)."
 
-#: ../../background.rst:387
+#: ../../background.rst:388
 msgid "References"
 msgstr "Referências"
 
-#: ../../background.rst:389
+#: ../../background.rst:390
 msgid ""
 "M. S. Baptista. \"Chaos-based communication systems: Current trends and "
 "challenges.\" Springer, 2021."
-msgstr "M. S. Baptista. \"Chaos-based communication systems: Current trends and challenges.\" Springer, 2021."
+msgstr ""
+"M. S. Baptista. \"Chaos-based communication systems: Current trends and "
+"challenges.\" Springer, 2021."
 
-#: ../../background.rst:393
+#: ../../background.rst:394
 msgid ""
 "V. S. Borges, M. Eisencraft. \"A filtered Hénon map.\" Chaos, Solitons "
 "and Fractals, vol. 165, 2022."
-msgstr "V. S. Borges, M. Eisencraft. \\ Chaos, Solitons and Fractals, vol. 165, 2022."
+msgstr ""
+"V. S. Borges, M. Eisencraft. \\ Chaos, Solitons and Fractals, vol. 165, "
+"2022."
 
-#: ../../background.rst:397
+#: ../../background.rst:398
 msgid ""
 "V. S. Borges, R. Silva, M. Eisencraft. \"Stability analysis of the "
 "filtered Hénon map.\" (preprint), 2024."
-msgstr "V. S. Borges, R. Silva, M. Eisencraft. \"Stability analysis of the filtered Hénon map.\" (preprint), 2024."
+msgstr ""
+"V. S. Borges, R. Silva, M. Eisencraft. \"Stability analysis of the "
+"filtered Hénon map.\" (preprint), 2024."
 
-#: ../../background.rst:401
+#: ../../background.rst:402
 msgid ""
 "R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
 "system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374--385, "
 "2016."
-msgstr "R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, 2016."
+msgstr ""
+"R. Fontes, M. Eisencraft. \"A digital bandlimited chaotic communication "
+"system.\" Commun. Nonlinear Sci. Numer. Simul., vol. 37, pp. 374–385, "
+"2016."
 
-#: ../../background.rst:406
+#: ../../background.rst:407
 msgid ""
 "M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
 " Math. Phys., vol. 50, pp. 69--77, 1976."
-msgstr "M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun. Math. Phys., vol. 50, pp. 69–77, 1976."
+msgstr ""
+"M. Hénon. \"A two-dimensional mapping with a strange attractor.\" Commun."
+" Math. Phys., vol. 50, pp. 69–77, 1976."
 
-#: ../../background.rst:411
+#: ../../background.rst:412
 msgid ""
 "E. V. Oliveira, R. Filgueiras. \"A importância da segurança da informação"
 " para as organizações.\" Revista Alomorfia, v. 6, n. 1, pp. 438--447, "
 "2022."
-msgstr "E. V. Oliveira, R. Filgueiras. \"A importância da segurança da informação para as organizações.\" Revista Alomorfia, v. 6, n. 1, pp. 438–447, 2022."
+msgstr ""
+"E. V. Oliveira, R. Filgueiras. \"A importância da segurança da informação"
+" para as organizações.\" Revista Alomorfia, v. 6, n. 1, pp. 438–447, "
+"2022."
 
-#: ../../background.rst:415
+#: ../../background.rst:416
 msgid ""
 "A. V. Oppenheim, R. W. Schafer. \"Discrete-Time Signal Processing.\" 3rd "
 "ed., Pearson, 2009."
-msgstr "A. V. Oppenheim, R. W. Schafer. \"Discrete-Time Signal Processing.\" 3ª ed., Pearson, 2009."
+msgstr ""
+"A. V. Oppenheim, R. W. Schafer. \"Discrete-Time Signal Processing.\" 3ª "
+"ed., Pearson, 2009."
 
-#: ../../background.rst:418
+#: ../../background.rst:419
 msgid ""
 "L. M. Pecora, T. L. Carroll. \"Synchronization in chaotic systems.\" "
 "Physical Review Letters, v. 64, n. 8, p. 821, 1990."
-msgstr "L. M. Pecora, T. L. Carroll. \\ Physical Review Letters, v. 64, n. 8, p. 821, 1990."
+msgstr ""
+"L. M. Pecora, T. L. Carroll. \\ Physical Review Letters, v. 64, n. 8, p. "
+"821, 1990."
 
-#: ../../background.rst:422
+#: ../../background.rst:423
 msgid ""
 "A. Sapinski. \"The Importance and Challenges of Information Security in "
 "the Digital Age.\" Scientific Journal of Bielsko-Biala School of Finance "
 "and Law, v. 1, pp. 52--55, 2023."
-msgstr "A. Sapinski. \"The Importance and Challenges of Information Security in the Digital Age.\" Scientific Journal of Bielsko-Biala School of Finance and Law, v. 1, pp. 52–55, 2023."
+msgstr ""
+"A. Sapinski. \"The Importance and Challenges of Information Security in "
+"the Digital Age.\" Scientific Journal of Bielsko-Biala School of Finance "
+"and Law, v. 1, pp. 52–55, 2023."
 
-#: ../../background.rst:427
+#: ../../background.rst:428
 msgid ""
 "C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
 "Circuits Syst. I, v. 48, n. 12, pp. 1394--1404, 2001."
-msgstr "C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
+msgstr ""
+"C. Williams. \"Chaotic communications over radio channels.\" IEEE Trans. "
+"Circuits Syst. I, v. 48, n. 12, pp. 1394–1404, 2001."
 
 #~ msgid "Standard form"
 #~ msgstr "Forma padrão"
 
 #~ msgid "The system is described by the recurrence equations:"
 #~ msgstr "O sistema é descrito pelas equações de recorrência:"
+
+#~ msgid "K' = K + N_s - 1"
+#~ msgstr "K' = K + N_s - 1"
+
+#~ msgid ""
+#~ "For the 2-D Hénon (:math:`K = 2`)"
+#~ " with an :math:`N_s`-tap filter, this "
+#~ "yields a :math:`(N_s + 1)`-dimensional "
+#~ "system. The stability analysis then "
+#~ "requires the Jacobian matrix of the "
+#~ "expanded :math:`K'`-dimensional system."
+#~ msgstr ""
+#~ "Para o Hénon 2-D (:math:`K = 2`)"
+#~ " com um filtro de :math:`N_s` "
+#~ "coeficientes, obtém-se um sistema de "
+#~ "dimensão :math:`(N_s + 1)`. A análise"
+#~ " de estabilidade então requer a "
+#~ "matriz Jacobiana do sistema expandido de"
+#~ " dimensão :math:`K'`."
+

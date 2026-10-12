@@ -1,8 +1,4 @@
-"""
-signals.py
-==========
-Generators for the information-bearing messages used throughout the
-chaotic communication pipeline.
+"""Generators for the information-bearing messages of the communication pipeline.
 
 Three waveforms are provided:
 

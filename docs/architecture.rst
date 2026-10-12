@@ -132,7 +132,7 @@ Key design decisions
 
 **Numba as an optional accelerator.** The package imports and runs
 correctly without Numba installed. All JIT-compiled kernels fall back
-to pure Python via :mod:`chaotic_pfc._compat`: a thin compatibility
+to pure Python via ``chaotic_pfc._compat``: a thin compatibility
 layer that no-ops ``njit``, aliases ``prange`` to ``range``, and
 returns ``1`` for ``get_num_threads()``. Install the ``[fast]`` extra
 for 20–50× speedup on the sweep.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -153,7 +153,9 @@ msgstr "**Categorias de teste:**"
 
 #: ../../development.rst:119
 msgid "**Unit tests**: verify individual functions with known inputs/outputs."
-msgstr "**Testes unitários**: verificam funções individuais com entradas/saídas conhecidas."
+msgstr ""
+"**Testes unitários**: verificam funções individuais com entradas/saídas "
+"conhecidas."
 
 #: ../../development.rst:120
 msgid "**Integration tests**: test the communication pipeline end-to-end."
@@ -173,38 +175,39 @@ msgstr ""
 
 #: ../../development.rst:125
 msgid ""
-"Numba-compiled kernels are tested directly (not mocked) to ensure bit-"
-"exact equivalence between JIT and pure-Python fallback paths."
-msgstr ""
-"Kernels compilados com Numba são testados diretamente (sem mock) para "
-"garantir equivalência bit a bit entre os caminhos JIT e fallback em "
-"Python puro."
+"Numba-compiled kernels are tested directly (not mocked).  They are "
+"statistically equivalent to, but not bit-identical with, the pure-Python "
+"fallback (see :ref:`the backend-dependence note <backend-dependence>`). "
+"The versioned ``.npz`` checkpoints are reproduced exactly only with "
+"Numba."
+msgstr "Os kernels compilados com Numba são testados diretamente (sem mocks).  Eles são estatisticamente equivalentes, mas não bit a bit idênticos, ao fallback em Python puro (ver :ref:`a nota de dependência de backend <backend-dependence>`). Os checkpoints ``.npz`` versionados são reproduzidos exatamente apenas com Numba."
 
-#: ../../development.rst:129
+
+#: ../../development.rst:132
 msgid "CI/CD"
 msgstr "CI/CD"
 
-#: ../../development.rst:131
+#: ../../development.rst:134
 msgid "GitHub Actions runs on every push and pull request:"
 msgstr "GitHub Actions é executado a cada push e pull request:"
 
-#: ../../development.rst:133
+#: ../../development.rst:136
 msgid "**Lint**: ``ruff check`` on the entire codebase."
 msgstr "**Lint** — ``ruff check`` em toda a base de código."
 
-#: ../../development.rst:134
+#: ../../development.rst:137
 msgid "**Format check**: ``ruff format --check``."
 msgstr "**Verificação de formatação** — ``ruff format --check``."
 
-#: ../../development.rst:135
+#: ../../development.rst:138
 msgid "**Type check**: ``mypy`` on ``src/chaotic_pfc``."
 msgstr "**Verificação de tipos** — ``mypy`` em ``src/chaotic_pfc``."
 
-#: ../../development.rst:136
+#: ../../development.rst:139
 msgid "**Tests**: ``pytest`` (full suite) with ``--cov``."
 msgstr "**Testes** — ``pytest`` (suíte completa) com ``--cov``."
 
-#: ../../development.rst:137
+#: ../../development.rst:140
 msgid ""
 "**Pipeline smoke test**: ``chaotic-pfc run all --no-display --quick-"
 "sweep``."
@@ -212,11 +215,11 @@ msgstr ""
 "**Teste de fumaça do pipeline** — ``chaotic-pfc run all --no-display "
 "--quick-sweep``."
 
-#: ../../development.rst:138
+#: ../../development.rst:141
 msgid "**Codecov upload**: coverage report to Codecov."
 msgstr "**Upload Codecov** — relatório de cobertura para Codecov."
 
-#: ../../development.rst:140
+#: ../../development.rst:143
 msgid ""
 "On ``git tag v*`` push, an additional **release** job builds and "
 "publishes the wheel and sdist to TestPyPI via OIDC trusted publishing."
@@ -224,95 +227,113 @@ msgstr ""
 "No push ``git tag v*``, um job adicional de **release** constrói e "
 "publica o wheel e sdist no TestPyPI via publicação confiável OIDC."
 
-#: ../../development.rst:144
+#: ../../development.rst:147
 msgid "Documentation"
 msgstr "Documentação"
 
-#: ../../development.rst:146
+#: ../../development.rst:149
 msgid ""
 "The documentation is built with Sphinx and hosted on Read the Docs. "
-"Output goes to ``docs/_build/html/`` with each language in its own "
-"subdirectory."
-msgstr ""
-"A documentação é construída com Sphinx e hospedada no Read the Docs. A "
-"saída vai para ``docs/_build/html/`` com cada idioma em seu próprio "
-"subdiretório."
+"Output goes to ``docs/_build/html/`` (English) and "
+"``docs/_build/html/pt_BR/`` (Portuguese)."
+msgstr "A documentação é construída com Sphinx e hospedada no Read the Docs. A saída vai para ``docs/_build/html/`` (inglês) e ``docs/_build/html/pt_BR/`` (português)."
 
-#: ../../development.rst:177
+
+#: ../../development.rst:180
 msgid "To update translations after changing English sources:"
 msgstr "Para atualizar as traduções após alterar as fontes em inglês:"
 
-#: ../../development.rst:186
+#: ../../development.rst:189
 msgid ""
 "Documentation sources are in ``docs/`` as reStructuredText (``.rst``). "
 "Translations (Brazilian Portuguese) are in "
 "``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
 "reference pages are **not** translated: they stay in English because they"
 " are auto-generated from Python docstrings."
-msgstr "Documentation sources are in ``docs/`` as reStructuredText (``.rst``). Translations (Brazilian Portuguese) are in ``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API reference pages are **not** translated: they stay in English because they are auto-generated from Python docstrings."
+msgstr ""
+"Documentation sources are in ``docs/`` as reStructuredText (``.rst``). "
+"Translations (Brazilian Portuguese) are in "
+"``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
+"reference pages are **not** translated: they stay in English because they"
+" are auto-generated from Python docstrings."
 
-#: ../../development.rst:193
+#: ../../development.rst:196
 msgid "Code style"
 msgstr "Estilo de código"
 
-#: ../../development.rst:195
+#: ../../development.rst:198
 msgid "The project follows these conventions:"
 msgstr "O projeto segue estas convenções:"
 
-#: ../../development.rst:200
+#: ../../development.rst:203
 msgid "Aspect"
 msgstr "Aspecto"
 
-#: ../../development.rst:201
+#: ../../development.rst:204
 msgid "Convention"
 msgstr "Convenção"
 
-#: ../../development.rst:202
+#: ../../development.rst:205
 msgid "Line length"
 msgstr "Comprimento de linha"
 
-#: ../../development.rst:203
+#: ../../development.rst:206
 msgid "100 characters (ruff formatter)"
 msgstr "100 caracteres (formatador ruff)"
 
-#: ../../development.rst:204
+#: ../../development.rst:207
 msgid "Quotes"
 msgstr "Aspas"
 
-#: ../../development.rst:205
+#: ../../development.rst:208
 msgid "Double quotes (ruff formatter default)"
 msgstr "Aspas duplas (padrão do formatador ruff)"
 
-#: ../../development.rst:206
+#: ../../development.rst:209
 msgid "Docstrings"
 msgstr "Docstrings"
 
-#: ../../development.rst:207
+#: ../../development.rst:210
 msgid "NumPy-style, consumed by Sphinx with napoleon"
 msgstr "Estilo NumPy, consumido pelo Sphinx com napoleon"
 
-#: ../../development.rst:208
+#: ../../development.rst:211
 msgid "Typing"
 msgstr "Tipagem"
 
-#: ../../development.rst:209
+#: ../../development.rst:212
 msgid "Full type annotations (enforced by mypy)"
 msgstr "Anotações de tipo completas (aplicadas por mypy)"
 
-#: ../../development.rst:210
+#: ../../development.rst:213
 msgid "Commit messages"
 msgstr "Mensagens de commit"
 
-#: ../../development.rst:211
+#: ../../development.rst:214
 msgid ""
 "Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
 "``ci``, ``refactor``)"
-msgstr "Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, ``ci``, ``refactor``)"
+msgstr ""
+"Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, "
+"``ci``, ``refactor``)"
 
-#: ../../development.rst:212
+#: ../../development.rst:215
 msgid "Language"
 msgstr "Idioma"
 
-#: ../../development.rst:213
+#: ../../development.rst:216
 msgid "Code and docstrings in English; figure labels bilingual (pt / en)"
 msgstr "Código e docstrings em inglês; rótulos de figuras bilíngues (pt / en)"
+
+#~ msgid ""
+#~ "Numba-compiled kernels are tested "
+#~ "directly (not mocked) to ensure bit-"
+#~ "exact equivalence between JIT and "
+#~ "pure-Python fallback paths."
+#~ msgstr ""
+#~ "Kernels compilados com Numba são "
+#~ "testados diretamente (sem mock) para "
+#~ "garantir equivalência bit a bit entre"
+#~ " os caminhos JIT e fallback em "
+#~ "Python puro."
+

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-10 22:11-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
@@ -34,7 +34,9 @@ msgstr ""
 
 #: ../../contributing.rst:9
 msgid "For environment setup and tooling details, see :doc:`development`."
-msgstr "Para detalhes de configuração do ambiente e ferramentas, veja :doc:`development`."
+msgstr ""
+"Para detalhes de configuração do ambiente e ferramentas, veja "
+":doc:`development`."
 
 #: ../../contributing.rst:12
 msgid "Philosophy"
@@ -70,7 +72,9 @@ msgstr "Nenhuma configurabilidade espúria para cenários hipotéticos."
 
 #: ../../contributing.rst:24
 msgid "No error handling for states proven impossible by the call chain."
-msgstr "Sem tratamento de erro para estados comprovadamente impossíveis pela cadeia de chamadas."
+msgstr ""
+"Sem tratamento de erro para estados comprovadamente impossíveis pela "
+"cadeia de chamadas."
 
 #: ../../contributing.rst:26
 msgid ""
@@ -154,7 +158,9 @@ msgstr "``docs`` — alterações na documentação."
 
 #: ../../contributing.rst:81
 msgid "``chore``: maintenance (dependency updates, tooling config)."
-msgstr "``chore``: manutenção (atualização de dependências, configuração de ferramentas)."
+msgstr ""
+"``chore``: manutenção (atualização de dependências, configuração de "
+"ferramentas)."
 
 #: ../../contributing.rst:82
 msgid "``ci``: CI/CD configuration."
@@ -230,7 +236,9 @@ msgstr "Use crases para referências de código."
 
 #: ../../contributing.rst:176
 msgid "Use ``:class:``, ``:func:``, ``:mod:`` for Sphinx cross-references."
-msgstr "Use ``:class:``, ``:func:``, ``:mod:`` para referências cruzadas do Sphinx."
+msgstr ""
+"Use ``:class:``, ``:func:``, ``:mod:`` para referências cruzadas do "
+"Sphinx."
 
 #: ../../contributing.rst:177
 msgid "Avoid vague language like \"process the data\"."
@@ -242,13 +250,11 @@ msgstr "API pública"
 
 #: ../../contributing.rst:182
 msgid ""
-"The canonic public API is defined in :mod:`chaotic_pfc.__init__` via the "
+"The canonic public API is defined in ``chaotic_pfc.__init__`` via the "
 "``__all__`` list (75 symbols). All names in ``__all__`` are re-exported "
 "at the top level:"
-msgstr ""
-"A API pública canônica é definida em :mod:`chaotic_pfc.__init__` via a "
-"lista ``__all__`` (75 símbolos). Todos os nomes em ``__all__`` são "
-"reexportados no nível superior:"
+msgstr "A API pública canônica é definida em ``chaotic_pfc.__init__`` via a lista ``__all__`` (75 símbolos). Todos os nomes em ``__all__`` são reexportados no nível superior:"
+
 
 #: ../../contributing.rst:190
 msgid ""
@@ -346,7 +352,7 @@ msgstr "``src/chaotic_pfc/_version.py`` — string ``__version__``."
 msgid "``docs/conf.py``: ``version`` and ``release`` strings."
 msgstr "``docs/conf.py`` — strings ``version`` e ``release``."
 
-#: ../../contributing.rst:237
+#: ../../contributing.rst:238
 msgid ""
 "The ``[Unreleased]`` section of ``CHANGELOG.md`` is renamed to the "
 "version number and date on release. See ``RELEASING.md`` in the "
@@ -356,15 +362,15 @@ msgstr ""
 " versão e data no lançamento. Consulte ``RELEASING.md`` na raiz do "
 "repositório para o processo completo de lançamento."
 
-#: ../../contributing.rst:242
+#: ../../contributing.rst:243
 msgid "Issue reporting"
 msgstr "Relato de issues"
 
-#: ../../contributing.rst:244
+#: ../../contributing.rst:245
 msgid "Use GitHub Issues for:"
 msgstr "Use GitHub Issues para:"
 
-#: ../../contributing.rst:246
+#: ../../contributing.rst:247
 msgid ""
 "Bug reports: include reproduction steps, expected behaviour, and "
 "environment details (Python version, OS, Numba version)."
@@ -372,54 +378,59 @@ msgstr ""
 "Relatos de bugs: inclua passos de reprodução, comportamento esperado e "
 "detalhes do ambiente (versão do Python, SO, versão do Numba)."
 
-#: ../../contributing.rst:248
-msgid "Feature requests: describe the use case and proposed solution."
-msgstr "Solicitações de funcionalidades: descreva o caso de uso e a solução proposta."
-
 #: ../../contributing.rst:249
+msgid "Feature requests: describe the use case and proposed solution."
+msgstr ""
+"Solicitações de funcionalidades: descreva o caso de uso e a solução "
+"proposta."
+
+#: ../../contributing.rst:250
 msgid "Documentation issues: point to the specific page and section."
 msgstr "Problemas de documentação: aponte para a página e seção específicas."
 
-#: ../../contributing.rst:251
+#: ../../contributing.rst:252
 msgid "Before opening a new issue, search existing issues to avoid duplicates."
-msgstr "Antes de abrir uma nova issue, pesquise as issues existentes para evitar duplicatas."
+msgstr ""
+"Antes de abrir uma nova issue, pesquise as issues existentes para evitar "
+"duplicatas."
 
-#: ../../contributing.rst:255
+#: ../../contributing.rst:256
 msgid "Pull request checklist"
 msgstr "Lista de verificação de pull request"
 
-#: ../../contributing.rst:257
+#: ../../contributing.rst:258
 msgid "All tests pass (``make test``)."
 msgstr "Todos os testes passam (``make test``)."
 
-#: ../../contributing.rst:258
+#: ../../contributing.rst:259
 msgid "Fast tests pass (``make test-fast``)."
 msgstr "Testes rápidos passam (``make test-fast``)."
 
-#: ../../contributing.rst:259
+#: ../../contributing.rst:260
 msgid "Linter is clean (``make lint``)."
 msgstr "Linter está limpo (``make lint``)."
 
-#: ../../contributing.rst:260
+#: ../../contributing.rst:261
 msgid "Formatting is correct (``make format-check``)."
 msgstr "Formatação está correta (``make format-check``)."
 
-#: ../../contributing.rst:261
+#: ../../contributing.rst:262
 msgid "Type checking passes (``make typecheck``)."
 msgstr "Verificação de tipos passa (``make typecheck``)."
 
-#: ../../contributing.rst:262
+#: ../../contributing.rst:263
 msgid "New functions have NumPy-style docstrings."
 msgstr "Novas funções possuem docstrings no estilo NumPy."
 
-#: ../../contributing.rst:263
+#: ../../contributing.rst:264
 msgid "New public functions are added to ``__all__``."
 msgstr "Novas funções públicas são adicionadas a ``__all__``."
 
-#: ../../contributing.rst:264
+#: ../../contributing.rst:265
 msgid "CHANGELOG.md is updated under ``[Unreleased]``."
 msgstr "CHANGELOG.md é atualizado em ``[Unreleased]``."
 
-#: ../../contributing.rst:265
+#: ../../contributing.rst:266
 msgid "Commit messages follow Conventional Commits."
 msgstr "Mensagens de commit seguem Conventional Commits."
+

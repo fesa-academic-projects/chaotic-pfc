@@ -41,7 +41,6 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction) -> None:
     """Register ``plot-chaotic-map`` and ``plot-chaotic-density``."""
-
     p_cm = sub.add_parser(
         "plot-chaotic-map",
         help="Binary union of chaotic regions across all window × filter sweeps.",

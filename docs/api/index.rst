@@ -28,6 +28,7 @@ NumPy-style docstrings extracted from the source.
    chaotic_pfc.comms.channel
    chaotic_pfc.comms.receiver
    chaotic_pfc.comms.protocols
+   chaotic_pfc.comms.metrics
    chaotic_pfc.analysis.sweep
    chaotic_pfc.analysis.stats
    chaotic_pfc.analysis.latex_export
@@ -36,3 +37,44 @@ NumPy-style docstrings extracted from the source.
    chaotic_pfc.plotting.figures
    chaotic_pfc.config
    chaotic_pfc.cli
+
+Public API
+----------
+
+The stable public API is the top-level ``chaotic_pfc`` namespace (its
+``__all__`` list: 75 symbols).  Each symbol is documented once, in its
+defining submodule above; import it directly from the package root::
+
+    from chaotic_pfc import run_sweep, henon_standard, fir_channel
+
+Sweep catalogue
+---------------
+
+The sweep package publishes three configuration constants:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Constant
+     - Meaning
+     - Values
+   * - ``WINDOWS``
+     - Supported FIR window keys (lower-case)
+     - ``hamming``, ``hann``, ``blackman``, ``kaiser``, ``blackmanharris``, ``boxcar``, ``bartlett``
+   * - ``FILTER_TYPES``
+     - Supported pass-zero configurations
+     - ``lowpass``, ``highpass``, ``bandpass``, ``bandstop``
+   * - ``WINDOW_DISPLAY_NAMES``
+     - Human-readable display name for each window key
+     - ``hamming`` → ``Hamming``, …
+
+Their canonical values, kept in sync with the code:
+
+.. autodata:: chaotic_pfc.analysis.sweep._types.WINDOWS
+   :no-index:
+
+.. autodata:: chaotic_pfc.analysis.sweep._types.FILTER_TYPES
+   :no-index:
+
+.. autodata:: chaotic_pfc.analysis.sweep._types.WINDOW_DISPLAY_NAMES
+   :no-index:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 21:24-0300\n"
+"POT-Creation-Date: 2026-10-12 15:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -47,8 +47,9 @@ msgstr "Termo constante de Hénon (forma generalizada)"
 msgid ""
 ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
-":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
-msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
+"``_sweep_kernel``"
+msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
+
 
 #: ../../symbols.rst:20
 msgid ":math:`\\beta`"
@@ -90,217 +91,273 @@ msgstr "Profundidade de modulação"
 msgid ""
 ":func:`~chaotic_pfc.comms.transmitter.transmit`, "
 ":func:`~chaotic_pfc.comms.receiver.receive`"
-msgstr ":func:`~chaotic_pfc.comms.transmitter.transmit`, :func:`~chaotic_pfc.comms.receiver.receive`"
+msgstr ""
+":func:`~chaotic_pfc.comms.transmitter.transmit`, "
+":func:`~chaotic_pfc.comms.receiver.receive`"
 
 #: ../../symbols.rst:39
-msgid ":math:`N_z`, :math:`N_s`, :math:`N`"
-msgstr ":math:`N_z`, :math:`N_s`, :math:`N`"
+msgid ":math:`N_s`"
+msgstr ":math:`N_s`"
+
 
 #: ../../symbols.rst:40
-msgid "FIR filter order (number of taps)"
-msgstr "Ordem do filtro FIR (número de coeficientes)"
+msgid "Number of FIR filter coefficients (taps)"
+msgstr "Número de coeficientes (taps) do filtro FIR"
 
-#: ../../symbols.rst:41
-msgid ""
-":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, "
-":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`"
-msgstr ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`"
+
+#: ../../symbols.rst:41 ../../symbols.rst:46
+msgid "``_sweep_kernel``, :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`"
+msgstr "``_sweep_kernel``, :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`"
+
 
 #: ../../symbols.rst:44
+msgid ":math:`N_z = N_s - 1`"
+msgstr ":math:`N_z = N_s - 1`"
+
+
+#: ../../symbols.rst:45
+msgid "FIR filter order (number of zeros)"
+msgstr "Ordem do filtro FIR (número de zeros)"
+
+
+#: ../../symbols.rst:49
+msgid ":math:`N`"
+msgstr ":math:`N`"
+
+
+#: ../../symbols.rst:50
+msgid "Number of samples in a transmitted sequence"
+msgstr "Número de amostras em uma sequência transmitida"
+
+
+#: ../../symbols.rst:51
+msgid ""
+":func:`~chaotic_pfc.config.CommConfig`, "
+":func:`~chaotic_pfc.comms.transmitter.transmit`"
+msgstr ":func:`~chaotic_pfc.config.CommConfig`, :func:`~chaotic_pfc.comms.transmitter.transmit`"
+
+
+#: ../../symbols.rst:54
 msgid ":math:`\\omega_c`, :math:`f_c`"
 msgstr ":math:`\\omega_c`, :math:`f_c`"
 
-#: ../../symbols.rst:45
+#: ../../symbols.rst:55
 msgid "Normalised cutoff frequency, :math:`\\omega_c / \\pi \\in (0, 1)`"
 msgstr "Frequência de corte normalizada, :math:`\\omega_c / \\pi \\in (0, 1)`"
 
-#: ../../symbols.rst:46
+#: ../../symbols.rst:56
 msgid ""
-":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`, "
+":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
 ":func:`~chaotic_pfc.config.InternalFIRConfig`"
-msgstr ":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`, :func:`~chaotic_pfc.config.InternalFIRConfig`"
+msgstr ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, :func:`~chaotic_pfc.config.InternalFIRConfig`"
 
-#: ../../symbols.rst:49
+
+#: ../../symbols.rst:59
 msgid ":math:`c_k`, :math:`b_k`"
 msgstr ":math:`c_k`, :math:`b_k`"
 
-#: ../../symbols.rst:50
+#: ../../symbols.rst:60
 msgid "FIR filter coefficients"
 msgstr "Coeficientes do filtro FIR"
 
-#: ../../symbols.rst:51 ../../symbols.rst:61
-msgid ""
-":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, "
-":func:`~chaotic_pfc.analysis.sweep._kernel._henon_nN_inplace`"
-msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, :func:`~chaotic_pfc.analysis.sweep._kernel._henon_nN_inplace`"
+#: ../../symbols.rst:61 ../../symbols.rst:71
+msgid ":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, ``_henon_nN_inplace``"
+msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, ``_henon_nN_inplace``"
 
-#: ../../symbols.rst:54
+
+#: ../../symbols.rst:64
 msgid ":math:`G`"
 msgstr ":math:`G`"
 
-#: ../../symbols.rst:55
+#: ../../symbols.rst:65
 msgid "Filter DC gain, :math:`G = \\sum_k c_k`"
 msgstr "Ganho DC do filtro, :math:`G = \\sum_k c_k`"
 
-#: ../../symbols.rst:56
-msgid ""
-":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, "
-":func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`"
-msgstr ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, :func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`"
+#: ../../symbols.rst:66
+msgid "``_sweep_kernel``, ``_fixed_point``"
+msgstr "``_sweep_kernel``, ``_fixed_point``"
 
-#: ../../symbols.rst:59
+
+#: ../../symbols.rst:69
 msgid ":math:`u_n`"
 msgstr ":math:`u_n`"
 
-#: ../../symbols.rst:60
+#: ../../symbols.rst:70
 #, python-brace-format
 msgid "FIR filter output, :math:`u_n = \\sum_k c_k x_{n-k}`"
 msgstr "Saída do filtro FIR, :math:`u_n = \\sum_k c_k x_{n-k}`"
 
-#: ../../symbols.rst:64
+#: ../../symbols.rst:74
 msgid ":math:`x_n, y_n`"
 msgstr ":math:`x_n, y_n`"
 
-#: ../../symbols.rst:65
+#: ../../symbols.rst:75
 msgid "Hénon map state variables"
 msgstr "Variáveis de estado do mapa de Hénon"
 
-#: ../../symbols.rst:66
+#: ../../symbols.rst:76
 msgid ""
 ":func:`~chaotic_pfc.dynamics.maps.henon_standard`, "
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`"
-msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_standard`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`"
+msgstr ""
+":func:`~chaotic_pfc.dynamics.maps.henon_standard`, "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`"
 
-#: ../../symbols.rst:69
+#: ../../symbols.rst:79
 #, python-brace-format
 msgid ":math:`\\lambda_1`, :math:`\\lambda_{\\max}`"
 msgstr ":math:`\\lambda_1`, :math:`\\lambda_{\\max}`"
 
-#: ../../symbols.rst:70
+#: ../../symbols.rst:80
 msgid "Largest Lyapunov exponent"
 msgstr "Maior expoente de Lyapunov"
 
-#: ../../symbols.rst:71
-msgid ""
-":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
-":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
-msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
+#: ../../symbols.rst:81
+msgid ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
+msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
 
-#: ../../symbols.rst:74
+
+#: ../../symbols.rst:84
 msgid ":math:`s[n]`"
 msgstr ":math:`s[n]`"
 
-#: ../../symbols.rst:75
+#: ../../symbols.rst:85
 msgid "Transmitted (modulated) signal"
 msgstr "Sinal transmitido (modulado)"
 
-#: ../../symbols.rst:76
+#: ../../symbols.rst:86
 msgid ":func:`~chaotic_pfc.comms.transmitter.transmit`"
 msgstr ":func:`~chaotic_pfc.comms.transmitter.transmit`"
 
-#: ../../symbols.rst:78
+#: ../../symbols.rst:88
 msgid ":math:`r[n]`"
 msgstr ":math:`r[n]`"
 
-#: ../../symbols.rst:79
+#: ../../symbols.rst:89
 msgid "Received signal (after channel)"
 msgstr "Sinal recebido (após o canal)"
 
-#: ../../symbols.rst:80
+#: ../../symbols.rst:90
 msgid ""
 ":func:`~chaotic_pfc.comms.receiver.receive`, "
 ":func:`~chaotic_pfc.comms.channel.awgn`"
-msgstr ":func:`~chaotic_pfc.comms.receiver.receive`, :func:`~chaotic_pfc.comms.channel.awgn`"
+msgstr ""
+":func:`~chaotic_pfc.comms.receiver.receive`, "
+":func:`~chaotic_pfc.comms.channel.awgn`"
 
-#: ../../symbols.rst:83
+#: ../../symbols.rst:93
 msgid ":math:`m[n]`"
 msgstr ":math:`m[n]`"
 
-#: ../../symbols.rst:84
+#: ../../symbols.rst:94
 msgid "Original binary message"
 msgstr "Mensagem binária original"
 
-#: ../../symbols.rst:85
+#: ../../symbols.rst:95
 msgid ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
 msgstr ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
 
-#: ../../symbols.rst:87
+#: ../../symbols.rst:97
 #, python-brace-format
 msgid ":math:`\\hat{m}[n]`"
 msgstr ":math:`\\hat{m}[n]`"
 
-#: ../../symbols.rst:88
+#: ../../symbols.rst:98
 msgid "Recovered message estimate"
 msgstr "Estimativa da mensagem recuperada"
 
-#: ../../symbols.rst:89
+#: ../../symbols.rst:99
 msgid ":func:`~chaotic_pfc.comms.receiver.receive`"
 msgstr ":func:`~chaotic_pfc.comms.receiver.receive`"
 
-#: ../../symbols.rst:91
+#: ../../symbols.rst:101
 msgid ":math:`\\beta_K`"
 msgstr ":math:`\\beta_K`"
 
-#: ../../symbols.rst:92
+#: ../../symbols.rst:102
 msgid "Kaiser window shape parameter"
 msgstr "Parâmetro de forma da janela Kaiser"
 
-#: ../../symbols.rst:93
+#: ../../symbols.rst:103
 msgid ""
-":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`, "
-":func:`~chaotic_pfc.cli.sweep._beta.run_beta_sweep`"
-msgstr ":func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`, :func:`~chaotic_pfc.cli.sweep._beta.run_beta_sweep`"
+":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
+"``run_beta_sweep``"
+msgstr ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, ``run_beta_sweep``"
 
-#: ../../symbols.rst:96
+
+#: ../../symbols.rst:106
 msgid ":math:`N_{\\text{discard}}`"
 msgstr ":math:`N_{\\text{discard}}`"
 
-#: ../../symbols.rst:97
+#: ../../symbols.rst:107
 msgid "Burn-in (transient discard) iterations"
 msgstr "Iterações de descarte (transiente)"
 
-#: ../../symbols.rst:98
+#: ../../symbols.rst:108
 msgid ""
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
 ":func:`~chaotic_pfc.config.LyapunovConfig`"
-msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, :func:`~chaotic_pfc.config.LyapunovConfig`"
+msgstr ""
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
+":func:`~chaotic_pfc.config.LyapunovConfig`"
 
-#: ../../symbols.rst:101
+#: ../../symbols.rst:111
 msgid ":math:`N_{\\text{IC}}`"
 msgstr ":math:`N_{\\text{IC}}`"
 
-#: ../../symbols.rst:102
+#: ../../symbols.rst:112
 msgid "Number of initial conditions in ensemble"
 msgstr "Número de condições iniciais no ensemble"
 
-#: ../../symbols.rst:103
+#: ../../symbols.rst:113
 msgid ""
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, "
-":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
-msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
+"``_sweep_kernel``"
+msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, ``_sweep_kernel``"
 
-#: ../../symbols.rst:106
+
+#: ../../symbols.rst:116
 #, python-brace-format
 msgid ":math:`\\text{SNR}`, :math:`E_b/N_0`"
 msgstr ":math:`\\text{SNR}`, :math:`E_b/N_0`"
 
-#: ../../symbols.rst:107
+#: ../../symbols.rst:117
 msgid "Signal-to-noise ratio (dB)"
 msgstr "Relação sinal-ruído (dB)"
 
-#: ../../symbols.rst:108
+#: ../../symbols.rst:118
 msgid ":func:`~chaotic_pfc.comms.channel.awgn`"
 msgstr ":func:`~chaotic_pfc.comms.channel.awgn`"
 
-#: ../../symbols.rst:110
+#: ../../symbols.rst:120
 #, python-brace-format
 msgid ":math:`\\text{BER}`"
 msgstr ":math:`\\text{BER}`"
 
-#: ../../symbols.rst:111
+#: ../../symbols.rst:121
 msgid "Bit error rate"
 msgstr "Taxa de erro de bit"
 
-#: ../../symbols.rst:112
+#: ../../symbols.rst:122
 msgid ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
 msgstr ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
+
+#~ msgid ""
+#~ ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
+#~ ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
+#~ ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
+#~ msgstr ""
+#~ ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
+#~ ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
+#~ ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`"
+
+#~ msgid ":math:`N_z`, :math:`N_s`, :math:`N`"
+#~ msgstr ":math:`N_z`, :math:`N_s`, :math:`N`"
+
+#~ msgid ""
+#~ ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, "
+#~ ":func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`"
+#~ msgstr ""
+#~ ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, "
+#~ ":func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`"
+
