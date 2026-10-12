@@ -7,6 +7,7 @@ an error case.
 
 from __future__ import annotations
 
+import pickle
 import shutil
 from pathlib import Path
 
@@ -73,17 +74,23 @@ def test_paper_numbers_compare_success(tmp_path: Path) -> None:
     assert main(["paper", "numbers", "--compare", str(old), str(new)]) == 0
 
 
-def test_paper_numbers_missing_file_fails(tmp_path: Path) -> None:
-    with pytest.raises(FileNotFoundError):
-        main(
-            [
-                "paper",
-                "numbers",
-                "--compare",
-                str(tmp_path / "missing.json"),
-                str(tmp_path / "also-missing.json"),
-            ]
-        )
+def test_paper_numbers_missing_file_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    rc = main(
+        [
+            "paper",
+            "numbers",
+            "--compare",
+            str(tmp_path / "missing.json"),
+            str(tmp_path / "also-missing.json"),
+        ]
+    )
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error:")
+    assert "missing.json" in err
+    assert "\n" not in err.rstrip("\n")
 
 
 # ── paper audit ─────────────────────────────────────────────────────────────
@@ -94,10 +101,34 @@ def test_paper_audit_success(tmp_path: Path) -> None:
     assert main(["paper", "audit", "--tex", str(tex_path), "--bib", str(bib_path)]) == 0
 
 
-def test_paper_audit_undefined_reference_fails(tmp_path: Path) -> None:
+def test_paper_audit_undefined_reference_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     bad = MINIMAL_TEX.replace(r"\eqref{eq:x}", r"\ref{does-not-exist}")
     tex_path, bib_path = _write_manuscript(tmp_path, bad)
-    assert main(["paper", "audit", "--tex", str(tex_path), "--bib", str(bib_path)]) == 1
+    rc = main(["paper", "audit", "--tex", str(tex_path), "--bib", str(bib_path)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "ERROR" in out and "Summary:" in out
+
+
+def test_paper_audit_missing_input_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    rc = main(
+        [
+            "paper",
+            "audit",
+            "--tex",
+            str(tmp_path / "missing.tex"),
+            "--bib",
+            str(tmp_path / "missing.bib"),
+        ]
+    )
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error: missing input file")
+    assert "missing.tex" in err
 
 
 # ── paper figures ───────────────────────────────────────────────────────────
@@ -125,9 +156,14 @@ def test_sweeps_regenerate_manifest_success(tmp_path: Path) -> None:
     assert "lowpass/variables_lyapunov.npz" in manifest
 
 
-def test_sweeps_regenerate_missing_src_fails(tmp_path: Path) -> None:
-    with pytest.raises(FileNotFoundError):
-        main(["sweeps", "regenerate", "--src", str(tmp_path / "missing"), "--manifest-only"])
+def test_sweeps_regenerate_missing_src_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    rc = main(["sweeps", "regenerate", "--src", str(tmp_path / "missing"), "--manifest-only"])
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error:")
+    assert "missing" in err
 
 
 # ── sweeps compare ──────────────────────────────────────────────────────────
@@ -142,15 +178,20 @@ def test_sweeps_compare_success(tmp_path: Path) -> None:
     assert main(["sweeps", "compare", "--old", str(old), "--new", str(new)]) == 0
 
 
-def test_sweeps_compare_bad_checkpoint_fails(tmp_path: Path) -> None:
+def test_sweeps_compare_bad_checkpoint_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     old = tmp_path / "old"
     new = tmp_path / "new"
     for root in (old, new):
         (root / "Hamming (lowpass)").mkdir(parents=True)
     shutil.copy(CHECKPOINT, old / "Hamming (lowpass)" / "variables_lyapunov.npz")
     (new / "Hamming (lowpass)" / "variables_lyapunov.npz").write_bytes(b"not a checkpoint")
-    with pytest.raises(Exception):
-        main(["sweeps", "compare", "--old", str(old), "--new", str(new)])
+    rc = main(["sweeps", "compare", "--old", str(old), "--new", str(new)])
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error:")
+    assert "variables_lyapunov.npz" in err
 
 
 # ── sweeps stats ────────────────────────────────────────────────────────────
@@ -171,16 +212,20 @@ def test_sweeps_stats_success(tmp_path: Path) -> None:
     assert (tmp_path / "stats.csv").is_file()
 
 
-def test_sweeps_stats_missing_tex_fails(tmp_path: Path) -> None:
-    argv = [
-        "sweeps",
-        "stats",
-        "--sweep-dir",
-        str(REPO / "data" / "sweeps"),
-        "--tex",
-        str(tmp_path / "missing.tex"),
-        "--csv",
-        str(tmp_path / "stats.csv"),
-    ]
-    with pytest.raises(FileNotFoundError):
-        main(argv)
+def test_sweeps_stats_missing_tex_fails(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    rc = main(
+        [
+            "sweeps",
+            "stats",
+            "--sweep-dir",
+            str(REPO / "data" / "sweeps"),
+            "--tex",
+            str(tmp_path / "missing.tex"),
+            "--csv",
+            str(tmp_path / "stats.csv"),
+        ]
+    )
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error:")
+    assert "missing.tex" in err

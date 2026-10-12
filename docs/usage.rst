@@ -338,6 +338,13 @@ dumps the per-configuration table as CSV:
    chaotic-pfc sweeps compare --old /tmp/regen --new data/sweeps
    chaotic-pfc sweeps stats --sweep-dir data/sweeps --csv /tmp/stats.csv
 
+.. warning::
+
+   The commands that read sweep checkpoints (``sweeps regenerate|compare|stats``
+   and ``paper numbers``) load the ``.npz`` files with ``pickle``. Run them
+   only on files you trust, never on checkpoints obtained from an untrusted
+   source.
+
 Language support
 ----------------
 

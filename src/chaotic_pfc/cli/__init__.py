@@ -41,6 +41,7 @@ from . import (
     sweep,
     sweeps,
 )
+from ._common import guard
 
 # Ordered iterable — the help text renders subcommands in this order.
 EXPERIMENTS = (
@@ -128,11 +129,18 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    if not getattr(args, "_run", None):
+    runner = getattr(args, "_run", None)
+    if not runner:
         parser.print_help()
         return 2
 
-    return args._run(args) or 0
+    # The paper/sweeps tooling turns expected failures into a one-line message
+    # on stderr and exit code 1 (usage errors stay with argparse, i.e. 2).
+    module = getattr(runner, "__module__", "")
+    if module.startswith(("chaotic_pfc.paper.", "chaotic_pfc.sweeps.")):
+        runner = guard(runner)
+
+    return runner(args) or 0
 
 
 if __name__ == "__main__":

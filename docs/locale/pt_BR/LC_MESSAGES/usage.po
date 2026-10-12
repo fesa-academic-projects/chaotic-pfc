@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 19:29-0300\n"
+"POT-Creation-Date: 2026-10-12 20:36-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -481,9 +481,9 @@ msgid ""
 "``--only`` restricts the run to one generator:"
 msgstr ""
 "``chaotic-pfc paper figures`` regenera as figuras do JCIS que os outros "
-"comandos não produzem (os painéis de sinais, comunicação e Kaiser-β, o mapa "
-"de densidade normalizado e os mapas de classificação), gravando SVGs "
-"determinísticos em ``--out-dir`` (padrão ``articles/jcis/Figures``); "
+"comandos não produzem (os painéis de sinais, comunicação e Kaiser-β, o "
+"mapa de densidade normalizado e os mapas de classificação), gravando SVGs"
+" determinísticos em ``--out-dir`` (padrão ``articles/jcis/Figures``); "
 "``--only`` restringe a execução a um gerador:"
 
 #: ../../usage.rst:327
@@ -504,11 +504,23 @@ msgstr ""
 "``compare`` compara dois diretórios de varredura arquivo a arquivo, e "
 "``stats`` despeja a tabela por configuração em CSV:"
 
-#: ../../usage.rst:342
+#: ../../usage.rst:343
+msgid ""
+"The commands that read sweep checkpoints (``sweeps "
+"regenerate|compare|stats`` and ``paper numbers``) load the ``.npz`` files"
+" with ``pickle``. Run them only on files you trust, never on checkpoints "
+"obtained from an untrusted source."
+msgstr ""
+"Os comandos que leem checkpoints de varredura (``sweeps "
+"regenerate|compare|stats`` e ``paper numbers``) carregam os arquivos ``.npz`` "
+"com ``pickle``. Execute-os apenas sobre arquivos confiáveis, nunca sobre "
+"checkpoints obtidos de uma fonte não confiável."
+
+#: ../../usage.rst:349
 msgid "Language support"
 msgstr "Suporte a idiomas"
 
-#: ../../usage.rst:344
+#: ../../usage.rst:351
 msgid ""
 "The CLI supports bilingual figure labels via the ``--lang`` flag or the "
 "``CHAOTIC_PFC_LANG`` environment variable (which sets the default):"
@@ -517,7 +529,7 @@ msgstr ""
 "``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG`` (que define o "
 "padrão):"
 
-#: ../../usage.rst:359
+#: ../../usage.rst:366
 msgid ""
 "The flag is supported by ``attractors``, ``sensitivity``, ``comm-ideal``,"
 " ``comm-fir``, ``comm-order-n``, ``sweep plot``, ``analysis plot-chaotic-"
@@ -529,23 +541,23 @@ msgstr ""
 "map``, ``analysis plot-chaotic-density``, ``analysis export-tables`` e "
 "``run all``."
 
-#: ../../usage.rst:365
+#: ../../usage.rst:372
 msgid "Further reading"
 msgstr "Leitura adicional"
 
-#: ../../usage.rst:367
+#: ../../usage.rst:374
 msgid ":doc:`architecture`: how the modules fit together."
 msgstr ":doc:`architecture` — como os módulos se integram."
 
-#: ../../usage.rst:368
+#: ../../usage.rst:375
 msgid ":doc:`internals`: Numba kernels, MGS, adaptive early-stop."
 msgstr ":doc:`internals` — kernels Numba, MGS, parada antecipada adaptativa."
 
-#: ../../usage.rst:369
+#: ../../usage.rst:376
 msgid ":doc:`background`: complete theoretical foundations."
 msgstr ":doc:`background` — fundamentos teóricos completos."
 
-#: ../../usage.rst:370
+#: ../../usage.rst:377
 msgid ":doc:`development`: development environment and tooling."
 msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
 

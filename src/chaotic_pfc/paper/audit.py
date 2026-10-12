@@ -958,6 +958,9 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
     input_findings: list[Finding] = []
     tex = _read_text(args.tex, input_findings)
     bib = _read_text(args.bib, input_findings)
+    if tex is None or bib is None:
+        missing = [str(p) for p in (args.tex, args.bib) if not Path(p).is_file()]
+        raise FileNotFoundError(f"missing input file(s): {', '.join(missing)}")
     results["IN"] = CheckResult(
         input_findings, f"tex={'ok' if tex else 'missing'}, bib={'ok' if bib else 'missing'}"
     )
@@ -965,22 +968,9 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
     tex_dir = Path(args.tex).resolve().parent
     whitelist = _load_whitelist()
 
-    if tex is not None and bib is not None:
-        results["C1"] = _safe("C1", lambda: check_citation_keys(tex, bib))
-    else:
-        results["C1"] = CheckResult(
-            [Finding("WARN", "C1", "skipped: tex or bib unavailable")], "skipped"
-        )
-
-    if bib is not None:
-        results["C2"] = _safe("C2", lambda: check_dois(bib, whitelist))
-    else:
-        results["C2"] = CheckResult([Finding("WARN", "C2", "skipped: bib unavailable")], "skipped")
-
-    if tex is not None:
-        results["C3"] = _safe("C3", lambda: check_structure(tex, tex_dir))
-    else:
-        results["C3"] = CheckResult([Finding("WARN", "C3", "skipped: tex unavailable")], "skipped")
+    results["C1"] = _safe("C1", lambda: check_citation_keys(tex, bib))
+    results["C2"] = _safe("C2", lambda: check_dois(bib, whitelist))
+    results["C3"] = _safe("C3", lambda: check_structure(tex, tex_dir))
 
     log_texts: list[tuple[str, str]] = []
     for path in (args.log, args.blg):
@@ -994,20 +984,13 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
     else:
         results["C4"] = CheckResult([], "no log or blg provided")
 
-    if tex is not None:
-        results["C5"] = _safe(
-            "C5",
-            lambda: check_figure_language(
-                tex, tex_dir, Path(args.figures), all_figures=args.all_figures
-            ),
-        )
-    else:
-        results["C5"] = CheckResult([Finding("WARN", "C5", "skipped: tex unavailable")], "skipped")
-
-    if tex is not None:
-        results["C6"] = _safe("C6", lambda: check_tables(tex))
-    else:
-        results["C6"] = CheckResult([Finding("WARN", "C6", "skipped: tex unavailable")], "skipped")
+    results["C5"] = _safe(
+        "C5",
+        lambda: check_figure_language(
+            tex, tex_dir, Path(args.figures), all_figures=args.all_figures
+        ),
+    )
+    results["C6"] = _safe("C6", lambda: check_tables(tex))
 
     results["C7"] = _safe("C7", check_config)
     return results

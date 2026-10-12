@@ -3,14 +3,39 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import os
 import sys
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 
     from chaotic_pfc.config import SpectralConfig
+
+
+def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namespace], int]:
+    """Report expected failures as a one-line message and exit code 1.
+
+    Usage errors (unknown flags, bad choices) stay with :mod:`argparse`, which
+    exits with code 2. Any other expected failure -- a missing input, an
+    unreadable or corrupt checkpoint, an out-of-range value -- is printed to
+    ``stderr`` as a single line and turned into exit code 1, with no traceback.
+    """
+
+    @functools.wraps(run)
+    def wrapper(args: argparse.Namespace) -> int:
+        try:
+            return run(args)
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except Exception as exc:  # expected I/O and parsing errors
+            message = " ".join(str(exc).split()) or type(exc).__name__
+            print(f"error: {message}", file=sys.stderr)
+            return 1
+
+    return wrapper
 
 
 def pick_backend(no_display: bool) -> bool:
