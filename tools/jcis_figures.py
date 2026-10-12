@@ -41,6 +41,7 @@ JCIS_TICK = 8.0
 JCIS_LEGEND = 7.5
 SVG_SALT = "chaotic-pfc-jcis"
 COMM_WINDOW = (2000, 2400)
+FIR_LOOP_CUTOFF = 0.52  # omega_c/pi of the FIR in the loop of Fig. 3(b), lambda_1 > 0.05
 DATA_DIR = Path("data/sweeps")
 FILTER_TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 
@@ -137,7 +138,7 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
 
     c = firwin(
         numtaps=CFG.internal_fir.num_taps,
-        cutoff=CFG.internal_fir.cutoff,
+        cutoff=FIR_LOOP_CUTOFF,
         window="hamming",
         pass_zero=True,
         fs=2.0,
@@ -157,7 +158,7 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
         )
     print(
         f"[fig_comm_bandlimited] internal FIR: numtaps={len(c)} (Nz={len(c) - 1}), "
-        f"cutoff={CFG.internal_fir.cutoff}pi, window=hamming"
+        f"cutoff={FIR_LOOP_CUTOFF}pi, window=hamming"
     )
 
     start, stop = COMM_WINDOW
