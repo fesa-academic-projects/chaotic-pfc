@@ -215,6 +215,25 @@ make check-all     # lint + format + typecheck + fast tests
 | `make clean` | Remove cache and build artifacts |
 | `make help` | Show all targets |
 
+## Paper and analysis tooling
+
+The `tools/` directory holds the standalone scripts used to produce and check
+the manuscript. Run them with the project venv (`.venv/bin/python`):
+
+| Script | Purpose |
+|--------|---------|
+| `tools/regenerate_sweeps.py` | Recompute the versioned `data/sweeps/` checkpoints with the current kernel. |
+| `tools/compare_sweeps.py` | Compare two sweep directories file by file (bit-exactness after a refactor). |
+| `tools/paper_numbers.py` | Recompute every number of the manuscript from `data/sweeps/` and emit JSON. |
+| `tools/audit_paper.py` | Cross-check `jcis/article.tex` against the bibliography, figures and the identity tables (`make check-paper`). |
+| `tools/jcis_figures.py` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
+| `tools/report_sweep_stats.py` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
+
+`jcis/article.pdf` is a derived artifact regenerated reproducibly by
+`make paper-pdf`; its timestamp follows the last commit that touched
+`jcis/article.tex`, `jcis/references.bib` or `jcis/Figures`, so rebuilding
+without changing those sources yields an identical PDF.
+
 ## Documentation
 
 Full documentation is hosted at

@@ -36,10 +36,20 @@ Symbols glossary
      - :func:`~chaotic_pfc.comms.transmitter.transmit`,
        :func:`~chaotic_pfc.comms.receiver.receive`
 
-   * - :math:`N_z`, :math:`N_s`, :math:`N`
-     - FIR filter order (number of taps)
+   * - :math:`N_s`
+     - Number of FIR filter coefficients (taps)
      - :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`,
        :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`
+
+   * - :math:`N_z = N_s - 1`
+     - FIR filter order (number of zeros)
+     - :func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`,
+       :func:`~chaotic_pfc.analysis.sweep._orchestration.precompute_fir_bank`
+
+   * - :math:`N`
+     - Number of samples in a transmitted sequence
+     - :func:`~chaotic_pfc.config.CommConfig`,
+       :func:`~chaotic_pfc.comms.transmitter.transmit`
 
    * - :math:`\omega_c`, :math:`f_c`
      - Normalised cutoff frequency, :math:`\omega_c / \pi \in (0, 1)`

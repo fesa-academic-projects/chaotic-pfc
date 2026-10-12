@@ -8,8 +8,8 @@ FD step is swept and, per matrix entry, the smallest absolute error across
 steps is kept, so truncation error (which shrinks with the step) is separated
 from a genuine plateau (a real discrepancy).
 
-Two extra checks close the chain: ``test_eq3_matches_package_map`` implements
-equation (3) of the article literally in NumPy and compares it with the
+Two extra checks close the chain: ``test_eq4_matches_package_map`` implements
+equation (4) of the article literally in NumPy and compares it with the
 package map, and the named ``N_s = 4`` dump prints one single evaluation
 (coefficients, state, analytic matrix, numeric matrix, and the ``(3,2)``
 entry against ``beta c_0`` and ``beta c_0 + c_2``).
@@ -179,8 +179,8 @@ def _aggregate(
     return worst_err, worst_ana, entries[:5], discarded
 
 
-def _eq3_map(x: np.ndarray, c: np.ndarray) -> np.ndarray:
-    """Equation (3) of the article, implemented literally in NumPy."""
+def _eq4_map(x: np.ndarray, c: np.ndarray) -> np.ndarray:
+    """Equation (4) of the article, implemented literally in NumPy."""
     Ns = len(c)
     x1, x2, x3 = x[0], x[1], x[2]
     new = np.empty(Ns)
@@ -244,15 +244,15 @@ def test_jacobian_matches_finite_differences():
 
 
 @pytest.mark.slow
-def test_eq3_matches_package_map():
+def test_eq4_matches_package_map():
     rng = np.random.default_rng(12345)
     worst = 0.0
     for Ns in (4, 5, 8, 12):
         for _ in range(50):
             c = rng.standard_normal(Ns)
             x = rng.standard_normal(_state_dim(Ns))
-            reference = np.asarray(_eq3_map(x[:Ns], c), dtype=float)
+            reference = np.asarray(_eq4_map(x[:Ns], c), dtype=float)
             package = _step(x, c, Ns)[:Ns]
             worst = max(worst, float(np.max(np.abs(reference - package))))
-    print(f"\nmax |eq(3) literal - package map| = {worst:.3e}")
-    assert worst < 1e-12, f"equation (3) and the package map disagree: {worst}"
+    print(f"\nmax |eq(4) literal - package map| = {worst:.3e}")
+    assert worst < 1e-12, f"equation (4) and the package map disagree: {worst}"

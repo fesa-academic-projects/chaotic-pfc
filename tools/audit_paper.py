@@ -14,15 +14,17 @@ Usage::
         [--log jcis/JCIS.log] [--blg jcis/JCIS.blg] [--json out.json]
 
 Only the Python standard library is used, plus the project's own
-``chaotic_pfc.config`` for check C7. The process exits with status 1 when at
-least one ERROR is reported and with status 0 otherwise; WARN never fails the
-build.
+``chaotic_pfc.config`` for check C7 and the shared rounding helper
+``pct`` imported from :mod:`tools.paper_numbers` (check C6). The process
+exits with status 1 when at least one ERROR is reported and with status 0
+otherwise; WARN never fails the build.
 """
 
 from __future__ import annotations
 
 import argparse
 import html
+import importlib.util
 import json
 import re
 import sys
@@ -30,6 +32,26 @@ import unicodedata
 from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+
+
+def _load_sibling(module_name: str, filename: str):
+    """Load a module that sits next to this script (``tools/`` is not a package)."""
+    spec = importlib.util.spec_from_file_location(
+        module_name, Path(__file__).resolve().with_name(filename)
+    )
+    if spec is None or spec.loader is None:  # pragma: no cover - import machinery
+        raise ImportError(f"cannot load {filename}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+# Rounding rule shared with tools/paper_numbers.py: percentages are computed
+# from integer counts and quantised with Decimal ROUND_HALF_UP. Using the same
+# helper keeps the article, the audit and the numbers tool in agreement on the
+# half-way cases (e.g. 434/4000 = 10.85% -> 10.9%, not 10.8%).
+pct = _load_sibling("paper_numbers", "paper_numbers.py").pct
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -707,7 +729,9 @@ def _parse_ranking_rows(tabular: str) -> tuple[list[dict], list[str]]:
 
 
 def _compatible_nb(nc: int, grid: int, rho_fin: float) -> list[int]:
-    return [nb for nb in range(nc, grid + 1) if abs(round(100 * nc / nb, 1) - rho_fin) < 1e-9]
+    return [
+        nb for nb in range(nc, grid + 1) if abs(float(pct(nc, nb, 1)) - rho_fin) < 1e-9
+    ]
 
 
 def _same(value_a: object, value_b: object) -> bool:
@@ -746,7 +770,7 @@ def check_tables(tex_text: str) -> CheckResult:
         if grid is None:
             findings.append(Finding("WARN", "C6", f"R1 unknown filter type '{row['filter']}'"))
             continue
-        expected = round(100 * row["nc"] / grid, 1)
+        expected = float(pct(row["nc"], grid, 1))
         if abs(expected - row["rho_abs"]) > 1e-9:
             findings.append(
                 Finding(

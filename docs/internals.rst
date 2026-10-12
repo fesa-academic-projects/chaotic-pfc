@@ -150,7 +150,7 @@ data type used throughout the Numba kernels.
 Signal generators
 -----------------
 
-Two message waveform generators in :mod:`chaotic_pfc.dynamics.signals`
+Three message waveform generators in :mod:`chaotic_pfc.dynamics.signals`
 feed the communication pipeline:
 
 :func:`~chaotic_pfc.dynamics.signals.binary_message`
@@ -162,6 +162,12 @@ feed the communication pipeline:
   Produces a single-tone sine probe for spectral-response
   measurements. Useful for characterising the channel transfer
   function independently of the chaotic carrier.
+
+:func:`~chaotic_pfc.dynamics.signals.text_message`
+  Encodes an ASCII string as an NRZ BPSK bit stream (8 bits per
+  character, bit ``1`` → ``+1``, bit ``0`` → ``-1``) and holds each bit
+  for a configurable period. This is the generator used by the
+  ``comm-*`` experiments.
 
 PSD estimation
 --------------

@@ -46,7 +46,8 @@ def precompute_fir_bank(
     Parameters
     ----------
     orders
-        Filter orders to sweep. Values will be cast to ``int``.
+        Number of taps to sweep (``N_s``); the filter order is
+        ``N_z = N_s - 1``. Values will be cast to ``int``.
     cutoffs
         Normalised cutoff frequencies in (0, 1).
     filter_type
@@ -81,7 +82,7 @@ def precompute_fir_bank(
         even = orders_arr[orders_arr % 2 == 0]
         if even.size:
             raise ValueError(
-                f"{filter_type} requires odd orders; got even values "
+                f"{filter_type} requires an odd number of taps; got even values "
                 f"{even.tolist()}. Use np.arange(start|1, stop, 2) or "
                 "filter your orders to odd integers."
             )
@@ -152,9 +153,10 @@ def run_sweep(
     window, filter_type
         FIR configuration (see :data:`WINDOWS`, :data:`FILTER_TYPES`).
     orders
-        Filter orders to sweep. Defaults to ``np.arange(2, 42)`` for
-        lowpass and ``np.arange(3, 43, 2)`` for highpass (which requires
-        odd tap counts).
+        Number of FIR filter coefficients (taps) :math:`N_s` to sweep; the
+        filter order is :math:`N_z = N_s - 1`. Defaults to ``np.arange(2, 42)``
+        for lowpass and bandpass, and to ``np.arange(3, 43, 2)`` for highpass
+        and bandstop (which require an odd number of taps).
     cutoffs
         Cutoff frequencies. Defaults to 100 points linearly spaced in
         ``(0, 1)``.

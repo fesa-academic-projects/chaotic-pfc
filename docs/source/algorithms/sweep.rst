@@ -20,7 +20,11 @@ Grid structure
 
 The sweep runs over:
 
-* **Orders** :math:`N_z \in \{2, 3, \dots, 41\}` — FIR filter length.
+* **Orders** :math:`N_z = N_s - 1`, where :math:`N_s` is the number of FIR
+  filter coefficients (taps).  Lowpass and bandpass filters sweep
+  :math:`N_s \in \{2, \dots, 41\}`, i.e. :math:`N_z \in \{1, \dots, 40\}`.
+  Highpass and bandstop filters require an odd number of taps, so they sweep
+  :math:`N_z \in \{2, 4, \dots, 40\}` only.
 * **Cutoffs** :math:`\omega_c \in (0, 1)` — normalised cutoff frequency.
 
 For each grid point :math:`(N_z, \omega_c)`:
@@ -178,14 +182,13 @@ see :math:`20\%`–:math:`73\%`.
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``.npz`` checkpoints committed to the repository were computed with
-the per-iteration estimator and remain canonical — they are
-**never regenerated**.  The Benettin-K kernel applies only to new
-computations.  Its deviation from the per-iteration result is bounded
-by the early-stop tolerance :math:`\varepsilon` except in marginal cells
-where :math:`|\lambda_{\max}| < 3 \times 10^{-3}`; in that regime the
-binary verdict (chaotic vs. periodic) is inherently unstable under
-both estimators.
+The ``.npz`` checkpoints committed to the repository were regenerated
+with the current kernel (the cancellation-free positive fixed point and
+the Benettin-K estimator) and are canonical: the regression test
+``tests/test_sweep_regressions.py::test_mode1_bitexact_baseline``
+reproduces them **bit for bit** with ``fallback_mode=1``.  A change that
+breaks this equality is a regression, and the checkpoints must then be
+regenerated deliberately with ``tools/regenerate_sweeps.py``.
 
 Divergence handling (Opção B)
 -----------------------------
@@ -213,15 +216,18 @@ Reproducibility
 
 Every sweep is **deterministic** given the same seed:
 
-1. The user seed (``seed`` kwarg) is expanded via
-   :class:`numpy.random.SeedSequence` into per‑worker sub‑seeds.
+1. The user seed (``seed`` kwarg) initialises a single
+   :func:`numpy.random.default_rng` generator; there are no per‑worker
+   sub‑seeds.
 2. Initial‑condition perturbations are drawn on the Python side
    (before entering Numba).
-3. The Numba kernel uses no random state , only deterministic arithmetic.
+3. The Numba kernel consumes those pre‑drawn perturbations and holds no
+   random state of its own, only deterministic arithmetic.
 
 Running the same sweep twice with the same seed produces byte‑identical
-``.npz`` files.  This is critical for scientific reproducibility and
-for the CI pipeline (the smoke test checks exact file size equality).
+``.npz`` files.  This is critical for scientific reproducibility; the CI
+pipeline only smoke-tests the orchestration with
+``chaotic-pfc run all --quick-sweep``.
 
 Known limitations
 -----------------

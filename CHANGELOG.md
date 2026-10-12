@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
+  with `1` (full-spectrum recomputation of marginal cells) as the default.
+- Standalone paper tooling under `tools/`: `regenerate_sweeps.py`,
+  `compare_sweeps.py`, `paper_numbers.py`, `audit_paper.py`,
+  `jcis_figures.py`, and `report_sweep_stats.py`, documented in the README.
+- `tools/jcis_figures.py` generators for the JCIS classification maps,
+  chaotic-density map, Kaiser-β curve, Hénon signals and communication
+  figures, including the loop-filter exponent quoted in Fig. 5(b).
+- Regression and validation tests for the sweep kernel: the partial-divergence
+  rule, the non-finite Hann/Bartlett filters at `N_s = 2`, the adaptive
+  early-stop streak, and the frequency response of the designed filters.
+
+### Changed
+- The Lyapunov sweep kernel now inlines the cancellation-free positive fixed
+  point (`2α / ((1−β) + √((1−β)² + 4αG²))`), stable as `G → 0`.
+- The 124 versioned sweeps in `data/sweeps/` were regenerated with the current
+  kernel; `tests/test_sweep_regressions.py` reproduces them bit for bit with
+  Numba and `fallback_mode=1`.
+- `tools/audit_paper.py` shares the `Decimal`/`ROUND_HALF_UP` percentage
+  rounding of `tools/paper_numbers.py` and counts `\subref` as a reference.
+
+### Fixed
+- `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the
+  manuscript sources, so the committed `jcis/article.pdf` is reproducible
+  across unrelated commits.
+
 ## [0.8.0] - 2026-09-13
 
 ### Added

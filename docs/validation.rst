@@ -98,7 +98,10 @@ Known limitations
 
 * **Finite-time convergence.**  Published Lyapunov values correspond to
   the asymptotic limit :math:`N_{\text{itera}} \to \infty`.  Our code
-  with :math:`N_{\text{itera}} = 2\,000` (the default for sweeps)
+  with :math:`N_{\text{itera}} = 2\,000` (the default of
+  :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, not of the
+  order–cutoff sweeps, which use :math:`N_{\text{burn}} = 500` and
+  :math:`N_{\text{map}} = 3\,000`)
   produces :math:`\lambda_1 \approx 0.408` — a 2.4 % deviation from
   Wolf.  The error decreases to 0.10 % at :math:`20\,000` iterations.
   The default iteration count is a conscious trade-off between sweep
