@@ -7,41 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking
+- The standalone scripts in `tools/` are replaced by CLI subcommands:
+  `tools/paper_numbers.py` and `tools/audit_paper.py` by
+  `chaotic-pfc paper numbers|audit`; `tools/regenerate_sweeps.py`,
+  `compare_sweeps.py` and `report_sweep_stats.py` by
+  `chaotic-pfc sweeps regenerate|compare|stats`; and `tools/jcis_figures.py`
+  by `chaotic-pfc paper figures`. Only `tools/check_pt_br_translations.sh`
+  (documentation tooling) remains in `tools/`.
+- The JCIS manuscript moved from `jcis/` to `articles/jcis/`; the frozen
+  VIII SIMAC record now lives in `articles/simac/`. The `make` targets keep
+  their names (`paper-pdf`, `paper-diff`, `check-paper`, `jcis-figures`).
+- `chaotic-pfc run sweep beta-sweep` writes to `data/sweeps/kaiser/` (the
+  layout `run all` and the analysis tools read) instead of `data/sweeps/beta/`.
+
 ### Added
-- `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
-  with `1` (full-spectrum recomputation of marginal cells) as the default.
-- The manuscript numbers (`paper_numbers.py`) and the source audit
-  (`audit_paper.py`) moved from `tools/` into the package and are now driven
-  from the CLI as `chaotic-pfc paper numbers|audit`, documented in the README.
-- The sweep maintenance scripts (`regenerate_sweeps.py`, `compare_sweeps.py`,
-  `report_sweep_stats.py`) moved into the package and are exposed as
-  `chaotic-pfc sweeps regenerate|compare|stats`.
-- The JCIS figure generators (`jcis_figures.py`) moved into the package and are
-  exposed as `chaotic-pfc paper figures`; the JCIS classification panels are
-  now defined once (`chaotic_pfc.paper.figures`) and shared with
-  `chaotic-pfc run paper-figures`.
-- `tools/jcis_figures.py` generators for the JCIS classification maps,
-  chaotic-density map, Kaiser-β curve, Hénon signals and communication
-  figures, including the loop-filter exponent quoted in Fig. 5(b).
+- `chaotic-pfc paper numbers|audit|figures` and
+  `chaotic-pfc sweeps regenerate|compare|stats`: the manuscript and sweep
+  tooling now lives in the package (`chaotic_pfc.paper`, `chaotic_pfc.sweeps`)
+  and is driven from the CLI; the DOI whitelist ships as package data and is
+  read with `importlib.resources`.
+- `data/sweeps/SHA256SUMS`, the sha256 of the 124 checkpoints, rewritten by
+  `chaotic-pfc sweeps regenerate` and verified by an always-on test.
+- `articles/`: the JCIS manuscript under `articles/jcis/` and the frozen
+  VIII SIMAC record (its PDFs, the reconstructed `.docx` files, and an errata)
+  under `articles/simac/`.
+- CI: a `paper-check` job (`make check-paper` on push and PR), a weekly
+  `linkcheck` workflow, and a `build` job whose wheel/sdist is reused by every
+  other job and by the release.
+- `make setup` (venv + extras + pre-commit hooks + optional-tool checks) and
+  `make install` aligned with the README.
+- `.editorconfig` and a pull-request template.
 - Regression and validation tests for the sweep kernel: the partial-divergence
   rule, the non-finite Hann/Bartlett filters at `N_s = 2`, the adaptive
   early-stop streak, and the frequency response of the designed filters.
-- CI job (`baseline`) that runs the bit-exact sweep regression
-  (`CHAOTIC_PFC_RUN_BASELINE=1`) with Numba on every push and pull request.
+- `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
+  with `1` (full-spectrum recomputation of marginal cells) as the default.
+- `tests/test_cli_paper_sweeps.py` covering the new CLI groups.
 
 ### Changed
+- `chaotic_pfc.analysis.sweep_plotting` and `chaotic_pfc.analysis.stats` were
+  split into private subpackages (`sweep_plotting/`, `stats/`) behind unchanged
+  facades; `tests/test_sweep.py` was split by subject.
+- The `release` job now runs only after `lint`, `typecheck`, `test` and
+  `baseline` pass on the tag (those jobs no longer skip tags), and it publishes
+  the artefact built once by `build`.
+- `chaotic-pfc.paper.audit` and `chaotic-pfc.paper.numbers` import each other
+  normally (no more `tools/` sibling loading); the JCIS classification panels
+  are defined once and shared with `chaotic-pfc run paper-figures`.
+- `make paper-pdf`'s `SOURCE_DATE_EPOCH` is stable across the
+  `jcis/` → `articles/jcis/` move, so the committed PDF is unchanged.
 - The Lyapunov sweep kernel now inlines the cancellation-free positive fixed
   point (`2α / ((1−β) + √((1−β)² + 4αG²))`), stable as `G → 0`.
 - The 124 versioned sweeps in `data/sweeps/` were regenerated with the current
   kernel; `tests/test_sweep_regressions.py` reproduces them bit for bit with
   Numba and `fallback_mode=1`.
-- `chaotic_pfc.paper.audit` shares the `Decimal`/`ROUND_HALF_UP` percentage
-  rounding of `chaotic_pfc.paper.numbers` and counts `\subref` as a reference.
 
 ### Fixed
 - `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the
-  manuscript sources, so the committed `articles/jcis/article.pdf` is reproducible
-  across unrelated commits.
+  manuscript sources, so the committed `articles/jcis/article.pdf` is
+  reproducible across unrelated commits.
 
 ## [0.8.0] - 2026-09-13
 

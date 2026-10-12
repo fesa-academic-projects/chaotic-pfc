@@ -42,6 +42,7 @@ def write_manifest(root: Path) -> Path:
 
 
 def regenerate(src: Path, dst: Path) -> None:
+    """Recompute every checkpoint under ``src`` into ``dst``."""
     paths = sorted(src.rglob("variables_lyapunov.npz"))
     if not paths:
         raise FileNotFoundError(f"no checkpoints under {src}")

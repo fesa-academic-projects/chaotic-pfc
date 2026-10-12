@@ -31,6 +31,7 @@ from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
 from importlib import resources
 from pathlib import Path
+from typing import Any
 
 from chaotic_pfc.paper.numbers import pct
 
@@ -145,7 +146,7 @@ class BibEntry:
 
 
 def _strip_comments(text: str) -> str:
-    """Blank out LaTeX/BibTeX percent comments while preserving offsets.
+    r"""Blank out LaTeX/BibTeX percent comments while preserving offsets.
 
     An escaped percent (``\\%``) is kept. Newlines are preserved so that
     character offsets still map to line numbers.
@@ -191,7 +192,7 @@ def _read_braced(text: str, start: int) -> tuple[str, int]:
 
 
 def _find_braced_commands(text: str, command: str) -> list[tuple[str, int]]:
-    """Find every ``\\command{...}`` and return (content, position) pairs.
+    r"""Find every ``\\command{...}`` and return (content, position) pairs.
 
     An optional ``[...]`` argument between the command and the mandatory
     braces is skipped, so ``\\title[short]{Long}`` yields ``Long``.
@@ -219,7 +220,7 @@ def _normalise_text(text: str) -> str:
 
 
 def _extract_path_commands(text: str) -> list[tuple[str, str, int]]:
-    """Return (kind, raw_path, line) for every path-loading command.
+    r"""Return (kind, raw_path, line) for every path-loading command.
 
     Kinds are ``includegraphics``, ``includesvg``, ``input`` (for
     ``\\input``/``\\include``) and ``bibliography``.
@@ -441,6 +442,7 @@ def check_structure(tex_text: str, tex_dir: Path) -> CheckResult:
 
     resolved = 0
     for kind, name, line in targets:
+        suffixes: tuple[str, ...]
         if kind in ("includegraphics", "includesvg"):
             suffixes = _GRAPHICS_SUFFIXES
         elif kind == "bibliography":
@@ -528,7 +530,7 @@ def check_figure_language(
     *,
     all_figures: bool,
 ) -> CheckResult:
-    """C5: Portuguese terms in the figures the manuscript inserts.
+    r"""C5: Portuguese terms in the figures the manuscript inserts.
 
     Both ``\\includegraphics`` and ``\\includesvg`` inclusions are checked.
     Raster inclusions are verified through a sibling vector source
@@ -546,7 +548,7 @@ def check_figure_language(
         if target is None:
             continue  # already reported by C3
         if target.suffix.lower() == ".svg":
-            source = target
+            source: Path | None = target
         else:
             sibling = target.with_suffix(".svg")
             source = sibling if sibling.is_file() else None
@@ -699,7 +701,7 @@ def _parse_ranking_rows(tabular: str) -> tuple[list[dict], list[str]]:
         lambda_1 = _first_float(cells[5])
         ci = _parse_ci(cells[6])
         rho_fin = _first_float(cells[4].replace("%", ""))
-        if None in (nc, lambda_1, ci, rho_fin):
+        if nc is None or lambda_1 is None or ci is None or rho_fin is None:
             warnings.append(f"unparsed tab:ranking row: {' '.join(chunk.split())[:90]}")
             continue
         rows.append(
@@ -880,7 +882,7 @@ def check_config() -> CheckResult:
                 )
             )
             continue
-        value: object = config
+        value: Any = config
         for attr in path:
             value = getattr(value, attr, None)
             if value is None:
@@ -951,6 +953,7 @@ def _read_text(path: str, findings: list[Finding]) -> str | None:
 
 
 def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
+    """Run every manuscript check and return the results by code."""
     results: dict[str, CheckResult] = {}
     input_findings: list[Finding] = []
     tex = _read_text(args.tex, input_findings)

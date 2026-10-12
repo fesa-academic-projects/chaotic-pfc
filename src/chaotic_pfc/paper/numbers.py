@@ -71,6 +71,7 @@ def pct(n: int, d: int, places: int) -> str:
 
 
 def load_all(root: Path):
+    """Load every sweep checkpoint under ``root``."""
     paths = sorted(root.rglob("variables_lyapunov.npz"))
     if not paths:
         raise FileNotFoundError(f"no checkpoints under {root}")
@@ -78,6 +79,7 @@ def load_all(root: Path):
 
 
 def counts(sr) -> dict:
+    """Return the chaotic/periodic/divergent counts of a sweep."""
     h = np.asarray(sr.h, dtype=np.float64)
     nc = int(np.count_nonzero(h > 0))
     nper = int(np.count_nonzero((h <= 0) & ~np.isnan(h)))
@@ -86,15 +88,18 @@ def counts(sr) -> dict:
 
 
 def chaotic_values(sr) -> np.ndarray:
+    """Return the λ_max values of the chaotic grid points."""
     h = np.asarray(sr.h, dtype=np.float64)
     return h[h > 0]
 
 
 def is_kaiser(sr) -> bool:
+    """Return whether the sweep used the Kaiser window."""
     return sr.window == "kaiser"
 
 
 def fixed_of(recs, ft: str) -> dict:
+    """Return the fixed-window sweeps for a filter type."""
     out = {}
     for w, _name, _ in FIXED:
         match = [r for r in recs if r.filter_type == ft and r.window == w]
@@ -105,6 +110,7 @@ def fixed_of(recs, ft: str) -> dict:
 
 
 def best_kaiser(recs, ft: str):
+    """Return the best Kaiser-β sweep for a filter type."""
     cands = [r for r in recs if r.filter_type == ft and is_kaiser(r)]
     if len(cands) != 25:
         raise ValueError(f"expected 25 Kaiser sweeps for {ft}, found {len(cands)}")
@@ -112,6 +118,7 @@ def best_kaiser(recs, ft: str):
 
 
 def kaiser_label(sr) -> str:
+    """Format the Kaiser-β label used in the tables."""
     return f"Kaiser ($\\beta_K={float(sr.metadata['kaiser_beta']):.1f}$)"
 
 
@@ -148,6 +155,7 @@ def table2_row(row) -> dict:
 
 
 def section_recalc(recs, out: dict) -> None:
+    """Fill the ``RECALC.*`` labels (fallback recomputation)."""
     total = sum(counts(r)["n"] for r in recs)
     if all("n_fallback" in r.metadata for r in recs):
         fb = sum(int(r.metadata["n_fallback"]) for r in recs)
@@ -174,8 +182,9 @@ def section_recalc(recs, out: dict) -> None:
 
 
 def section_table2_table3(recs, out: dict) -> dict:
+    """Fill the ``T2.*``/``T3.*`` labels and return the best rows."""
     best = {}
-    all_rows = []
+    all_rows: list = []
     for ft in TYPES:
         rows = sorted(candidates(recs, ft), key=lambda r: (-r["nc"], r["name"]))
         best[ft] = rows
@@ -201,6 +210,8 @@ def section_table2_table3(recs, out: dict) -> dict:
 
 
 def spearman_exact(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
+    """Return the Spearman correlation and its exact p-value."""
+
     def rank_corr(a, b):
         ra = _rankdata(a)
         rb = _rankdata(b)
@@ -224,6 +235,7 @@ def _rankdata(a: np.ndarray) -> np.ndarray:
 
 
 def section_spearman(recs, out: dict) -> None:
+    """Fill the ``SPEARMAN.*`` labels."""
     db = np.array([d for _, _, d in FIXED], dtype=np.float64)
     for ft in TYPES:
         fx = fixed_of(recs, ft)
@@ -233,6 +245,7 @@ def section_spearman(recs, out: dict) -> None:
 
 
 def section_totals(recs, out: dict) -> None:
+    """Fill the ``TOTALS.*`` labels."""
     tot_c = tot_p = tot_d = 0
     for ft in TYPES:
         c = c_p = c_d = n_all = 0
@@ -257,6 +270,7 @@ def section_totals(recs, out: dict) -> None:
 
 
 def section_maps(best: dict, out: dict) -> None:
+    """Fill the ``MAPS.*`` labels."""
     lp = best["lowpass"][0]["sr"]
     h = np.asarray(lp.h, dtype=np.float64)
     wc = np.asarray(lp.cutoffs, dtype=np.float64)  # already omega_c / pi
@@ -305,6 +319,7 @@ def section_maps(best: dict, out: dict) -> None:
 
 
 def section_density(root: Path, out: dict) -> None:
+    """Fill the ``DENSITY.*`` labels from the density table."""
     from chaotic_pfc.analysis.sweep_plotting import chaotic_density_norm_table
 
     nz, wc, percent, n_cont = chaotic_density_norm_table(root)
@@ -341,6 +356,7 @@ def section_density(root: Path, out: dict) -> None:
 
 
 def section_concordance(recs, out: dict) -> None:
+    """Fill the ``CONCORDANCE.*`` labels."""
     for ft in TYPES:
         fx = fixed_of(recs, ft)
         arrs = [np.asarray(fx[w].h, dtype=np.float64) for w, _, _ in FIXED]
@@ -359,6 +375,7 @@ def section_concordance(recs, out: dict) -> None:
 
 
 def section_kaiser(recs, out: dict) -> None:
+    """Fill the ``KAISER.*`` labels."""
     for ft in TYPES:
         cands = sorted(
             (
@@ -397,6 +414,8 @@ def _kaiser_pairs(recs, ft):
 
 
 def section_robustness(recs, best: dict, out: dict) -> None:
+    """Fill the ``ROBUST.*`` labels."""
+
     def frac(sr, fn):
         h = np.asarray(sr.h, dtype=np.float64)
         s = np.asarray(sr.h_std, dtype=np.float64)
@@ -439,6 +458,7 @@ def section_robustness(recs, best: dict, out: dict) -> None:
 
 
 def section_cost(recs, out: dict) -> None:
+    """Fill the ``COST.*`` labels."""
     total = 0.0
     for r in recs:
         it = np.asarray(r.n_iters_used, dtype=np.float64)
@@ -464,7 +484,7 @@ def _abs_gain(sr) -> np.ndarray:
 
 
 def _gain_band_table(recs, filter_type: str, out: dict, key: str) -> None:
-    """Counts of |G| >= 0.1 points per N_z x (omega_c/pi band)."""
+    """Count |G| >= 0.1 points per N_z x (omega_c/pi band)."""
     nz_vals = sorted(
         {int(o) - 1 for r in recs if r.filter_type == filter_type for o in np.asarray(r.orders)}
     )
@@ -535,6 +555,7 @@ def section_gain(recs, out: dict) -> None:
 
 
 def seed_runs(root: Path, best: dict) -> dict:
+    """Fill the ``SEED.*`` labels by rerunning with several seeds."""
     from chaotic_pfc.analysis.sweep import run_sweep
 
     cache = CACHE / "seeds"
@@ -635,6 +656,7 @@ def validation_ns1() -> dict:
 
 
 def pct_float(num: float, den: float, places: int) -> str:
+    """Format ``num/den`` as a percentage string."""
     q = Decimal(1).scaleb(-places)
     return str(
         (Decimal(repr(100.0 * num)) / Decimal(repr(den))).quantize(q, rounding=ROUND_HALF_UP)
@@ -642,6 +664,7 @@ def pct_float(num: float, den: float, places: int) -> str:
 
 
 def machine() -> str:
+    """Return the CPU model string."""
     model = "unknown"
     try:
         for line in Path("/proc/cpuinfo").read_text().splitlines():
@@ -657,6 +680,7 @@ def machine() -> str:
 
 
 def compute(root: Path, extras: bool) -> dict:
+    """Compute every manuscript quantity and return the label mapping."""
     recs = load_all(root)
     out: dict = {}
     section_recalc(recs, out)
@@ -695,6 +719,7 @@ def compute(root: Path, extras: bool) -> dict:
 
 
 def compare(old: dict, new: dict) -> None:
+    """Print a line-by-line diff of two ``compute`` outputs."""
     keys = list(dict.fromkeys(list(new.keys()) + list(old.keys())))
     print(f"{'rótulo':<36} | antigo | novo | mudou?")
     for k in keys:
@@ -714,11 +739,13 @@ SENS_THRESHOLDS = (0.0, 1e-3, 5e-3)
 
 
 def counts_at(sr, thr: float) -> int:
+    """Return the number of points above ``thr``."""
     h = np.asarray(sr.h, dtype=np.float64)
     return int(np.count_nonzero(h > thr))
 
 
 def candidates_at(recs, ft: str, thr: float) -> list:
+    """Return the fixed-window rows above ``thr``."""
     fx = fixed_of(recs, ft)
     rows = [
         {"name": name, "sr": fx[w], "db": db, "nc": counts_at(fx[w], thr)} for w, name, db in FIXED
@@ -730,9 +757,10 @@ def candidates_at(recs, ft: str, thr: float) -> list:
 
 
 def sensitivity_report(recs) -> str:
-    per = {}
+    """Return the threshold sensitivity report as text."""
+    per: dict = {}
     for thr in SENS_THRESHOLDS:
-        allrows = []
+        allrows: list = []
         t2 = {}
         sp = {}
         for ft in TYPES:
@@ -780,11 +808,11 @@ def sensitivity_report(recs) -> str:
         lines.append("")
     lines += ["(c) Spearman r_s and exact p per type (6 fixed windows)", ""]
     for ft in TYPES:
-        cells = [
+        sp_cells = [
             f"thr={thr:g}: r_s={per[thr]['sp'][ft][0]:+.3f} p={per[thr]['sp'][ft][1]:.4f}"
             for thr in SENS_THRESHOLDS
         ]
-        lines.append(f"{ft:<9} " + " | ".join(cells))
+        lines.append(f"{ft:<9} " + " | ".join(sp_cells))
     return "\n".join(lines)
 
 

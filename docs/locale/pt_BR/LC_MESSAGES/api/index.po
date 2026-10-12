@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-12 20:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -63,7 +63,6 @@ msgstr ""
 "Hénon map variants used as chaotic oscillators in the communication "
 "system."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`"
@@ -76,7 +75,6 @@ msgstr ""
 "Generators for the information-bearing messages of the communication "
 "pipeline."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
 msgstr ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
@@ -84,7 +82,6 @@ msgstr ":py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`"
 #: ../../api/index.rst:40:<autosummary>:1
 msgid "Lyapunov exponent computation for the Hénon and pole-filtered maps."
 msgstr "Lyapunov exponent computation for the Hénon and pole-filtered maps."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`"
@@ -94,7 +91,6 @@ msgstr ":py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`"
 msgid "Power-spectral-density estimation utilities used by the plotting layer."
 msgstr "Power-spectral-density estimation utilities used by the plotting layer."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
 msgstr ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
@@ -102,7 +98,6 @@ msgstr ":py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`"
 #: ../../api/index.rst:40:<autosummary>:1
 msgid "Chaos-based modulator implementing the transmitter protocol."
 msgstr "Chaos-based modulator implementing the transmitter protocol."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`"
@@ -112,7 +107,6 @@ msgstr ":py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`"
 msgid "Transmission-channel models between the chaotic transmitter and receiver."
 msgstr "Transmission-channel models between the chaotic transmitter and receiver."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
 msgstr ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
@@ -120,7 +114,6 @@ msgstr ":py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`"
 #: ../../api/index.rst:40:<autosummary>:1
 msgid "Chaos-synchronisation demodulator implementing the receiver protocol."
 msgstr "Chaos-synchronisation demodulator implementing the receiver protocol."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.comms.protocols <chaotic_pfc.comms.protocols>`"
@@ -134,11 +127,9 @@ msgstr "Contratos estruturais para o pipeline de comunicação."
 msgid ":py:obj:`chaotic_pfc.comms.metrics <chaotic_pfc.comms.metrics>`"
 msgstr ":py:obj:`chaotic_pfc.comms.metrics <chaotic_pfc.comms.metrics>`"
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid "Error metrics for the chaotic communication experiments."
 msgstr "Error metrics for the chaotic communication experiments."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.analysis.sweep <chaotic_pfc.analysis.sweep>`"
@@ -151,7 +142,6 @@ msgid ""
 msgstr ""
 "Parameter-sweep computation of Lyapunov exponents for the filtered Henon "
 "map."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.analysis.stats <chaotic_pfc.analysis.stats>`"
@@ -189,7 +179,6 @@ msgstr ""
 "Figures for the Lyapunov classification maps of "
 ":mod:`chaotic_pfc.analysis.sweep`."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ""
 ":py:obj:`chaotic_pfc.analysis.sweep_plotting_3d "
@@ -202,7 +191,6 @@ msgstr ""
 msgid "Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps."
 msgstr "Plotly-based 3-D visualisation of a stack of Kaiser β-sweeps."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
 msgstr ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
@@ -210,7 +198,6 @@ msgstr ":py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`"
 #: ../../api/index.rst:40:<autosummary>:1
 msgid "Publication-quality SVG figures with LaTeX-style labels."
 msgstr "Publication-quality SVG figures with LaTeX-style labels."
-
 
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.config <chaotic_pfc.config>`"
@@ -220,7 +207,6 @@ msgstr ":py:obj:`chaotic_pfc.config <chaotic_pfc.config>`"
 msgid "Centralised configuration for all experiments."
 msgstr "Centralised configuration for all experiments."
 
-
 #: ../../api/index.rst:40:<autosummary>:1
 msgid ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
 msgstr ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
@@ -229,11 +215,9 @@ msgstr ":py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`"
 msgid "Unified command-line interface for the chaotic_pfc package."
 msgstr "Unified command-line interface for the chaotic_pfc package."
 
-
 #: ../../api/index.rst:42
 msgid "Public API"
 msgstr "Public API"
-
 
 #: ../../api/index.rst:44
 msgid ""
@@ -245,43 +229,51 @@ msgstr ""
 "``__all__`` list: 75 symbols).  Each symbol is documented once, in its "
 "defining submodule above; import it directly from the package root::"
 
+#: ../../api/index.rst:50
+msgid ""
+"Two modules are repository tooling rather than part of the library API: "
+"``chaotic_pfc.paper`` (manuscript numbers, source audit and figure "
+"generation) and ``chaotic_pfc.sweeps`` (versioned-checkpoint "
+"maintenance). Their stable interface is the command line — ``chaotic-pfc "
+"paper …`` and ``chaotic-pfc sweeps …`` — and their Python functions may "
+"change between releases without notice."
+msgstr ""
+"Dois módulos são ferramentas do repositório, e não parte da API da "
+"biblioteca: ``chaotic_pfc.paper`` (números do manuscrito, auditoria das "
+"fontes e geração de figuras) e ``chaotic_pfc.sweeps`` (manutenção dos "
+"checkpoints versionados). A interface estável deles é a linha de comando — "
+"``chaotic-pfc paper …`` e ``chaotic-pfc sweeps …`` — e suas funções Python "
+"podem mudar entre versões sem aviso."
 
-#: ../../api/index.rst:51
+#: ../../api/index.rst:58
 msgid "Sweep catalogue"
 msgstr "Sweep catalogue"
 
-
-#: ../../api/index.rst:53
+#: ../../api/index.rst:60
 msgid "The sweep package publishes three configuration constants:"
 msgstr "The sweep package publishes three configuration constants:"
 
-
-#: ../../api/index.rst:58
+#: ../../api/index.rst:65
 msgid "Constant"
 msgstr "Constant"
 
-
-#: ../../api/index.rst:59
+#: ../../api/index.rst:66
 msgid "Meaning"
 msgstr "Meaning"
 
-
-#: ../../api/index.rst:60
+#: ../../api/index.rst:67
 msgid "Values"
 msgstr "Values"
 
-
-#: ../../api/index.rst:61
+#: ../../api/index.rst:68
 msgid "``WINDOWS``"
 msgstr "``WINDOWS``"
 
-
-#: ../../api/index.rst:62
+#: ../../api/index.rst:69
 msgid "Supported FIR window keys (lower-case)"
 msgstr "Supported FIR window keys (lower-case)"
 
-
-#: ../../api/index.rst:63
+#: ../../api/index.rst:70
 msgid ""
 "``hamming``, ``hann``, ``blackman``, ``kaiser``, ``blackmanharris``, "
 "``boxcar``, ``bartlett``"
@@ -289,56 +281,45 @@ msgstr ""
 "``hamming``, ``hann``, ``blackman``, ``kaiser``, ``blackmanharris``, "
 "``boxcar``, ``bartlett``"
 
-
-#: ../../api/index.rst:64
+#: ../../api/index.rst:71
 msgid "``FILTER_TYPES``"
 msgstr "``FILTER_TYPES``"
 
-
-#: ../../api/index.rst:65
+#: ../../api/index.rst:72
 msgid "Supported pass-zero configurations"
 msgstr "Supported pass-zero configurations"
 
-
-#: ../../api/index.rst:66
+#: ../../api/index.rst:73
 msgid "``lowpass``, ``highpass``, ``bandpass``, ``bandstop``"
 msgstr "``lowpass``, ``highpass``, ``bandpass``, ``bandstop``"
 
-
-#: ../../api/index.rst:67
+#: ../../api/index.rst:74
 msgid "``WINDOW_DISPLAY_NAMES``"
 msgstr "``WINDOW_DISPLAY_NAMES``"
 
-
-#: ../../api/index.rst:68
+#: ../../api/index.rst:75
 msgid "Human-readable display name for each window key"
 msgstr "Human-readable display name for each window key"
 
-
-#: ../../api/index.rst:69
+#: ../../api/index.rst:76
 msgid "``hamming`` → ``Hamming``, …"
 msgstr "``hamming`` → ``Hamming``, …"
 
-
-#: ../../api/index.rst:71
+#: ../../api/index.rst:78
 msgid "Their canonical values, kept in sync with the code:"
 msgstr "Their canonical values, kept in sync with the code:"
-
 
 #: chaotic_pfc.analysis.sweep._types.WINDOWS:1 of
 msgid "Supported FIR window keys (lower-case)."
 msgstr "Supported FIR window keys (lower-case)."
 
-
 #: chaotic_pfc.analysis.sweep._types.FILTER_TYPES:1 of
 msgid "Supported filter (pass-zero) configurations."
 msgstr "Supported filter (pass-zero) configurations."
 
-
 #: chaotic_pfc.analysis.sweep._types.WINDOW_DISPLAY_NAMES:1 of
 msgid "Human-readable display names for each :data:`WINDOWS` key."
 msgstr "Human-readable display names for each :data:`WINDOWS` key."
-
 
 #~ msgid ""
 #~ "transmitter.py  Chaos-based modulator. "

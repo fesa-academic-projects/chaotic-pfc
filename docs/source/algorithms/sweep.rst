@@ -188,7 +188,7 @@ the Benettin-K estimator) and are canonical: the regression test
 ``tests/test_sweep_regressions.py::test_mode1_bitexact_baseline``
 reproduces them **bit for bit** with ``fallback_mode=1``.  A change that
 breaks this equality is a regression, and the checkpoints must then be
-regenerated deliberately with ``tools/regenerate_sweeps.py``.
+regenerated deliberately with ``chaotic-pfc sweeps regenerate``.
 
 .. _backend-dependence:
 

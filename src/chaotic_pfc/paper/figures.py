@@ -106,6 +106,7 @@ def _first_index(mask: np.ndarray) -> int | None:
 
 
 def fig_henon_signals(out_dir: Path) -> None:
+    """Write the Hénon signal panels."""
     n_steps = 99
     rows = {}
     for label, alpha in (("a", 1.4), ("b", 0.9)):
@@ -161,6 +162,7 @@ def fig_henon_signals(out_dir: Path) -> None:
 
 
 def fig_comm_bandlimited(out_dir: Path) -> None:
+    """Write the band-limited FIR channel figure."""
     comm = CFG.comm
     a, b, mu = comm.henon.a, comm.henon.b, comm.mu
     tr = comm.transient
@@ -268,6 +270,7 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
 
 
 def fig_kaiser_beta(out_dir: Path) -> None:
+    """Write the Kaiser-β Lyapunov curve."""
     fig, ax = plt.subplots(figsize=(JCIS_W, 2.6))
     markers = {"lowpass": "o", "highpass": "s", "bandpass": "^", "bandstop": "D"}
     for ft in FILTER_TYPES:
@@ -293,7 +296,7 @@ def fig_kaiser_beta(out_dir: Path) -> None:
 
 
 def fig_chaotic_density_norm(out_dir: Path) -> None:
-
+    """Write the normalised chaotic-density map."""
     Nz, cutoffs, percent, n_containing = chaotic_density_norm_table(DATA_DIR)
     for parity, mask in (("odd", Nz % 2 == 1), ("even", Nz % 2 == 0)):
         sub = np.where(mask[:, None], percent, -np.inf)
@@ -322,6 +325,7 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
 
 
 def fig_comm_ideal(out_dir: Path) -> None:
+    """Write the ideal-channel communication figure."""
     comm, spec = CFG.comm, CFG.spectral
     a, b, mu = comm.henon.a, comm.henon.b, comm.mu
     tr = comm.transient
@@ -382,11 +386,13 @@ def fig_comm_ideal(out_dir: Path) -> None:
 
 
 def fig_classification(out_dir: Path) -> None:
+    """Write the four JCIS classification maps."""
     from chaotic_pfc.analysis.sweep_plotting import plot_classification_interleaved
 
     for k, (name, stem) in enumerate(JCIS_FIGURES):
         sr = load_sweep(DATA_DIR / name / "variables_lyapunov.npz")
-        fig = plot_classification_interleaved(sr, **{**JCIS_FIG, "legend": k == 0})
+        opts: _PanelOptions = {**JCIS_FIG, "legend": k == 0}
+        fig = plot_classification_interleaved(sr, **opts)
         _save(fig, out_dir / f"{stem}.svg")
 
 

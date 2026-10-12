@@ -49,6 +49,12 @@ date-released: "2026-06-01"
 
 Commit all three with a message like `release: bump version to X.Y.Z`.
 
+Before tagging, confirm the manuscript and data checks are green with the CLI
+behind the unchanged `make` targets: `make check-paper` (runs
+`chaotic-pfc paper audit`), `make jcis-figures` (runs `chaotic-pfc paper
+figures`) leaving `git status` clean, and the sweep manifest with
+`chaotic-pfc sweeps regenerate --manifest-only` plus the test suite.
+
 ### 3. Tag the release
 
 Create an **annotated and signed** tag (`-s`, not `-a`) so it can be verified

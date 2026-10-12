@@ -47,6 +47,13 @@ defining submodule above; import it directly from the package root::
 
     from chaotic_pfc import run_sweep, henon_standard, fir_channel
 
+Two modules are repository tooling rather than part of the library API:
+``chaotic_pfc.paper`` (manuscript numbers, source audit and figure generation)
+and ``chaotic_pfc.sweeps`` (versioned-checkpoint maintenance). Their stable
+interface is the command line — ``chaotic-pfc paper …`` and
+``chaotic-pfc sweeps …`` — and their Python functions may change between
+releases without notice.
+
 Sweep catalogue
 ---------------
 

@@ -19,6 +19,7 @@ from chaotic_pfc.analysis.sweep import load_sweep
 
 
 def classes(h: np.ndarray) -> np.ndarray:
+    """Return the discrete class label for each cell."""
     out = np.empty(h.shape, dtype="<U10")
     out[np.isnan(h)] = "divergent"
     out[~np.isnan(h) & (h > 0)] = "chaotic"
@@ -27,6 +28,7 @@ def classes(h: np.ndarray) -> np.ndarray:
 
 
 def compare(old_dir: Path, new_dir: Path) -> None:
+    """Print a file-by-file comparison of two sweep directories."""
     rel_paths = sorted(p.relative_to(old_dir) for p in old_dir.rglob("variables_lyapunov.npz"))
     totals: Counter = Counter()
     directions: Counter = Counter()

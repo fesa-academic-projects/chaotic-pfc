@@ -63,6 +63,7 @@ def _percentile(values: np.ndarray, q: float) -> float:
 
 
 def load_configs(sweep_dir: Path) -> list[dict]:
+    """Load the per-configuration statistics from the checkpoints."""
     configs: list[dict] = []
     for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         data = np.load(path, allow_pickle=True)
@@ -115,6 +116,7 @@ def _sort_key(config: dict):
 
 
 def print_table(configs: list[dict]) -> None:
+    """Print the per-configuration statistics table."""
     header = (
         f"{'filter':<9} {'window':<15} {'beta':>5} {'N_grid':>6} {'N_chaotic':>9} "
         f"{'N_periodic':>10} {'N_divergent':>11} {'rho_fin%':>8} {'rho_abs%':>8} "
@@ -133,6 +135,7 @@ def print_table(configs: list[dict]) -> None:
 
 
 def write_csv(configs: list[dict], path: Path) -> None:
+    """Write the statistics table as CSV."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS, extrasaction="ignore")
@@ -179,6 +182,7 @@ def _match_config(row: dict, configs: list[dict]) -> dict | None:
 
 
 def print_by_filter(configs: list[dict]) -> None:
+    """Print the per-filter-type aggregation."""
     print("\naggregate divergent fraction by filter type (G ~ 1 vs G ~ 0 groups):")
     header = (
         f"{'filter':<9} {'N_grid':>7} {'N_chaotic':>9} {'N_periodic':>10} "
@@ -203,6 +207,7 @@ def print_by_filter(configs: list[dict]) -> None:
 
 
 def print_iters_distribution(configs: list[dict]) -> None:
+    """Print the distribution of iterations used."""
     print("\nn_iters_used distribution per configuration (sorted by fraction at the Nmap cap):")
     header = (
         f"{'filter':<9} {'window':<15} {'beta':>5} {'min':>6} {'q1':>6} {'med':>6} "
@@ -251,6 +256,7 @@ def _exact_spearman_p(x: np.ndarray, y: np.ndarray) -> tuple[float, int]:
 
 
 def report_attenuation_correlation(configs: list[dict]) -> None:
+    """Print the attenuation/exponent correlation."""
     print(
         "\nSpearman: Table I stopband attenuation versus measured coverage, "
         "fixed windows only (Kaiser excluded)."
@@ -291,6 +297,7 @@ def report_attenuation_correlation(configs: list[dict]) -> None:
 
 
 def cross_check(tex_path: Path, configs: list[dict]) -> dict:
+    """Cross-check the tables against the checkpoints."""
     best, ranking = _article_rows(tex_path)
     issues: list[str] = []
     matched = {"tab:best": 0, "tab:ranking": 0}
