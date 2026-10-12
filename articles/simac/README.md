@@ -22,7 +22,9 @@ verdade. O PDF não identificado foi originalmente depositado como
 Os números do SIMAC para a janela **Hamming** (pontos caóticos `Nc` / fração
 dos pontos de órbita limitada `rho_fin` / expoente médio `λ̄`) correspondem
 exatamente ao estado do repositório no commit **`f517e0a`** (*"chore(data):
-purge sentinel -1e30 from infected Lyapunov ensembles"*, 2026-05-23):
+purge sentinel -1e30 from infected Lyapunov ensembles"*, 2026-05-23). No
+momento da release, uma tag leve **`simac-viii`** será criada nesse commit
+para congelar o estado (a tag **não** é criada agora):
 
 | Cenário | Nc | rho_fin (%) | λ̄ |
 |---|---|---|---|
