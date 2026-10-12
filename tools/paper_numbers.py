@@ -618,6 +618,86 @@ def compare(old: dict, new: dict) -> None:
         print(f"{k} | {a} | {b} | {changed}")
 
 
+# ── threshold sensitivity (report only; does not feed the JSON) ─────────────
+
+SENS_THRESHOLDS = (0.0, 1e-3, 5e-3)
+
+
+def counts_at(sr, thr: float) -> int:
+    h = np.asarray(sr.h, dtype=np.float64)
+    return int(np.count_nonzero(h > thr))
+
+
+def candidates_at(recs, ft: str, thr: float) -> list:
+    fx = fixed_of(recs, ft)
+    rows = [
+        {"name": name, "sr": fx[w], "db": db, "nc": counts_at(fx[w], thr)} for w, name, db in FIXED
+    ]
+    cands = [r for r in recs if r.filter_type == ft and is_kaiser(r)]
+    kb = max(cands, key=lambda r: (counts_at(r, thr), -float(r.metadata["kaiser_beta"])))
+    rows.append({"name": kaiser_label(kb), "sr": kb, "db": None, "nc": counts_at(kb, thr)})
+    return rows
+
+
+def sensitivity_report(recs) -> str:
+    per = {}
+    for thr in SENS_THRESHOLDS:
+        allrows = []
+        t2 = {}
+        sp = {}
+        for ft in TYPES:
+            rows = candidates_at(recs, ft, thr)
+            t2[ft] = sorted(rows, key=lambda r: (-r["nc"], r["name"]))[:2]
+            allrows.extend((ft, r) for r in rows)
+            fixed = [r for r in rows if r["db"] is not None]
+            db = np.array([r["db"] for r in fixed], dtype=np.float64)
+            nc = np.array([r["nc"] for r in fixed], dtype=np.float64)
+            rs, p = spearman_exact(db, nc)
+            sp[ft] = (rs, p)
+        order = sorted(allrows, key=lambda q: (-q[1]["nc"], q[0], q[1]["name"]))
+        per[thr] = {"order": order, "t2": t2, "sp": sp}
+
+    def tag(ft, r):
+        return f"{ft} {r['name']}"
+
+    base = per[0.0]
+    lines = ["(a) Table III order (28 rows), Nc = count(h > thr)", ""]
+    header = f"{'rank':>4} | {'thr=0':<52} {'Nc':>5} | {'thr=1e-3':<52} {'Nc':>5} | {'thr=5e-3':<52} {'Nc':>5}"
+    lines.append(header)
+    changed = {thr: 0 for thr in SENS_THRESHOLDS}
+    for k in range(28):
+        cells = []
+        for thr in SENS_THRESHOLDS:
+            ft, r = per[thr]["order"][k]
+            cells.append((tag(ft, r), r["nc"]))
+            if (ft, r["name"]) != (base["order"][k][0], base["order"][k][1]["name"]):
+                changed[thr] += 1
+        mark = "" if all(c[0] == cells[0][0] for c in cells) else " *"
+        lines.append(
+            f"{k + 1:>4} | {cells[0][0]:<52} {cells[0][1]:>5} | {cells[1][0]:<52} {cells[1][1]:>5} | {cells[2][0]:<52} {cells[2][1]:>5}{mark}"
+        )
+    lines.append("")
+    lines.append(
+        "rows whose position differs from thr=0: "
+        + ", ".join(f"thr={thr:g}: {changed[thr]}" for thr in SENS_THRESHOLDS[1:])
+    )
+    lines += ["", "(b) Table II: the two lines of each type (by Nc, ties by name)", ""]
+    for ft in TYPES:
+        for thr in SENS_THRESHOLDS:
+            top = per[thr]["t2"][ft]
+            desc = " ; ".join(f"{r['name']} Nc={r['nc']}" for r in top)
+            lines.append(f"{ft:<9} thr={thr:<6g} {desc}")
+        lines.append("")
+    lines += ["(c) Spearman r_s and exact p per type (6 fixed windows)", ""]
+    for ft in TYPES:
+        cells = [
+            f"thr={thr:g}: r_s={per[thr]['sp'][ft][0]:+.3f} p={per[thr]['sp'][ft][1]:.4f}"
+            for thr in SENS_THRESHOLDS
+        ]
+        lines.append(f"{ft:<9} " + " | ".join(cells))
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--sweeps", type=Path)
@@ -626,11 +706,19 @@ def main() -> int:
         "--extras", action="store_true", help="also run seeds and the Ns=1 validation"
     )
     parser.add_argument("--compare", nargs=2, type=Path, metavar=("OLD", "NEW"))
+    parser.add_argument(
+        "--sensitivity", action="store_true", help="print the threshold sensitivity report"
+    )
     args = parser.parse_args()
     if args.compare:
         old = json.loads(args.compare[0].read_text())
         new = json.loads(args.compare[1].read_text())
         compare(old, new)
+        return 0
+    if args.sensitivity:
+        if not args.sweeps:
+            parser.error("--sweeps is required with --sensitivity")
+        print(sensitivity_report(load_all(args.sweeps)))
         return 0
     if not args.sweeps or not args.json:
         parser.error("--sweeps and --json are required unless --compare is given")
