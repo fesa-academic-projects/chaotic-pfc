@@ -190,6 +190,13 @@ def plot_attractor(
         If given, the figure is written to this path. The extension
         selects the format (``.svg``, ``.png``, etc.).
 
+    Notes
+    -----
+    The scatter artist is rasterized (``rasterized=True``) and the figure is
+    saved at 300 dpi, so the SVG keeps the axes and text as vectors while the
+    point cloud becomes a compact raster.  SVG output is deterministic: the
+    ``Date``/``Creator`` metadata are suppressed and a fixed hash salt is used.
+
     Returns
     -------
     Figure
@@ -197,14 +204,18 @@ def plot_attractor(
         inspect or further annotate it before showing / closing.
     """
     fig, ax = plt.subplots(figsize=(6, 5))
-    ax.plot(X, Y, ",", color=C["traj"], alpha=0.8, markersize=0.3)
+    ax.plot(X, Y, ".", color=C["traj"], alpha=0.8, markersize=0.5, rasterized=True)
     if title:
         ax.set_title(title, fontsize=13)
     ax.set_xlabel(xlabel, fontsize=12)
     ax.set_ylabel(ylabel, fontsize=12)
     _style(ax)
     fig.tight_layout()
-    _save(fig, save_path)
+    if save_path is not None and Path(save_path).suffix.lower() == ".svg":
+        plt.rcParams["svg.hashsalt"] = "chaotic-pfc-attractor"
+        _save(fig, save_path, dpi=300, metadata={"Date": None, "Creator": None})
+    else:
+        _save(fig, save_path, dpi=300)
     return fig
 
 
