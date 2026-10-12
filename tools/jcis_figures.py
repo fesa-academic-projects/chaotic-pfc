@@ -322,9 +322,9 @@ def fig_classification(out_dir: Path) -> None:
     from chaotic_pfc.analysis.sweep_plotting import plot_classification_interleaved
     from chaotic_pfc.cli.paper_figures import JCIS_FIG, JCIS_FIGURES
 
-    for name, stem in JCIS_FIGURES:
+    for k, (name, stem) in enumerate(JCIS_FIGURES):
         sr = load_sweep(DATA_DIR / name / "variables_lyapunov.npz")
-        fig = plot_classification_interleaved(sr, **JCIS_FIG)
+        fig = plot_classification_interleaved(sr, **{**JCIS_FIG, "legend": k == 0})
         _save(fig, out_dir / f"{stem}.svg")
 
 
