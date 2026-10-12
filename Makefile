@@ -37,6 +37,8 @@ check-paper:  ## Audit the JCIS manuscript sources against the repository
 jcis-figures:  ## Regenerate the JCIS figures not produced by other commands
 	python tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
 
+paper-pdf: export SOURCE_DATE_EPOCH = $(shell git log -1 --format=%ct)
+paper-pdf: export FORCE_SOURCE_DATE = 1
 paper-pdf:  ## Build the JCIS manuscript PDF with a clean SVG conversion cache
 	rm -rf $(PAPER_DIR)/svg-inkscape
 	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
