@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import firwin
 
-from chaotic_pfc.analysis.sweep import load_sweep
+from chaotic_pfc.analysis.sweep import load_sweep, run_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
     chaotic_density_norm_table,
     plot_chaotic_density_norm,
@@ -143,6 +143,33 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
         pass_zero=True,
         fs=2.0,
     )
+
+    # Largest Lyapunov exponent of the loop filter itself, quoted in Fig. 5(b).
+    # A single-cutoff sweep keeps the perturbation draw fixed and independent
+    # of the other cutoffs (the per-cutoff slices of the ensemble are drawn in
+    # cutoff order, so the first -- here only -- slice never depends on them).
+    loop = run_sweep(
+        window="hamming",
+        filter_type="lowpass",
+        orders=[len(c)],
+        cutoffs=np.array([FIR_LOOP_CUTOFF]),
+        Nitera=CFG.sweep.Nitera,
+        Nmap=CFG.sweep.Nmap,
+        n_initial=CFG.sweep.n_initial,
+        seed=CFG.seed,
+        warmup=False,
+        adaptive=True,
+        Nmap_min=500,
+        tol=1e-3,
+        fallback_mode=1,
+    )
+    lam_loop = float(loop.h[0, 0])
+    print(
+        f"[fig_comm_bandlimited] loop-filter lambda_1 = {lam_loop:.3f} "
+        f"({lam_loop:.6f}) for Nz={len(c) - 1}, cutoff={FIR_LOOP_CUTOFF}pi, "
+        f"window=hamming, n_initial={CFG.sweep.n_initial}, seed={CFG.seed}"
+    )
+
     rng = np.random.default_rng(CFG.seed)
     x0 = 0.5 * rng.random(len(c))
     y0 = 0.5 * rng.random(len(c))
