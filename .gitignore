@@ -136,3 +136,6 @@ figures/sweeps/beta_sweep_3d_*.html
 audit_output.txt
 checkall_output.txt
 *.diff
+
+# Intermediate outputs of the paper tooling
+.cache/

@@ -7,9 +7,9 @@ frozen-fixture baseline of ``fallback_mode=1`` against the versioned
 ``data/sweeps`` checkpoints.
 
 The baseline test (``test_mode1_bitexact_baseline``) is opt-in: it
-compares against the pre-fixed-point-correction ``.npz`` checkpoints and
-is therefore only meaningful while the legacy formula is in place.  Run
-it with ``CHAOTIC_PFC_RUN_BASELINE=1`` to reproduce the one-time check.
+compares against the ``.npz`` checkpoints regenerated with the current
+kernel, so it must reproduce them bit for bit.  Run it with
+``CHAOTIC_PFC_RUN_BASELINE=1``.
 """
 
 import os
@@ -45,9 +45,6 @@ def _baseline_path(window: str, filter_type: str, kaiser_beta: float) -> Path:
     )
 
 
-@pytest.mark.skip(
-    reason="baseline anterior ao fix do ponto fixo (5ab4aae); será regenerado se a mudança for aprovada"
-)
 @pytest.mark.skipif(
     os.environ.get("CHAOTIC_PFC_RUN_BASELINE") != "1",
     reason="frozen-fixture baseline; run with CHAOTIC_PFC_RUN_BASELINE=1",
