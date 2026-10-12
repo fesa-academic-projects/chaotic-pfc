@@ -57,8 +57,8 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     p.add_argument(
         "--data-dir",
-        default="data/sweeps/beta",
-        help="Root directory for .npz output (default: data/sweeps/beta)",
+        default="data/sweeps/kaiser",
+        help="Root directory for .npz output (default: data/sweeps/kaiser)",
     )
     p.set_defaults(_run=run_beta_sweep)
 

@@ -228,4 +228,3 @@ class _DuplicateFilter(logging.Filter):
 
 
 logging.getLogger("sphinx").addFilter(_DuplicateFilter())
-

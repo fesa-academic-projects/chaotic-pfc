@@ -233,11 +233,14 @@ msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
 #: ../../usage.rst:175
 msgid ""
 "Runs sweeps for every :math:`\\beta` in the interval for each filter type"
-" under the Kaiser window. Results go to ``data/sweeps/beta/``."
+" under the Kaiser window. Results go to"
+" ``data/sweeps/kaiser/<filter>/beta_<value>/``, the same layout the"
+" ``run all`` pipeline and the analysis tools read."
 msgstr ""
 "Executa varreduras para cada :math:`\\beta` no intervalo para cada tipo "
 "de filtro sob a janela Kaiser. Os resultados vão para "
-"``data/sweeps/beta/``."
+"``data/sweeps/kaiser/<filter>/beta_<value>/``, o mesmo layout que o "
+"pipeline ``run all`` e as ferramentas de análise leem."
 
 #: ../../usage.rst:185
 msgid "3-D visualisation (requires plotly)"

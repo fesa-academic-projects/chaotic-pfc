@@ -173,7 +173,9 @@ Runs the Lyapunov sweep for a range of Kaiser :math:`\beta` values:
    chaotic-pfc run sweep beta-sweep --beta-min 2.0 --beta-max 10.0 --beta-step 0.5
 
 Runs sweeps for every :math:`\beta` in the interval for each filter
-type under the Kaiser window. Results go to ``data/sweeps/beta/``.
+type under the Kaiser window. Results go to
+``data/sweeps/kaiser/<filter>/beta_<value>/``, the same layout the
+``run all`` pipeline and the analysis tools read.
 
 .. code-block:: bash
 
