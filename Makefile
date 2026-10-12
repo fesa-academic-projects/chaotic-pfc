@@ -1,4 +1,4 @@
-.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
+.PHONY: help install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf docs docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_.-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -29,12 +29,20 @@ check-all: lint format-check typecheck test-fast  ## Run all quality checks (lin
 PAPER_DIR ?= jcis
 PAPER_TEX ?= $(PAPER_DIR)/article.tex
 PAPER_BIB ?= $(PAPER_DIR)/references.bib
+PAPER_STEM ?= article
 
 check-paper:  ## Audit the JCIS manuscript sources against the repository
 	python tools/audit_paper.py --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
 
 jcis-figures:  ## Regenerate the JCIS figures not produced by other commands
 	python tools/jcis_figures.py --out-dir $(PAPER_DIR)/Figures
+
+paper-pdf:  ## Build the JCIS manuscript PDF with a clean SVG conversion cache
+	rm -rf $(PAPER_DIR)/svg-inkscape
+	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+	cd $(PAPER_DIR) && bibtex $(PAPER_STEM)
+	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
 
 SPHINXBUILD = .venv/bin/sphinx-build
 
