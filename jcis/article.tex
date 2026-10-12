@@ -934,7 +934,7 @@ dominates the grid: only $N_z=2$ has no divergent points, and for $N_z=4$, 8,
 \includesvg[width=\columnwidth]{Figures/kaiser_b13p5_lowpass_classification_interleaved}
 \caption{Classification map for the lowpass filter, Kaiser window
 ($\beta_K=13.5$). Chaos lies below a cutoff boundary that decreases with
-$N_z$, with divergence above it; periodic islands (shrimps) appear at low
+$N_z$, with divergence above it; periodic islands appear at low
 orders.}
 \label{fig:lowpass}
 \end{figure}
@@ -966,12 +966,6 @@ $\Delta\omega=0.05\,\pi$ ($\rho_c^{\text{fin}}=65.2\%$,
 $\rho_c^{\text{abs}}=5.9\%$). Only $N_z=2$ has no divergent points.}
 \label{fig:bandstop}
 \end{figure}
-
-These maps are consistent with~\cite{BorgesCSF2022}: the thin boundaries between
-chaotic and periodic regions and the periodic islands inside the chaotic regions
-resemble the period-doubling cascades and the shrimps~\cite{Gallas1993} documented
-for the filtered H\'enon map, and such structures appear in the four filter types
-studied here.
 
 The filter types also differ in how the grid is divided among the three
 classes. Pooling the 124 sweeps, the numbers of chaotic, periodic, and
@@ -1033,9 +1027,7 @@ $72.8\%$ and $93.8\%$ for highpass, and $79.4\%$ and $97.4\%$ for bandstop
 divergent). This convergence is expected, because the designed filters
 approach the ideal one as $N_z$ grows~\cite{Oppenheim2009}.
 
-Because the regime boundaries are finely interleaved, with period-doubling
-cascades alternating with shrimps at progressively smaller
-scales~\cite{Gallas1993,BorgesCSF2022}, a small change of $N_z$ or $\omega_c$
+Because the regime boundaries are finely interleaved (Figs.~\ref{fig:lowpass}--\ref{fig:bandstop}), a small change of $N_z$ or $\omega_c$
 can move a design across a boundary. We therefore suggest, without having
 measured it here, that the distance from an operating point to the nearest
 boundary be considered in the design.
@@ -1213,8 +1205,7 @@ which all the maps and tables can be reproduced and the study extended.
 Taken together, the results show that the joint choice of filter type and
 design window is an important design factor of the filtered H\'enon
 generator, especially at low and moderate orders, where the six fixed windows
-disagree on the class of $73.1\%$ of the lowpass grid points with $N_z\le10$. Because of the finely interleaved regime boundaries and of
-the shrimps inside the chaotic regions~\cite{Gallas1993}, the design of a
+disagree on the class of $73.1\%$ of the lowpass grid points with $N_z\le10$. Because of the finely interleaved regime boundaries, the design of a
 filtered generator for CBCS cannot start from the spectral specification of
 the filter alone: the dynamics of the resulting generator must be verified
 explicitly, for example with classification maps such as the ones presented
