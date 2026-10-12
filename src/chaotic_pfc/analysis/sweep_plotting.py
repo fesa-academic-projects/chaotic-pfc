@@ -1138,7 +1138,7 @@ def plot_chaotic_density_norm(
         antialiased=False,
     )
     cbar = fig.colorbar(pcm, ax=ax)
-    label = r"Chaotic (\%)" if lang == "en" else r"Caóticas (\%)"
+    label = r"Chaotic configurations (\%)" if lang == "en" else r"Configurações caóticas (\%)"
     cbar.set_label(label, fontsize=cbar_fontsize)
     cbar.ax.tick_params(labelsize=cbar_fontsize - 1.0)
 
