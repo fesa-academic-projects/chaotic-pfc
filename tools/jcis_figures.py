@@ -179,6 +179,7 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
         ax.plot(n, np.clip(m_hat[n], -3.0, 3.0), color="tab:blue", lw=0.8, label=r"$\hat m[n]$")
         ax.plot(n, delayed, color="tab:red", lw=0.8, ls="--", label=r"$m[n-100]$")
         ax.set_ylim(-3.2, 3.2)
+        ax.set_yticks([-3, 0, 3])
         ax.set_title(
             f"({label}) {descriptions[label]}, BER={bers[label]:.4f}",
             loc="left",
