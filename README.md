@@ -238,15 +238,14 @@ the manuscript. Run them with the project venv (`.venv/bin/python`):
 
 | Script | Purpose |
 |--------|---------|
-| `tools/regenerate_sweeps.py` | Recompute the versioned `data/sweeps/` checkpoints with the current kernel. |
-| `tools/compare_sweeps.py` | Compare two sweep directories file by file (bit-exactness after a refactor). |
 | `tools/jcis_figures.py` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
-| `tools/report_sweep_stats.py` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
 
 The manuscript numbers and the source audit live in the package and are driven
 from the CLI: `chaotic-pfc paper numbers …` recomputes every number of the
-article from `data/sweeps/`, and `chaotic-pfc paper audit …` is the audit
-behind `make check-paper`.
+article from `data/sweeps/`, `chaotic-pfc paper audit …` is the audit behind
+`make check-paper`, and `chaotic-pfc sweeps regenerate|compare|stats` maintains
+the versioned checkpoints (recompute + manifest, diff two trees, dump per-`config`
+statistics).
 
 `articles/jcis/article.pdf` is a derived artifact regenerated reproducibly by
 `make paper-pdf`; its timestamp follows the last commit that touched

@@ -313,6 +313,21 @@ the inserted figures and the identity tables, prints a
    chaotic-pfc paper audit --tex articles/jcis/article.tex \
        --bib articles/jcis/references.bib
 
+Sweep maintenance
+-----------------
+
+``chaotic-pfc sweeps`` groups the maintenance commands for the versioned
+checkpoints. ``regenerate`` recomputes them with the current kernel and
+rewrites the ``SHA256SUMS`` manifest (``--manifest-only`` refreshes just the
+manifest), ``compare`` diffs two sweep directories file by file, and ``stats``
+dumps the per-configuration table as CSV:
+
+.. code-block:: bash
+
+   chaotic-pfc sweeps regenerate --src data/sweeps --dst /tmp/regen
+   chaotic-pfc sweeps compare --old /tmp/regen --new data/sweeps
+   chaotic-pfc sweeps stats --sweep-dir data/sweeps --csv /tmp/stats.csv
+
 Language support
 ----------------
 

@@ -80,8 +80,13 @@ def regenerate(src: Path, dst: Path) -> None:
     print(f"wrote {write_manifest(dst)}", flush=True)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc sweeps regenerate``."""
+    parser = subparsers.add_parser(
+        "regenerate",
+        help="Recompute the versioned sweep checkpoints.",
+        description="Recompute the versioned sweep checkpoints with the current kernel.",
+    )
     parser.add_argument("--src", type=Path, default=Path("data/sweeps"))
     parser.add_argument("--dst", type=Path)
     parser.add_argument(
@@ -89,15 +94,15 @@ def main() -> int:
         action="store_true",
         help="only rewrite the SHA256SUMS manifest under --src",
     )
-    args = parser.parse_args()
+    parser.set_defaults(_run=run)
+
+
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc sweeps regenerate``."""
     if args.manifest_only:
         print(f"wrote {write_manifest(args.src)}")
         return 0
     if args.dst is None:
-        parser.error("--dst is required unless --manifest-only is given")
+        raise SystemExit("--dst is required unless --manifest-only is given")
     regenerate(args.src, args.dst)
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

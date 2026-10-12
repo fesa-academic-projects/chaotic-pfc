@@ -3,7 +3,7 @@
 ``data/sweeps/SHA256SUMS`` pins the sha256 of every ``variables_lyapunov.npz``,
 so a corrupted or silently regenerated checkpoint is caught by the normal test
 run (and therefore by CI, which executes the whole suite). The manifest is
-rewritten by ``tools/regenerate_sweeps.py``.
+rewritten by ``chaotic-pfc sweeps regenerate``.
 
 These tests always run — unlike the opt-in bit-exact baseline in
 ``test_sweep_regressions.py`` (``CHAOTIC_PFC_RUN_BASELINE=1``). Set

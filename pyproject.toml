@@ -160,6 +160,7 @@ ignore = [
 "benchmarks/**" = ["D"]
 # Ported tooling modules (moved from tools/) keep their script-style docstrings
 "src/chaotic_pfc/paper/**" = ["D"]
+"src/chaotic_pfc/sweeps/**" = ["D"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["chaotic_pfc"]
@@ -192,7 +193,7 @@ ignore_errors = true
 
 # Modules ported verbatim from tools/ (script-style, not part of the typed API)
 [[tool.mypy.overrides]]
-module = ["chaotic_pfc.paper.*"]
+module = ["chaotic_pfc.paper.*", "chaotic_pfc.sweeps.*"]
 ignore_errors = true
 
 # ── Stricter typing for the communication pipeline ───────────────────

@@ -75,14 +75,19 @@ def compare(old_dir: Path, new_dir: Path) -> None:
     print(f"max |delta lambda| over chaotic-in-both points: {max_abs:.6e}")
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc sweeps compare``."""
+    parser = subparsers.add_parser(
+        "compare",
+        help="Compare two sweep directories file by file.",
+        description="Compare two sets of Lyapunov sweep checkpoints, file by file.",
+    )
     parser.add_argument("--old", type=Path, required=True)
     parser.add_argument("--new", type=Path, required=True)
-    args = parser.parse_args()
+    parser.set_defaults(_run=run)
+
+
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc sweeps compare``."""
     compare(args.old, args.new)
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

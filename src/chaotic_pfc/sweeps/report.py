@@ -23,7 +23,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -323,17 +322,23 @@ def cross_check(tex_path: Path, configs: list[dict]) -> dict:
     }
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        prog="report_sweep_stats", description="Per-configuration stats from the .npz checkpoints."
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc sweeps stats``."""
+    parser = subparsers.add_parser(
+        "stats",
+        help="Per-configuration statistics read from the .npz checkpoints.",
+        description="Per-configuration statistics read from the .npz checkpoints.",
     )
     parser.add_argument("--sweep-dir", default="data/sweeps")
     parser.add_argument("--tex", default="articles/jcis/article.tex")
     parser.add_argument(
         "--csv", required=True, help="CSV output path (keep it out of version control)."
     )
-    args = parser.parse_args(argv)
+    parser.set_defaults(_run=run)
 
+
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc sweeps stats``."""
     configs = load_configs(Path(args.sweep_dir))
     configs.sort(key=_sort_key)
     print_table(configs)
@@ -366,7 +371,3 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print("  no divergence on N_chaotic and rho_fin for the matched rows.")
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

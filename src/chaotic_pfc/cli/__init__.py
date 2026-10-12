@@ -39,6 +39,7 @@ from . import (
     run_all,
     sensitivity,
     sweep,
+    sweeps,
 )
 
 # Ordered iterable — the help text renders subcommands in this order.
@@ -56,7 +57,7 @@ EXPERIMENTS = (
 )
 
 # Top-level groups rendered after ``run`` (e.g. ``chaotic-pfc paper …``).
-GROUPS = (paper,)
+GROUPS = (paper, sweeps)
 
 
 def build_parser() -> argparse.ArgumentParser:

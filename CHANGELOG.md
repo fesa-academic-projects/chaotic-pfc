@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The manuscript numbers (`paper_numbers.py`) and the source audit
   (`audit_paper.py`) moved from `tools/` into the package and are now driven
   from the CLI as `chaotic-pfc paper numbers|audit`, documented in the README.
+- The sweep maintenance scripts (`regenerate_sweeps.py`, `compare_sweeps.py`,
+  `report_sweep_stats.py`) moved into the package and are exposed as
+  `chaotic-pfc sweeps regenerate|compare|stats`.
 - `tools/jcis_figures.py` generators for the JCIS classification maps,
   chaotic-density map, Kaiser-β curve, Hénon signals and communication
   figures, including the loop-filter exponent quoted in Fig. 5(b).

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 19:19-0300\n"
+"POT-Creation-Date: 2026-10-12 19:24-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -454,10 +454,10 @@ msgid ""
 "NEW`` diffs two JSON files and ``--sensitivity`` prints the threshold "
 "sensitivity report:"
 msgstr ""
-"``chaotic-pfc paper numbers`` recalcula todos os números do artigo a partir "
-"de ``data/sweeps/`` e os grava em JSON; ``--compare OLD NEW`` compara dois "
-"arquivos JSON e ``--sensitivity`` imprime o relatório de sensibilidade ao "
-"limiar:"
+"``chaotic-pfc paper numbers`` recalcula todos os números do artigo a "
+"partir de ``data/sweeps/`` e os grava em JSON; ``--compare OLD NEW`` "
+"compara dois arquivos JSON e ``--sensitivity`` imprime o relatório de "
+"sensibilidade ao limiar:"
 
 #: ../../usage.rst:306
 msgid ""
@@ -466,17 +466,35 @@ msgid ""
 "bibliography, the inserted figures and the identity tables, prints a "
 "``Summary: N ERROR, M WARN`` line and exits non-zero on any ERROR:"
 msgstr ""
-"``chaotic-pfc paper audit`` é a verificação de consistência determinística "
-"por trás de ``make check-paper``: cruza o manuscrito com a bibliografia, as "
-"figuras inseridas e as tabelas de identidade, imprime uma linha "
-"``Summary: N ERROR, M WARN`` e termina com código diferente de zero em "
-"qualquer ERROR:"
+"``chaotic-pfc paper audit`` é a verificação de consistência "
+"determinística por trás de ``make check-paper``: cruza o manuscrito com a"
+" bibliografia, as figuras inseridas e as tabelas de identidade, imprime "
+"uma linha ``Summary: N ERROR, M WARN`` e termina com código diferente de "
+"zero em qualquer ERROR:"
 
 #: ../../usage.rst:317
+msgid "Sweep maintenance"
+msgstr "Manutenção das varreduras"
+
+#: ../../usage.rst:319
+msgid ""
+"``chaotic-pfc sweeps`` groups the maintenance commands for the versioned "
+"checkpoints. ``regenerate`` recomputes them with the current kernel and "
+"rewrites the ``SHA256SUMS`` manifest (``--manifest-only`` refreshes just "
+"the manifest), ``compare`` diffs two sweep directories file by file, and "
+"``stats`` dumps the per-configuration table as CSV:"
+msgstr ""
+"``chaotic-pfc sweeps`` agrupa os comandos de manutenção dos checkpoints "
+"versionados. ``regenerate`` os recalcula com o kernel atual e regrava o "
+"manifesto ``SHA256SUMS`` (``--manifest-only`` atualiza só o manifesto), "
+"``compare`` compara dois diretórios de varredura arquivo a arquivo, e "
+"``stats`` despeja a tabela por configuração em CSV:"
+
+#: ../../usage.rst:332
 msgid "Language support"
 msgstr "Suporte a idiomas"
 
-#: ../../usage.rst:319
+#: ../../usage.rst:334
 msgid ""
 "The CLI supports bilingual figure labels via the ``--lang`` flag or the "
 "``CHAOTIC_PFC_LANG`` environment variable (which sets the default):"
@@ -485,7 +503,7 @@ msgstr ""
 "``--lang`` ou a variável de ambiente ``CHAOTIC_PFC_LANG`` (que define o "
 "padrão):"
 
-#: ../../usage.rst:334
+#: ../../usage.rst:349
 msgid ""
 "The flag is supported by ``attractors``, ``sensitivity``, ``comm-ideal``,"
 " ``comm-fir``, ``comm-order-n``, ``sweep plot``, ``analysis plot-chaotic-"
@@ -497,23 +515,23 @@ msgstr ""
 "map``, ``analysis plot-chaotic-density``, ``analysis export-tables`` e "
 "``run all``."
 
-#: ../../usage.rst:340
+#: ../../usage.rst:355
 msgid "Further reading"
 msgstr "Leitura adicional"
 
-#: ../../usage.rst:342
+#: ../../usage.rst:357
 msgid ":doc:`architecture`: how the modules fit together."
 msgstr ":doc:`architecture` — como os módulos se integram."
 
-#: ../../usage.rst:343
+#: ../../usage.rst:358
 msgid ":doc:`internals`: Numba kernels, MGS, adaptive early-stop."
 msgstr ":doc:`internals` — kernels Numba, MGS, parada antecipada adaptativa."
 
-#: ../../usage.rst:344
+#: ../../usage.rst:359
 msgid ":doc:`background`: complete theoretical foundations."
 msgstr ":doc:`background` — fundamentos teóricos completos."
 
-#: ../../usage.rst:345
+#: ../../usage.rst:360
 msgid ":doc:`development`: development environment and tooling."
 msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
 
