@@ -23,19 +23,12 @@ from __future__ import annotations
 
 import argparse
 import csv
-import importlib.util
 import sys
 from pathlib import Path
 
 import numpy as np
 
-_spec = importlib.util.spec_from_file_location(
-    "audit_paper", Path(__file__).resolve().with_name("audit_paper.py")
-)
-assert _spec is not None and _spec.loader is not None
-audit_paper = importlib.util.module_from_spec(_spec)
-sys.modules[_spec.name] = audit_paper
-_spec.loader.exec_module(audit_paper)
+from chaotic_pfc.paper import audit as audit_paper
 
 CSV_FIELDS = [
     "filter_type",

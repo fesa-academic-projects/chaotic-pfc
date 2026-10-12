@@ -35,7 +35,7 @@ Reprodução da linha de `f517e0a`:
 
 ```bash
 git archive f517e0a data/sweeps | tar -x -C /tmp/simac
-python tools/paper_numbers.py --sweeps /tmp/simac/data/sweeps --json /tmp/simac.json
+chaotic-pfc paper numbers --sweeps /tmp/simac/data/sweeps --json /tmp/simac.json
 # T3.rank21 = highpass | Hamming | Nc=72  | rho_fin=3.8 | mean=0.0234
 # T3.rank10 = bandpass | Hamming | Nc=294 | rho_fin=7.9 | mean=0.0273
 # T3.rank23 = bandstop | Hamming | Nc=55  | rho_fin=35.5 | mean=0.0874
@@ -60,7 +60,7 @@ Sem alterar o `.docx` nem os PDFs (que permanecem como aprovados):
 1. **Ganho em frequência zero.** O parágrafo afirma que os filtros com ganho
    próximo de zero (passa-altas e passa-faixa) “deslocam o ponto de equilíbrio
    positivo … para regiões em que a órbita tende a divergir”. A análise
-   posterior (`tools/paper_numbers.py`, rótulos `GAIN.*`) mostra que
+   posterior (`chaotic-pfc paper numbers`, rótulos `GAIN.*`) mostra que
    **99,9 %** dos pontos com `|G| < 0,1` são periódicos e apenas **27** são
    caóticos; nenhum dos 2 900 pontos caóticos do passa-altas tem `|G| < 0,1`.
 2. **Título da referência BORGES; EISENCRAFT (2022).** No SIMAC consta *"Um

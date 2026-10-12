@@ -1,57 +1,42 @@
 #!/usr/bin/env python3
-"""Deterministic consistency audit for the JCIS manuscript (block 1).
+"""Deterministic consistency audit for the JCIS manuscript.
 
-The script cross-checks the manuscript sources against the artefacts that
-back them. It never edits the paper and never guesses: every finding is the
-result of an explicit assertion in the code below.
+The audit cross-checks the manuscript sources against the artefacts that back
+them. It never edits the paper and never guesses: every finding is the result
+of an explicit assertion in the code below.
 
 Usage::
 
-    python tools/audit_paper.py \
+    chaotic-pfc paper audit \
         --tex articles/jcis/article.tex \
         --bib articles/jcis/references.bib \
         --figures figures/ \
         [--log articles/jcis/JCIS.log] [--blg articles/jcis/JCIS.blg] [--json out.json]
 
 Only the Python standard library is used, plus the project's own
-``chaotic_pfc.config`` for check C7 and the shared rounding helper
-``pct`` imported from :mod:`tools.paper_numbers` (check C6). The process
-exits with status 1 when at least one ERROR is reported and with status 0
-otherwise; WARN never fails the build.
+``chaotic_pfc.config`` for check C7 and the shared rounding helper ``pct`` from
+:mod:`chaotic_pfc.paper.numbers` (check C6). The process exits with status 1
+when at least one ERROR is reported and with status 0 otherwise; WARN never
+fails the build.
 """
 
 from __future__ import annotations
 
 import argparse
 import html
-import importlib.util
 import json
 import re
-import sys
 import unicodedata
 from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
+from importlib import resources
 from pathlib import Path
 
+from chaotic_pfc.paper.numbers import pct
 
-def _load_sibling(module_name: str, filename: str):
-    """Load a module that sits next to this script (``tools/`` is not a package)."""
-    spec = importlib.util.spec_from_file_location(
-        module_name, Path(__file__).resolve().with_name(filename)
-    )
-    if spec is None or spec.loader is None:  # pragma: no cover - import machinery
-        raise ImportError(f"cannot load {filename}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-# Rounding rule shared with tools/paper_numbers.py: percentages are computed
-# from integer counts and quantised with Decimal ROUND_HALF_UP. Using the same
-# helper keeps the article, the audit and the numbers tool in agreement on the
-# half-way cases (e.g. 434/4000 = 10.85% -> 10.9%, not 10.8%).
-pct = _load_sibling("paper_numbers", "paper_numbers.py").pct
+# ``pct`` (the shared rounding rule) is imported from
+# :mod:`chaotic_pfc.paper.numbers` above, so the article, the audit and the
+# numbers tool agree on the half-way cases (e.g. 434/4000 = 10.85% -> 10.9%).
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -73,8 +58,8 @@ PORTUGUESE_TERMS = (
 )
 
 # Entries listed here are exempt from the "every reference needs a DOI" rule
-# (check C2). One key per line, "#" starts a comment.
-DOI_WHITELIST_PATH = Path(__file__).with_name("doi_whitelist.txt")
+# (check C2). The list ships as package data (``paper/doi_whitelist.txt``) and
+# is read with :mod:`importlib.resources` (see :func:`_load_whitelist`).
 
 CHECK_ORDER = ("IN", "C1", "C2", "C3", "C4", "C5", "C6", "C7")
 
@@ -935,11 +920,18 @@ def _safe(check: str, func: Callable[[], CheckResult]) -> CheckResult:
         )
 
 
-def _load_whitelist(path: Path) -> frozenset[str]:
-    if not path.is_file():
+def _load_whitelist() -> frozenset[str]:
+    """Read the DOI whitelist shipped as package data."""
+    try:
+        text = (
+            resources.files("chaotic_pfc.paper")
+            .joinpath("doi_whitelist.txt")
+            .read_text(encoding="utf-8")
+        )
+    except (FileNotFoundError, ModuleNotFoundError):  # pragma: no cover - packaging
         return frozenset()
     keys = set()
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in text.splitlines():
         stripped = line.strip()
         if stripped and not stripped.startswith("#"):
             keys.add(stripped)
@@ -968,7 +960,7 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
     )
 
     tex_dir = Path(args.tex).resolve().parent
-    whitelist = _load_whitelist(DOI_WHITELIST_PATH)
+    whitelist = _load_whitelist()
 
     if tex is not None and bib is not None:
         results["C1"] = _safe("C1", lambda: check_citation_keys(tex, bib))
@@ -1042,10 +1034,12 @@ def render_text(results: dict[str, CheckResult]) -> str:
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="audit_paper",
-        description="Deterministic consistency audit for the JCIS manuscript (block 1).",
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc paper audit``."""
+    parser = subparsers.add_parser(
+        "audit",
+        help="Deterministically cross-check the manuscript sources.",
+        description="Deterministic consistency audit for the JCIS manuscript.",
     )
     parser.add_argument("--tex", required=True, help="Path to the .tex source.")
     parser.add_argument("--bib", required=True, help="Path to the .bib source.")
@@ -1063,11 +1057,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--log", help="Path to the LaTeX .log file (optional).")
     parser.add_argument("--blg", help="Path to the BibTeX .blg file (optional).")
     parser.add_argument("--json", dest="json_out", help="Write the findings as JSON to this path.")
-    return parser
+    parser.set_defaults(_run=run)
 
 
-def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc paper audit``."""
     results = run_checks(args)
     print(render_text(results))
     if args.json_out:
@@ -1078,7 +1072,3 @@ def main(argv: list[str] | None = None) -> int:
         Path(args.json_out).write_text(payload + "\n", encoding="utf-8")
     all_findings = [finding for check in CHECK_ORDER for finding in results[check].findings]
     return 1 if any(finding.level == "ERROR" for finding in all_findings) else 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
   with `1` (full-spectrum recomputation of marginal cells) as the default.
-- Standalone paper tooling under `tools/`: `regenerate_sweeps.py`,
-  `compare_sweeps.py`, `paper_numbers.py`, `audit_paper.py`,
-  `jcis_figures.py`, and `report_sweep_stats.py`, documented in the README.
+- The manuscript numbers (`paper_numbers.py`) and the source audit
+  (`audit_paper.py`) moved from `tools/` into the package and are now driven
+  from the CLI as `chaotic-pfc paper numbers|audit`, documented in the README.
 - `tools/jcis_figures.py` generators for the JCIS classification maps,
   chaotic-density map, Kaiser-β curve, Hénon signals and communication
   figures, including the loop-filter exponent quoted in Fig. 5(b).
@@ -28,8 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 124 versioned sweeps in `data/sweeps/` were regenerated with the current
   kernel; `tests/test_sweep_regressions.py` reproduces them bit for bit with
   Numba and `fallback_mode=1`.
-- `tools/audit_paper.py` shares the `Decimal`/`ROUND_HALF_UP` percentage
-  rounding of `tools/paper_numbers.py` and counts `\subref` as a reference.
+- `chaotic_pfc.paper.audit` shares the `Decimal`/`ROUND_HALF_UP` percentage
+  rounding of `chaotic_pfc.paper.numbers` and counts `\subref` as a reference.
 
 ### Fixed
 - `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the

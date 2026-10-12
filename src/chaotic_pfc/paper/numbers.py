@@ -6,8 +6,8 @@ integer counts and rounded with ``decimal.ROUND_HALF_UP``.
 
 Usage::
 
-    python tools/paper_numbers.py --sweeps DIR --json OUT.json
-    python tools/paper_numbers.py --compare OLD.json NEW.json
+    chaotic-pfc paper numbers --sweeps DIR --json OUT.json
+    chaotic-pfc paper numbers --compare OLD.json NEW.json
 
 The slow quantities (seed runs, the Ns=1 validation) are computed by
 ``--extras`` and stored in the same JSON, so that the comparison can read
@@ -788,8 +788,13 @@ def sensitivity_report(recs) -> str:
     return "\n".join(lines)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+def add_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register ``chaotic-pfc paper numbers``."""
+    parser = subparsers.add_parser(
+        "numbers",
+        help="Recompute every manuscript number from the versioned sweeps.",
+        description="Recompute every manuscript number from the versioned sweeps.",
+    )
     parser.add_argument("--sweeps", type=Path)
     parser.add_argument("--json", type=Path)
     parser.add_argument(
@@ -799,7 +804,11 @@ def main() -> int:
     parser.add_argument(
         "--sensitivity", action="store_true", help="print the threshold sensitivity report"
     )
-    args = parser.parse_args()
+    parser.set_defaults(_run=run)
+
+
+def run(args: argparse.Namespace) -> int:
+    """Execute ``chaotic-pfc paper numbers``."""
     if args.compare:
         old = json.loads(args.compare[0].read_text())
         new = json.loads(args.compare[1].read_text())
@@ -807,18 +816,14 @@ def main() -> int:
         return 0
     if args.sensitivity:
         if not args.sweeps:
-            parser.error("--sweeps is required with --sensitivity")
+            raise SystemExit("--sweeps is required with --sensitivity")
         print(sensitivity_report(load_all(args.sweeps)))
         return 0
     if not args.sweeps or not args.json:
-        parser.error("--sweeps and --json are required unless --compare is given")
+        raise SystemExit("--sweeps and --json are required unless --compare is given")
     out = compute(args.sweeps, args.extras)
     args.json.parent.mkdir(parents=True, exist_ok=True)
     args.json.write_text(json.dumps(out, indent=1, ensure_ascii=False))
     for k, v in out.items():
         print(f"{k} = {v}")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

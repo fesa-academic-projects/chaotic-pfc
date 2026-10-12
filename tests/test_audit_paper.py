@@ -1,26 +1,18 @@
-"""tests/test_audit_paper.py: unit tests for the manuscript audit tool.
+"""tests/test_audit_paper.py: unit tests for the manuscript audit.
 
-The tool lives in ``tools/audit_paper.py`` and is loaded by path because the
-``tools`` directory is not an importable package. Every check is exercised
+The audit lives in :mod:`chaotic_pfc.paper.audit`. Every check is exercised
 with a small synthetic fixture: one case that passes and one that fails.
 """
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 import pytest
 
-_ROOT = Path(__file__).resolve().parents[1]
-_SPEC = importlib.util.spec_from_file_location("audit_paper", _ROOT / "tools" / "audit_paper.py")
-assert _SPEC is not None and _SPEC.loader is not None
-audit = importlib.util.module_from_spec(_SPEC)
-sys.modules[_SPEC.name] = audit
-_SPEC.loader.exec_module(audit)
+from chaotic_pfc.paper import audit
 
 
 def _findings(result) -> list:

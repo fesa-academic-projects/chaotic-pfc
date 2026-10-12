@@ -34,6 +34,7 @@ from . import (
     comm_ideal,
     comm_order_n,
     lyapunov,
+    paper,
     paper_figures,
     run_all,
     sensitivity,
@@ -53,6 +54,9 @@ EXPERIMENTS = (
     paper_figures,
     run_all,
 )
+
+# Top-level groups rendered after ``run`` (e.g. ``chaotic-pfc paper …``).
+GROUPS = (paper,)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -96,6 +100,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     for module in EXPERIMENTS:
         module.add_parser(run_subparsers)
+
+    # ── top-level groups (``paper``, ...) ─────────────────────────────────
+    for module in GROUPS:
+        module.add_parser(top_subparsers)
 
     return parser
 

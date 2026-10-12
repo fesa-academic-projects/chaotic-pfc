@@ -292,6 +292,27 @@ locations/formats with the flags:
    chaotic-pfc run paper-figures --only jcis --formats svg \
        --data-dir data/sweeps --output-dir paper-figures
 
+Manuscript numbers and audit
+----------------------------
+
+``chaotic-pfc paper numbers`` recomputes every number of the journal article
+from ``data/sweeps/`` and writes them to JSON; ``--compare OLD NEW`` diffs two
+JSON files and ``--sensitivity`` prints the threshold sensitivity report:
+
+.. code-block:: bash
+
+   chaotic-pfc paper numbers --sweeps data/sweeps --json numbers.json
+
+``chaotic-pfc paper audit`` is the deterministic consistency check behind
+``make check-paper``: it cross-checks the manuscript against the bibliography,
+the inserted figures and the identity tables, prints a
+``Summary: N ERROR, M WARN`` line and exits non-zero on any ERROR:
+
+.. code-block:: bash
+
+   chaotic-pfc paper audit --tex articles/jcis/article.tex \
+       --bib articles/jcis/references.bib
+
 Language support
 ----------------
 
