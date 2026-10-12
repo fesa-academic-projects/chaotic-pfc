@@ -92,7 +92,7 @@ windows, including a sweep of the Kaiser shape parameter. Points of the
 order-cutoff plane whose orbits become unbounded are classified as
 divergent. The remaining points are classified as chaotic when the largest
 Lyapunov exponent, which measures the average exponential rate at which
-nearby orbits separate, is positive, and as periodic when it is negative.
+nearby orbits separate, is positive, and as periodic otherwise.
 The results show that filtering does not eliminate the chaotic regime but
 reorganizes it in the parameter space in a way that depends on both the
 filter type and the design window. Therefore, the spectral specification of
@@ -171,7 +171,7 @@ signals are chaotic, periodic, or divergent, for a two-coefficient
 filter~\cite{BorgesCSF2022} and for lowpass filters of increasing
 order~\cite{Borges2022sbrt}, with bifurcation cascades, coexisting
 attractors, crises, and shrimp-shaped periodic islands~\cite{Gallas1993}.
-Borges \textit{et al.} extended this analysis to FIR filters with more
+Borges \textit{et al.} extended this analysis to finite impulse response (FIR) filters with more
 coefficients and different zero placements~\cite{BorgesCNSNS2024} and to
 second-order all-pole filters~\cite{Borges2024sbrt}. The preservation of
 chaos must therefore be verified for each filter design. It remains open
@@ -436,10 +436,8 @@ The Lyapunov exponent in the $k$-th direction is then
   \label{eq:lyap}
 \end{equation}
 
-Only the largest exponent, $\lambda_1$, is used in this work. A positive
-$\lambda_1$ for a bounded signal is strong evidence of chaos, because a
-bounded orbit with $\lambda_1>0$ could otherwise only converge to an unstable
-periodic orbit~\cite{Alligood1996}. For $\alpha=1.4$ and $\beta=0.3$, the map
+Only the largest exponent, $\lambda_1$, is used in this work. For
+$\alpha=1.4$ and $\beta=0.3$, the map
 \eqref{eq:henon} has
 $\lambda_1\approx0.42$~\cite{Sprott2003}.
 
@@ -472,9 +470,9 @@ Seven windows are considered (Table~\ref{tab:windows}). The values listed
 are the peak side-lobe levels of the discrete-time Fourier transform of each
 window, relative to the main-lobe peak~\cite{Harris1978}; in the window
 method, lower side lobes give higher stopband attenuation of the designed
-filter~\cite{Oppenheim2009}. The values range from $13$~dB for the
+filter~\cite{Oppenheim2009}. The values range from $-13$~dB for the
 rectangular window, whose abrupt truncation produces strong side lobes, to
-$92$~dB for the four-term Blackman--Harris window, whose cosine-sum
+$-92$~dB for the four-term Blackman--Harris window, whose cosine-sum
 coefficients are chosen to cancel side lobes~\cite{Harris1978}.
 
 \begin{table}[!t]
@@ -555,11 +553,12 @@ detection over band-limited channels~\cite{Eisencraft2009,Fontes2016}.
 \centering
 \includesvg[width=\textwidth]{Figures/fig_comm_ideal}
 \caption{Illustration used as motivation: ideal-channel communication over
-$N=10^{6}$ samples with the generator~\eqref{eq:henon}, a $\pm1$ NRZ BPSK
-message (ASCII text ``hello'', bit period of 20 samples), and transmitted
-signal $s[n]=x_1[n]+\mu\,m[n]$ with modulation depth $\mu=0.01$: message
-$m[n]$, transmitted $s[n]$, received $r[n]$, and recovered $\hat{m}[n]$
-(left, time domain) with their normalized Welch PSDs (right). The channel is
+$N=10^{6}$ samples with the generator~\eqref{eq:henon}, a $\pm1$
+non-return-to-zero (NRZ) binary phase-shift keying (BPSK) message (ASCII text
+``hello'', bit period of 20 samples), and transmitted signal
+$s[n]=x_1[n]+\mu\,m[n]$ with modulation depth $\mu=0.01$: message $m[n]$,
+transmitted $s[n]$, received $r[n]$, and recovered $\hat{m}[n]$ (left, time
+domain) with their normalized Welch power spectral densities (PSDs) (right). The channel is
 ideal (identity, zero delay); the initial transient of $\hat{m}[n]$ is the
 synchronization of the slave.}
 \label{fig:comm_ideal}
@@ -621,7 +620,7 @@ original states. Ordering the error vector as [original states; filter
 states], the synchronization matrix is block lower triangular, with diagonal
 blocks $\mathbf{A}$ and a shift matrix of zero diagonal. Its eigenvalues are
 therefore those of $\mathbf{A}$ together with zeros~\cite{BorgesTese2026}
-(Theorem~3.1; the block-triangular argument is detailed for IIR filters in
+(Theorem~3.1; the block-triangular argument is detailed for infinite impulse response (IIR) filters in
 its Theorems~6.1 and~6.2).
 
 
@@ -702,36 +701,31 @@ Algorithm~\ref{alg:lyap} summarizes the procedure.
 \STATE $\mathbf{w}\leftarrow[1\;0\;\cdots\;0]^T$;\; $s\leftarrow 0$;\; $\mathbf{x}\leftarrow\mathbf{x}_0$.
 \FOR{$i=1$ \TO $N_{\text{burn}}$}
   \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(discard transient)
+  \IF{$\mathbf{x}$ is non-finite}
+    \STATE \textbf{return} DIVERGENT \quad(grid point)
+  \ENDIF
 \ENDFOR
 \FOR{$i=1$ \TO $N_{\text{map}}$}
+  \STATE $\mathbf{w}\leftarrow\mathbf{J}(\mathbf{x})\,\mathbf{w}$ \quad(tangent-vector evolution at the current state)
   \STATE $\mathbf{x}\leftarrow\mathbf{F}(\mathbf{x})$ \quad(orbit evolution)
   \IF{$\mathbf{x}$ is non-finite}
     \STATE \textbf{return} NaN \quad(divergent orbit)
   \ENDIF
-  \STATE $\mathbf{w}\leftarrow\mathbf{J}(\mathbf{x})\,\mathbf{w}$ \quad(tangent-vector evolution)
   \IF{$i$ is a multiple of 10}
-    \STATE $r\leftarrow\|\mathbf{w}\|$;\; $s\leftarrow s+\ln\max(r,10^{-300})$;\; $\mathbf{w}\leftarrow\mathbf{w}/r$
+    \STATE $r\leftarrow\|\mathbf{w}\|$;\; $s\leftarrow s+\ln\max(r,10^{-300})$;\; if $r>10^{-300}$ then $\mathbf{w}\leftarrow\mathbf{w}/r$
     \STATE every 100 iterations with $i\ge500$: stop if $s/i$ varied less than $\varepsilon$ in two consecutive checks
   \ENDIF
 \ENDFOR
-\IF{$|s/i|<5\times10^{-3}$}
-  \STATE recompute with all $K$ exponents (modified Gram--Schmidt)
-\ENDIF
 \STATE \textbf{return} $\lambda_1=s/i$
 \end{algorithmic}
 \end{algorithm}
 
-Points whose single-vector estimate satisfies $|\lambda_1|<5\times10^{-3}$ are
-recomputed with all $K$ exponents, using the modified Gram--Schmidt
-algorithm, which is numerically more stable than the classical one when the
-tangent vectors become nearly parallel. In this way, the classification near
-the chaotic--periodic boundary does not depend on the single-vector
-approximation; $34{,}147$ of the $372{,}000$ grid points ($9.18\%$) were
-recomputed. Accumulation stops early when the estimate of $\lambda_1$ varies
-less than the tolerance $\varepsilon=10^{-3}$ in two consecutive checks, made every
-100 iterations after the 500th. Requiring two checks avoids premature stops in
-windows of chaotic intermittency, in which $\lambda_1$ oscillates for hundreds
-of iterations before stabilizing.
+As in~\cite{BorgesCNSNS2024}, $\lambda_1$ is taken as the largest of the $K$
+finite-time exponents. To reduce the cost, a single tangent vector is
+propagated first, and grid points whose mean estimate satisfies
+$|\lambda_1|<5\times10^{-3}$ are recomputed with the full spectrum of
+Section~\ref{sub:lyap}, using the modified Gram--Schmidt algorithm;
+$34{,}147$ of the $372{,}000$ grid points ($9.18\%$) were recomputed.
 
 For each grid point $(N_z,\omega_c)$, $N_{\text{IC}}=25$ initial conditions are
 drawn near the positive fixed point $\mathbf{p}^+$ of the expanded system
@@ -763,7 +757,9 @@ state becomes non-finite. Second, a grid point is divergent when at least one
 of its 25 initial conditions becomes non-finite during the burn-in. Third, an
 initial condition that becomes non-finite only after the burn-in is
 discarded, and the value of the grid point is the mean of $\lambda_1$ over the
-remaining initial conditions. Points with non-finite filter coefficients
+remaining initial conditions. This step differs from~\cite{BorgesCNSNS2024}, in
+which a grid point is divergent when any of its initial conditions becomes
+non-finite. Points with non-finite filter coefficients
 (Section~\ref{sub:grid}) are also divergent.
 
 Let $N_{\text{grid}}$ be the number of grid points of a configuration, $N_b$
@@ -840,12 +836,6 @@ Read the Docs~\cite{chaoticPFC2026}.
 % ============================================================
 \section{Results and Discussion}\label{sec:results}
 % ============================================================
-This section presents the results of the 124 sweeps. Observations that
-reproduce previous findings on the filtered H\'enon
-map~\cite{Borges2022sbrt,BorgesCSF2022,BorgesCNSNS2024} are marked as
-``confirms'' or ``is consistent with''; the remaining results are original to
-this work.
-
 % ---- IV-A ----
 \subsection{Validation of the Estimator}\label{sub:validation}
 The estimator was first validated on the map~\eqref{eq:henon} without filter
@@ -1273,7 +1263,7 @@ conditions.
 Three directions are proposed for future work: (a)~sweeping the band width
 $\Delta\omega$ as an independent variable for bandpass and bandstop filters,
 to identify transitions not captured in this study; (b)~extending the
-methodology to infinite impulse response (IIR) filters, whose dynamic
+methodology to IIR filters, whose dynamic
 behavior is still little explored in the literature~\cite{Borges2024sbrt},
 with explicit treatment of the stability of the filter itself; and
 (c)~measuring the occupied bandwidth, the spectral leakage, and the in-band
