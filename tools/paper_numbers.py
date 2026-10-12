@@ -27,9 +27,13 @@ from pathlib import Path
 import numpy as np
 
 from chaotic_pfc.analysis.stats import lmax_statistics
-from chaotic_pfc.analysis.sweep import load_sweep
+from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
+LOW_GAIN = 0.1
+# Width of the pass/stop band used by the versioned sweeps (bandpass/bandstop);
+# it is not stored in the metadata.
+BANDWIDTH = 0.05
 FIXED = (
     ("boxcar", "Rectangular", 13),
     ("bartlett", "Bartlett", 27),
@@ -442,6 +446,91 @@ def section_cost(recs, out: dict) -> None:
     out["COST.sum_n_iters_used"] = f"{total:.4g}"
 
 
+# ── DC-gain analysis ────────────────────────────────────────────────────────
+
+
+def _abs_gain(sr) -> np.ndarray:
+    """|G| per grid point, G = sum of the FIR coefficients (DC gain)."""
+    beta = float(sr.metadata.get("kaiser_beta", 5.0))
+    _, gains = precompute_fir_bank(
+        np.asarray(sr.orders),
+        np.asarray(sr.cutoffs),
+        sr.filter_type,
+        sr.window,
+        kaiser_beta=beta,
+        bandwidth=BANDWIDTH,
+    )
+    return np.abs(gains)
+
+
+def _gain_band_table(recs, filter_type: str, out: dict, key: str) -> None:
+    """Counts of |G| >= 0.1 points per N_z x (omega_c/pi band)."""
+    nz_vals = sorted(
+        {int(o) - 1 for r in recs if r.filter_type == filter_type for o in np.asarray(r.orders)}
+    )
+    n_bands = 10
+    counts = {nz: [0] * n_bands for nz in nz_vals}
+    for r in recs:
+        if r.filter_type != filter_type:
+            continue
+        gain = _abs_gain(r)
+        orders = np.asarray(r.orders)
+        cut = np.asarray(r.cutoffs)
+        for i, order in enumerate(orders):
+            row = counts[int(order) - 1]
+            for j, wc in enumerate(cut):
+                if gain[i, j] >= LOW_GAIN:
+                    row[min(int(float(wc) * n_bands), n_bands - 1)] += 1
+    header = "  Nz | " + " ".join(f"{k / 10:.1f}-{(k + 1) / 10:.1f}" for k in range(n_bands))
+    lines = [header]
+    for nz in nz_vals:
+        if sum(counts[nz]):
+            lines.append(f"{nz:>4} | " + " ".join(f"{c:>7d}" for c in counts[nz]))
+    out[key] = "\n".join(lines)
+
+
+def section_gain(recs, out: dict) -> None:
+    """DC-gain (G = sum of coefficients) composition analysis."""
+    n_low = n_per_low = n_cha_low = 0
+    hp_cha_total = hp_cha_low = 0
+    lp_fin_chaotic = lp_fin_periodic = lp_fin_divergent = 0
+    for r in recs:
+        gain = _abs_gain(r)
+        h = np.asarray(r.h, dtype=np.float64)
+        low = gain < LOW_GAIN
+        nan = np.isnan(h)
+        chaotic = h > 0
+        periodic = (~nan) & (h <= 0)
+
+        n_low += int(low.sum())
+        n_per_low += int((low & periodic).sum())
+        n_cha_low += int((low & chaotic).sum())
+
+        if r.filter_type == "highpass":
+            hp_cha_total += int(chaotic.sum())
+            hp_cha_low += int((low & chaotic).sum())
+
+        if r.filter_type == "lowpass":
+            finite = np.isfinite(gain)
+            lp_fin_chaotic += int((finite & chaotic).sum())
+            lp_fin_periodic += int((finite & periodic).sum())
+            lp_fin_divergent += int((finite & nan).sum())
+
+    out["GAIN.n_absG_lt_0.1"] = str(n_low)
+    out["GAIN.periodic_pct_absG_lt_0.1"] = pct(n_per_low, n_low, 1)
+    out["GAIN.chaotic_count_absG_lt_0.1"] = str(n_cha_low)
+    out["GAIN.highpass.chaotic_absG_lt_0.1"] = str(hp_cha_low)
+    out["GAIN.highpass.chaotic_total"] = str(hp_cha_total)
+
+    lp_fin_total = lp_fin_chaotic + lp_fin_periodic + lp_fin_divergent
+    out["GAIN.lowpass.chaotic_pct"] = pct(lp_fin_chaotic, lp_fin_total, 1)
+    out["GAIN.lowpass.periodic_pct"] = pct(lp_fin_periodic, lp_fin_total, 1)
+    out["GAIN.lowpass.divergent_pct"] = pct(lp_fin_divergent, lp_fin_total, 1)
+
+    _gain_band_table(recs, "highpass", out, "GAIN.highpass.Nz_x_wc")
+    _gain_band_table(recs, "bandpass", out, "GAIN.bandpass.Nz_x_wc")
+
+
 # ── slow quantities (extras) ────────────────────────────────────────────────
 
 
@@ -580,6 +669,7 @@ def compute(root: Path, extras: bool) -> dict:
     section_kaiser(recs, out)
     section_robustness(recs, best, out)
     section_cost(recs, out)
+    section_gain(recs, out)
     if extras:
         seeds = seed_runs(root, best)
         for key, info in seeds.items():
