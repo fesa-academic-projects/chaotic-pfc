@@ -13,6 +13,7 @@ is omitted, so two runs produce identical files.
 from __future__ import annotations
 
 import argparse
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -42,6 +43,12 @@ SVG_SALT = "chaotic-pfc-jcis"
 COMM_WINDOW = (2000, 2400)
 DATA_DIR = Path("data/sweeps")
 FILTER_TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
+
+
+def pct(count: int, total: int, places: int) -> str:
+    """Percentage from integers, quantized once with ROUND_HALF_UP."""
+    q = Decimal(1).scaleb(-places)
+    return str((Decimal(100 * count) / Decimal(total)).quantize(q, rounding=ROUND_HALF_UP))
 
 
 def _save(fig, path: Path) -> None:
@@ -186,14 +193,14 @@ def fig_kaiser_beta(out_dir: Path) -> None:
             sr = load_sweep(path)
             beta = float(sr.metadata["kaiser_beta"])
             h = np.asarray(sr.h)
-            rows.append((beta, 100.0 * np.count_nonzero(h > 0.0) / h.size))
+            rows.append((beta, pct(int(np.count_nonzero(h > 0.0)), int(h.size), 1)))
         rows.sort()
         betas = np.array([r[0] for r in rows])
-        rho = np.array([r[1] for r in rows])
+        rho = np.array([float(r[1]) for r in rows])
         ax.plot(betas, rho, marker=markers[ft], ms=3.0, lw=0.9, label=ft)
-        print(f"[fig_kaiser_beta] {ft}: " + " ".join(f"{b:g}:{r:.2f}" for b, r in rows))
+        print(f"[fig_kaiser_beta] {ft}: " + " ".join(f"{b:g}:{r}" for b, r in rows))
         best = int(np.argmax(rho))
-        print(f"[fig_kaiser_beta] {ft}: max rho_abs={rho[best]:.2f}% at beta_K={betas[best]:g}")
+        print(f"[fig_kaiser_beta] {ft}: max rho_abs={rows[best][1]}% at beta_K={betas[best]:g}")
     ax.set_xlabel(r"$\beta_K$", fontsize=JCIS_LABEL)
     ax.set_ylabel(r"$\rho_c^{\mathrm{abs}}$ (\%)", fontsize=JCIS_LABEL)
     ax.tick_params(labelsize=JCIS_TICK)
@@ -203,21 +210,17 @@ def fig_kaiser_beta(out_dir: Path) -> None:
 
 
 def fig_chaotic_density_norm(out_dir: Path) -> None:
+
     Nz, cutoffs, percent, n_containing = chaotic_density_norm_table(DATA_DIR)
     for parity, mask in (("odd", Nz % 2 == 1), ("even", Nz % 2 == 0)):
         sub = np.where(mask[:, None], percent, -np.inf)
         k, j = np.unravel_index(np.argmax(sub), sub.shape)
+        n = int(n_containing[k])
+        count = round(float(percent[k, j]) * n / 100.0)
         print(
             f"[fig_chaotic_density_norm] max over Nz {parity}: Nz={Nz[k]}, "
-            f"omega_c/pi={cutoffs[j]:.4f}, percent={percent[k, j]:.2f}%, "
-            f"containing={n_containing[k]:.0f}, k={round(percent[k, j] * n_containing[k] / 100)}"
+            f"omega_c/pi={cutoffs[j]:.4f}, {pct(count, n, 1)}%, k={count} of n={n}"
         )
-    k, j = np.unravel_index(np.nanargmax(percent), percent.shape)
-    print(
-        f"[fig_chaotic_density_norm] GLOBAL max: Nz={Nz[k]}, omega_c/pi={cutoffs[j]:.4f}, "
-        f"percent={percent[k, j]:.2f}%, containing={n_containing[k]:.0f}, "
-        f"k={round(percent[k, j] * n_containing[k] / 100)}"
-    )
     fig = plot_chaotic_density_norm(
         DATA_DIR,
         lang="en",
@@ -295,10 +298,21 @@ def fig_comm_ideal(out_dir: Path) -> None:
     _save(fig, out_dir / "fig_comm_ideal.svg")
 
 
+def fig_classification(out_dir: Path) -> None:
+    from chaotic_pfc.analysis.sweep_plotting import plot_classification_interleaved
+    from chaotic_pfc.cli.paper_figures import JCIS_FIG, JCIS_FIGURES
+
+    for name, stem in JCIS_FIGURES:
+        sr = load_sweep(DATA_DIR / name / "variables_lyapunov.npz")
+        fig = plot_classification_interleaved(sr, **JCIS_FIG)
+        _save(fig, out_dir / f"{stem}.svg")
+
+
 GENERATORS = {
     "henon": fig_henon_signals,
     "comm": fig_comm_bandlimited,
     "ideal": fig_comm_ideal,
+    "classification": fig_classification,
     "kaiser": fig_kaiser_beta,
     "density": fig_chaotic_density_norm,
 }
