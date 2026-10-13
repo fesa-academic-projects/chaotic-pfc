@@ -30,6 +30,7 @@ from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from scipy.signal import freqz
 
+from chaotic_pfc._figure_io import save_figure
 from chaotic_pfc._i18n import t
 
 # ── LaTeX availability (cached at import time) ──────────────────────────────
@@ -161,9 +162,7 @@ def _save(fig: Figure, path: str | Path | None, **savefig_kwargs) -> None:
 
     Extra keyword arguments are forwarded to ``fig.savefig()``.
     """
-    if path is not None:
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(path, **savefig_kwargs)
+    save_figure(fig, path, **savefig_kwargs)
 
 
 # ── 1. Attractor ────────────────────────────────────────────────────────────
