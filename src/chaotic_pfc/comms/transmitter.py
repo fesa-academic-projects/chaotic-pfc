@@ -35,6 +35,7 @@ from ..dynamics.maps import _henon_n4_step_inplace
 
 def transmit(
     message: NDArray,
+    *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
@@ -97,6 +98,7 @@ def transmit(
 def transmit_order_n(
     message: NDArray,
     fir_coeffs: NDArray,
+    *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,

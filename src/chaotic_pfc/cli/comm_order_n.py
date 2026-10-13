@@ -35,7 +35,9 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument(
         "--cutoff", type=float, default=cfg.channel.cutoff, help="External channel cutoff"
     )
-    p.add_argument("--num-taps", type=int, default=cfg.channel.num_taps, help="External channel taps")
+    p.add_argument(
+        "--num-taps", type=int, default=cfg.channel.num_taps, help="External channel taps"
+    )
     p.add_argument(
         "--internal-cutoff",
         type=float,
@@ -95,7 +97,11 @@ def run(args: argparse.Namespace) -> int:
     print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}  text={args.text!r}")
     print(f"    MSE (n > {cfg.comm.transient}): {mse:.4e}")
     report_comm_metrics(
-        m, m_hat, transient=cfg.comm.transient, bit_period=args.period, delay=(args.num_taps - 1) // 2
+        m,
+        m_hat,
+        transient=cfg.comm.transient,
+        bit_period=args.period,
+        delay=(args.num_taps - 1) // 2,
     )
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)

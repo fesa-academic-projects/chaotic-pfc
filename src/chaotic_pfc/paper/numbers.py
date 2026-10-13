@@ -486,7 +486,12 @@ def _abs_gain(sr) -> np.ndarray:
 def _gain_band_table(recs, filter_type: str, out: dict, key: str) -> None:
     """Count |G| >= 0.1 points per N_z x (omega_c/pi band)."""
     nz_vals = sorted(
-        {int(o) - 1 for r in recs if r.filter_type == filter_type for o in np.asarray(r.num_taps_grid)}
+        {
+            int(o) - 1
+            for r in recs
+            if r.filter_type == filter_type
+            for o in np.asarray(r.num_taps_grid)
+        }
     )
     n_bands = 10
     counts = {nz: [0] * n_bands for nz in nz_vals}

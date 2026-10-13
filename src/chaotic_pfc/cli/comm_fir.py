@@ -72,7 +72,9 @@ def run(args: argparse.Namespace) -> int:
         f"[04] FIR channel  |  N={args.N:,}  mu={args.mu}  wc/pi={args.cutoff}  taps={args.num_taps}  text={args.text!r}"
     )
     print(f"    MSE (n > {tr}): {mse:.4e}")
-    report_comm_metrics(m, m_hat, transient=tr, bit_period=args.period, delay=(args.num_taps - 1) // 2)
+    report_comm_metrics(
+        m, m_hat, transient=tr, bit_period=args.period, delay=(args.num_taps - 1) // 2
+    )
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 

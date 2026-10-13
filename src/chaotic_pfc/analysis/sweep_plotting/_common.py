@@ -278,7 +278,9 @@ def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArr
 
     unified: list[SweepResult] = []
     for sr in raw:
-        if sr.num_taps_grid.shape == ref.num_taps_grid.shape and np.array_equal(sr.num_taps_grid, ref.num_taps_grid):
+        if sr.num_taps_grid.shape == ref.num_taps_grid.shape and np.array_equal(
+            sr.num_taps_grid, ref.num_taps_grid
+        ):
             unified.append(sr)
         else:
             # Resample to fine grid via nearest-neighbour in order space
@@ -378,6 +380,8 @@ def _unpack(
         num_taps_grid = result.num_taps_grid
         cutoff_grid = result.cutoff_grid
     if h is None or num_taps_grid is None or cutoff_grid is None:
-        raise ValueError("Provide either a SweepResult or the (h, num_taps_grid, cutoff_grid) triple.")
+        raise ValueError(
+            "Provide either a SweepResult or the (h, num_taps_grid, cutoff_grid) triple."
+        )
     Nz = np.asarray(num_taps_grid) - 1
     return np.asarray(h), Nz, np.asarray(cutoff_grid)

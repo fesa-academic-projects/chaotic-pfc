@@ -115,8 +115,12 @@ class TestSweepKaiserBeta(unittest.TestCase):
     def test_precompute_with_two_betas_differs(self):
         num_taps_grid = np.array([5, 7])
         cutoff_grid = np.array([0.3, 0.5])
-        bank_a, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=2.0)
-        bank_b, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=10.0)
+        bank_a, _ = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=2.0
+        )
+        bank_b, _ = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=10.0
+        )
         self.assertFalse(np.allclose(bank_a, bank_b))
 
     def test_precompute_kaiser_negative_beta_raises(self):

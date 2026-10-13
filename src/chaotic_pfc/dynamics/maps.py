@@ -52,6 +52,7 @@ from scipy.signal import firwin
 
 def henon_standard(
     steps: int,
+    *,
     x0: float = 0.0,
     y0: float = 0.0,
     alpha: float = 1.4,
@@ -96,6 +97,7 @@ def henon_standard(
 
 def henon_generalised(
     steps: int,
+    *,
     x0: float = 0.0,
     y0: float = 0.0,
     alpha: float = 1.4,
@@ -139,6 +141,7 @@ def henon_generalised(
 
 def henon_filtered(
     steps: int,
+    *,
     x0: float = 0.0,
     y0: float = 0.0,
     alpha: float = 1.4,
@@ -306,6 +309,7 @@ def henon_order_n(
 
 def henon_fir_sequence(
     N: int,
+    *,
     alpha: float = 1.4,
     beta: float = 0.3,
     num_taps: int = 5,

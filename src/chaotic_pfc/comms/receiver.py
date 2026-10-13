@@ -36,6 +36,7 @@ from ..dynamics.maps import _henon_n4_step_inplace
 
 def receive(
     r: NDArray,
+    *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
@@ -105,6 +106,7 @@ def receive(
 def receive_order_n(
     r: NDArray,
     fir_coeffs: NDArray,
+    *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,

@@ -98,7 +98,9 @@ class TestFirBank(unittest.TestCase):
     def test_bandpass_produces_valid_coeffs(self):
         num_taps_grid = np.array([11, 21])
         cutoff_grid = np.array([0.3, 0.5])
-        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2)
+        bank, gains = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2
+        )
         self.assertEqual(bank.shape, (2, 2, 21))
         self.assertEqual(gains.shape, (2, 2))
         self.assertTrue(np.all(np.isfinite(bank)))
@@ -107,7 +109,9 @@ class TestFirBank(unittest.TestCase):
     def test_bandstop_produces_valid_coeffs(self):
         num_taps_grid = np.array([11, 21])
         cutoff_grid = np.array([0.3, 0.5])
-        bank, _gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandstop", "hamming", bandwidth=0.2)
+        bank, _gains = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandstop", "hamming", bandwidth=0.2
+        )
         self.assertEqual(bank.shape, (2, 2, 21))
         self.assertTrue(np.all(np.isfinite(bank)))
 
@@ -115,7 +119,9 @@ class TestFirBank(unittest.TestCase):
         """Bandpass doesn't require odd num_taps_grid (unlike highpass/bandstop)."""
         num_taps_grid = np.array([4, 6, 8])
         cutoff_grid = np.array([0.4])
-        bank, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2)
+        bank, _ = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2
+        )
         self.assertEqual(bank.shape, (3, 1, 8))
 
     def test_bandstop_rejects_even_orders(self):
@@ -129,7 +135,9 @@ class TestFirBank(unittest.TestCase):
         """Bandpass filters should have near-zero DC gain."""
         num_taps_grid = np.array([21, 31])
         cutoff_grid = np.array([0.5])
-        _, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2)
+        _, gains = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.2
+        )
         self.assertTrue(np.all(np.abs(gains) < 0.1))
 
     def test_bandwidth_clamps_to_boundaries(self):
@@ -137,11 +145,15 @@ class TestFirBank(unittest.TestCase):
         num_taps_grid = np.array([11])
         # centre near 0 → low edge clamped to 1e-5
         cutoff_grid = np.array([0.05])
-        bank, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.3)
+        bank, _ = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.3
+        )
         self.assertTrue(np.all(np.isfinite(bank)))
         # centre near 1 → high edge clamped to 0.99999
         cutoff_grid = np.array([0.95])
-        bank, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.3)
+        bank, _ = precompute_fir_bank(
+            num_taps_grid, cutoff_grid, "bandpass", "hamming", bandwidth=0.3
+        )
         self.assertTrue(np.all(np.isfinite(bank)))
 
 

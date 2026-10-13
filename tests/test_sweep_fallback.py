@@ -53,7 +53,9 @@ class TestHybridFallback(unittest.TestCase):
             _sweep_kernel,
         )
 
-        num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, p3 = self._marginal_cell_setup()
+        num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, p3 = (
+            self._marginal_cell_setup()
+        )
         p2 = p1
         Nmap, Nitera = 3000, 500
         dim = 10

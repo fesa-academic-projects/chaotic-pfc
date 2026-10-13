@@ -214,7 +214,12 @@ def sweet_spot_per_filter(
     best: dict[str, SweetSpot] = {}
 
     for (ft, win), result in sweep_results.items():
-        h, h_std, num_taps_grid, cutoff_grid = result.h, result.h_std, result.num_taps_grid, result.cutoff_grid
+        h, h_std, num_taps_grid, cutoff_grid = (
+            result.h,
+            result.h_std,
+            result.num_taps_grid,
+            result.cutoff_grid,
+        )
         n_initial = result.metadata.get("n_initial", None)
         for i in range(len(num_taps_grid)):
             for j in range(len(cutoff_grid)):

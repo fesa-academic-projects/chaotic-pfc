@@ -36,6 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `run_sweep`, `precompute_fir_bank` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
   | `plot_classification_interleaved`, `plot_heatmap_continuous` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
   | `SweepResult` (attributes) | `.orders`, `.cutoffs` | `.num_taps_grid`, `.cutoff_grid` (the `.npz` keys `coef`/`wcorte` are unchanged in 0.9) |
+- Public functions take their non-leading arguments by keyword only,
+  e.g. `henon_standard(steps, *, x0, y0, alpha, beta)`,
+  `transmit(message, *, mu, alpha, beta, x0, y0)`,
+  `fir_channel(s, *, num_taps, cutoff, window)`; the filter argument order is
+  `num_taps` then `cutoff`.
 
 ### Added
 - `chaotic-pfc paper numbers|audit|figures` and

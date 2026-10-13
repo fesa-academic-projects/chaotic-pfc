@@ -51,8 +51,9 @@ def ideal_channel(s: NDArray) -> NDArray:
 
 def fir_channel(
     s: NDArray,
-    cutoff: float = 0.99,
+    *,
     num_taps: int = 201,
+    cutoff: float = 0.99,
     window: str = "hamming",
 ) -> tuple[NDArray, NDArray]:
     """Transmit ``s`` through a symmetric FIR low-pass channel.
@@ -66,12 +67,12 @@ def fir_channel(
     ----------
     s
         Transmitted signal, shape ``(N,)``.
+    num_taps
+        Length of the FIR filter in samples. Must be a positive integer.
     cutoff
         Normalised cutoff frequency ``ω_c / π ∈ (0, 1)``. Defaults to
         ``0.99`` — i.e. the channel passes almost everything, mimicking
         a very lightly band-limited link.
-    num_taps
-        Length of the FIR filter in samples. Must be a positive integer.
     window
         Window function passed through to ``firwin``. Any name accepted
         by :func:`scipy.signal.get_window` is valid — common choices are

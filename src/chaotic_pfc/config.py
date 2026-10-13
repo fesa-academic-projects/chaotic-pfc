@@ -277,7 +277,7 @@ class ExperimentConfig:
             period=self.comm.message_period,
             text=self.comm.message_text,
             cutoff=self.channel.cutoff,
-            taps=self.channel.num_taps,
+            num_taps=self.channel.num_taps,
             Nc=self.internal_fir.num_taps,
             internal_cutoff=self.internal_fir.cutoff,
             steps=50,

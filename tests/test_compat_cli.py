@@ -198,7 +198,7 @@ class TestRunAllSmoke(_IsolatedCwdMixin, unittest.TestCase):
             "mu",
             "period",
             "cutoff",
-            "taps",
+            "num_taps",
             "Nc",
             "internal_cutoff",
             "steps",
