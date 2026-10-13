@@ -82,7 +82,12 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
     """Execute ``run sweep beta-sweep``."""
     import numpy as np
 
-    from chaotic_pfc.analysis.sweep import quick_sweep_params, run_sweep, save_sweep
+    from chaotic_pfc.analysis.sweep import (
+        QuickSweepConfig,
+        quick_sweep_params,
+        run_sweep,
+        save_sweep,
+    )
 
     betas = beta_values(args.beta_min, args.beta_max, args.beta_step)
     data_dir = Path(args.data_dir)
@@ -93,8 +98,9 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
         orders_lp = None
         orders_hp = None
         cutoff_grid = None
-        params = dict(Nitera=500, Nmap=3000, n_initial=25)
-    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.05))
+        params = QuickSweepConfig(
+            Nitera=500, Nmap=3000, n_initial=25, bandwidth=getattr(args, "bandwidth", 0.05)
+        )
     num_taps_grid = orders_hp if args.filter_type in ("highpass", "bandstop") else orders_lp
 
     total_start = time.perf_counter()
@@ -111,7 +117,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
             cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=beta,
-            **params,  # type: ignore[arg-type]
+            **params,
         )
         elapsed = time.perf_counter() - t0
         warmup_needed = False

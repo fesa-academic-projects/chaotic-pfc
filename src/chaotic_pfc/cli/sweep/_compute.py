@@ -108,7 +108,12 @@ def run_compute(args: argparse.Namespace) -> int:
     """Execute ``run sweep compute``."""
     import numpy as np
 
-    from chaotic_pfc.analysis.sweep import quick_sweep_params, run_sweep, save_sweep
+    from chaotic_pfc.analysis.sweep import (
+        QuickSweepConfig,
+        quick_sweep_params,
+        run_sweep,
+        save_sweep,
+    )
 
     # ── Argument validation ──────────────────────────────────────────────
     # --adaptive applies inside the Lyapunov loop. --quick already runs a
@@ -128,15 +133,16 @@ def run_compute(args: argparse.Namespace) -> int:
     combos = _build_combinations(args)
     data_dir = Path(args.data_dir)
 
-    params: dict[str, float | int]
+    params: QuickSweepConfig
     if args.quick:
         orders_lp, orders_hp, cutoff_grid, params = quick_sweep_params()
     else:
         orders_lp = None  # → run_sweep default: np.arange(2, 42)
         orders_hp = None  # → run_sweep default: np.arange(3, 43, 2)
         cutoff_grid = None  # → module default: 100 points
-        params = dict(Nitera=500, Nmap=3000, n_initial=25)
-    params.setdefault("bandwidth", getattr(args, "bandwidth", 0.05))
+        params = QuickSweepConfig(
+            Nitera=500, Nmap=3000, n_initial=25, bandwidth=getattr(args, "bandwidth", 0.05)
+        )
 
     # Adaptive parameters propagated only when the user opted in. Passing
     # adaptive=False here makes Nmap_min/tol irrelevant in run_sweep
@@ -160,7 +166,7 @@ def run_compute(args: argparse.Namespace) -> int:
             cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=args.kaiser_beta,
-            **params,  # type: ignore[arg-type]
+            **params,
             **adaptive_kwargs,
         )
         elapsed = time.perf_counter() - t0

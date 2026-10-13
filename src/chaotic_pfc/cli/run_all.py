@@ -50,6 +50,7 @@ import numpy as np
 from chaotic_pfc.analysis.sweep import (
     FILTER_TYPES,
     WINDOWS,
+    QuickSweepConfig,
     quick_sweep_params,
     run_sweep,
     save_sweep,
@@ -164,7 +165,7 @@ def _run_all_sweeps(
         orders_lp = None  # → run_sweep default (np.arange(2, 42))
         orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
         cutoff_grid = None
-        params = dict(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.05)
+        params = QuickSweepConfig(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.05)
 
     # Adaptive parameters propagated only when the user opted in.
     adaptive_kwargs: dict = {"adaptive": adaptive}
@@ -205,7 +206,7 @@ def _run_all_sweeps(
             cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=beta if beta is not None else 5.0,
-            **params,  # type: ignore[arg-type]
+            **params,
             **adaptive_kwargs,
         )
         elapsed = time.perf_counter() - t0
