@@ -75,6 +75,8 @@ from chaotic_pfc.dynamics.lyapunov import (
     lyapunov_henon2d_ensemble,
     lyapunov_max,
     lyapunov_max_ensemble,
+    lyapunov_max_pole_filtered,
+    lyapunov_spectrum,
 )
 from chaotic_pfc.dynamics.maps import (
     henon_filtered,
@@ -138,6 +140,8 @@ __all__ = [
     "lyapunov_henon2d_ensemble",
     "lyapunov_max",
     "lyapunov_max_ensemble",
+    "lyapunov_max_pole_filtered",
+    "lyapunov_spectrum",
     "optimal_parameters",
     "plot_all",
     "plot_chaotic_all",

@@ -10,6 +10,8 @@ from .lyapunov import (
     lyapunov_henon2d_ensemble,
     lyapunov_max,
     lyapunov_max_ensemble,
+    lyapunov_max_pole_filtered,
+    lyapunov_spectrum,
 )
 from .maps import (
     henon_filtered,
@@ -35,6 +37,8 @@ __all__ = [
     "lyapunov_henon2d_ensemble",
     "lyapunov_max",
     "lyapunov_max_ensemble",
+    "lyapunov_max_pole_filtered",
+    "lyapunov_spectrum",
     "psd_normalised",
     "sinusoidal_message",
 ]

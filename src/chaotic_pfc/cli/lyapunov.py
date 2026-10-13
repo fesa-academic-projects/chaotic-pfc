@@ -93,8 +93,8 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.dynamics.lyapunov import (
         lyapunov_henon2d,
         lyapunov_henon2d_ensemble,
-        lyapunov_max,
         lyapunov_max_ensemble,
+        lyapunov_max_pole_filtered,
     )
 
     alpha, beta = cfg.comm.henon.a, cfg.comm.henon.b
@@ -134,7 +134,7 @@ def run(args: argparse.Namespace) -> int:
         f"r={args.pole_radius}  w0={args.w0}"
     )
 
-    res4d = lyapunov_max(
+    res4d = lyapunov_max_pole_filtered(
         alpha=alpha,
         beta=beta,
         Gz=cfg.lyapunov.Gz,

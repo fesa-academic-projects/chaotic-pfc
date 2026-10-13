@@ -13,20 +13,20 @@ from chaotic_pfc.dynamics.lyapunov import (
     fixed_point_stability,
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
-    lyapunov_max,
     lyapunov_max_ensemble,
+    lyapunov_max_pole_filtered,
 )
 
 
 class TestLyapunov(unittest.TestCase):
     def test_lyapunov_max_returns_expected_keys(self):
-        result = lyapunov_max(Nitera=200, Ndiscard=100)
+        result = lyapunov_max_pole_filtered(Nitera=200, Ndiscard=100)
         self.assertIsNotNone(result.lyapunov_max)
         self.assertIsNotNone(result.all_exponents)
         self.assertEqual(len(result.all_exponents), 4)
 
     def test_positive_exponent(self):
-        result = lyapunov_max(pole_radius=0.0, Nitera=500, Ndiscard=200)
+        result = lyapunov_max_pole_filtered(pole_radius=0.0, Nitera=500, Ndiscard=200)
         self.assertGreater(result.lyapunov_max, 0)
 
     def test_fixed_point_stability(self):

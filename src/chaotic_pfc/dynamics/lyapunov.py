@@ -211,7 +211,87 @@ def _lyapunov_spectrum(
     return np.array([np.mean(log_r[k, :]) for k in range(dim)])
 
 
+def lyapunov_spectrum(
+    iterate: Callable[[NDArray], NDArray],
+    jacobian: Callable[[NDArray], NDArray],
+    x0: NDArray,
+    *,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+) -> NDArray:
+    """Estimate the full Lyapunov spectrum of an arbitrary discrete-time map.
+
+    The estimator is generic: give it the map ``x -> iterate(x)`` and its
+    Jacobian ``x -> jacobian(x)`` and it returns the ``dim`` exponents from the
+    QR (modified Gram--Schmidt) algorithm, the same core the Hénon wrappers use.
+
+    Parameters
+    ----------
+    iterate
+        ``x_next = iterate(x)`` for a state vector ``x`` of shape ``(dim,)``.
+    jacobian
+        ``J = jacobian(x)`` of shape ``(dim, dim)``.
+    x0
+        Initial condition, shape ``(dim,)``.
+    Nitera
+        Number of QR iterations used to accumulate the log-norms.
+    Ndiscard
+        Number of burn-in iterations discarded before the QR loop.
+
+    Returns
+    -------
+    ndarray, shape (dim,)
+        Lyapunov exponents in decreasing order of their finite-time estimate.
+
+    Examples
+    --------
+    The standard Hénon map, ``x1' = 1.4 - x1**2 + 0.3*x2``, ``x2' = x1``, has a
+    largest exponent of about 0.419.
+
+    >>> import numpy as np
+    >>> from chaotic_pfc import lyapunov_spectrum
+    >>> spectrum = lyapunov_spectrum(
+    ...     iterate=lambda x: np.array([1.4 - x[0] ** 2 + 0.3 * x[1], x[0]]),
+    ...     jacobian=lambda x: np.array([[-2.0 * x[0], 0.3], [1.0, 0.0]]),
+    ...     x0=np.array([0.1, 0.1]),
+    ... )
+    >>> bool(spectrum[0] > 0.40)
+    True
+
+    See Also
+    --------
+    lyapunov_max : The largest exponent only.
+    lyapunov_henon2d : Hénon wrapper using this estimator.
+    """
+    return _lyapunov_spectrum(x0, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+
+
 def lyapunov_max(
+    iterate: Callable[[NDArray], NDArray],
+    jacobian: Callable[[NDArray], NDArray],
+    x0: NDArray,
+    *,
+    Nitera: int = 2000,
+    Ndiscard: int = 1000,
+) -> float:
+    """Largest Lyapunov exponent of an arbitrary map (see :func:`lyapunov_spectrum`).
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from chaotic_pfc import lyapunov_max
+    >>> bool(lyapunov_max(
+    ...     iterate=lambda x: np.array([1.4 - x[0] ** 2 + 0.3 * x[1], x[0]]),
+    ...     jacobian=lambda x: np.array([[-2.0 * x[0], 0.3], [1.0, 0.0]]),
+    ...     x0=np.array([0.1, 0.1]),
+    ... ) > 0.40)
+    True
+    """
+    exponents = _lyapunov_spectrum(x0, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+    return float(np.max(exponents))
+
+
+def lyapunov_max_pole_filtered(
     alpha: float = 1.4,
     beta: float = 0.3,
     Gz: float = 1.0,

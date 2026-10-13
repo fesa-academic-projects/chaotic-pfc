@@ -158,7 +158,7 @@ the one used by the code (it stays accurate as :math:`G \to 0`).  For the
 system to have a bounded attractor, the fixed point must be finite
 and the filter must be stable (all poles inside the unit circle).
 
-The function :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_max` handles
+The function :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_max_pole_filtered` handles
 the 4‑D pole‑filtered variant, which introduces an additional stability
 parameter (pole radius :math:`r`) that must satisfy :math:`0 \le r < 1`.
 
