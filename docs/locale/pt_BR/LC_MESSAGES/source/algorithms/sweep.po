@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 23:18-0300\n"
+"POT-Creation-Date: 2026-10-13 01:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -458,24 +458,30 @@ msgid ""
 "(bandpass) and ~0 % (bandstop). The fallback is a material but not "
 "dominant cost; it is kept because it removes the classification-flip "
 "risk, and any future optimization must preserve the bit-exact "
-"reproduction described above."
+"reproduction described above. A dedicated optimization attempt (measured "
+"on the Kaiser lowpass β_K=13.5 sweep: reusing the post-burn-in state "
+"bounds the saving at the burn-in share, ~5.6 % of the total) did not "
+"reach the 10 % adoption threshold and was dropped; see the project's issue tracker."
 msgstr ""
 "O custo em tempo de parede do recálculo foi medido nas quatro "
 "configurações de base (Kaiser, o melhor :math:`\\beta_K` por tipo de "
 "filtro, a grade completa :math:`40 \\times 100`, 25 condições iniciais, "
 "parada antecipada adaptativa) cronometrando ``fallback_mode=1`` contra "
-"``fallback_mode=0``: o recálculo com espectro completo leva cerca de "
-"**23 % do tempo total da varredura** — 23 % (passa-baixas), 20 % "
-"(passa-altas), 27 % (passa-faixa) e ~0 % (rejeita-faixa). O fallback é "
-"um custo material, mas não dominante; ele é mantido porque elimina o "
-"risco de troca de classificação, e qualquer otimização futura deve "
-"preservar a reprodução bit-a-bit descrita acima."
+"``fallback_mode=0``: o recálculo com espectro completo leva cerca de **23"
+" % do tempo total da varredura** — 23 % (passa-baixas), 20 % (passa-"
+"altas), 27 % (passa-faixa) e ~0 % (rejeita-faixa). O fallback é um custo "
+"material, mas não dominante; ele é mantido porque elimina o risco de "
+"troca de classificação, e qualquer otimização futura deve preservar a "
+"reprodução bit-a-bit descrita acima. Uma tentativa de otimização dedicada "
+"(medida na varredura Kaiser passa-baixas β_K=13,5: reutilizar o estado "
+"pós-burn-in limita a economia à fração do burn-in, ~5,6 % do total) não "
+"alcançou o limiar de adoção de 10 % e foi descartada; ver the project's issue tracker."
 
-#: ../../source/algorithms/sweep.rst:193
+#: ../../source/algorithms/sweep.rst:196
 msgid "Versioned checkpoint policy"
 msgstr "Política de checkpoints versionados"
 
-#: ../../source/algorithms/sweep.rst:195
+#: ../../source/algorithms/sweep.rst:198
 msgid ""
 "The ``.npz`` checkpoints committed to the repository were regenerated "
 "with the current kernel (the cancellation-free positive fixed point and "
@@ -493,11 +499,11 @@ msgstr ""
 "essa igualdade é uma regressão, e os checkpoints devem então ser "
 "regenerados deliberadamente com ``chaotic-pfc sweeps regenerate``."
 
-#: ../../source/algorithms/sweep.rst:206
+#: ../../source/algorithms/sweep.rst:209
 msgid "Backend dependence (Numba versus pure Python)"
 msgstr "Dependência do backend (Numba versus Python puro)"
 
-#: ../../source/algorithms/sweep.rst:208
+#: ../../source/algorithms/sweep.rst:211
 #, python-brace-format
 msgid ""
 "The bit-for-bit reproduction above requires Numba.  Without it "
@@ -517,7 +523,7 @@ msgstr ""
 "\\{2,\\dots,11\\}`, os 100 cortes, 25 condições iniciais, semente 42 — "
 "1000 células):"
 
-#: ../../source/algorithms/sweep.rst:216
+#: ../../source/algorithms/sweep.rst:219
 msgid ""
 "the number of chaotic points is the same in both backends, :math:`N_c = "
 "563`;"
@@ -525,11 +531,11 @@ msgstr ""
 "o número de pontos caóticos é o mesmo nos dois backends, :math:`N_c = "
 "563`;"
 
-#: ../../source/algorithms/sweep.rst:218
+#: ../../source/algorithms/sweep.rst:221
 msgid "**no cell changes class** (chaotic / periodic / divergent);"
 msgstr "**nenhuma célula muda de classe** (caótico / periódico / divergente);"
 
-#: ../../source/algorithms/sweep.rst:219
+#: ../../source/algorithms/sweep.rst:222
 #, python-brace-format
 msgid ""
 "over the cells that are chaotic in both, :math:`|\\Delta\\lambda_1|` is "
@@ -541,7 +547,7 @@ msgstr ""
 "10^{-3}` — abaixo da margem de célula marginal de :math:`5 \\times "
 "10^{-3}`;"
 
-#: ../../source/algorithms/sweep.rst:223
+#: ../../source/algorithms/sweep.rst:226
 #, python-format
 msgid ""
 "the raw ``h`` value is bit-identical in 38 % of the cells and differs in "
@@ -551,7 +557,7 @@ msgstr ""
 "o valor bruto de ``h`` é bit-idêntico em 38 % das células e difere nos 62"
 " % restantes, sempre no nível do pequeno :math:`\\Delta\\lambda_1` acima."
 
-#: ../../source/algorithms/sweep.rst:227
+#: ../../source/algorithms/sweep.rst:230
 msgid ""
 "The discrepancy is not in the map: ``_henon_n12_inplace`` / "
 "``_henon_nN_inplace``, the fixed point, ``log``, ``sqrt`` and scalar dot "
@@ -573,11 +579,11 @@ msgstr ""
 "diferença de ~1 ULP.  Instale o Numba (o extra ``[fast]``) sempre que os "
 "checkpoints precisarem ser reproduzidos exatamente."
 
-#: ../../source/algorithms/sweep.rst:239
+#: ../../source/algorithms/sweep.rst:242
 msgid "Divergence handling (Opção B)"
 msgstr "Tratamento de divergência (Opção B)"
 
-#: ../../source/algorithms/sweep.rst:241
+#: ../../source/algorithms/sweep.rst:244
 msgid ""
 "An orbit is taken as unbounded when its state becomes non-finite (NaN or "
 "infinity); from that iteration on every term of the exponent is non-"
@@ -589,7 +595,7 @@ msgstr ""
 "finito, de modo que a simulação pode ser interrompida.  A regra de "
 "divergência tem três passos, como no artigo:"
 
-#: ../../source/algorithms/sweep.rst:246
+#: ../../source/algorithms/sweep.rst:249
 msgid ""
 "**Estimator.** An initial condition whose state becomes non-finite is "
 "reported as non-finite."
@@ -597,7 +603,7 @@ msgstr ""
 "**Estimador.** Uma condição inicial cujo estado se torna não finito é "
 "reportada como não finita."
 
-#: ../../source/algorithms/sweep.rst:248
+#: ../../source/algorithms/sweep.rst:251
 msgid ""
 "**Burn-in.** A grid point is **divergent** when at least one of its "
 "``n_initial`` initial conditions becomes non-finite during the ``Nitera``"
@@ -607,7 +613,7 @@ msgstr ""
 "suas ``n_initial`` condições iniciais se torna não finita durante as "
 "``Nitera`` iterações de burn-in."
 
-#: ../../source/algorithms/sweep.rst:251
+#: ../../source/algorithms/sweep.rst:254
 msgid ""
 "**After the burn-in.** An initial condition that becomes non-finite only "
 "inside the ``Nmap`` estimation window is **discarded**, and the value of "
@@ -621,7 +627,7 @@ msgstr ""
 "iniciais restantes.  Um ponto cujos coeficientes de filtro são não "
 "finitos também é divergente."
 
-#: ../../source/algorithms/sweep.rst:257
+#: ../../source/algorithms/sweep.rst:260
 #, python-brace-format
 msgid ""
 "The original implementation used a sentinel value :math:`-1 \\times "
@@ -640,15 +646,15 @@ msgstr ""
 ":func:`~chaotic_pfc.analysis.stats.lmax_statistics` o ignora ao calcular "
 "médias e intervalos de confiança."
 
-#: ../../source/algorithms/sweep.rst:267
+#: ../../source/algorithms/sweep.rst:270
 msgid "Reproducibility"
 msgstr "Reprodutibilidade"
 
-#: ../../source/algorithms/sweep.rst:269
+#: ../../source/algorithms/sweep.rst:272
 msgid "Every sweep is **deterministic** given the same seed:"
 msgstr "Toda varredura é **determinística** dada a mesma semente:"
 
-#: ../../source/algorithms/sweep.rst:271
+#: ../../source/algorithms/sweep.rst:274
 msgid ""
 "The user seed (``seed`` kwarg) initialises a single "
 ":func:`numpy.random.default_rng` generator; there are no per‑worker "
@@ -657,7 +663,7 @@ msgstr ""
 "A semente do usuário (argumento ``seed``) inicializa um único gerador "
 ":func:`numpy.random.default_rng`; não há sub-sementes por worker."
 
-#: ../../source/algorithms/sweep.rst:274
+#: ../../source/algorithms/sweep.rst:277
 msgid ""
 "Initial‑condition perturbations are drawn on the Python side (before "
 "entering Numba)."
@@ -665,7 +671,7 @@ msgstr ""
 "As perturbações das condições iniciais são geradas no lado Python (antes "
 "de entrar no Numba)."
 
-#: ../../source/algorithms/sweep.rst:276
+#: ../../source/algorithms/sweep.rst:279
 msgid ""
 "The Numba kernel consumes those pre‑drawn perturbations and holds no "
 "random state of its own, only deterministic arithmetic."
@@ -673,7 +679,7 @@ msgstr ""
 "O kernel Numba consome essas perturbações pré-geradas e não mantém estado"
 " aleatório próprio, apenas aritmética determinística."
 
-#: ../../source/algorithms/sweep.rst:279
+#: ../../source/algorithms/sweep.rst:282
 msgid ""
 "Running the same sweep twice with the same seed produces byte‑identical "
 "``.npz`` files.  This is critical for scientific reproducibility; the CI "
@@ -685,11 +691,11 @@ msgstr ""
 "científica; o pipeline de CI apenas faz um smoke test da orquestração com"
 " ``chaotic-pfc run all --quick-sweep``."
 
-#: ../../source/algorithms/sweep.rst:285
+#: ../../source/algorithms/sweep.rst:288
 msgid "Known limitations"
 msgstr "Limitações conhecidas"
 
-#: ../../source/algorithms/sweep.rst:287
+#: ../../source/algorithms/sweep.rst:290
 msgid ""
 "**Sweep duration.**  A full sweep (40 orders × 100 cutoffs × 25 ICs × "
 "3000 iterations) takes hours on consumer hardware.  The quick‑mode "
@@ -701,7 +707,7 @@ msgstr ""
 "parâmetros do modo rápido (~6 ordens × 10 cortes × 3 CIs × 50 iterações) "
 "executam em segundos e são usados para smoke testing no CI."
 
-#: ../../source/algorithms/sweep.rst:292
+#: ../../source/algorithms/sweep.rst:295
 msgid ""
 "**Memory.**  The FIR coefficient bank for 40 orders × 100 cutoffs "
 "requires ~320 KB — negligible.  The bottleneck is CPU, not memory."
@@ -709,13 +715,13 @@ msgstr ""
 "**Memória.**  O banco de coeficientes FIR para 40 ordens × 100 cortes "
 "requer ~320 KB — desprezível.  O gargalo é CPU, não memória."
 
-#: ../../source/algorithms/sweep.rst:295
+#: ../../source/algorithms/sweep.rst:298
 msgid "**Warmup compilation.**  The first call to ``_sweep_kernel`` triggers"
 msgstr ""
 "**Compilação de aquecimento.**  A primeira chamada a ``_sweep_kernel`` "
 "dispara"
 
-#: ../../source/algorithms/sweep.rst:296
+#: ../../source/algorithms/sweep.rst:299
 msgid ""
 "Numba's JIT compilation, which adds a few seconds of startup time. The "
 "orchestration layer runs a tiny warmup sweep (:code:`warmup=True`) so "

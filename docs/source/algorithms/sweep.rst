@@ -187,7 +187,10 @@ recomputation takes about **23 % of the total sweep time** — 23 % (lowpass),
 20 % (highpass), 27 % (bandpass) and ~0 % (bandstop). The fallback is a
 material but not dominant cost; it is kept because it removes the
 classification-flip risk, and any future optimization must preserve the
-bit-exact reproduction described above.
+bit-exact reproduction described above. A dedicated optimization attempt
+(measured on the Kaiser lowpass β_K=13.5 sweep: reusing the post-burn-in state
+bounds the saving at the burn-in share, ~5.6 % of the total) did not reach the
+10 % adoption threshold and was dropped; see the project's issue tracker.
 
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

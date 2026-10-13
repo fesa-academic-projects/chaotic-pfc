@@ -187,6 +187,7 @@ nitpick_ignore_regex = [
     (r"py:class", r"^(argparse|plotly)\..*"),
     (r"py:class", r"^sys\.argv.*$"),
     (r"py:data", r"^(WINDOWS|FILTER_TYPES|WINDOW_DISPLAY_NAMES)$"),
+    (r"ref\.python", r"^n_initial$"),
     (r"py:data", r"^(FIGURE_FILENAMES|DIFFICULTY_FIGURE_FILENAME)$"),
     (r"py:data", r"^(CHAOTIC_MAP_FILENAME|CHAOTIC_DENSITY_FILENAME)$"),
     (r"py:func", r"^text_message$"),

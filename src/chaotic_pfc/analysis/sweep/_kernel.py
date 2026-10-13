@@ -527,6 +527,63 @@ def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
     return interleaved.astype(np.int64)
 
 
+@njit(cache=True)
+def _burn_in_n12(xx, Nitera, alpha, beta, c):
+    """Discard the Ns<=2 transient in place, leaving the state in row 0.
+
+    Non-finite states are absorbing, so the loop stops early (checked every 64
+    iterations); the post-condition check is left to the caller.
+    """
+    tick = 0
+    for it_t in range(Nitera):
+        _henon_n12_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
+        tick = 1 - tick
+        if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
+            break
+    if tick == 1:
+        xx[0, 0] = xx[1, 0]
+        xx[0, 1] = xx[1, 1]
+
+
+@njit(cache=True)
+def _burn_in_nN(xx, Ns, Nitera, alpha, beta, c):
+    """Discard the Ns>=3 transient in place, leaving the state in row 0."""
+    tick = 0
+    for it_t in range(Nitera):
+        _henon_nN_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
+        tick = 1 - tick
+        if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
+            break
+    if tick == 1:
+        for k in range(Ns):
+            xx[0, k] = xx[1, k]
+
+
+@njit(cache=True)
+def _samples_summary(samples, iters_samples, n_initial):
+    """Mean, std and mean iteration count over the finite samples.
+
+    Returns ``(nan, nan, nan)`` when every sample is non-finite.
+    """
+    total = 0.0
+    iters_total = 0
+    count = 0
+    for ci in range(n_initial):
+        v = samples[ci]
+        if not np.isnan(v):
+            total += v
+            iters_total += iters_samples[ci]
+            count += 1
+    if count == 0:
+        return np.nan, np.nan, np.nan
+    mean = total / count
+    var = 0.0
+    for v in samples:
+        if not np.isnan(v):
+            var += (v - mean) ** 2
+    return mean, (var / count) ** 0.5, iters_total / count
+
+
 @njit(parallel=True, cache=True)
 def _sweep_kernel(
     num_taps_grid: NDArray,
@@ -615,19 +672,7 @@ def _sweep_kernel(
                 else:
                     xx[0, 0] = 0.1 * noise[0] + p1
                     xx[0, 1] = 0.1 * noise[1] + p2
-                tick = 0
-                for it_t in range(Nitera):
-                    _henon_n12_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
-                    tick = 1 - tick
-                    # Non-finite states are absorbing in the Henon map:
-                    # once component 0 is Inf/NaN, subsequent iterates
-                    # remain non-finite, and the post-loop check below
-                    # catches it with the same outcome.
-                    if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
-                        break
-                if tick == 1:
-                    xx[0, 0] = xx[1, 0]
-                    xx[0, 1] = xx[1, 1]
+                _burn_in_n12(xx, Nitera, alpha, beta, c)
                 if np.isnan(xx[0, 0]) or np.isinf(xx[0, 0]):
                     diverged = True
                     break
@@ -642,15 +687,7 @@ def _sweep_kernel(
                 xx[0, 2] = 0.1 * noise[2] + p3
                 for k in range(3, Ns):
                     xx[0, k] = 0.1 * noise[k] + p1
-                tick = 0
-                for it_t in range(Nitera):
-                    _henon_nN_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
-                    tick = 1 - tick
-                    if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
-                        break
-                if tick == 1:
-                    for k in range(Ns):
-                        xx[0, k] = xx[1, k]
+                _burn_in_nN(xx, Ns, Nitera, alpha, beta, c)
                 if np.isnan(xx[0, 0]) or np.isinf(xx[0, 0]):
                     diverged = True
                     break
@@ -661,24 +698,11 @@ def _sweep_kernel(
                 iters_samples[ci] = n_used
 
         if not diverged:
-            total = 0.0
-            iters_total = 0
-            count = 0
-            for ci in range(n_initial):
-                v = h_samples[ci]
-                if not np.isnan(v):
-                    total += v
-                    iters_total += iters_samples[ci]
-                    count += 1
-            if count > 0:
-                mean = total / count
+            mean, std, iters_mean = _samples_summary(h_samples, iters_samples, n_initial)
+            if not np.isnan(mean):
                 h[i, j] = mean
-                var = 0.0
-                for v in h_samples:
-                    if not np.isnan(v):
-                        var += (v - mean) ** 2
-                h_std[i, j] = (var / count) ** 0.5
-                n_iters_mean[i, j] = iters_total / count
+                h_std[i, j] = std
+                n_iters_mean[i, j] = iters_mean
 
                 # Hybrid fallback: recompute marginal cells with full spectrum
                 if fallback_mode != 0 and abs(mean) < _VONLY_MARGIN:
@@ -698,15 +722,7 @@ def _sweep_kernel(
                             else:
                                 xx[0, 0] = 0.1 * noise[0] + p1
                                 xx[0, 1] = 0.1 * noise[1] + p2
-                            tick = 0
-                            for it_t in range(Nitera):
-                                _henon_n12_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
-                                tick = 1 - tick
-                                if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
-                                    break
-                            if tick == 1:
-                                xx[0, 0] = xx[1, 0]
-                                xx[0, 1] = xx[1, 1]
+                            _burn_in_n12(xx, Nitera, alpha, beta, c)
                             if np.isnan(xx[0, 0]) or np.isinf(xx[0, 0]):
                                 continue
                             lam, n_used = _lyap_online_n12(
@@ -730,15 +746,7 @@ def _sweep_kernel(
                             xx[0, 2] = 0.1 * noise[2] + p3
                             for k in range(3, Ns):
                                 xx[0, k] = 0.1 * noise[k] + p1
-                            tick = 0
-                            for it_t in range(Nitera):
-                                _henon_nN_inplace(xx[tick], xx[1 - tick], alpha, beta, c)
-                                tick = 1 - tick
-                                if (it_t & 63) == 63 and not np.isfinite(xx[tick, 0]):
-                                    break
-                            if tick == 1:
-                                for k in range(Ns):
-                                    xx[0, k] = xx[1, k]
+                            _burn_in_nN(xx, Ns, Nitera, alpha, beta, c)
                             if np.isnan(xx[0, 0]) or np.isinf(xx[0, 0]):
                                 continue
                             lam, n_used = _lyap_online_nN(
@@ -757,24 +765,11 @@ def _sweep_kernel(
                             full_samples[ci] = lam
                             full_iters[ci] = n_used
 
-                    total = 0.0
-                    iters_total = 0
-                    count = 0
-                    for ci in range(n_initial):
-                        v = full_samples[ci]
-                        if not np.isnan(v):
-                            total += v
-                            iters_total += full_iters[ci]
-                            count += 1
-                    if count > 0:
-                        mean = total / count
-                        h[i, j] = mean
-                        var = 0.0
-                        for v in full_samples:
-                            if not np.isnan(v):
-                                var += (v - mean) ** 2
-                        h_std[i, j] = (var / count) ** 0.5
-                        n_iters_mean[i, j] = iters_total / count
+                    mean_f, std_f, iters_f = _samples_summary(full_samples, full_iters, n_initial)
+                    if not np.isnan(mean_f):
+                        h[i, j] = mean_f
+                        h_std[i, j] = std_f
+                        n_iters_mean[i, j] = iters_f
 
                     n_fallback[i, j] = 1
 
