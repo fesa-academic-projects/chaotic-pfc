@@ -86,10 +86,11 @@ def transmit(
     x1[0], x2[0] = x0, y0
     s = np.empty(N)
 
-    for k in range(N):
-        s[k] = x1[k] + mu * message[k]
-        x1[k + 1] = a - s[k] ** 2 + b * x2[k]
-        x2[k + 1] = x1[k]
+    with np.errstate(over="ignore", invalid="ignore"):
+        for k in range(N):
+            s[k] = x1[k] + mu * message[k]
+            x1[k + 1] = a - s[k] ** 2 + b * x2[k]
+            x2[k + 1] = x1[k]
     return s
 
 

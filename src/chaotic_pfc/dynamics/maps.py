@@ -81,15 +81,16 @@ def henon_standard(
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
-    for i in range(steps):
-        xn = 1.0 - a * X[i] ** 2 + Y[i]
-        yn = b * X[i]
-        if not (np.isfinite(xn) and np.isfinite(yn)):
-            X[i + 1 :] = np.nan
-            Y[i + 1 :] = np.nan
-            break
-        X[i + 1] = xn
-        Y[i + 1] = yn
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(steps):
+            xn = 1.0 - a * X[i] ** 2 + Y[i]
+            yn = b * X[i]
+            if not (np.isfinite(xn) and np.isfinite(yn)):
+                X[i + 1 :] = np.nan
+                Y[i + 1 :] = np.nan
+                break
+            X[i + 1] = xn
+            Y[i + 1] = yn
     return X, Y
 
 
@@ -123,15 +124,16 @@ def henon_generalised(
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
-    for i in range(steps):
-        xn = alpha - X[i] ** 2 + beta * Y[i]
-        yn = X[i]
-        if not (np.isfinite(xn) and np.isfinite(yn)):
-            X[i + 1 :] = np.nan
-            Y[i + 1 :] = np.nan
-            break
-        X[i + 1] = xn
-        Y[i + 1] = yn
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(steps):
+            xn = alpha - X[i] ** 2 + beta * Y[i]
+            yn = X[i]
+            if not (np.isfinite(xn) and np.isfinite(yn)):
+                X[i + 1 :] = np.nan
+                Y[i + 1 :] = np.nan
+                break
+            X[i + 1] = xn
+            Y[i + 1] = yn
     return X, Y
 
 
@@ -172,16 +174,17 @@ def henon_filtered(
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
-    for i in range(steps):
-        z = c0 * X[i] + c1 * Y[i]
-        xn = alpha - z**2 + beta * Y[i]
-        yn = X[i]
-        if not (np.isfinite(xn) and np.isfinite(yn)):
-            X[i + 1 :] = np.nan
-            Y[i + 1 :] = np.nan
-            break
-        X[i + 1] = xn
-        Y[i + 1] = yn
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(steps):
+            z = c0 * X[i] + c1 * Y[i]
+            xn = alpha - z**2 + beta * Y[i]
+            yn = X[i]
+            if not (np.isfinite(xn) and np.isfinite(yn)):
+                X[i + 1 :] = np.nan
+                Y[i + 1 :] = np.nan
+                break
+            X[i + 1] = xn
+            Y[i + 1] = yn
     return X, Y
 
 
@@ -290,10 +293,11 @@ def henon_order_n(
     state[:, 0] = x0 if x0 is not None else 0.5 * rng.random(Nc)
     output = np.empty(steps)
 
-    for i in range(steps):
-        s_i = float(driving[i]) if driving is not None else state[2, i]
-        output[i] = state[2, i]
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(steps):
+            s_i = float(driving[i]) if driving is not None else state[2, i]
+            output[i] = state[2, i]
+            _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
     return state, output
 
 

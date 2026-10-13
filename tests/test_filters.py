@@ -13,7 +13,7 @@ import numpy as np
 import pytest
 from scipy.signal import freqz
 
-from chaotic_pfc.analysis.sweep import precompute_fir_bank
+from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS, precompute_fir_bank
 
 NUMTAPS = 41
 CUTOFF = 0.4
@@ -64,3 +64,39 @@ def test_lower_side_lobes_give_a_deeper_stopband():
     f_rect, h_rect = _mag("lowpass", "boxcar")
     f_bh, h_bh = _mag("lowpass", "blackmanharris")
     assert _at(f_bh, h_bh, 0.7) < _at(f_rect, h_rect, 0.7)
+
+
+@pytest.mark.parametrize("filter_type", FILTER_TYPES)
+@pytest.mark.parametrize("window", WINDOWS)
+def test_frequency_response_every_window_and_filter_type(filter_type, window):
+    """Every (window, filter type) of the catalogue passes its band and rejects the rest.
+
+    The pass/stop regions are taken away from the transition band (half the
+    bandwidth for the band filters, plus a guard for the low/high types), so
+    the thresholds hold for every window, from the rectangular (highest side
+    lobes) to Blackman--Harris (lowest).
+    """
+    bank, _ = precompute_fir_bank(
+        np.array([NUMTAPS]), np.array([CUTOFF]), filter_type, window, bandwidth=BANDWIDTH
+    )
+    w, h = freqz(bank[0, 0, :NUMTAPS], worN=16384)
+    f, mag = w / np.pi, np.abs(h)
+    half = BANDWIDTH / 2
+    if filter_type == "lowpass":
+        passband = f <= CUTOFF - half
+        stopband = f >= CUTOFF + half + 0.15
+    elif filter_type == "highpass":
+        passband = f >= CUTOFF + half
+        stopband = f <= CUTOFF - half - 0.15
+    elif filter_type == "bandpass":
+        passband = np.abs(f - CUTOFF) <= BANDWIDTH / 4
+        stopband = (f <= CUTOFF - BANDWIDTH) | (f >= CUTOFF + BANDWIDTH)
+    else:  # bandstop
+        stopband = np.abs(f - CUTOFF) <= BANDWIDTH / 4
+        passband = (f <= CUTOFF - BANDWIDTH) | (f >= CUTOFF + BANDWIDTH)
+    assert float(mag[passband].min()) > 0.6, (
+        f"{window}/{filter_type}: passband dips to {mag[passband].min():.3f}"
+    )
+    assert float(mag[stopband].max()) < 0.35, (
+        f"{window}/{filter_type}: stopband leaks {mag[stopband].max():.3f}"
+    )

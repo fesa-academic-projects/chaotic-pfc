@@ -44,6 +44,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
   with `1` (full-spectrum recomputation of marginal cells) as the default.
 - `tests/test_cli_paper_sweeps.py` covering the new CLI groups.
+- `data/sweeps/ENVIRONMENT.json` recording the stack that regenerated the 124
+  checkpoints, with `tests/test_sweep_environment.py` pinning the lock file, the
+  `coef` field of the checkpoints and a byte fingerprint of the
+  `scipy.signal.firwin` coefficient banks.
+- Tests for the manuscript tooling (`tests/test_paper_tools.py`) on a synthetic
+  sweep tree: `paper numbers` (every section), the `paper.figures` generators
+  and `run paper-figures`.
+- A `no-numba` CI job and tests covering the pure-Python fallback: the
+  `_compat` shims (Numba absent) and the sweep-kernel paths.
+- Kernel-anchor tests: the standard Hénon map (~0.419, Sprott) and the analytic
+  `alpha=2, beta=0` map (conjugate to the logistic map at `r=4`, `ln 2`).
+- Frequency-response tests for every window of the catalogue times the four
+  filter types, and a fallback-mode class-stability test on the baseline
+  configurations.
 
 ### Changed
 - `chaotic_pfc.analysis.sweep_plotting` and `chaotic_pfc.analysis.stats` were
@@ -62,8 +76,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 124 versioned sweeps in `data/sweeps/` were regenerated with the current
   kernel; `tests/test_sweep_regressions.py` reproduces them bit for bit with
   Numba and `fallback_mode=1`.
+- `requirements-lock.txt` is aligned to the environment that regenerated the
+  124 checkpoints (`data/sweeps/ENVIRONMENT.json`), and now includes
+  `hypothesis` so the test suite (and the bit-exact baseline) runs from the
+  lock.
 
 ### Fixed
+- The CI coverage gate (`--cov-fail-under=75`) is met again (70.33 % before
+  the coverage work): the manuscript tooling moved into the package is now covered by
+  `tests/test_paper_tools.py`.
+- The JCIS manuscript (`articles/jcis/article.tex`) no longer ends the
+  Subsection IV-B paragraph with the leftover fragment "The lowpass filter
+  with", the remainder of a removed sentence about Experiment V of the earlier
+  study; `articles/jcis/article.pdf` was rebuilt.
 - `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the
   manuscript sources, so the committed `articles/jcis/article.pdf` is
   reproducible across unrelated commits.

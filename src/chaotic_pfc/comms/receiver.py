@@ -94,10 +94,11 @@ def receive(
     y1[0], y2[0] = y0, z0
     m_hat = np.empty(N)
 
-    for k in range(N):
-        y1[k + 1] = a - r[k] ** 2 + b * y2[k]
-        y2[k + 1] = y1[k]
-        m_hat[k] = (r[k] - y1[k]) / mu
+    with np.errstate(over="ignore", invalid="ignore"):
+        for k in range(N):
+            y1[k + 1] = a - r[k] ** 2 + b * y2[k]
+            y2[k + 1] = y1[k]
+            m_hat[k] = (r[k] - y1[k]) / mu
     return m_hat
 
 
