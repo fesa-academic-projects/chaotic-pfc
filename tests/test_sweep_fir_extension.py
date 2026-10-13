@@ -26,13 +26,13 @@ def _catalogue() -> np.ndarray:
 
 def test_custom_fir_bank_reproduces_the_catalogue() -> None:
     reference = run_sweep(
-        window="hamming", filter_type="lowpass", orders=ORDERS, cutoffs=CUTOFFS, **KERNEL
+        window="hamming", filter_type="lowpass", num_taps_grid=ORDERS, cutoff_grid=CUTOFFS, **KERNEL
     )
     custom = run_sweep(
         window="hamming",
         filter_type="lowpass",
-        orders=ORDERS,
-        cutoffs=CUTOFFS,
+        num_taps_grid=ORDERS,
+        cutoff_grid=CUTOFFS,
         fir_bank=_catalogue(),
         **KERNEL,
     )
@@ -47,16 +47,16 @@ def test_custom_fir_design_matches_the_bank() -> None:
     by_design = run_sweep(
         window="hamming",
         filter_type="lowpass",
-        orders=ORDERS,
-        cutoffs=CUTOFFS,
+        num_taps_grid=ORDERS,
+        cutoff_grid=CUTOFFS,
         fir_design=design,
         **KERNEL,
     )
     by_bank = run_sweep(
         window="hamming",
         filter_type="lowpass",
-        orders=ORDERS,
-        cutoffs=CUTOFFS,
+        num_taps_grid=ORDERS,
+        cutoff_grid=CUTOFFS,
         fir_bank=_catalogue(),
         **KERNEL,
     )
@@ -66,8 +66,8 @@ def test_custom_fir_design_matches_the_bank() -> None:
 def test_bad_fir_bank_shape_is_rejected() -> None:
     with pytest.raises(ValueError, match="fir_bank must have shape"):
         run_sweep(
-            orders=ORDERS,
-            cutoffs=CUTOFFS,
+            num_taps_grid=ORDERS,
+            cutoff_grid=CUTOFFS,
             fir_bank=np.zeros((2, 2, 4)),
             **KERNEL,
         )
@@ -76,8 +76,8 @@ def test_bad_fir_bank_shape_is_rejected() -> None:
 def test_bad_fir_design_length_is_rejected() -> None:
     with pytest.raises(ValueError, match="fir_design"):
         run_sweep(
-            orders=ORDERS,
-            cutoffs=CUTOFFS,
+            num_taps_grid=ORDERS,
+            cutoff_grid=CUTOFFS,
             fir_design=lambda num_taps, cutoff: np.zeros(num_taps + 1),
             **KERNEL,
         )
@@ -86,8 +86,8 @@ def test_bad_fir_design_length_is_rejected() -> None:
 def test_fir_bank_and_design_are_mutually_exclusive() -> None:
     with pytest.raises(ValueError, match="not both"):
         run_sweep(
-            orders=ORDERS,
-            cutoffs=CUTOFFS,
+            num_taps_grid=ORDERS,
+            cutoff_grid=CUTOFFS,
             fir_bank=_catalogue(),
             fir_design=lambda num_taps, cutoff: np.zeros(num_taps),
             **KERNEL,

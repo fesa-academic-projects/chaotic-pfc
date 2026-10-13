@@ -273,8 +273,8 @@ def section_maps(best: dict, out: dict) -> None:
     """Fill the ``MAPS.*`` labels."""
     lp = best["lowpass"][0]["sr"]
     h = np.asarray(lp.h, dtype=np.float64)
-    wc = np.asarray(lp.cutoffs, dtype=np.float64)  # already omega_c / pi
-    nz = np.asarray(lp.orders, dtype=np.int64) - 1
+    wc = np.asarray(lp.cutoff_grid, dtype=np.float64)  # already omega_c / pi
+    nz = np.asarray(lp.num_taps_grid, dtype=np.int64) - 1
     entries, none = [], []
     for i, z in enumerate(nz):
         mask = h[i] > 0
@@ -287,8 +287,8 @@ def section_maps(best: dict, out: dict) -> None:
 
     hp = best["highpass"][0]["sr"]
     h = np.asarray(hp.h, dtype=np.float64)
-    wc = np.asarray(hp.cutoffs, dtype=np.float64)
-    nz = np.asarray(hp.orders, dtype=np.int64) - 1
+    wc = np.asarray(hp.cutoff_grid, dtype=np.float64)
+    nz = np.asarray(hp.num_taps_grid, dtype=np.int64) - 1
     ge6 = []
     for i, z in enumerate(nz):
         if z >= 6:
@@ -311,7 +311,7 @@ def section_maps(best: dict, out: dict) -> None:
 
     bs = best["bandstop"][0]["sr"]
     h = np.asarray(bs.h, dtype=np.float64)
-    nz = np.asarray(bs.orders, dtype=np.int64) - 1
+    nz = np.asarray(bs.num_taps_grid, dtype=np.int64) - 1
     no_div = [str(z) for i, z in enumerate(nz) if not np.isnan(h[i]).any()]
     all_div = [str(z) for i, z in enumerate(nz) if np.isnan(h[i]).all()]
     out["MAP.bandstop.Nz_without_divergent"] = ", ".join(no_div) if no_div else "none"
@@ -362,7 +362,7 @@ def section_concordance(recs, out: dict) -> None:
         arrs = [np.asarray(fx[w].h, dtype=np.float64) for w, _, _ in FIXED]
         cls = np.stack([np.where(np.isnan(a), -1, np.where(a > 0, 1, 0)) for a in arrs])
         agree = np.all(cls == cls[0], axis=0)
-        nz = np.asarray(fx["boxcar"].orders, dtype=np.int64) - 1
+        nz = np.asarray(fx["boxcar"].num_taps_grid, dtype=np.int64) - 1
         le10 = nz <= 10
         gt20 = nz > 20
         out[f"CON.{ft}.pooled_Nz_le10"] = pct(int(agree[le10].sum()), int(agree[le10].size), 1)
@@ -473,8 +473,8 @@ def _abs_gain(sr) -> np.ndarray:
     """|G| per grid point, G = sum of the FIR coefficients (DC gain)."""
     beta = float(sr.metadata.get("kaiser_beta", 5.0))
     _, gains = precompute_fir_bank(
-        np.asarray(sr.orders),
-        np.asarray(sr.cutoffs),
+        np.asarray(sr.num_taps_grid),
+        np.asarray(sr.cutoff_grid),
         sr.filter_type,
         sr.window,
         kaiser_beta=beta,
@@ -486,7 +486,7 @@ def _abs_gain(sr) -> np.ndarray:
 def _gain_band_table(recs, filter_type: str, out: dict, key: str) -> None:
     """Count |G| >= 0.1 points per N_z x (omega_c/pi band)."""
     nz_vals = sorted(
-        {int(o) - 1 for r in recs if r.filter_type == filter_type for o in np.asarray(r.orders)}
+        {int(o) - 1 for r in recs if r.filter_type == filter_type for o in np.asarray(r.num_taps_grid)}
     )
     n_bands = 10
     counts = {nz: [0] * n_bands for nz in nz_vals}
@@ -494,9 +494,9 @@ def _gain_band_table(recs, filter_type: str, out: dict, key: str) -> None:
         if r.filter_type != filter_type:
             continue
         gain = _abs_gain(r)
-        orders = np.asarray(r.orders)
-        cut = np.asarray(r.cutoffs)
-        for i, order in enumerate(orders):
+        num_taps_grid = np.asarray(r.num_taps_grid)
+        cut = np.asarray(r.cutoff_grid)
+        for i, order in enumerate(num_taps_grid):
             row = counts[int(order) - 1]
             for j, wc in enumerate(cut):
                 if gain[i, j] >= LOW_GAIN:
@@ -588,8 +588,8 @@ def seed_runs(root: Path, best: dict) -> dict:
                     window=sr.window,
                     filter_type=sr.filter_type,
                     kaiser_beta=float(m["kaiser_beta"]),
-                    orders=sr.orders,
-                    cutoffs=sr.cutoffs,
+                    num_taps_grid=sr.num_taps_grid,
+                    cutoff_grid=sr.cutoff_grid,
                     bandwidth=0.05,
                     Nitera=int(m["Nitera"]),
                     Nmap=int(m["Nmap"]),

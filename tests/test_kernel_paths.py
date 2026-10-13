@@ -100,8 +100,8 @@ def test_partial_divergence_averages_survivors():
     res = run_sweep(
         window=PARTIAL["window"],
         filter_type=PARTIAL["filter_type"],
-        orders=[PARTIAL["ns"]],
-        cutoffs=np.array([PARTIAL["cutoff"]]),
+        num_taps_grid=[PARTIAL["ns"]],
+        cutoff_grid=np.array([PARTIAL["cutoff"]]),
         Nitera=NITERA,
         Nmap=NMAP,
         n_initial=25,
@@ -124,8 +124,8 @@ def test_short_symmetric_window_is_divergent(window, filter_type):
     res = run_sweep(
         window=window,
         filter_type=filter_type,
-        orders=[2],
-        cutoffs=np.array([0.3]),
+        num_taps_grid=[2],
+        cutoff_grid=np.array([0.3]),
         Nitera=NITERA,
         Nmap=NMAP,
         n_initial=25,

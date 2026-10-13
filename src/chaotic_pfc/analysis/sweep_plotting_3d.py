@@ -50,8 +50,8 @@ def aggregate_beta_sweeps(
         λ_max indexed by (β, order, cutoff).
     betas : ndarray, shape (Nbeta,)
         β values, sorted ascending.
-    orders : ndarray
-    cutoffs : ndarray
+    num_taps_grid : ndarray
+    cutoff_grid : ndarray
 
     Notes
     -----
@@ -76,10 +76,10 @@ def aggregate_beta_sweeps(
         if np.isnan(beta):
             continue
 
-        key = f"{result.filter_type}_{len(result.orders)}"
+        key = f"{result.filter_type}_{len(result.num_taps_grid)}"
         if key not in groups:
             groups[key] = {}
-            grid_meta[key] = (result.orders, result.cutoffs)
+            grid_meta[key] = (result.num_taps_grid, result.cutoff_grid)
             ft_labels[key] = result.filter_type
         groups[key][beta] = result.h
 
@@ -98,7 +98,7 @@ def aggregate_beta_sweeps(
             f"Skipped {skipped} β-sweep(s) with incompatible grids "
             f"(filter types: {others}). "
             f"Keeping {len(by_beta)} sweeps of type '{ft_labels[best_key]}' "
-            f"({len(orders_ref)} orders × {len(cutoffs_ref)} cutoffs).",
+            f"({len(orders_ref)} num_taps_grid × {len(cutoffs_ref)} cutoff_grid).",
             stacklevel=2,
         )
 
@@ -110,8 +110,8 @@ def aggregate_beta_sweeps(
 def plot_3d_beta_volume(
     h_volume: NDArray,
     betas: NDArray,
-    orders: NDArray,
-    cutoffs: NDArray,
+    num_taps_grid: NDArray,
+    cutoff_grid: NDArray,
     save_path: str | Path | None = None,
 ):  # -> plotly.graph_objects.Figure  (plotly is optional; see _get_go)
     """Render a stack of λ_max surfaces, one per β.
@@ -124,7 +124,7 @@ def plot_3d_beta_volume(
     ----------
     h_volume
         Output of :func:`aggregate_beta_sweeps`, shape ``(Nbeta, Ncoef, Ncut)``.
-    betas, orders, cutoffs
+    betas, num_taps_grid, cutoff_grid
         Coordinate arrays.
     save_path
         Optional ``.html`` path. If given, the figure is also written
@@ -135,7 +135,7 @@ def plot_3d_beta_volume(
     plotly.graph_objects.Figure
     """
     go = _get_go()
-    Nz = np.asarray(orders) - 1
+    Nz = np.asarray(num_taps_grid) - 1
     fig = go.Figure()
 
     # Use the same λ scale across all surfaces so colours are comparable.
@@ -145,12 +145,12 @@ def plot_3d_beta_volume(
 
     for k, beta in enumerate(betas):
         # surface needs Z(y, x); we orient so x = N_z, y = ω_c.
-        z_plane = np.full((len(cutoffs), len(Nz)), float(beta))
+        z_plane = np.full((len(cutoff_grid), len(Nz)), float(beta))
         surfacecolor = h_volume[k].T  # shape (Ncut, Ncoef)
         fig.add_trace(
             go.Surface(
                 x=Nz,
-                y=cutoffs,
+                y=cutoff_grid,
                 z=z_plane,
                 surfacecolor=surfacecolor,
                 cmin=cmin,

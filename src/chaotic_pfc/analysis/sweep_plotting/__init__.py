@@ -5,7 +5,7 @@ Three plot types are provided:
 1. :func:`plot_heatmap_continuous` — raw λ_max heatmap.
 2. :func:`plot_classification_interleaved` — publication-style discrete
    classification (periodic / chaotic / unbounded) with gaps between
-   orders.
+   num_taps_grid.
 3. :func:`plot_difficulty_map` — heatmap of the number of Lyapunov
    iterations actually used at each grid point. Only meaningful when
    the sweep was run with ``adaptive=True``; shows where the spectrum

@@ -15,7 +15,7 @@ from ._types import _KAISER_BETA, FILTER_TYPES, WINDOWS, SweepResult
 
 
 def _precompute_perturbations(
-    orders: NDArray,
+    num_taps_grid: NDArray,
     n_cutoffs: int,
     n_initial: int,
     seed: int | None,
@@ -23,18 +23,18 @@ def _precompute_perturbations(
     """Build the deterministic perturbation tensor consumed by the kernel.
 
     Returns an array of shape ``(Ncoef, n_cutoffs, n_initial, max_Ns)``
-    filled with uniform ``[0, 1)`` samples, where ``max_Ns = orders.max()``.
+    filled with uniform ``[0, 1)`` samples, where ``max_Ns = num_taps_grid.max()``.
     """
-    Ncoef = len(orders)
-    max_Ns = int(orders.max()) if Ncoef > 0 else 0
+    Ncoef = len(num_taps_grid)
+    max_Ns = int(num_taps_grid.max()) if Ncoef > 0 else 0
 
     rng = np.random.default_rng(seed)
     return rng.random((Ncoef, n_cutoffs, n_initial, max_Ns), dtype=np.float64)
 
 
 def precompute_fir_bank(
-    orders: Sequence[int] | NDArray,
-    cutoffs: NDArray,
+    num_taps_grid: Sequence[int] | NDArray,
+    cutoff_grid: NDArray,
     filter_type: str,
     window: str,
     *,
@@ -45,10 +45,10 @@ def precompute_fir_bank(
 
     Parameters
     ----------
-    orders
+    num_taps_grid
         Number of taps to sweep (``N_s``); the filter order is
         ``N_z = N_s - 1``. Values will be cast to ``int``.
-    cutoffs
+    cutoff_grid
         Normalised cutoff frequencies in (0, 1).
     filter_type
         ``"lowpass"``, ``"highpass"``, ``"bandpass"``, or ``"bandstop"``.
@@ -77,17 +77,17 @@ def precompute_fir_bank(
     if window == "kaiser" and kaiser_beta < 0:
         raise ValueError(f"kaiser_beta must be >= 0, got {kaiser_beta!r}")
 
-    orders_arr = np.asarray(orders, dtype=np.int64)
+    orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
     if filter_type in ("highpass", "bandstop"):
         even = orders_arr[orders_arr % 2 == 0]
         if even.size:
             raise ValueError(
                 f"{filter_type} requires an odd number of taps; got even values "
                 f"{even.tolist()}. Use np.arange(start|1, stop, 2) or "
-                "filter your orders to odd integers."
+                "filter your num_taps_grid to odd integers."
             )
     Ncoef = len(orders_arr)
-    Ncut = len(cutoffs)
+    Ncut = len(cutoff_grid)
     max_taps = int(orders_arr.max())
 
     fir_bank = np.zeros((Ncoef, Ncut, max_taps))
@@ -100,7 +100,7 @@ def precompute_fir_bank(
 
     for i, Nss in enumerate(orders_arr):
         numtaps = int(Nss)
-        for j, wc in enumerate(cutoffs):
+        for j, wc in enumerate(cutoff_grid):
             if use_band:
                 low = max(1e-5, float(wc) - bw_half)
                 high = min(1.0 - 1e-5, float(wc) + bw_half)
@@ -114,7 +114,7 @@ def precompute_fir_bank(
 
 
 def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | int]]:
-    """Return the (orders_lp, orders_hp, cutoffs, params) for quick-sweep mode.
+    """Return the (orders_lp, orders_hp, cutoff_grid, params) for quick-sweep mode.
 
     These are small grids suitable for testing and CI smoke runs.
     """
@@ -127,8 +127,8 @@ def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | i
 
 
 def _resolve_fir_bank(
-    orders: NDArray,
-    cutoffs: NDArray,
+    num_taps_grid: NDArray,
+    cutoff_grid: NDArray,
     filter_type: str,
     window: str,
     *,
@@ -146,8 +146,8 @@ def _resolve_fir_bank(
     if fir_bank is not None and fir_design is not None:
         raise ValueError("pass either fir_bank or fir_design, not both")
 
-    orders_arr = np.asarray(orders, dtype=np.int64)
-    cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
+    orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
+    cutoffs_arr = np.asarray(cutoff_grid, dtype=np.float64)
     n_taps_max = int(orders_arr.max())
 
     if fir_bank is not None:
@@ -156,7 +156,7 @@ def _resolve_fir_bank(
         if bank.shape != expected:
             raise ValueError(
                 f"fir_bank must have shape {expected} "
-                f"(orders x cutoffs x max num_taps), got {bank.shape}"
+                f"(num_taps_grid x cutoff_grid x max num_taps), got {bank.shape}"
             )
         return bank, bank.sum(axis=2)
 
@@ -187,8 +187,8 @@ def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
     *,
-    orders: Sequence[int] | NDArray | None = None,
-    cutoffs: NDArray | None = None,
+    num_taps_grid: Sequence[int] | NDArray | None = None,
+    cutoff_grid: NDArray | None = None,
     Nitera: int = 500,
     Nmap: int = 3000,
     n_initial: int = 25,
@@ -211,12 +211,12 @@ def run_sweep(
     ----------
     window, filter_type
         FIR configuration (see :data:`WINDOWS`, :data:`FILTER_TYPES`).
-    orders
+    num_taps_grid
         Number of FIR filter coefficients (taps) :math:`N_s` to sweep; the
         filter order is :math:`N_z = N_s - 1`. Defaults to ``np.arange(2, 42)``
         for lowpass and bandpass, and to ``np.arange(3, 43, 2)`` for highpass
         and bandstop (which require an odd number of taps).
-    cutoffs
+    cutoff_grid
         Cutoff frequencies. Defaults to 100 points linearly spaced in
         ``(0, 1)``.
     Nitera
@@ -251,7 +251,7 @@ def run_sweep(
         full spectrum but returns and adapts on column 0 only.
     fir_bank
         Optional pre-computed FIR coefficient bank with shape
-        ``(len(orders), len(cutoffs), max(orders))``, zero-padded on the tap
+        ``(len(num_taps_grid), len(cutoff_grid), max(num_taps_grid))``, zero-padded on the tap
         axis. Use it to sweep a filter that is not produced by the built-in
         window catalogue. Mutually exclusive with *fir_design*.
     fir_design
@@ -290,18 +290,18 @@ def run_sweep(
         kernel_Nmap_min = Nmap
         kernel_tol = 0.0
 
-    if orders is None:
+    if num_taps_grid is None:
         order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
-        orders = (
+        num_taps_grid = (
             np.arange(3, order_hi + 1, 2)
             if filter_type in ("highpass", "bandstop")
             else np.arange(2, order_hi)
         )
-    if cutoffs is None:
-        cutoffs = np.linspace(1e-5, 1.0 - 1e-5, 100)
+    if cutoff_grid is None:
+        cutoff_grid = np.linspace(1e-5, 1.0 - 1e-5, 100)
 
-    orders_arr = np.asarray(orders, dtype=np.int64)
-    cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
+    orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
+    cutoffs_arr = np.asarray(cutoff_grid, dtype=np.float64)
 
     fir_bank, gains = _resolve_fir_bank(
         orders_arr,
@@ -368,8 +368,8 @@ def run_sweep(
     return SweepResult(
         h=h,
         h_std=h_std,
-        orders=orders_arr,
-        cutoffs=cutoffs_arr,
+        num_taps_grid=orders_arr,
+        cutoff_grid=cutoffs_arr,
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,

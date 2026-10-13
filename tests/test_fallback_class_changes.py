@@ -38,13 +38,13 @@ def _classes(h: np.ndarray) -> np.ndarray:
 
 
 def _sweep(filter_type: str, kaiser_beta: float, fallback_mode: int):
-    orders = ORDERS_BAND if filter_type in ("highpass", "bandstop") else ORDERS_PLAIN
+    num_taps_grid = ORDERS_BAND if filter_type in ("highpass", "bandstop") else ORDERS_PLAIN
     return run_sweep(
         window="kaiser",
         filter_type=filter_type,
         kaiser_beta=kaiser_beta,
-        orders=orders,
-        cutoffs=CUTOFFS,
+        num_taps_grid=num_taps_grid,
+        cutoff_grid=CUTOFFS,
         Nitera=100,
         Nmap=800,
         n_initial=6,

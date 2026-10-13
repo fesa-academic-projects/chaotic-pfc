@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `transmit`, `transmit_order_n` | `a`, `b` | `alpha`, `beta` |
   | `receive`, `receive_order_n` | `a`, `b` | `alpha`, `beta` |
   | `HenonConfig` | `a`, `b` | `alpha`, `beta` |
+  | `run_sweep`, `precompute_fir_bank` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
+  | `plot_classification_interleaved`, `plot_heatmap_continuous` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
+  | `SweepResult` (attributes) | `.orders`, `.cutoffs` | `.num_taps_grid`, `.cutoff_grid` (the `.npz` keys `coef`/`wcorte` are unchanged in 0.9) |
 
 ### Added
 - `chaotic-pfc paper numbers|audit|figures` and

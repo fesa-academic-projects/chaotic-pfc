@@ -214,10 +214,10 @@ def sweet_spot_per_filter(
     best: dict[str, SweetSpot] = {}
 
     for (ft, win), result in sweep_results.items():
-        h, h_std, orders, cutoffs = result.h, result.h_std, result.orders, result.cutoffs
+        h, h_std, num_taps_grid, cutoff_grid = result.h, result.h_std, result.num_taps_grid, result.cutoff_grid
         n_initial = result.metadata.get("n_initial", None)
-        for i in range(len(orders)):
-            for j in range(len(cutoffs)):
+        for i in range(len(num_taps_grid)):
+            for j in range(len(cutoff_grid)):
                 val = h[i, j]
                 if not np.isfinite(val):
                     continue
@@ -239,8 +239,8 @@ def sweet_spot_per_filter(
                     best[ft] = {
                         "filter_type": ft,
                         "window": win,
-                        "n_z": int(orders[i]),
-                        "omega_c": round(float(cutoffs[j]), 4),
+                        "n_z": int(num_taps_grid[i]),
+                        "omega_c": round(float(cutoff_grid[j]), 4),
                         "lmax": round(float(val), 6),
                         "lmax_ci_95_low": ci_low,
                         "lmax_ci_95_high": ci_high,
@@ -345,9 +345,9 @@ def optimal_parameters(
         if filter_type is not None and result.filter_type != filter_type:
             continue
 
-        h, orders, cutoffs = result.h, result.orders, result.cutoffs
-        for i in range(len(orders)):
-            for j in range(len(cutoffs)):
+        h, num_taps_grid, cutoff_grid = result.h, result.num_taps_grid, result.cutoff_grid
+        for i in range(len(num_taps_grid)):
+            for j in range(len(cutoff_grid)):
                 val = h[i, j]
                 if np.isnan(val) or np.isinf(val):
                     continue
@@ -355,8 +355,8 @@ def optimal_parameters(
                     {
                         "window": result.window,
                         "filter_type": result.filter_type,
-                        "order": int(orders[i]),
-                        "cutoff": round(float(cutoffs[j]), 4),
+                        "order": int(num_taps_grid[i]),
+                        "cutoff": round(float(cutoff_grid[j]), 4),
                         "lmax": round(float(val), 6),
                     }
                 )

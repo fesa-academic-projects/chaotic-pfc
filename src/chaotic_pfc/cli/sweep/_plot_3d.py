@@ -65,11 +65,11 @@ def run_plot_3d(args: argparse.Namespace) -> int:
 
         out_html = figures_dir / f"beta_sweep_3d_{ft}.html"
         print(f"[plot-3d] Aggregating {ft} sweeps from {data_dir}")
-        h_volume, betas, orders, cutoffs = aggregate_beta_sweeps(data_dir)
+        h_volume, betas, num_taps_grid, cutoff_grid = aggregate_beta_sweeps(data_dir)
         print(f"[plot-3d] Loaded {len(betas)} β values: {betas[0]:.1f}..{betas[-1]:.1f}")
         print(f"[plot-3d] Volume shape: {h_volume.shape}")
 
-        plot_3d_beta_volume(h_volume, betas, orders, cutoffs, save_path=out_html)
+        plot_3d_beta_volume(h_volume, betas, num_taps_grid, cutoff_grid, save_path=out_html)
         print(f"[plot-3d] Saved → {out_html}")
 
     print("[plot-3d] done")

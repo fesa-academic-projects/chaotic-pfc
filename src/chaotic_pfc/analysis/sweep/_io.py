@@ -17,8 +17,8 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     payload = {
         "h": result.h,
         "h_desvio": result.h_std,
-        "wcorte": result.cutoffs,
-        "coef": result.orders,
+        "wcorte": result.cutoff_grid,
+        "coef": result.num_taps_grid,
         "window": result.window,
         "filter_type": result.filter_type,
         "metadata": np.array(list(result.metadata.items()), dtype=object),
@@ -64,8 +64,8 @@ def load_sweep(path: str | Path) -> SweepResult:
     return SweepResult(
         h=data["h"],
         h_std=data["h_desvio"],
-        orders=data["coef"],
-        cutoffs=data["wcorte"],
+        num_taps_grid=data["coef"],
+        cutoff_grid=data["wcorte"],
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,

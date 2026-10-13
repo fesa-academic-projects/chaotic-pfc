@@ -101,19 +101,19 @@ def _seq_mean(values):
 
 # Marginal cell used by the hybrid-fallback tests (order 10, hamming lowpass).
 def _marginal_cell():
-    orders = np.array([10], dtype=np.int64)
-    cutoffs = np.array([0.212127])
-    bank, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
-    pert = _precompute_perturbations(orders, 1, 25, 42)
-    return orders, cutoffs, bank, gains, pert
+    num_taps_grid = np.array([10], dtype=np.int64)
+    cutoff_grid = np.array([0.212127])
+    bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+    pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
+    return num_taps_grid, cutoff_grid, bank, gains, pert
 
 
 def _marginal_sweep(fallback_mode=None):
-    orders, cutoffs, bank, gains, pert = _marginal_cell()
+    num_taps_grid, cutoff_grid, bank, gains, pert = _marginal_cell()
     task = np.zeros(1, dtype=np.int64)
     args = (
-        orders.astype(np.float64),
-        cutoffs,
+        num_taps_grid.astype(np.float64),
+        cutoff_grid,
         bank,
         gains,
         pert,
@@ -132,8 +132,8 @@ def _marginal_sweep(fallback_mode=None):
 
 
 def _marginal_states():
-    orders, _, bank, gains, pert = _marginal_cell()
-    Ns = int(orders[0])
+    num_taps_grid, _, bank, gains, pert = _marginal_cell()
+    Ns = int(num_taps_grid[0])
     c = bank[0, 0, :Ns]
     gain = gains[0, 0]
     states = [_burn_in(pert[0, 0, ci, :Ns], Ns, c, gain) for ci in range(25)]
@@ -176,10 +176,10 @@ def test_fixed_point_is_fixed_by_henon_map(gain):
 def test_column0_equals_single_vector(Ns):
     from chaotic_pfc.analysis.sweep import precompute_fir_bank as bank_fn
 
-    orders = np.array([Ns], dtype=np.int64)
-    cutoffs = np.array([0.3])
-    bank, gains = bank_fn(orders, cutoffs, "lowpass", "hamming")
-    pert = _precompute_perturbations(orders, 1, 25, 42)
+    num_taps_grid = np.array([Ns], dtype=np.int64)
+    cutoff_grid = np.array([0.3])
+    bank, gains = bank_fn(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+    pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
     c = bank[0, 0, :Ns]
     gain = gains[0, 0]
 
@@ -251,8 +251,8 @@ def test_invalid_fallback_mode_raises(bad):
         run_sweep(
             "hamming",
             "lowpass",
-            orders=np.array([3]),
-            cutoffs=np.array([0.3]),
+            num_taps_grid=np.array([3]),
+            cutoff_grid=np.array([0.3]),
             Nitera=20,
             Nmap=50,
             n_initial=2,
@@ -265,8 +265,8 @@ def _small_sweep(**kwargs):
     return run_sweep(
         "hamming",
         "lowpass",
-        orders=np.array([3, 4]),
-        cutoffs=np.array([0.2, 0.6]),
+        num_taps_grid=np.array([3, 4]),
+        cutoff_grid=np.array([0.2, 0.6]),
         Nitera=50,
         Nmap=200,
         n_initial=3,

@@ -190,10 +190,10 @@ class TestSingleVectorExact(unittest.TestCase):
         )
         from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
-        orders = np.array([10], dtype=np.int64)
-        cutoffs = np.array([0.212127])
-        bank, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
-        pert = _precompute_perturbations(orders, 1, 25, 42)
+        num_taps_grid = np.array([10], dtype=np.int64)
+        cutoff_grid = np.array([0.212127])
+        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+        pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
 
         Ns, dim = 10, 10
         c = bank[0, 0, :Ns]

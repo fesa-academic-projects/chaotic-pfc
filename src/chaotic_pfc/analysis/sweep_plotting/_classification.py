@@ -84,8 +84,8 @@ def plot_heatmap_continuous(
     result: SweepResult | None = None,
     *,
     h: NDArray | None = None,
-    orders: NDArray | None = None,
-    cutoffs: NDArray | None = None,
+    num_taps_grid: NDArray | None = None,
+    cutoff_grid: NDArray | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,
@@ -100,13 +100,13 @@ def plot_heatmap_continuous(
     ----------
     result
         :class:`~chaotic_pfc.analysis.sweep.SweepResult` to plot.  Mutually exclusive with the
-        ``(h, orders, cutoffs)`` triple.
+        ``(h, num_taps_grid, cutoff_grid)`` triple.
     h
-        Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
-    orders
-        Filter orders (x-axis), shape ``(len(orders),)``.
-    cutoffs
-        Cutoff frequencies (y-axis), shape ``(len(cutoffs),)``.
+        Lyapunov grid, shape ``(len(num_taps_grid), len(cutoff_grid))``.
+    num_taps_grid
+        Filter num_taps_grid (x-axis), shape ``(len(num_taps_grid),)``.
+    cutoff_grid
+        Cutoff frequencies (y-axis), shape ``(len(cutoff_grid),)``.
     save_path
         If provided, the figure is saved to this path via ``_save()``.
     data_slots, gap_slots
@@ -116,7 +116,7 @@ def plot_heatmap_continuous(
     -------
     matplotlib.figure.Figure
     """
-    h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
+    h, Nz, cutoff_grid = _unpack(result, h, num_taps_grid, cutoff_grid)
 
     h_expanded = _interleaved_expand(h, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
@@ -131,10 +131,10 @@ def plot_heatmap_continuous(
     # resolution far exceeds the data grid, so there is zero information loss.
     # antialiased=False prevents faint half-pixel lines between adjacent quads.
     pcm = ax.pcolormesh(
-        x_exp, cutoffs, h_expanded.T, shading="nearest", rasterized=True, antialiased=False
+        x_exp, cutoff_grid, h_expanded.T, shading="nearest", rasterized=True, antialiased=False
     )
     fig.colorbar(pcm, ax=ax, label=r"$\lambda_{\max}$")
-    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
+    _setup_interleaved_axes(ax, Nz, cutoff_grid, data_slots, gap_slots)
     fig.tight_layout()
     _save(fig, save_path)
     return fig
@@ -149,8 +149,8 @@ def plot_classification_interleaved(
     result: SweepResult | None = None,
     *,
     h: NDArray | None = None,
-    orders: NDArray | None = None,
-    cutoffs: NDArray | None = None,
+    num_taps_grid: NDArray | None = None,
+    cutoff_grid: NDArray | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,
@@ -166,7 +166,7 @@ def plot_classification_interleaved(
     panel_label_fontsize: float = 11.0,
     panel_label_loc: str = "below",
 ) -> Figure:
-    """Publication-style layout with gaps between adjacent orders.
+    """Publication-style layout with gaps between adjacent num_taps_grid.
 
     Each order occupies ``data_slots`` columns of coloured data followed
     by ``gap_slots`` blank columns, producing the striped appearance
@@ -176,13 +176,13 @@ def plot_classification_interleaved(
     ----------
     result
         :class:`~chaotic_pfc.analysis.sweep.SweepResult` to plot.  Mutually exclusive with the
-        ``(h, orders, cutoffs)`` triple.
+        ``(h, num_taps_grid, cutoff_grid)`` triple.
     h
-        Lyapunov grid, shape ``(len(orders), len(cutoffs))``.
-    orders
-        Filter orders (x-axis), shape ``(len(orders),)``.
-    cutoffs
-        Cutoff frequencies (y-axis), shape ``(len(cutoffs),)``.
+        Lyapunov grid, shape ``(len(num_taps_grid), len(cutoff_grid))``.
+    num_taps_grid
+        Filter num_taps_grid (x-axis), shape ``(len(num_taps_grid),)``.
+    cutoff_grid
+        Cutoff frequencies (y-axis), shape ``(len(cutoff_grid),)``.
     save_path
         If provided, the figure is saved to this path via ``_save()``.
     data_slots
@@ -208,7 +208,7 @@ def plot_classification_interleaved(
         panel can keep the fine grid while thinning the labels.
     xtick_step
         Preferred spacing of x ticks. Only values actually present in
-        ``orders`` are labelled; if fewer than three survive the
+        ``num_taps_grid`` are labelled; if fewer than three survive the
         filter, the step is progressively halved.
     panel_label
         Text such as ``"(a)"`` drawn centred beneath the axes, baking
@@ -229,16 +229,16 @@ def plot_classification_interleaved(
     -------
     matplotlib.figure.Figure
     """
-    h, Nz, cutoffs = _unpack(result, h, orders, cutoffs)
+    h, Nz, cutoff_grid = _unpack(result, h, num_taps_grid, cutoff_grid)
     h_color = classify(h)
 
     slot_total = data_slots + gap_slots
     Ncoef = len(Nz)
-    Ncut = len(cutoffs)
+    Ncut = len(cutoff_grid)
     total_slots = Ncoef * slot_total
 
     # Convert cutoff centres to edges for rectangle drawing
-    cut = np.asarray(cutoffs, dtype=np.float64)
+    cut = np.asarray(cutoff_grid, dtype=np.float64)
     if cut.size == 1:
         y_edges = np.array([cut[0] - 0.5, cut[0] + 0.5])
     else:
@@ -415,8 +415,8 @@ def plot_difficulty_map(
             "and produce a non-trivial iteration map."
         )
 
-    Nz = np.asarray(result.orders) - 1
-    cutoffs = np.asarray(result.cutoffs)
+    Nz = np.asarray(result.num_taps_grid) - 1
+    cutoff_grid = np.asarray(result.cutoff_grid)
     n_iters = np.asarray(result.n_iters_used, dtype=np.float64)
 
     # Colour-bar bounds: anchor to the (Nmap_min, Nmap) range used at
@@ -449,7 +449,7 @@ def plot_difficulty_map(
 
     pcm = ax.pcolormesh(
         x_exp,
-        cutoffs,
+        cutoff_grid,
         n_expanded.T,
         cmap=cmap_obj,
         vmin=vmin,
@@ -461,7 +461,7 @@ def plot_difficulty_map(
     cbar = fig.colorbar(pcm, ax=ax, label=t("sweep.difficulty.cbar", lang=lang))
     cbar.ax.tick_params(labelsize=12)
 
-    _setup_interleaved_axes(ax, Nz, cutoffs, data_slots, gap_slots)
+    _setup_interleaved_axes(ax, Nz, cutoff_grid, data_slots, gap_slots)
     fig.tight_layout()
     _save(fig, save_path)
     return fig

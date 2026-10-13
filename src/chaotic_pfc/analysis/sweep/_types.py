@@ -83,9 +83,9 @@ class SweepResult:
         NaN where the trajectory diverged for all ICs.
     h_std : ndarray, shape (Ncoef, Ncut)
         Standard deviation of lambda_max samples at each grid point.
-    orders : ndarray, shape (Ncoef,)
-        Filter orders N_s actually swept.
-    cutoffs : ndarray, shape (Ncut,)
+    num_taps_grid : ndarray, shape (Ncoef,)
+        Number of FIR coefficients (taps) N_s actually swept.
+    cutoff_grid : ndarray, shape (Ncut,)
         Normalised cutoff frequencies omega_c in (0, 1) swept.
     window : str
         FIR window used (lower-case, e.g. ``"hamming"``).
@@ -104,8 +104,8 @@ class SweepResult:
 
     h: NDArray
     h_std: NDArray
-    orders: NDArray
-    cutoffs: NDArray
+    num_taps_grid: NDArray
+    cutoff_grid: NDArray
     window: str
     filter_type: str
     n_iters_used: NDArray | None = None

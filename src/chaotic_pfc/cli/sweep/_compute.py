@@ -130,11 +130,11 @@ def run_compute(args: argparse.Namespace) -> int:
 
     params: dict[str, float | int]
     if args.quick:
-        orders_lp, orders_hp, cutoffs, params = quick_sweep_params()
+        orders_lp, orders_hp, cutoff_grid, params = quick_sweep_params()
     else:
         orders_lp = None  # → run_sweep default: np.arange(2, 42)
         orders_hp = None  # → run_sweep default: np.arange(3, 43, 2)
-        cutoffs = None  # → module default: 100 points
+        cutoff_grid = None  # → module default: 100 points
         params = dict(Nitera=500, Nmap=3000, n_initial=25)
     params.setdefault("bandwidth", getattr(args, "bandwidth", 0.05))
 
@@ -156,8 +156,8 @@ def run_compute(args: argparse.Namespace) -> int:
         result = run_sweep(
             window=window,
             filter_type=filter_type,
-            orders=orders_hp if filter_type in ("highpass", "bandstop") else orders_lp,
-            cutoffs=cutoffs,
+            num_taps_grid=orders_hp if filter_type in ("highpass", "bandstop") else orders_lp,
+            cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=args.kaiser_beta,
             **params,  # type: ignore[arg-type]

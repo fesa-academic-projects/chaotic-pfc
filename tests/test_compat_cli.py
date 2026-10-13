@@ -127,7 +127,7 @@ class TestCommFirSmoke(_IsolatedCwdMixin, unittest.TestCase):
                 "2000",
                 "--cutoff",
                 "0.3",
-                "--taps",
+                "--num-taps",
                 "31",
             ]
         )
@@ -278,23 +278,23 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
 
         def fake_run_sweep(**kwargs):
             captured.update(kwargs)
-            # ``orders`` / ``cutoffs`` may be None (run_sweep default
+            # ``num_taps_grid`` / ``cutoff_grid`` may be None (run_sweep default
             # path) or an ndarray — avoid ``a or default`` because that
             # triggers an ambiguous-truth-value error on arrays.
-            orders = kwargs.get("orders")
-            if orders is None:
-                orders = np.array([2, 3])
-            cutoffs = kwargs.get("cutoffs")
-            if cutoffs is None:
-                cutoffs = np.array([0.5])
-            n = len(orders)
-            m = len(cutoffs)
+            num_taps_grid = kwargs.get("num_taps_grid")
+            if num_taps_grid is None:
+                num_taps_grid = np.array([2, 3])
+            cutoff_grid = kwargs.get("cutoff_grid")
+            if cutoff_grid is None:
+                cutoff_grid = np.array([0.5])
+            n = len(num_taps_grid)
+            m = len(cutoff_grid)
             h = np.full((n, m), 0.1)
             return sweep_mod.SweepResult(
                 h=h,
                 h_std=np.zeros_like(h),
-                orders=np.asarray(orders),
-                cutoffs=np.asarray(cutoffs),
+                num_taps_grid=np.asarray(num_taps_grid),
+                cutoff_grid=np.asarray(cutoff_grid),
                 window=kwargs.get("window", "hamming"),
                 filter_type=kwargs.get("filter_type", "lowpass"),
                 n_iters_used=np.full((n, m), 700.0),
@@ -305,7 +305,7 @@ class TestSweepComputeAdaptiveWiring(_IsolatedCwdMixin, unittest.TestCase):
             window="hamming",
             filter_type="lowpass",
             all=False,
-            quick=True,  # cheapest path; explicit (orders/cutoffs) used
+            quick=True,  # cheapest path; explicit (num_taps_grid/cutoff_grid) used
             kaiser_beta=5.0,
             data_dir=str(self.workdir / "data"),
             adaptive=False,

@@ -184,13 +184,13 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
 
     # Largest Lyapunov exponent of the loop filter itself, quoted in Fig. 5(b).
     # A single-cutoff sweep keeps the perturbation draw fixed and independent
-    # of the other cutoffs (the per-cutoff slices of the ensemble are drawn in
+    # of the other cutoff_grid (the per-cutoff slices of the ensemble are drawn in
     # cutoff order, so the first -- here only -- slice never depends on them).
     loop = run_sweep(
         window="hamming",
         filter_type="lowpass",
-        orders=[len(c)],
-        cutoffs=np.array([FIR_LOOP_CUTOFF]),
+        num_taps_grid=[len(c)],
+        cutoff_grid=np.array([FIR_LOOP_CUTOFF]),
         Nitera=CFG.sweep.Nitera,
         Nmap=CFG.sweep.Nmap,
         n_initial=CFG.sweep.n_initial,
@@ -297,7 +297,7 @@ def fig_kaiser_beta(out_dir: Path) -> None:
 
 def fig_chaotic_density_norm(out_dir: Path) -> None:
     """Write the normalised chaotic-density map."""
-    Nz, cutoffs, percent, n_containing = chaotic_density_norm_table(DATA_DIR)
+    Nz, cutoff_grid, percent, n_containing = chaotic_density_norm_table(DATA_DIR)
     for parity, mask in (("odd", Nz % 2 == 1), ("even", Nz % 2 == 0)):
         sub = np.where(mask[:, None], percent, -np.inf)
         k, j = np.unravel_index(np.argmax(sub), sub.shape)
@@ -305,7 +305,7 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
         count = round(float(percent[k, j]) * n / 100.0)
         print(
             f"[fig_chaotic_density_norm] max over Nz {parity}: Nz={Nz[k]}, "
-            f"omega_c/pi={cutoffs[j]:.4f}, {pct(count, n, 1)}%, k={count} of n={n}"
+            f"omega_c/pi={cutoff_grid[j]:.4f}, {pct(count, n, 1)}%, k={count} of n={n}"
         )
     fig = plot_chaotic_density_norm(
         DATA_DIR,

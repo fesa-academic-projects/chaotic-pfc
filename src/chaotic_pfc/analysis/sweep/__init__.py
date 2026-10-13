@@ -1,7 +1,7 @@
 """Parameter-sweep computation of Lyapunov exponents for the filtered Henon map.
 
-This module sweeps the 2-D grid of filter orders ``N_s in {2, ..., 41}``
-against normalised cutoffs ``omega_c in (0, 1)`` and estimates the largest
+This module sweeps the 2-D grid of filter num_taps_grid ``N_s in {2, ..., 41}``
+against normalised cutoff_grid ``omega_c in (0, 1)`` and estimates the largest
 Lyapunov exponent ``lambda_max`` at each grid point.
 
 All hot paths are JIT-compiled with Numba. The outer 2-D loop is flattened

@@ -316,14 +316,14 @@ def run(args: argparse.Namespace) -> int:
 
     _hr("TRANSITION BOUNDARY (1st chaotic cutoff per order)")
     for ft in FILTER_TYPES:
-        orders, cutoffs = transition_boundary(data_dir, filter_type=ft)
-        if len(orders) == 0:
+        num_taps_grid, cutoff_grid = transition_boundary(data_dir, filter_type=ft)
+        if len(num_taps_grid) == 0:
             print(f"  {ft:<12}  no data")
             continue
-        n_chaotic = np.sum(~np.isnan(cutoffs))
-        print(f"  {ft:<12}  {n_chaotic}/{len(orders)} orders with chaotic transition")
+        n_chaotic = np.sum(~np.isnan(cutoff_grid))
+        print(f"  {ft:<12}  {n_chaotic}/{len(num_taps_grid)} num_taps_grid with chaotic transition")
         if n_chaotic > 0:
-            valid = cutoffs[~np.isnan(cutoffs)]
+            valid = cutoff_grid[~np.isnan(cutoff_grid)]
             print(
                 f"             cutoff transition: {valid[0]:.4f}–{valid[-1]:.4f}  (median: {np.median(valid):.4f})"
             )
@@ -331,14 +331,14 @@ def run(args: argparse.Namespace) -> int:
     # ── 5. Spectral robustness ─────────────────────────────────────────
     _hr("SPECTRAL ROBUSTNESS (chaotic region width)")
     for ft in FILTER_TYPES:
-        orders, widths = chaos_margin(data_dir, filter_type=ft)
-        if len(orders) == 0:
+        num_taps_grid, widths = chaos_margin(data_dir, filter_type=ft)
+        if len(num_taps_grid) == 0:
             print(f"  {ft:<12}  no data")
             continue
         nonzero = widths[widths > 0]
-        pct = 100 * len(nonzero) / len(orders)
+        pct = 100 * len(nonzero) / len(num_taps_grid)
         print(
-            f"  {ft:<12}  {len(nonzero)}/{len(orders)} orders ({pct:.0f}%) with chaos  "
+            f"  {ft:<12}  {len(nonzero)}/{len(num_taps_grid)} num_taps_grid ({pct:.0f}%) with chaos  "
             f"mean width={np.mean(widths):.4f}  max={np.max(widths):.4f}"
         )
 
@@ -403,10 +403,10 @@ def run(args: argparse.Namespace) -> int:
     print(f"  • {best_ft} best preserves chaos ({cmp[best_ft]['mean_pct_chaotic']}% of grid)")
     print(f"  • {worst_ft} most suppresses ({cmp[worst_ft]['mean_pct_chaotic']}% chaotic)")
     print(
-        f"  • order × λ_max correlation: {corr['order_vs_lmax']:+.4f} (higher orders {'increase' if corr['order_vs_lmax'] > 0 else 'decrease'} λ_max)"
+        f"  • order × λ_max correlation: {corr['order_vs_lmax']:+.4f} (higher num_taps_grid {'increase' if corr['order_vs_lmax'] > 0 else 'decrease'} λ_max)"
     )
     print(
-        f"  • cutoff × λ_max correlation: {corr['cutoff_vs_lmax']:+.4f} (higher cutoffs {'increase' if corr['cutoff_vs_lmax'] > 0 else 'decrease'} λ_max)"
+        f"  • cutoff × λ_max correlation: {corr['cutoff_vs_lmax']:+.4f} (higher cutoff_grid {'increase' if corr['cutoff_vs_lmax'] > 0 else 'decrease'} λ_max)"
     )
     print("  • Positive skew in distributions → long tails of high λ_max (strong chaos in islands)")
 

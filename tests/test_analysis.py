@@ -42,8 +42,8 @@ class TestAnalysis(unittest.TestCase):
             result = SweepResult(
                 h=h,
                 h_std=np.abs(h) * 0.1,
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.1, 0.9, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.1, 0.9, 4),
                 window=w,
                 filter_type=ft,
                 metadata={"Nitera": 10, "Nmap": 50},
@@ -61,8 +61,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.1, 0.9, 3),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.1, 0.9, 3),
             window="hamming",
             filter_type="lowpass",
         )
@@ -79,8 +79,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.zeros_like(h),
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.1, 0.9, 3),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.1, 0.9, 3),
             window="hamming",
             filter_type="lowpass",
         )
@@ -104,8 +104,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 12),
-            cutoffs=np.linspace(0.1, 0.9, 10),
+            num_taps_grid=np.arange(2, 12),
+            cutoff_grid=np.linspace(0.1, 0.9, 10),
             window="hamming",
             filter_type="lowpass",
         )
@@ -124,8 +124,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.1, 0.9, 2),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.1, 0.9, 2),
             window="hamming",
             filter_type="lowpass",
         )
@@ -137,8 +137,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.1, 0.9, 3),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.1, 0.9, 3),
             window="hamming",
             filter_type="lowpass",
         )
@@ -153,8 +153,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.1, 0.9, 2),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.1, 0.9, 2),
             window="hamming",
             filter_type="lowpass",
         )
@@ -167,8 +167,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.array([2]),
-            cutoffs=np.array([0.5]),
+            num_taps_grid=np.array([2]),
+            cutoff_grid=np.array([0.5]),
             window="hamming",
             filter_type="lowpass",
         )
@@ -229,22 +229,22 @@ class TestAnalysis(unittest.TestCase):
                 self.assertIsInstance(dist[ft]["n"], int)
 
     def test_transition_boundary(self):
-        orders, cutoffs = transition_boundary(self.root, filter_type="lowpass")
-        self.assertGreaterEqual(len(orders), 0)
-        self.assertEqual(len(orders), len(cutoffs))
+        num_taps_grid, cutoff_grid = transition_boundary(self.root, filter_type="lowpass")
+        self.assertGreaterEqual(len(num_taps_grid), 0)
+        self.assertEqual(len(num_taps_grid), len(cutoff_grid))
 
     def test_transition_boundary_no_data(self):
-        orders, _cutoffs = transition_boundary(self.root, filter_type="bandstop")
-        self.assertEqual(len(orders), 0)
+        num_taps_grid, _cutoffs = transition_boundary(self.root, filter_type="bandstop")
+        self.assertEqual(len(num_taps_grid), 0)
 
     def test_chaos_margin(self):
-        orders, widths = chaos_margin(self.root, filter_type="lowpass")
-        self.assertGreaterEqual(len(orders), 0)
-        self.assertEqual(len(orders), len(widths))
+        num_taps_grid, widths = chaos_margin(self.root, filter_type="lowpass")
+        self.assertGreaterEqual(len(num_taps_grid), 0)
+        self.assertEqual(len(num_taps_grid), len(widths))
 
     def test_chaos_margin_no_data(self):
-        orders, _widths = chaos_margin(self.root, filter_type="bandstop")
-        self.assertEqual(len(orders), 0)
+        num_taps_grid, _widths = chaos_margin(self.root, filter_type="bandstop")
+        self.assertEqual(len(num_taps_grid), 0)
 
     def test_correlation_matrix(self):
         corr = correlation_matrix(self.root)
@@ -281,8 +281,8 @@ class TestAnalysis(unittest.TestCase):
             results[(ft, w)] = SweepResult(
                 h=h,
                 h_std=np.abs(h) * 0.1,
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.1, 0.9, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.1, 0.9, 4),
                 window=w,
                 filter_type=ft,
             )
@@ -304,8 +304,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.1, 0.9, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.1, 0.9, 4),
             window="kaiser",
             filter_type="lowpass",
             metadata={"kaiser_beta": 3.5},
@@ -337,8 +337,8 @@ class TestAnalysis(unittest.TestCase):
             results[(ft, w)] = SweepResult(
                 h=h,
                 h_std=np.abs(h) * 0.1,
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.1, 0.9, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.1, 0.9, 4),
                 window=w,
                 filter_type=ft,
             )
@@ -361,8 +361,8 @@ class TestAnalysis(unittest.TestCase):
         results[("bandpass", "hamming")] = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.1, 0.9, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.1, 0.9, 4),
             window="hamming",
             filter_type="bandpass",
         )
@@ -376,8 +376,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=h_std,
-            orders=np.arange(3, 5),
-            cutoffs=np.array([0.1, 0.3, 0.5]),
+            num_taps_grid=np.arange(3, 5),
+            cutoff_grid=np.array([0.1, 0.3, 0.5]),
             window="hamming",
             filter_type="lowpass",
             metadata={"n_initial": 50},
@@ -398,8 +398,8 @@ class TestAnalysis(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=h_std,
-            orders=np.array([5]),
-            cutoffs=np.array([0.3]),
+            num_taps_grid=np.array([5]),
+            cutoff_grid=np.array([0.3]),
             window="hann",
             filter_type="lowpass",
         )

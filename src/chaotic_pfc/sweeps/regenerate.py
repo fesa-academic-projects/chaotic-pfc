@@ -1,7 +1,7 @@
 """Regenerate the versioned Lyapunov sweeps with the current kernel.
 
 Every checkpoint under ``--src`` is recomputed with the parameters stored in
-its own metadata (window, filter type, Kaiser beta, orders, cutoffs and the
+its own metadata (window, filter type, Kaiser beta, num_taps_grid, cutoff_grid and the
 simulation settings), and written to the same relative path under ``--dst``.
 The bandwidth of the band filters is the one used for the paper, 0.05.
 
@@ -54,8 +54,8 @@ def regenerate(src: Path, dst: Path) -> None:
             window=old.window,
             filter_type=old.filter_type,
             kaiser_beta=float(m["kaiser_beta"]),
-            orders=old.orders,
-            cutoffs=old.cutoffs,
+            num_taps_grid=old.num_taps_grid,
+            cutoff_grid=old.cutoff_grid,
             bandwidth=PAPER_BANDWIDTH,
             Nitera=int(m["Nitera"]),
             Nmap=int(m["Nmap"]),

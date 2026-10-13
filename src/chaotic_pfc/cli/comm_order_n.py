@@ -35,7 +35,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument(
         "--cutoff", type=float, default=cfg.channel.cutoff, help="External channel cutoff"
     )
-    p.add_argument("--taps", type=int, default=cfg.channel.num_taps, help="External channel taps")
+    p.add_argument("--num-taps", type=int, default=cfg.channel.num_taps, help="External channel taps")
     p.add_argument(
         "--internal-cutoff",
         type=float,
@@ -88,14 +88,14 @@ def run(args: argparse.Namespace) -> int:
 
     m = text_message(args.text, args.N, bit_period=args.period)
     s, _ = transmit_order_n(m, c, mu=args.mu, alpha=alpha, beta=beta, x0=x0)
-    r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
+    r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.num_taps)
     m_hat, _ = receive_order_n(r, c, mu=args.mu, alpha=alpha, beta=beta, y0=y0)
 
     mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)
     print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}  text={args.text!r}")
     print(f"    MSE (n > {cfg.comm.transient}): {mse:.4e}")
     report_comm_metrics(
-        m, m_hat, transient=cfg.comm.transient, bit_period=args.period, delay=(args.taps - 1) // 2
+        m, m_hat, transient=cfg.comm.transient, bit_period=args.period, delay=(args.num_taps - 1) // 2
     )
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)

@@ -66,8 +66,8 @@ def _make_result(
     return SweepResult(
         h=h,
         h_std=h_std,
-        orders=np.asarray(taps, dtype=np.int64),
-        cutoffs=CUTOFFS.copy(),
+        num_taps_grid=np.asarray(taps, dtype=np.int64),
+        cutoff_grid=CUTOFFS.copy(),
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,

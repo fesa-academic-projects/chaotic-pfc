@@ -113,10 +113,10 @@ class TestConfig(unittest.TestCase):
 
 class TestSweepKaiserBeta(unittest.TestCase):
     def test_precompute_with_two_betas_differs(self):
-        orders = np.array([5, 7])
-        cutoffs = np.array([0.3, 0.5])
-        bank_a, _ = precompute_fir_bank(orders, cutoffs, "lowpass", "kaiser", kaiser_beta=2.0)
-        bank_b, _ = precompute_fir_bank(orders, cutoffs, "lowpass", "kaiser", kaiser_beta=10.0)
+        num_taps_grid = np.array([5, 7])
+        cutoff_grid = np.array([0.3, 0.5])
+        bank_a, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=2.0)
+        bank_b, _ = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "kaiser", kaiser_beta=10.0)
         self.assertFalse(np.allclose(bank_a, bank_b))
 
     def test_precompute_kaiser_negative_beta_raises(self):
@@ -129,8 +129,8 @@ class TestSweepKaiserBeta(unittest.TestCase):
         result = run_sweep(
             window="kaiser",
             filter_type="lowpass",
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.2, 0.8, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.2, 0.8, 4),
             Nitera=20,
             Nmap=80,
             n_initial=2,
@@ -185,8 +185,8 @@ class TestSweepPlotting3D(unittest.TestCase):
             result = run_sweep(
                 window="kaiser",
                 filter_type="lowpass",
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.2, 0.8, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.2, 0.8, 4),
                 Nitera=20,
                 Nmap=80,
                 n_initial=2,
@@ -206,12 +206,12 @@ class TestSweepPlotting3D(unittest.TestCase):
             root = Path(td)
             self._write_three_beta_sweeps(root)
 
-            volume, betas, orders, cutoffs = aggregate_beta_sweeps(root)
+            volume, betas, num_taps_grid, cutoff_grid = aggregate_beta_sweeps(root)
             self.assertEqual(volume.shape, (3, 3, 4))
             np.testing.assert_array_equal(betas, [0.0, 0.5, 1.0])
 
             html = root / "out.html"
-            fig = plot_3d_beta_volume(volume, betas, orders, cutoffs, save_path=html)
+            fig = plot_3d_beta_volume(volume, betas, num_taps_grid, cutoff_grid, save_path=html)
             self.assertEqual(len(fig.data), 3)
             self.assertTrue(html.exists())
             self.assertGreater(html.stat().st_size, 0)

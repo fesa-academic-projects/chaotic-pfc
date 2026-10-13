@@ -157,9 +157,9 @@ def transition_boundary(
 
     Returns
     -------
-    orders : ndarray
-        Filter orders.
-    cutoffs : ndarray
+    num_taps_grid : ndarray
+        Filter num_taps_grid.
+    cutoff_grid : ndarray
         First chaotic cutoff per order (NaN if never chaotic).
     """
     best: dict[int, tuple[float, float]] = {}
@@ -169,15 +169,15 @@ def transition_boundary(
         if result.filter_type != filter_type:
             continue
 
-        h, orders, cutoffs = result.h, result.orders, result.cutoffs
-        for i in range(len(orders)):
-            for j in range(len(cutoffs)):
+        h, num_taps_grid, cutoff_grid = result.h, result.num_taps_grid, result.cutoff_grid
+        for i in range(len(num_taps_grid)):
+            for j in range(len(cutoff_grid)):
                 val = h[i, j]
                 if not np.isfinite(val):
                     continue
                 if val > 0:
-                    order = int(orders[i])
-                    wc = float(cutoffs[j])
+                    order = int(num_taps_grid[i])
+                    wc = float(cutoff_grid[j])
                     if order not in best or wc < best[order][0]:
                         best[order] = (wc, float(val))
 
@@ -206,9 +206,9 @@ def chaos_margin(
 
     Returns
     -------
-    orders : ndarray
+    num_taps_grid : ndarray
     widths : ndarray
-        Fraction of cutoffs where λ_max > 0 per order.
+        Fraction of cutoff_grid where λ_max > 0 per order.
     """
     accum: dict[int, list[float]] = {}
     for result in _discover_all(data_dir):
@@ -217,9 +217,9 @@ def chaos_margin(
         if result.filter_type != filter_type:
             continue
 
-        h, orders = result.h, result.orders
-        for i in range(len(orders)):
-            order = int(orders[i])
+        h, num_taps_grid = result.h, result.num_taps_grid
+        for i in range(len(num_taps_grid)):
+            order = int(num_taps_grid[i])
             row = h[i, :]
             chaotic_count = int(np.sum(np.isfinite(row) & (row > 0)))
             total = int(np.sum(np.isfinite(row)))
@@ -255,14 +255,14 @@ def correlation_matrix(
     lmax_all: list[float] = []
 
     for result in _discover_all(data_dir):
-        h, orders, cutoffs = result.h, result.orders, result.cutoffs
-        for i in range(len(orders)):
-            for j in range(len(cutoffs)):
+        h, num_taps_grid, cutoff_grid = result.h, result.num_taps_grid, result.cutoff_grid
+        for i in range(len(num_taps_grid)):
+            for j in range(len(cutoff_grid)):
                 val = h[i, j]
                 if not np.isfinite(val):
                     continue
-                orders_all.append(float(orders[i]))
-                cutoffs_all.append(float(cutoffs[j]))
+                orders_all.append(float(num_taps_grid[i]))
+                cutoffs_all.append(float(cutoff_grid[j]))
                 lmax_all.append(float(val))
 
     if len(lmax_all) < 3:

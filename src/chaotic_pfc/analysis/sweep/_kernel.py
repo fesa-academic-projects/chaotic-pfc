@@ -529,8 +529,8 @@ def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
 
 @njit(parallel=True, cache=True)
 def _sweep_kernel(
-    orders: NDArray,
-    cutoffs: NDArray,
+    num_taps_grid: NDArray,
+    cutoff_grid: NDArray,
     fir_bank: NDArray,
     gains: NDArray,
     perturbations: NDArray,
@@ -560,8 +560,8 @@ def _sweep_kernel(
     full-spectrum kernel (O(Ns^2) per iteration) to eliminate the tiny
     probability of classification-sign flips near the transition boundary.
     """
-    Ncoef = len(orders)
-    Ncut = len(cutoffs)
+    Ncoef = len(num_taps_grid)
+    Ncut = len(cutoff_grid)
     Ntot = Ncoef * Ncut
 
     h = np.full((Ncoef, Ncut), np.nan)
@@ -574,7 +574,7 @@ def _sweep_kernel(
         i = flat // Ncut
         j = flat % Ncut
 
-        Ns = int(orders[i])
+        Ns = int(num_taps_grid[i])
         c = fir_bank[i, j, :Ns]
         gain = gains[i, j]
 

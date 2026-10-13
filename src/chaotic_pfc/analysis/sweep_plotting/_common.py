@@ -256,8 +256,8 @@ def _save(fig: Figure, path: str | Path | None) -> None:
 def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArray]:
     """Load all sweeps under *sweep_dir* and unify to the finest grid.
 
-    Returns (sweeps, Nz, cutoffs) where every sweep has been resampled
-    (nearest-neighbour for orders) to match the largest grid found.
+    Returns (sweeps, Nz, cutoff_grid) where every sweep has been resampled
+    (nearest-neighbour for num_taps_grid) to match the largest grid found.
     """
     raw: list[SweepResult] = []
     for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
@@ -271,20 +271,20 @@ def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArr
             f"Expected subdirectories like '<Window> (<ft>)/variables_lyapunov.npz'."
         )
 
-    # Determine finest grid (largest number of orders)
-    ref = max(raw, key=lambda sr: len(sr.orders))
-    Nz_fine = np.asarray(ref.orders) - 1
-    cutoffs = np.asarray(ref.cutoffs)
+    # Determine finest grid (largest number of taps)
+    ref = max(raw, key=lambda sr: len(sr.num_taps_grid))
+    Nz_fine = np.asarray(ref.num_taps_grid) - 1
+    cutoff_grid = np.asarray(ref.cutoff_grid)
 
     unified: list[SweepResult] = []
     for sr in raw:
-        if sr.orders.shape == ref.orders.shape and np.array_equal(sr.orders, ref.orders):
+        if sr.num_taps_grid.shape == ref.num_taps_grid.shape and np.array_equal(sr.num_taps_grid, ref.num_taps_grid):
             unified.append(sr)
         else:
             # Resample to fine grid via nearest-neighbour in order space
-            Nz_coarse = np.asarray(sr.orders) - 1
+            Nz_coarse = np.asarray(sr.num_taps_grid) - 1
             h_coarse = np.asarray(sr.h, dtype=np.float64)
-            h_fine = np.full((len(Nz_fine), len(cutoffs)), np.nan, dtype=np.float64)
+            h_fine = np.full((len(Nz_fine), len(cutoff_grid)), np.nan, dtype=np.float64)
             for j, nz in enumerate(Nz_fine):
                 idx = np.argmin(np.abs(Nz_coarse - nz))
                 h_fine[j, :] = h_coarse[idx, :]
@@ -292,14 +292,14 @@ def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArr
                 SweepResult(
                     h=h_fine,
                     h_std=np.full_like(h_fine, np.nan),
-                    orders=ref.orders.copy(),
-                    cutoffs=cutoffs.copy(),
+                    num_taps_grid=ref.num_taps_grid.copy(),
+                    cutoff_grid=cutoff_grid.copy(),
                     window=sr.window,
                     filter_type=sr.filter_type,
                     metadata=sr.metadata,
                 )
             )
-    return unified, Nz_fine, cutoffs
+    return unified, Nz_fine, cutoff_grid
 
 
 def _interleaved_expand(
@@ -329,7 +329,7 @@ def _interleaved_expand(
 def _setup_interleaved_axes(
     ax: plt.Axes,
     Nz: NDArray,
-    cutoffs: NDArray,
+    cutoff_grid: NDArray,
     data_slots: int = 3,
     gap_slots: int = 1,
     label_fontsize: float = 16.0,
@@ -369,15 +369,15 @@ def _save_svg(fig: Figure, stem: Path) -> None:
 def _unpack(
     result: SweepResult | None,
     h: NDArray | None,
-    orders: NDArray | None,
-    cutoffs: NDArray | None,
+    num_taps_grid: NDArray | None,
+    cutoff_grid: NDArray | None,
 ) -> tuple[NDArray, NDArray, NDArray]:
-    """Resolve the two accepted calling conventions into (h, Nz, cutoffs)."""
+    """Resolve the two accepted calling conventions into (h, Nz, cutoff_grid)."""
     if result is not None:
         h = result.h
-        orders = result.orders
-        cutoffs = result.cutoffs
-    if h is None or orders is None or cutoffs is None:
-        raise ValueError("Provide either a SweepResult or the (h, orders, cutoffs) triple.")
-    Nz = np.asarray(orders) - 1
-    return np.asarray(h), Nz, np.asarray(cutoffs)
+        num_taps_grid = result.num_taps_grid
+        cutoff_grid = result.cutoff_grid
+    if h is None or num_taps_grid is None or cutoff_grid is None:
+        raise ValueError("Provide either a SweepResult or the (h, num_taps_grid, cutoff_grid) triple.")
+    Nz = np.asarray(num_taps_grid) - 1
+    return np.asarray(h), Nz, np.asarray(cutoff_grid)

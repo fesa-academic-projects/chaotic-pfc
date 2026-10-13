@@ -842,7 +842,7 @@ CONFIG_EXPECTATIONS: tuple[tuple[str, str, float, tuple[str, ...] | None, tuple[
     ("sub:ensemble", "burn-in iterations", 500.0, ("sweep", "Nitera"), ()),
     ("sub:ensemble", "accumulation iterations", 3000.0, ("sweep", "Nmap"), ()),
     ("sub:ensemble", "initial conditions per point", 25.0, ("sweep", "n_initial"), ()),
-    ("sub:grid", "normalised cutoffs", 100.0, ("sweep", "n_cutoffs"), ()),
+    ("sub:grid", "normalised cutoff_grid", 100.0, ("sweep", "n_cutoffs"), ()),
     (
         "sub:grid",
         "maximum filter order N_z",

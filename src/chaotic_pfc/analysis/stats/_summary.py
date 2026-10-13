@@ -51,8 +51,8 @@ def summary_table(
         row: dict = {
             "window": result.window,
             "filter_type": result.filter_type,
-            "n_orders": len(result.orders),
-            "n_cutoffs": len(result.cutoffs),
+            "n_orders": len(result.num_taps_grid),
+            "n_cutoffs": len(result.cutoff_grid),
             "pct_chaotic": round(100 * chaotic / total, 1),
             "pct_periodic": round(100 * periodic / total, 1),
             "pct_divergent": round(100 * divergent / total, 1),

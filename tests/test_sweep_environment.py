@@ -125,14 +125,14 @@ def test_firwin_reproduces_stored_taps() -> None:
     mismatches: list[tuple[str, int, int]] = []
     for path in paths:
         result = load_sweep(path)
-        orders = np.asarray(result.orders, dtype=int)
+        num_taps_grid = np.asarray(result.num_taps_grid, dtype=int)
         beta = float(result.metadata.get("kaiser_beta", _GOLDEN_KAISER_BETA))
         win_arg = ("kaiser", beta) if result.window == "kaiser" else result.window
         if result.filter_type in ("bandpass", "bandstop"):
             cutoff: float | list[float] = [0.3 - 0.025, 0.3 + 0.025]
         else:
             cutoff = 0.3
-        for n_taps in (int(orders.min()), int(orders.max())):
+        for n_taps in (int(num_taps_grid.min()), int(num_taps_grid.max())):
             coeffs = firwin(n_taps, cutoff, pass_zero=result.filter_type, window=win_arg)
             if coeffs.size != n_taps:
                 mismatches.append((path.parent.name, n_taps, int(coeffs.size)))
@@ -152,7 +152,7 @@ def test_dc_gain_follows_filter_type() -> None:
     (away from the low-order cutoff-0 corner). A SciPy change to the window or
     the ``pass_zero`` handling fails here with a SciPy message.
     """
-    cutoffs = np.array([0.3, 0.5, 0.7])
+    cutoff_grid = np.array([0.3, 0.5, 0.7])
     expected = _environment().get("scipy", "the recorded SciPy")
     for filter_type, target, tol in (
         ("lowpass", 1.0, 0.2),
@@ -160,7 +160,7 @@ def test_dc_gain_follows_filter_type() -> None:
         ("highpass", 0.0, 0.2),
         ("bandpass", 0.0, 0.2),
     ):
-        _, gains = precompute_fir_bank([21], cutoffs, filter_type, "hamming")
+        _, gains = precompute_fir_bank([21], cutoff_grid, filter_type, "hamming")
         if not np.allclose(gains[0], target, atol=tol):
             raise AssertionError(
                 f"DC gain of the {filter_type} filter is {gains[0].tolist()}, "
@@ -186,11 +186,11 @@ def test_stored_orders_are_the_canonical_grid() -> None:
     bad: list[tuple[str, list[int]]] = []
     for path in _checkpoint_paths():
         result = load_sweep(path)
-        orders = np.asarray(result.orders, dtype=int)
+        num_taps_grid = np.asarray(result.num_taps_grid, dtype=int)
         if result.filter_type in ("highpass", "bandstop"):
             expected = np.arange(3, 43, 2)
         else:
             expected = np.arange(2, 42)
-        if not np.array_equal(orders, expected):
-            bad.append((path.parent.name, orders.tolist()))
-    assert not bad, f"checkpoint orders are not the canonical grid: {bad[:3]}"
+        if not np.array_equal(num_taps_grid, expected):
+            bad.append((path.parent.name, num_taps_grid.tolist()))
+    assert not bad, f"checkpoint num_taps_grid are not the canonical grid: {bad[:3]}"

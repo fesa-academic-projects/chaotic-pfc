@@ -32,8 +32,8 @@ class TestRunSweep(unittest.TestCase):
         cls.result = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.2, 0.8, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.2, 0.8, 4),
             Nitera=30,
             Nmap=150,
             n_initial=3,
@@ -46,8 +46,8 @@ class TestRunSweep(unittest.TestCase):
         self.assertIsInstance(r, SweepResult)
         self.assertEqual(r.h.shape, (3, 4))
         self.assertEqual(r.h_std.shape, (3, 4))
-        self.assertEqual(r.orders.shape, (3,))
-        self.assertEqual(r.cutoffs.shape, (4,))
+        self.assertEqual(r.num_taps_grid.shape, (3,))
+        self.assertEqual(r.cutoff_grid.shape, (4,))
 
     def test_metadata_populated(self):
         meta = self.result.metadata
@@ -74,8 +74,8 @@ class TestRunSweep(unittest.TestCase):
         r2 = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.2, 0.8, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.2, 0.8, 4),
             Nitera=30,
             Nmap=150,
             n_initial=3,
@@ -108,8 +108,8 @@ class TestRunSweep(unittest.TestCase):
         r_other = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.2, 0.8, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.2, 0.8, 4),
             Nitera=30,
             Nmap=150,
             n_initial=3,
@@ -148,8 +148,8 @@ class TestAdaptive(unittest.TestCase):
         cls.ref = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 8),
-            cutoffs=np.linspace(0.1, 0.9, 6),
+            num_taps_grid=np.arange(2, 8),
+            cutoff_grid=np.linspace(0.1, 0.9, 6),
             Nitera=100,
             Nmap=500,
             n_initial=4,
@@ -162,8 +162,8 @@ class TestAdaptive(unittest.TestCase):
         cls.ada = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 8),
-            cutoffs=np.linspace(0.1, 0.9, 6),
+            num_taps_grid=np.arange(2, 8),
+            cutoff_grid=np.linspace(0.1, 0.9, 6),
             Nitera=100,
             Nmap=500,
             n_initial=4,
@@ -226,8 +226,8 @@ class TestAdaptive(unittest.TestCase):
         ada2 = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 8),
-            cutoffs=np.linspace(0.1, 0.9, 6),
+            num_taps_grid=np.arange(2, 8),
+            cutoff_grid=np.linspace(0.1, 0.9, 6),
             Nitera=100,
             Nmap=500,
             n_initial=4,
@@ -244,8 +244,8 @@ class TestAdaptive(unittest.TestCase):
 
     def test_invalid_Nmap_min(self):
         kw = dict(
-            orders=np.arange(2, 4),
-            cutoffs=np.linspace(0.2, 0.8, 3),
+            num_taps_grid=np.arange(2, 4),
+            cutoff_grid=np.linspace(0.2, 0.8, 3),
             Nitera=20,
             Nmap=200,
             n_initial=2,

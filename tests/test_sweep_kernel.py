@@ -64,9 +64,9 @@ class TestKernelFunctions(unittest.TestCase):
         self.assertTrue(np.all(np.isfinite(lyap_sum)))
 
     def test_build_task_order_balanced(self):
-        orders = np.array([2, 3, 4, 5, 10, 20, 30, 41])
-        task = _build_task_order(orders, Ncut=5)
-        self.assertEqual(len(task), len(orders) * 5)
+        num_taps_grid = np.array([2, 3, 4, 5, 10, 20, 30, 41])
+        task = _build_task_order(num_taps_grid, Ncut=5)
+        self.assertEqual(len(task), len(num_taps_grid) * 5)
         self.assertEqual(len(set(task)), len(task))  # all unique
 
     def test_ns1_sweep_produces_finite_lyapunov(self):
@@ -75,8 +75,8 @@ class TestKernelFunctions(unittest.TestCase):
         result = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=[1],
-            cutoffs=np.linspace(0.1, 0.9, 3),
+            num_taps_grid=[1],
+            cutoff_grid=np.linspace(0.1, 0.9, 3),
             Nitera=50,
             Nmap=100,
             n_initial=2,
@@ -95,8 +95,8 @@ class TestKernelFunctions(unittest.TestCase):
         result = run_sweep(
             window="hann",
             filter_type="bandpass",
-            orders=[8],
-            cutoffs=np.array([0.2828326263]),
+            num_taps_grid=[8],
+            cutoff_grid=np.array([0.2828326263]),
             Nitera=500,
             Nmap=3000,
             n_initial=25,
@@ -115,8 +115,8 @@ class TestKernelFunctions(unittest.TestCase):
         result = run_sweep(
             window="hann",
             filter_type="bandpass",
-            orders=[8],
-            cutoffs=np.array([0.5]),
+            num_taps_grid=[8],
+            cutoff_grid=np.array([0.5]),
             Nitera=500,
             Nmap=3000,
             n_initial=25,
@@ -139,8 +139,8 @@ class TestKernelFunctions(unittest.TestCase):
         result = run_sweep(
             window="hann",
             filter_type="bandpass",
-            orders=[8],
-            cutoffs=np.array([0.35]),
+            num_taps_grid=[8],
+            cutoff_grid=np.array([0.35]),
             Nitera=500,
             Nmap=3000,
             n_initial=25,

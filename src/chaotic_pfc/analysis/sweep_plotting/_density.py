@@ -72,7 +72,7 @@ def plot_chaotic_map(
         Discrete-classification counterpart for a single sweep.
     """
     sweep_dir = Path(sweep_dir)
-    loaded, Nz, cutoffs = _discover_sweeps(sweep_dir)
+    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
 
     # Binary union: 1 where any sweep is chaotic, NaN elsewhere
     binary = np.zeros_like(loaded[0].h, dtype=np.float64)
@@ -93,7 +93,7 @@ def plot_chaotic_map(
 
     ax.pcolormesh(
         x_exp,
-        cutoffs,
+        cutoff_grid,
         h_expanded.T,
         cmap=cmap_obj,
         shading="nearest",
@@ -104,7 +104,7 @@ def plot_chaotic_map(
     _setup_interleaved_axes(
         ax,
         Nz,
-        cutoffs,
+        cutoff_grid,
         data_slots,
         gap_slots,
         label_fontsize=label_fontsize,
@@ -171,7 +171,7 @@ def plot_chaotic_density(
         Binary union map (chaotic or not).
     """
     sweep_dir = Path(sweep_dir)
-    loaded, Nz, cutoffs = _discover_sweeps(sweep_dir)
+    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
 
     # Count how many sweeps are chaotic at each grid point
     count = np.zeros_like(loaded[0].h, dtype=np.float64)
@@ -197,7 +197,7 @@ def plot_chaotic_density(
 
     pcm = ax.pcolormesh(
         x_exp,
-        cutoffs,
+        cutoff_grid,
         h_expanded.T,
         cmap=cmap_obj,
         vmin=0.0,
@@ -213,7 +213,7 @@ def plot_chaotic_density(
     _setup_interleaved_axes(
         ax,
         Nz,
-        cutoffs,
+        cutoff_grid,
         data_slots,
         gap_slots,
         label_fontsize=label_fontsize,
@@ -227,7 +227,7 @@ def plot_chaotic_density(
     # Mark point of maximum density
     slot_total = data_slots + gap_slots
     x_max = idx_order * slot_total + (data_slots - 1) / 2.0
-    y_max = cutoffs[idx_cutoff]
+    y_max = cutoff_grid[idx_cutoff]
     ax.plot(
         x_max,
         y_max,
@@ -251,8 +251,8 @@ def chaotic_density_norm_table(
 ) -> tuple[NDArray, NDArray, NDArray, NDArray]:
     """Percentage of the sweeps that contain each grid point and find it chaotic.
 
-    ``Nz = order - 1``. A sweep contains ``Nz`` when its orders include
-    ``Nz + 1``; highpass and bandstop only have odd orders, so even ``Nz``
+    ``Nz = order - 1``. A sweep contains ``Nz`` when its num_taps_grid include
+    ``Nz + 1``; highpass and bandstop only have odd num_taps_grid, so even ``Nz``
     is contained in all sweeps and odd ``Nz`` only in lowpass and bandpass.
     Membership is counted order by order, without resampling.
 
@@ -264,9 +264,9 @@ def chaotic_density_norm_table(
     Returns
     -------
     tuple[NDArray, NDArray, NDArray, NDArray]
-        ``(Nz, cutoffs, percent, n_containing)``.  ``percent[k, j]`` is the
+        ``(Nz, cutoff_grid, percent, n_containing)``.  ``percent[k, j]`` is the
         percentage of the sweeps containing ``Nz[k]`` in which the point
-        ``(Nz[k], cutoffs[j])`` has ``lambda_max > 0``; it is NaN where no
+        ``(Nz[k], cutoff_grid[j])`` has ``lambda_max > 0``; it is NaN where no
         sweep contains ``Nz[k]``.
     """
     sweep_dir = Path(sweep_dir)
@@ -279,18 +279,18 @@ def chaotic_density_norm_table(
     if not raw:
         raise FileNotFoundError(f"No sweeps found under {sweep_dir}.")
 
-    cutoffs = np.asarray(raw[0].cutoffs, dtype=np.float64)
+    cutoff_grid = np.asarray(raw[0].cutoff_grid, dtype=np.float64)
     for sr in raw:
-        if not np.array_equal(np.asarray(sr.cutoffs, dtype=np.float64), cutoffs):
+        if not np.array_equal(np.asarray(sr.cutoff_grid, dtype=np.float64), cutoff_grid):
             raise ValueError("sweeps do not share the same cutoff grid")
 
-    Nz = np.array(sorted({int(o) - 1 for sr in raw for o in np.asarray(sr.orders)}))
+    Nz = np.array(sorted({int(o) - 1 for sr in raw for o in np.asarray(sr.num_taps_grid)}))
     index = {int(nz): k for k, nz in enumerate(Nz)}
-    n_chaotic = np.zeros((len(Nz), len(cutoffs)))
+    n_chaotic = np.zeros((len(Nz), len(cutoff_grid)))
     n_containing = np.zeros(len(Nz))
     for sr in raw:
         h = np.asarray(sr.h, dtype=np.float64)
-        for i, order in enumerate(np.asarray(sr.orders)):
+        for i, order in enumerate(np.asarray(sr.num_taps_grid)):
             k = index[int(order) - 1]
             n_containing[k] += 1.0
             n_chaotic[k] += h[i] > 0.0
@@ -298,7 +298,7 @@ def chaotic_density_norm_table(
     percent = np.full_like(n_chaotic, np.nan)
     has = n_containing > 0
     percent[has] = 100.0 * n_chaotic[has] / n_containing[has, None]
-    return Nz, cutoffs, percent, n_containing
+    return Nz, cutoff_grid, percent, n_containing
 
 
 def plot_chaotic_density_norm(
@@ -351,7 +351,7 @@ def plot_chaotic_density_norm(
     Figure
         The matplotlib figure.
     """
-    Nz, cutoffs, percent, _ = chaotic_density_norm_table(sweep_dir)
+    Nz, cutoff_grid, percent, _ = chaotic_density_norm_table(sweep_dir)
 
     h_expanded = _interleaved_expand(percent, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
@@ -365,7 +365,7 @@ def plot_chaotic_density_norm(
 
     pcm = ax.pcolormesh(
         x_exp,
-        cutoffs,
+        cutoff_grid,
         h_expanded.T,
         cmap=cmap_obj,
         vmin=0.0,
@@ -382,7 +382,7 @@ def plot_chaotic_density_norm(
     _setup_interleaved_axes(
         ax,
         Nz,
-        cutoffs,
+        cutoff_grid,
         data_slots,
         gap_slots,
         label_fontsize=label_fontsize,
@@ -401,7 +401,7 @@ def plot_chaotic_density_norm(
     slot_total = data_slots + gap_slots
     ax.plot(
         k_max * slot_total + (data_slots - 1) / 2.0,
-        cutoffs[j_max],
+        cutoff_grid[j_max],
         marker="o",
         markersize=marker_size,
         markerfacecolor="none",

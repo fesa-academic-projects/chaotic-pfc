@@ -33,7 +33,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
         help="ASCII message text encoded as ±1 bits (default: 'hello').",
     )
     p.add_argument("--cutoff", type=float, default=cfg.channel.cutoff)
-    p.add_argument("--taps", type=int, default=cfg.channel.num_taps)
+    p.add_argument("--num-taps", type=int, default=cfg.channel.num_taps)
     add_save_display_flags(p)
     add_lang_flag(p)
     p.set_defaults(_run=run)
@@ -62,17 +62,17 @@ def run(args: argparse.Namespace) -> int:
 
     m = text_message(args.text, args.N, bit_period=args.period)
     s = transmit(m, mu=args.mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
-    r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
+    r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.num_taps)
 
     rng = np.random.default_rng(cfg.seed)
     m_hat = receive(r, mu=args.mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random())
 
     mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
     print(
-        f"[04] FIR channel  |  N={args.N:,}  mu={args.mu}  wc/pi={args.cutoff}  taps={args.taps}  text={args.text!r}"
+        f"[04] FIR channel  |  N={args.N:,}  mu={args.mu}  wc/pi={args.cutoff}  taps={args.num_taps}  text={args.text!r}"
     )
     print(f"    MSE (n > {tr}): {mse:.4e}")
-    report_comm_metrics(m, m_hat, transient=tr, bit_period=args.period, delay=(args.taps - 1) // 2)
+    report_comm_metrics(m, m_hat, transient=tr, bit_period=args.period, delay=(args.num_taps - 1) // 2)
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 
@@ -101,7 +101,7 @@ def run(args: argparse.Namespace) -> int:
             + r"  ($\omega_c/\pi="
             + f"{args.cutoff}"
             + r",\; N_{{taps}}="
-            + f"{args.taps}"
+            + f"{args.num_taps}"
             + r"$)"
         ),
         y_lim_mhat=y_lim_mhat,

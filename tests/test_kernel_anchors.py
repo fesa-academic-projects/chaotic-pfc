@@ -32,8 +32,8 @@ def _single_tap_sweep(alpha: float, beta: float) -> float:
     result = run_sweep(
         window="hamming",
         filter_type="lowpass",
-        orders=[1],
-        cutoffs=[0.5],
+        num_taps_grid=[1],
+        cutoff_grid=[0.5],
         Nitera=1000,
         Nmap=20000,
         n_initial=10,

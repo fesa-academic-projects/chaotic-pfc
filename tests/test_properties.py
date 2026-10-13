@@ -157,13 +157,13 @@ class TestAreaSummaryInvariants(unittest.TestCase):
     @COMMON
     def test_counts_sum_to_total(self, data):
         h = data["h"]
-        orders = np.arange(2, 2 + h.shape[0])
-        cutoffs = np.linspace(0.1, 0.9, h.shape[1])
+        num_taps_grid = np.arange(2, 2 + h.shape[0])
+        cutoff_grid = np.linspace(0.1, 0.9, h.shape[1])
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
         )
@@ -174,13 +174,13 @@ class TestAreaSummaryInvariants(unittest.TestCase):
     @COMMON
     def test_lmax_statistics_ci_contains_mean_when_enough_points(self, data):
         h = data["h"]
-        orders = np.arange(2, 2 + h.shape[0])
-        cutoffs = np.linspace(0.1, 0.9, h.shape[1])
+        num_taps_grid = np.arange(2, 2 + h.shape[0])
+        cutoff_grid = np.linspace(0.1, 0.9, h.shape[1])
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={"n_initial": 50},

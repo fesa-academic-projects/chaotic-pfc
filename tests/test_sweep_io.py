@@ -29,8 +29,8 @@ class TestIO(unittest.TestCase):
         result = run_sweep(
             window="hann",
             filter_type="highpass",
-            orders=np.array([3, 5]),  # highpass requires odd orders
-            cutoffs=np.linspace(0.2, 0.8, 3),
+            num_taps_grid=np.array([3, 5]),  # highpass requires odd num_taps_grid
+            cutoff_grid=np.linspace(0.2, 0.8, 3),
             Nitera=20,
             Nmap=100,
             n_initial=2,
@@ -43,8 +43,8 @@ class TestIO(unittest.TestCase):
             self.assertTrue(path.exists())
 
             loaded = load_sweep(path)
-            np.testing.assert_array_equal(loaded.orders, result.orders)
-            np.testing.assert_array_equal(loaded.cutoffs, result.cutoffs)
+            np.testing.assert_array_equal(loaded.num_taps_grid, result.num_taps_grid)
+            np.testing.assert_array_equal(loaded.cutoff_grid, result.cutoff_grid)
             self.assertEqual(loaded.window, "hann")
             self.assertEqual(loaded.filter_type, "highpass")
             self.assertEqual(loaded.display_name, "Hann (highpass)")
@@ -81,8 +81,8 @@ class TestIO(unittest.TestCase):
         result = run_sweep(
             window="hamming",
             filter_type="lowpass",
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.2, 0.8, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.2, 0.8, 4),
             Nitera=30,
             Nmap=200,
             n_initial=3,
@@ -116,17 +116,17 @@ class TestIO(unittest.TestCase):
 
 class TestHelpers(unittest.TestCase):
     def test_quick_sweep_params_reduces_work(self):
-        orders_lp, _orders_hp, cutoffs, params = quick_sweep_params()
+        orders_lp, _orders_hp, cutoff_grid, params = quick_sweep_params()
         self.assertLess(len(orders_lp), 10)
-        self.assertLess(len(cutoffs), 20)
+        self.assertLess(len(cutoff_grid), 20)
         self.assertIsInstance(params, dict)
         self.assertIn("Nitera", params)
         self.assertLess(params["Nitera"], 500)
 
     def test_build_task_order_covers_all_combos(self):
-        orders = np.arange(2, 5)
-        tasks = _build_task_order(orders, Ncut=4)
-        self.assertEqual(len(tasks), len(orders) * 4)
+        num_taps_grid = np.arange(2, 5)
+        tasks = _build_task_order(num_taps_grid, Ncut=4)
+        self.assertEqual(len(tasks), len(num_taps_grid) * 4)
         self.assertEqual(tasks.ndim, 1)
 
     def test_build_task_order_empty(self):
@@ -155,8 +155,8 @@ class TestHelpers(unittest.TestCase):
             result = SweepResult(
                 h=np.zeros((2, 2)),
                 h_std=np.zeros((2, 2)),
-                orders=np.array([3, 4]),
-                cutoffs=np.array([0.2, 0.8]),
+                num_taps_grid=np.array([3, 4]),
+                cutoff_grid=np.array([0.2, 0.8]),
                 window="hamming",
                 filter_type=ft,
             )
@@ -169,8 +169,8 @@ class TestHelpers(unittest.TestCase):
         result = SweepResult(
             h=rng.uniform(-0.5, 0.5, size=(2, 2)),
             h_std=np.zeros((2, 2)),
-            orders=np.array([3, 4]),
-            cutoffs=np.array([0.2, 0.8]),
+            num_taps_grid=np.array([3, 4]),
+            cutoff_grid=np.array([0.2, 0.8]),
             window="hamming",
             filter_type="lowpass",
         )
@@ -185,8 +185,8 @@ class TestHelpers(unittest.TestCase):
             precompute_fir_bank(
                 window="hann",
                 filter_type="bandstop",
-                orders=np.arange(2, 5),
-                cutoffs=np.array([0.2, 0.8]),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.array([0.2, 0.8]),
             )
 
 

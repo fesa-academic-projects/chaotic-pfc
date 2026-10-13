@@ -187,7 +187,7 @@ class SweepConfig:
     """Parameters for the 2-D (order, cutoff) Lyapunov sweep.
 
     Used by :mod:`chaotic_pfc.analysis.sweep`. The full grid is
-    ``len(orders) × n_cutoffs`` points; at the defaults this is 4 000.
+    ``len(num_taps_grid) × n_cutoffs`` points; at the defaults this is 4 000.
 
     Attributes
     ----------
@@ -202,7 +202,7 @@ class SweepConfig:
         confidence intervals of the Lyapunov exponent (default 1000).
     order_lo, order_hi
         Filter-order range, ``order_hi`` exclusive. Defaults to
-        ``range(2, 42)`` → 40 orders.
+        ``range(2, 42)`` → 40 num_taps_grid.
     n_z_max
         Maximum filter order ``N_z`` swept in the experiments (default
         40); equivalently, the number of coefficients runs up to

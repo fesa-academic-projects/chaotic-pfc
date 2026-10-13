@@ -157,8 +157,8 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             result = SweepResult(
                 h=h,
                 h_std=np.abs(h) * 0.1,
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.1, 0.9, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.1, 0.9, 4),
                 window="hamming",
                 filter_type="lowpass",
                 metadata={"n_initial": 50},
@@ -202,8 +202,8 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             result = SweepResult(
                 h=h,
                 h_std=np.abs(h) * 0.1,
-                orders=np.arange(2, 5),
-                cutoffs=np.linspace(0.1, 0.9, 4),
+                num_taps_grid=np.arange(2, 5),
+                cutoff_grid=np.linspace(0.1, 0.9, 4),
                 window="hamming",
                 filter_type="lowpass",
                 metadata={"n_initial": 50},

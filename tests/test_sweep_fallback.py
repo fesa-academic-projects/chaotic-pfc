@@ -29,21 +29,21 @@ class TestHybridFallback(unittest.TestCase):
     fallback for marginal cells (|λ| < 5e-3)."""
 
     def _marginal_cell_setup(self):
-        """Return (orders, cutoffs, bank, gains, pert, Ns, c, alpha, beta, p1, p2, p3)
+        """Return (num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, p2, p3)
         for the known marginal cell (order=10, ωc=0.212127, hamming lowpass)."""
         from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
-        orders = np.array([10], dtype=np.int64)
-        cutoffs = np.array([0.212127])
-        bank, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
-        pert = _precompute_perturbations(orders, 1, 25, 42)
+        num_taps_grid = np.array([10], dtype=np.int64)
+        cutoff_grid = np.array([0.212127])
+        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+        pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
         Ns = 10
         c = bank[0, 0, :Ns]
         gain = gains[0, 0]
         alpha, beta = 1.4, 0.3
         disc = (1.0 - beta) ** 2 + 4.0 * alpha * (gain**2)
         p1 = 2.0 * alpha / ((1.0 - beta) + disc**0.5)
-        return orders, cutoffs, bank, gains, pert, Ns, c, alpha, beta, p1, gain * p1
+        return num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, gain * p1
 
     def test_fallback_returns_full_spectrum_value(self):
         """Marginal cell: hybrid output equals direct full-spectrum call (assertEqual)."""
@@ -53,7 +53,7 @@ class TestHybridFallback(unittest.TestCase):
             _sweep_kernel,
         )
 
-        orders, cutoffs, bank, gains, pert, Ns, c, alpha, beta, p1, p3 = self._marginal_cell_setup()
+        num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, p3 = self._marginal_cell_setup()
         p2 = p1
         Nmap, Nitera = 3000, 500
         dim = 10
@@ -96,8 +96,8 @@ class TestHybridFallback(unittest.TestCase):
         # Hybrid sweep kernel
         task = np.zeros(1, dtype=np.int64)
         h, _, _, n_fallback = _sweep_kernel(
-            orders.astype(np.float64),
-            cutoffs,
+            num_taps_grid.astype(np.float64),
+            cutoff_grid,
             bank,
             gains,
             pert,
@@ -123,15 +123,15 @@ class TestHybridFallback(unittest.TestCase):
         from chaotic_pfc.analysis.sweep._kernel import _sweep_kernel
         from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
-        orders = np.array([3], dtype=np.int64)
-        cutoffs = np.array([0.5])
-        bank, gains = precompute_fir_bank(orders, cutoffs, "lowpass", "hamming")
-        pert = _precompute_perturbations(orders, 1, 4, 42)
+        num_taps_grid = np.array([3], dtype=np.int64)
+        cutoff_grid = np.array([0.5])
+        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+        pert = _precompute_perturbations(num_taps_grid, 1, 4, 42)
         task = np.array([0], dtype=np.int64)
 
         _, _, _, n_fallback = _sweep_kernel(
-            orders.astype(np.float64),
-            cutoffs,
+            num_taps_grid.astype(np.float64),
+            cutoff_grid,
             bank,
             gains,
             pert,

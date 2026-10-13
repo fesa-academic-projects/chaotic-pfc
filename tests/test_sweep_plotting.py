@@ -44,8 +44,8 @@ def _dummy_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:
     return SweepResult(
         h=h,
         h_std=np.abs(h) * 0.1,
-        orders=np.arange(2, 2 + ncoef),
-        cutoffs=np.linspace(0.1, 0.9, ncut),
+        num_taps_grid=np.arange(2, 2 + ncoef),
+        cutoff_grid=np.linspace(0.1, 0.9, ncut),
         window="hamming",
         filter_type="lowpass",
         metadata={"Nitera": 10, "Nmap": 50, "n_initial": 2},
@@ -67,8 +67,8 @@ def _adaptive_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:
     return SweepResult(
         h=h,
         h_std=np.abs(h) * 0.1,
-        orders=np.arange(2, 2 + ncoef),
-        cutoffs=np.linspace(0.1, 0.9, ncut),
+        num_taps_grid=np.arange(2, 2 + ncoef),
+        cutoff_grid=np.linspace(0.1, 0.9, ncut),
         window="hamming",
         filter_type="lowpass",
         n_iters_used=n_iters,
@@ -237,8 +237,8 @@ class TestDifficultyMap(unittest.TestCase):
         result = SweepResult(
             h=rng.uniform(-0.3, 0.3, size=(3, 4)),
             h_std=np.zeros((3, 4)),
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.1, 0.9, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.1, 0.9, 4),
             window="hamming",
             filter_type="lowpass",
             n_iters_used=np.full((3, 4), 3000.0),
@@ -260,8 +260,8 @@ class TestDifficultyMap(unittest.TestCase):
         result = SweepResult(
             h=rng.uniform(-0.3, 0.3, size=(3, 4)),
             h_std=np.zeros((3, 4)),
-            orders=np.arange(2, 5),
-            cutoffs=np.linspace(0.1, 0.9, 4),
+            num_taps_grid=np.arange(2, 5),
+            cutoff_grid=np.linspace(0.1, 0.9, 4),
             window="hamming",
             filter_type="lowpass",
             n_iters_used=np.full((3, 4), 2000.0, dtype=np.float64),
@@ -286,16 +286,16 @@ class TestUnpack(unittest.TestCase):
         r = SweepResult(
             h=h_in,
             h_std=np.zeros((2, 2)),
-            orders=np.array([2, 3]),
-            cutoffs=np.array([0.1, 0.9]),
+            num_taps_grid=np.array([2, 3]),
+            cutoff_grid=np.array([0.1, 0.9]),
             window="hamming",
             filter_type="lowpass",
             metadata={},
         )
-        h_out, Nz, cutoffs = _unpack(r, None, None, None)
+        h_out, Nz, cutoff_grid = _unpack(r, None, None, None)
         np.testing.assert_array_equal(h_out, h_in)
         np.testing.assert_array_equal(Nz, np.array([1, 2]))
-        np.testing.assert_array_equal(cutoffs, np.array([0.1, 0.9]))
+        np.testing.assert_array_equal(cutoff_grid, np.array([0.1, 0.9]))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -317,8 +317,8 @@ class TestChaoticRegions(unittest.TestCase):
                 sr = SweepResult(
                     h=h,
                     h_std=np.abs(h) * 0.1,
-                    orders=np.arange(2, 6, dtype=np.float64),
-                    cutoffs=np.linspace(0.1, 0.9, 6, dtype=np.float64),
+                    num_taps_grid=np.arange(2, 6, dtype=np.float64),
+                    cutoff_grid=np.linspace(0.1, 0.9, 6, dtype=np.float64),
                     window=w_key,
                     filter_type=ft,
                     metadata={"Nitera": 10, "Nmap": 50},
@@ -404,8 +404,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         return SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=np.arange(2, 2 + ncoef),
-            cutoffs=np.linspace(0.1, 0.9, ncut),
+            num_taps_grid=np.arange(2, 2 + ncoef),
+            cutoff_grid=np.linspace(0.1, 0.9, ncut),
             window="hamming",
             filter_type="lowpass",
             metadata={},
@@ -427,8 +427,8 @@ class TestFig2PolyCollection(unittest.TestCase):
 
     def test_fig2_rect_count_matches_rle(self):
         """Polygon count must equal the sum of RLE runs per column."""
-        orders = np.array([2, 3, 5])
-        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        num_taps_grid = np.array([2, 3, 5])
+        cutoff_grid = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
         h = np.array(
             [
                 [-0.5, -0.3, 0.1, 0.2, np.nan],
@@ -439,8 +439,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={},
@@ -463,8 +463,8 @@ class TestFig2PolyCollection(unittest.TestCase):
 
     def test_fig2_facecolors_match_classification(self):
         """Each polygon's facecolor must match the class color of its run."""
-        orders = np.array([2, 3, 5])
-        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        num_taps_grid = np.array([2, 3, 5])
+        cutoff_grid = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
         h = np.array(
             [
                 [-0.5, -0.3, 0.1, 0.2, np.nan],
@@ -475,8 +475,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={},
@@ -508,8 +508,8 @@ class TestFig2PolyCollection(unittest.TestCase):
 
     def test_fig2_geometry_matches_slot_layout(self):
         """X vertices must match the slot layout; y vertices must match edges."""
-        orders = np.array([2, 3, 5])
-        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        num_taps_grid = np.array([2, 3, 5])
+        cutoff_grid = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
         h = np.array(
             [
                 [-0.5, -0.3, 0.1, 0.2, np.nan],
@@ -523,7 +523,7 @@ class TestFig2PolyCollection(unittest.TestCase):
         Ncut = h.shape[1]
 
         # Expected y_edges
-        cut = np.asarray(cutoffs, dtype=np.float64)
+        cut = np.asarray(cutoff_grid, dtype=np.float64)
         mid = 0.5 * (cut[:-1] + cut[1:])
         y_edges = np.concatenate(
             [
@@ -557,8 +557,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={},
@@ -581,8 +581,8 @@ class TestFig2PolyCollection(unittest.TestCase):
 
     def test_fig2_axes_contract_unchanged(self):
         """Axes limits, tick positions and labels must match expected values."""
-        orders = np.array([2, 3, 5])
-        cutoffs = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
+        num_taps_grid = np.array([2, 3, 5])
+        cutoff_grid = np.array([0.2, 0.4, 0.6, 0.8, 0.95])
         h = np.array(
             [
                 [-0.5, -0.3, 0.1, 0.2, np.nan],
@@ -593,8 +593,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={},
@@ -625,8 +625,8 @@ class TestFig2PolyCollection(unittest.TestCase):
 
     def test_fig2_single_cutoff_grid(self):
         """Single cutoff must not crash and must produce valid y_edges."""
-        orders = np.array([2, 3])
-        cutoffs = np.array([0.5])
+        num_taps_grid = np.array([2, 3])
+        cutoff_grid = np.array([0.5])
         h = np.array(
             [
                 [-0.1],
@@ -636,8 +636,8 @@ class TestFig2PolyCollection(unittest.TestCase):
         result = SweepResult(
             h=h,
             h_std=np.abs(h) * 0.1,
-            orders=orders,
-            cutoffs=cutoffs,
+            num_taps_grid=num_taps_grid,
+            cutoff_grid=cutoff_grid,
             window="hamming",
             filter_type="lowpass",
             metadata={},
