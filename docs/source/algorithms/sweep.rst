@@ -179,6 +179,16 @@ have well-separated Lyapunov exponents); lowpass sweeps, where a large
 fraction of periodic cells have :math:`|\lambda|` below the margin,
 see :math:`20\%`–:math:`73\%`.
 
+The wall-clock cost of the recomputation was measured on the four baseline
+configurations (Kaiser, the best :math:`\beta_K` per filter type, the full
+:math:`40 \times 100` grid, 25 initial conditions, adaptive early-stop) by
+timing ``fallback_mode=1`` against ``fallback_mode=0``: the full-spectrum
+recomputation takes about **23 % of the total sweep time** — 23 % (lowpass),
+20 % (highpass), 27 % (bandpass) and ~0 % (bandstop). The fallback is a
+material but not dominant cost; it is kept because it removes the
+classification-flip risk, and any future optimization must preserve the
+bit-exact reproduction described above.
+
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

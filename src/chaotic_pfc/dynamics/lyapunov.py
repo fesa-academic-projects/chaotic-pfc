@@ -41,6 +41,8 @@ from typing import TypedDict
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._formulas import fixed_point_positive, henon2d_step
+
 
 class FixedPointInfo(TypedDict):
     """Result of :func:`fixed_point_stability` — fixed point, eigenvalues, stability."""
@@ -76,10 +78,7 @@ def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
         )
 
     ratio = G / (1.0 - H)
-    denom = ratio**2
-
-    disc = (1.0 - beta) ** 2 + 4.0 * alpha * denom
-    xf = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
+    xf = float(fixed_point_positive(ratio, alpha, beta))
 
     vf = G * xf / (1.0 - H)
     return np.array([xf, xf, vf, vf])
@@ -426,7 +425,7 @@ def fixed_point_stability(
 def _henon2d_fixed_points(alpha: float, beta: float):
     """Both fixed points of the 2-D Hénon map (positive and negative roots)."""
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
-    x_p = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
+    x_p = float(fixed_point_positive(1.0, alpha, beta))
     x_n = ((beta - 1.0) - np.sqrt(disc)) / 2.0
     return np.array([x_p, x_p]), np.array([x_n, x_n])
 
@@ -443,12 +442,7 @@ def _henon2d_jacobian(beta: float, x: NDArray) -> NDArray:
 
 def _henon2d_iterate(alpha: float, beta: float, x: NDArray) -> NDArray:
     """Single iteration of the 2-D Hénon map."""
-    return np.array(
-        [
-            alpha - x[0] ** 2 + beta * x[1],
-            x[0],
-        ]
-    )
+    return henon2d_step(x, alpha, beta)
 
 
 def lyapunov_henon2d(

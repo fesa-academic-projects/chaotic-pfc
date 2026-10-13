@@ -11,6 +11,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from chaotic_pfc._compat import njit, prange
+from chaotic_pfc._formulas import fixed_point_positive as _fixed_point_positive
 
 from ._types import (
     _ADAPTIVE_CHECKPOINT_EVERY,
@@ -75,12 +76,6 @@ def _henon_nN_inplace(x, x_new, alpha, beta, c):
     x_new[3] = x[1]
     for k in range(4, Ns):
         x_new[k] = x[k - 1]
-
-
-@njit(cache=True, inline="always")
-def _fixed_point_positive(gain, alpha, beta):
-    disc = (1.0 - beta) ** 2 + 4.0 * alpha * gain**2
-    return 2.0 * alpha / ((1.0 - beta) + disc**0.5)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
