@@ -117,6 +117,14 @@ def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray, x: NDArray) -> N
 def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
     """Orthonormalise the columns of ``Z`` by modified Gram-Schmidt.
 
+    NumPy variant used by the validation wrappers
+    (:func:`lyapunov_henon2d`, :func:`lyapunov_max_pole_filtered`). The sweep
+    kernel uses its own scalar variant, ``_kernel._mgs_accumulate``, which is
+    the bit-exact reference for the versioned checkpoints. The two are kept
+    separate on purpose: NumPy's ``dot``/``norm`` may reassociate the partial
+    sums differently from the scalar loop, so unifying them would risk the
+    bit-for-bit reproduction of the sweeps.
+
     Returns
     -------
     tuple[NDArray, NDArray]

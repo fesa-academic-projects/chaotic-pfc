@@ -93,7 +93,15 @@ def _henon_nN_inplace(x, x_new, alpha, beta, c):
 
 @njit(cache=True, inline="always")
 def _mgs_accumulate(z, Ns, lyap_sum):
-    """Full-spectrum reference MGS (all columns)."""
+    """Full-spectrum reference MGS (all columns).
+
+    This is the bit-exact reference used by the versioned sweeps: the fallback
+    recomputation must reproduce these last bits. The NumPy variant
+    ``chaotic_pfc.dynamics.lyapunov._gram_schmidt`` is the same algorithm for
+    the validation wrappers but is not unified with this one on purpose —
+    ``np.dot``/``np.linalg.norm`` may contract the sum in a different order, so
+    sharing a single implementation would risk the bit-for-bit reproduction.
+    """
     for k in range(Ns):
         for p in range(k):
             dot = 0.0

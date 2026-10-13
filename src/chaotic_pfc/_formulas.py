@@ -49,7 +49,7 @@ def henon2d_step(x, alpha, beta):
 
 
 def gram_schmidt_python(Z: NDArray) -> tuple[NDArray, NDArray]:
-    """Modified Gram-Schmidt on the columns of ``Z`` (NumPy, validation path).
+    """Orthonormalise the columns of ``Z`` with modified Gram-Schmidt (NumPy path).
 
     Returns the orthonormal columns ``Q`` and the column norms before
     normalising. The sweep kernel uses its own scalar variant; see the module
