@@ -208,6 +208,107 @@ def _resolve_fir_bank(
     )
 
 
+def _resolve_adaptive_params(
+    adaptive: bool, Nmap_min: int, Nmap: int, tol: float
+) -> tuple[int, float]:
+    """Validate the adaptive options and return ``(kernel_Nmap_min, kernel_tol)``."""
+    if not adaptive:
+        return Nmap, 0.0
+    if Nmap_min < 1:
+        raise ValueError(f"Nmap_min must be >= 1, got {Nmap_min}")
+    if Nmap_min > Nmap:
+        raise ValueError(f"Nmap_min ({Nmap_min}) must be <= Nmap ({Nmap})")
+    if tol <= 0:
+        raise ValueError(f"tol must be > 0, got {tol}")
+    if Nmap_min == Nmap:
+        raise ValueError(
+            "adaptive=True with Nmap_min == Nmap is a no-op; "
+            "set Nmap_min < Nmap or pass adaptive=False."
+        )
+    return Nmap_min, float(tol)
+
+
+def _default_sweep_grid(
+    num_taps_grid: Sequence[int] | NDArray | None,
+    cutoff_grid: NDArray | None,
+    filter_type: str,
+) -> tuple[NDArray, NDArray]:
+    """Fill the default tap/cutoff grids and return them as int64/float64 arrays."""
+    if num_taps_grid is None:
+        order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
+        num_taps_grid = (
+            np.arange(3, order_hi + 1, 2)
+            if filter_type in ("highpass", "bandstop")
+            else np.arange(2, order_hi)
+        )
+    if cutoff_grid is None:
+        cutoff_grid = np.linspace(1e-5, 1.0 - 1e-5, 100)
+    return np.asarray(num_taps_grid, dtype=np.int64), np.asarray(cutoff_grid, dtype=np.float64)
+
+
+def _warmup_kernel(
+    orders_arr: NDArray,
+    cutoffs_arr: NDArray,
+    fir_bank: NDArray,
+    gains: NDArray,
+    alpha: float,
+    beta: float,
+    fallback_mode: int,
+) -> None:
+    """Run a tiny sweep to trigger the Numba JIT compilation."""
+    warmup_orders = orders_arr[:2]
+    warmup_perturbations = _precompute_perturbations(warmup_orders, 3, 2, seed=None)
+    warmup_order = _build_task_order(warmup_orders, 3)
+    _sweep_kernel(
+        warmup_orders.astype(np.float64),
+        cutoffs_arr[:3],
+        fir_bank[:2, :3, :],
+        gains[:2, :3],
+        warmup_perturbations,
+        warmup_order,
+        10,
+        50,
+        50,
+        0.0,
+        2,
+        alpha,
+        beta,
+        fallback_mode,
+    )
+
+
+def _sweep_metadata(
+    *,
+    Nitera: int,
+    Nmap: int,
+    n_initial: int,
+    alpha: float,
+    beta: float,
+    seed: int | None,
+    kaiser_beta: float,
+    adaptive: bool,
+    Nmap_min: int,
+    tol: float,
+    fallback_mode: int,
+    n_fallback: NDArray,
+) -> dict:
+    """Build the ``SweepResult.metadata`` mapping."""
+    return {
+        "Nitera": Nitera,
+        "Nmap": Nmap,
+        "n_initial": n_initial,
+        "alpha": alpha,
+        "beta": beta,
+        "seed": seed,
+        "kaiser_beta": kaiser_beta,
+        "adaptive": adaptive,
+        "Nmap_min": Nmap_min if adaptive else None,
+        "tol": tol if adaptive else None,
+        "fallback_mode": fallback_mode,
+        "n_fallback": int(np.sum(n_fallback)),
+    }
+
+
 def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
@@ -297,36 +398,8 @@ def run_sweep(
     if fallback_mode not in (0, 1, 2):
         raise ValueError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
 
-    if adaptive:
-        if Nmap_min < 1:
-            raise ValueError(f"Nmap_min must be >= 1, got {Nmap_min}")
-        if Nmap_min > Nmap:
-            raise ValueError(f"Nmap_min ({Nmap_min}) must be <= Nmap ({Nmap})")
-        if tol <= 0:
-            raise ValueError(f"tol must be > 0, got {tol}")
-        if Nmap_min == Nmap:
-            raise ValueError(
-                "adaptive=True with Nmap_min == Nmap is a no-op; "
-                "set Nmap_min < Nmap or pass adaptive=False."
-            )
-        kernel_Nmap_min = Nmap_min
-        kernel_tol = float(tol)
-    else:
-        kernel_Nmap_min = Nmap
-        kernel_tol = 0.0
-
-    if num_taps_grid is None:
-        order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
-        num_taps_grid = (
-            np.arange(3, order_hi + 1, 2)
-            if filter_type in ("highpass", "bandstop")
-            else np.arange(2, order_hi)
-        )
-    if cutoff_grid is None:
-        cutoff_grid = np.linspace(1e-5, 1.0 - 1e-5, 100)
-
-    orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
-    cutoffs_arr = np.asarray(cutoff_grid, dtype=np.float64)
+    kernel_Nmap_min, kernel_tol = _resolve_adaptive_params(adaptive, Nmap_min, Nmap, tol)
+    orders_arr, cutoffs_arr = _default_sweep_grid(num_taps_grid, cutoff_grid, filter_type)
 
     fir_bank, gains = _resolve_fir_bank(
         orders_arr,
@@ -349,29 +422,7 @@ def run_sweep(
     task_order = _build_task_order(orders_arr, len(cutoffs_arr))
 
     if warmup:
-        _warmup_perturbations = _precompute_perturbations(
-            orders_arr[:2],
-            3,
-            2,
-            seed=None,
-        )
-        _warmup_order = _build_task_order(orders_arr[:2], 3)
-        _sweep_kernel(
-            orders_arr[:2].astype(np.float64),
-            cutoffs_arr[:3],
-            fir_bank[:2, :3, :],
-            gains[:2, :3],
-            _warmup_perturbations,
-            _warmup_order,
-            10,
-            50,
-            50,
-            0.0,
-            2,
-            alpha,
-            beta,
-            fallback_mode,
-        )
+        _warmup_kernel(orders_arr, cutoffs_arr, fir_bank, gains, alpha, beta, fallback_mode)
 
     h, h_std, n_iters_used, n_fallback = _sweep_kernel(
         orders_arr,
@@ -398,18 +449,18 @@ def run_sweep(
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,
-        metadata={
-            "Nitera": Nitera,
-            "Nmap": Nmap,
-            "n_initial": n_initial,
-            "alpha": alpha,
-            "beta": beta,
-            "seed": seed,
-            "kaiser_beta": kaiser_beta,
-            "adaptive": adaptive,
-            "Nmap_min": Nmap_min if adaptive else None,
-            "tol": tol if adaptive else None,
-            "fallback_mode": fallback_mode,
-            "n_fallback": int(np.sum(n_fallback)),
-        },
+        metadata=_sweep_metadata(
+            Nitera=Nitera,
+            Nmap=Nmap,
+            n_initial=n_initial,
+            alpha=alpha,
+            beta=beta,
+            seed=seed,
+            kaiser_beta=kaiser_beta,
+            adaptive=adaptive,
+            Nmap_min=Nmap_min,
+            tol=tol,
+            fallback_mode=fallback_mode,
+            n_fallback=n_fallback,
+        ),
     )

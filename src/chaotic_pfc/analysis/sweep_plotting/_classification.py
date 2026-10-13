@@ -145,6 +145,86 @@ def plot_heatmap_continuous(
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+def _cutoff_edges(cut: NDArray) -> NDArray:
+    """Convert cutoff centres to cell edges for the interleaved rectangles."""
+    if cut.size == 1:
+        return np.array([cut[0] - 0.5, cut[0] + 0.5])
+    mid = 0.5 * (cut[:-1] + cut[1:])
+    return np.concatenate([[cut[0] - (mid[0] - cut[0])], mid, [cut[-1] + (cut[-1] - mid[-1])]])
+
+
+_CLASS_COLORS: dict[float, str] = {
+    -1.0: COLOR_PERIODIC,
+    0.0: COLOR_CHAOTIC,
+    2.0: COLOR_UNBOUNDED,
+}
+
+
+def _run_length_polygons(
+    h_color: NDArray,
+    *,
+    n_coef: int,
+    n_cut: int,
+    slot_total: int,
+    data_slots: int,
+    y_edges: NDArray,
+) -> tuple[list[list[tuple[float, float]]], list[str]]:
+    """Build the run-length polygon vertices and their class colours."""
+    verts: list[list[tuple[float, float]]] = []
+    colors: list[str] = []
+    for i in range(n_coef):
+        x0 = i * slot_total - 0.5
+        x1 = x0 + data_slots
+        col = h_color[i, :]
+        change_idx = np.flatnonzero(np.diff(col) != 0)
+        starts = np.concatenate([[0], change_idx + 1])
+        ends = np.concatenate([change_idx, [n_cut - 1]])
+        for s, e, code in zip(starts, ends, col[starts], strict=True):
+            try:
+                colors.append(_CLASS_COLORS[code])
+            except KeyError:
+                continue
+            verts.append(
+                [
+                    (x0, y_edges[s]),
+                    (x1, y_edges[s]),
+                    (x1, y_edges[e + 1]),
+                    (x0, y_edges[e + 1]),
+                ]
+            )
+    return verts, colors
+
+
+def _configure_interleaved_axes(
+    ax,
+    *,
+    Nz: NDArray,
+    n_coef: int,
+    slot_total: int,
+    data_slots: int,
+    total_slots: int,
+    ytick_step: float,
+    label_fontsize: float,
+    tick_fontsize: float,
+    xtick_step: int,
+) -> None:
+    """Draw the frame, ticks and grid of an interleaved classification axes."""
+    ax.set_xlabel(r"$N_z$", fontsize=label_fontsize)
+    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=label_fontsize)
+    ax.set_yticks(np.arange(0.0, 1.0 + 1e-9, ytick_step))
+    ax.set_ylim(0.0, 1.0)
+    for yt in _YTICKS:
+        ax.axhline(y=yt, color="black", linewidth=0.4)
+    ax.grid(False)
+    for i in range(n_coef + 1):
+        ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
+    tick_positions, tick_labels = _pick_xticks(Nz, slot_total, data_slots, xtick_step)
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(tick_labels, fontsize=tick_fontsize)
+    ax.tick_params(labelsize=tick_fontsize)
+    ax.set_xlim(-0.5, total_slots - 0.5)
+
+
 def plot_classification_interleaved(
     result: SweepResult | None = None,
     *,
@@ -239,52 +319,16 @@ def plot_classification_interleaved(
 
     # Convert cutoff centres to edges for rectangle drawing
     cut = np.asarray(cutoff_grid, dtype=np.float64)
-    if cut.size == 1:
-        y_edges = np.array([cut[0] - 0.5, cut[0] + 0.5])
-    else:
-        mid = 0.5 * (cut[:-1] + cut[1:])
-        y_edges = np.concatenate(
-            [
-                [cut[0] - (mid[0] - cut[0])],
-                mid,
-                [cut[-1] + (cut[-1] - mid[-1])],
-            ]
-        )
+    y_edges = _cutoff_edges(cut)
 
-    _CLASS_COLORS: dict[float, str] = {
-        -1.0: COLOR_PERIODIC,
-        0.0: COLOR_CHAOTIC,
-        2.0: COLOR_UNBOUNDED,
-    }
-
-    verts: list[list[tuple[float, float]]] = []
-    colors: list[str] = []
-
-    for i in range(Ncoef):
-        x0 = i * slot_total - 0.5
-        x1 = x0 + data_slots
-
-        col = h_color[i, :]
-        diffs = np.diff(col)
-        change_idx = np.flatnonzero(diffs != 0)
-        starts = np.concatenate([[0], change_idx + 1])
-        ends = np.concatenate([change_idx, [Ncut - 1]])
-        run_values = col[starts]
-
-        for s, e, code in zip(starts, ends, run_values, strict=True):
-            try:
-                fc = _CLASS_COLORS[code]
-            except KeyError:
-                continue
-            verts.append(
-                [
-                    (x0, y_edges[s]),
-                    (x1, y_edges[s]),
-                    (x1, y_edges[e + 1]),
-                    (x0, y_edges[e + 1]),
-                ]
-            )
-            colors.append(fc)
+    verts, colors = _run_length_polygons(
+        h_color,
+        n_coef=Ncoef,
+        n_cut=Ncut,
+        slot_total=slot_total,
+        data_slots=data_slots,
+        y_edges=y_edges,
+    )
 
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
@@ -300,23 +344,18 @@ def plot_classification_interleaved(
     )
     ax.add_collection(coll)
 
-    ax.set_xlabel(r"$N_z$", fontsize=label_fontsize)
-    ax.set_ylabel(r"$\omega_c/\pi$", fontsize=label_fontsize)
-    ax.set_yticks(np.arange(0.0, 1.0 + 1e-9, ytick_step))
-    ax.set_ylim(0.0, 1.0)
-    for yt in _YTICKS:
-        ax.axhline(y=yt, color="black", linewidth=0.4)
-
-    ax.grid(False)
-    for i in range(Ncoef + 1):
-        ax.axvline(x=i * slot_total - 0.5, color="black", linewidth=0.6)
-
-    tick_positions, tick_labels = _pick_xticks(Nz, slot_total, data_slots, xtick_step)
-
-    ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_labels, fontsize=tick_fontsize)
-    ax.tick_params(labelsize=tick_fontsize)
-    ax.set_xlim(-0.5, total_slots - 0.5)
+    _configure_interleaved_axes(
+        ax,
+        Nz=Nz,
+        n_coef=Ncoef,
+        slot_total=slot_total,
+        data_slots=data_slots,
+        total_slots=total_slots,
+        ytick_step=ytick_step,
+        label_fontsize=label_fontsize,
+        tick_fontsize=tick_fontsize,
+        xtick_step=xtick_step,
+    )
 
     if legend:
         ax.legend(

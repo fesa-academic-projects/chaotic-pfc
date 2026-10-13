@@ -23,6 +23,32 @@ from chaotic_pfc.analysis.sweep_plotting._common import (
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
 
 
+def _binary_union(loaded) -> NDArray:
+    """Binary union over sweeps: 1 where any sweep is chaotic, NaN elsewhere."""
+    binary = np.zeros_like(loaded[0].h, dtype=np.float64)
+    for sr in loaded:
+        binary = np.where(np.asarray(sr.h, dtype=np.float64) > 0.0, 1.0, binary)
+    return np.where(binary > 0.0, binary, np.nan)
+
+
+def _chaotic_count(loaded) -> NDArray:
+    """Count the sweeps that are chaotic at each grid point."""
+    count = np.zeros_like(loaded[0].h, dtype=np.float64)
+    for sr in loaded:
+        count += (np.asarray(sr.h, dtype=np.float64) > 0.0).astype(np.float64)
+    return count
+
+
+def _marker_of_max(
+    density: NDArray, cutoff_grid: NDArray, data_slots: int, gap_slots: int
+) -> tuple[float, float]:
+    """Interleaved ``(x, y)`` of the grid point with the highest density."""
+    idx_order, idx_cutoff = np.unravel_index(np.nanargmax(density), density.shape)
+    return idx_order * (data_slots + gap_slots) + (data_slots - 1) / 2.0, float(
+        cutoff_grid[idx_cutoff]
+    )
+
+
 def plot_chaotic_map(
     sweep_dir: str | Path = "data/sweeps",
     *,
@@ -75,11 +101,7 @@ def plot_chaotic_map(
     loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
 
     # Binary union: 1 where any sweep is chaotic, NaN elsewhere
-    binary = np.zeros_like(loaded[0].h, dtype=np.float64)
-    for sr in loaded:
-        h_arr = np.asarray(sr.h, dtype=np.float64)
-        binary = np.where(h_arr > 0.0, 1.0, binary)
-    binary = np.where(binary > 0.0, binary, np.nan)
+    binary = _binary_union(loaded)
 
     h_expanded = _interleaved_expand(binary, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
@@ -174,16 +196,11 @@ def plot_chaotic_density(
     loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
 
     # Count how many sweeps are chaotic at each grid point
-    count = np.zeros_like(loaded[0].h, dtype=np.float64)
-    for sr in loaded:
-        h_arr = np.asarray(sr.h, dtype=np.float64)
-        count += (h_arr > 0.0).astype(np.float64)
+    count = _chaotic_count(loaded)
 
     # Where count == 0 → white (NaN so set_bad kicks in)
     density = np.where(count > 0, count, np.nan)
     max_density = float(np.nanmax(density))
-    idx_flat = np.nanargmax(density)
-    idx_order, idx_cutoff = np.unravel_index(idx_flat, density.shape)
 
     h_expanded = _interleaved_expand(density, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
@@ -225,9 +242,7 @@ def plot_chaotic_density(
         ax.set_title(t("sweep.chaotic_density.title", lang=lang), fontsize=title_fontsize, pad=14)
 
     # Mark point of maximum density
-    slot_total = data_slots + gap_slots
-    x_max = idx_order * slot_total + (data_slots - 1) / 2.0
-    y_max = cutoff_grid[idx_cutoff]
+    x_max, y_max = _marker_of_max(density, cutoff_grid, data_slots, gap_slots)
     ax.plot(
         x_max,
         y_max,
