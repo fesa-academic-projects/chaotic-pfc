@@ -83,6 +83,15 @@ def receive(
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Receiver`.
 
+    Examples
+    --------
+    With the transmitter and the local oscillator started from the same state
+    the Pecora-Carroll receiver locks immediately and recovers a clean message:
+
+    >>> m = binary_message(4, period=4)
+    >>> m_hat = receive(transmit(m, x0=0.1, y0=0.1), y0=0.1, z0=0.1)
+    >>> np.allclose(m_hat, m)
+    True
     """
     if mu == 0:
         raise ValueError(

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-13 17:45-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -20,8 +20,24 @@ msgstr ""
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../index.rst:97
-msgid "Contents"
-msgstr "Conteúdo"
+msgid "Tutorial"
+msgstr ""
+"Tutorial"
+
+#: ../../index.rst:103
+msgid "How-to guides"
+msgstr ""
+"Guias de tarefas"
+
+#: ../../index.rst:113
+msgid "Reference"
+msgstr ""
+"Referência"
+
+#: ../../index.rst:125
+msgid "Explanation"
+msgstr ""
+"Explicação"
 
 #: ../../index.rst:2
 msgid "chaotic-pfc documentation"
@@ -180,8 +196,10 @@ msgid ""
 "The package imports and runs *without* Numba installed: kernels fall back"
 " to pure Python via ``chaotic_pfc._compat``. Install the ``[fast]`` extra"
 " for 20–50× speedup on the parameter sweep."
-msgstr "O pacote importa e executa *sem* o Numba instalado: os kernels fazem fallback para Python puro via ``chaotic_pfc._compat``. Instale o extra ``[fast]`` para um ganho de 20–50× na varredura de parâmetros."
-
+msgstr ""
+"O pacote importa e executa *sem* o Numba instalado: os kernels fazem "
+"fallback para Python puro via ``chaotic_pfc._compat``. Instale o extra "
+"``[fast]`` para um ganho de 20–50× na varredura de parâmetros."
 
 #: ../../index.rst:70
 msgid "Quick start"
@@ -245,4 +263,8 @@ msgstr "**Varredura de Parâmetros**"
 #: ../../index.rst:96
 msgid "High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``"
 msgstr "Grade de alta resolução (ordem × corte): ``chaotic-pfc run sweep compute``"
+
+#~ msgid "Contents"
+#~ msgstr "Conteúdo"
+
 

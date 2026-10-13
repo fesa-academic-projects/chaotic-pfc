@@ -29,6 +29,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.stats import lmax_statistics
 from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank
 
@@ -73,12 +74,16 @@ def pct(n: int, d: int, places: int) -> str:
 # ── loading and counts ──────────────────────────────────────────────────────
 
 
-def load_all(root: Path) -> list[Any]:
-    """Load every sweep checkpoint under ``root``."""
+def load_all(root: Path, args: Any = None) -> list[Any]:
+    """Load every sweep checkpoint under ``root`` (reporting progress to stderr)."""
     paths = sorted(root.rglob("variables_lyapunov.npz"))
     if not paths:
         raise FileNotFoundError(f"no checkpoints under {root}")
-    return [load_sweep(p) for p in paths]
+    records: list[Any] = []
+    for k, path in enumerate(paths, 1):
+        records.append(load_sweep(path))
+        progress(k, len(paths), path.parent.name, args)
+    return records
 
 
 def counts(sr: Any) -> dict[str, Any]:
@@ -213,7 +218,13 @@ def section_table2_table3(recs: Any, out: dict[str, Any]) -> dict[str, Any]:
 
 
 def spearman_exact(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
-    """Return the Spearman correlation and its exact p-value."""
+    """Return the Spearman correlation and its exact p-value.
+
+    Computed over the six fixed windows (``n = 6``), so the exact permutation
+    test is **exploratory**: there is no correction for the four filter types it
+    is run on, and only the bandpass coefficient remains significant at 5 % after
+    a Bonferroni correction (see the article).
+    """
 
     def rank_corr(a: Any, b: Any) -> float:
         ra = _rankdata(a)
@@ -687,9 +698,9 @@ def machine() -> str:
 # ── driver ──────────────────────────────────────────────────────────────────
 
 
-def compute(root: Path, extras: bool) -> dict[str, Any]:
+def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     """Compute every manuscript quantity and return the label mapping."""
-    recs = load_all(root)
+    recs = load_all(root, args)
     out: dict[str, Any] = {}
     section_recalc(recs, out)
     best = section_table2_table3(recs, out)
@@ -861,7 +872,7 @@ def run(args: argparse.Namespace) -> int:
     if args.sensitivity:
         if not args.sweeps:
             raise SystemExit("--sweeps is required with --sensitivity")
-        print(sensitivity_report(load_all(args.sweeps)))
+        print(sensitivity_report(load_all(args.sweeps, args)))
         return 0
     if not args.sweeps or not args.json:
         raise SystemExit("--sweeps and --json are required unless --compare is given")
@@ -872,7 +883,7 @@ def run(args: argparse.Namespace) -> int:
         warnings.filterwarnings(
             "ignore", message="invalid value encountered in divide", category=RuntimeWarning
         )
-        out = compute(args.sweeps, args.extras)
+        out = compute(args.sweeps, args.extras, args)
     if not getattr(args, "quiet", False):
         print(
             "note: non-finite FIR coefficients (Hann/Bartlett lowpass/bandpass) "

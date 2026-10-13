@@ -1,8 +1,8 @@
 """LaTeX table export for chaotic-PFC analysis results.
 
 Every exporter accepts a ``lang`` parameter (``"pt"`` or ``"en"``)
-that drives column headers, captions, and filter names via
-:func:`~chaotic_pfc._i18n.t`.
+that drives column headers, captions, and filter names via the
+translation helper ``chaotic_pfc._i18n.t``.
 
 All tables use ``booktabs`` rules and are wrapped in a ``table``
 float (``longtable`` for the full ranking). Output encoding is

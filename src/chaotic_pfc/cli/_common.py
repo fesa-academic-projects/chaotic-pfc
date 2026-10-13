@@ -15,30 +15,7 @@ if TYPE_CHECKING:
     from chaotic_pfc.config import SpectralConfig
 
 
-def _debug_enabled(args: argparse.Namespace | None) -> bool:
-    """Return whether the full traceback should be shown on error."""
-    return bool(getattr(args, "debug", False)) or os.environ.get("CHAOTIC_PFC_DEBUG") == "1"
-
-
-def color_enabled(args: argparse.Namespace | None) -> bool:
-    """Return whether terminal colour should be used.
-
-    ``--color never`` and the ``NO_COLOR`` environment variable disable it;
-    ``--color always`` forces it; ``auto`` (default) enables it only on a TTY.
-    """
-    mode = getattr(args, "color", "auto")
-    if mode == "never" or os.environ.get("NO_COLOR"):
-        return False
-    if mode == "always":
-        return True
-    return sys.stderr.isatty()
-
-
-def info(message: str, args: argparse.Namespace | None = None) -> None:
-    """Print an informational message unless ``--quiet`` was passed."""
-    if getattr(args, "quiet", False):
-        return
-    print(message)
+from chaotic_pfc._output import color_enabled, debug_enabled, info
 
 
 def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namespace], int]:
@@ -59,7 +36,7 @@ def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namesp
         except (KeyboardInterrupt, SystemExit):
             raise
         except Exception as exc:  # expected I/O and parsing errors
-            if _debug_enabled(args):
+            if debug_enabled(args):
                 raise
             message = " ".join(str(exc).split()) or type(exc).__name__
             prefix = "error:"

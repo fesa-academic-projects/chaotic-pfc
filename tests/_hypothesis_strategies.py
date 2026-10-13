@@ -1,4 +1,10 @@
-"""Reusable Hypothesis strategies for the chaotic-pfc domain."""
+"""Reusable Hypothesis strategies for the chaotic-pfc domain.
+
+Every strategy is a pure function of the values drawn from Hypothesis: there
+are **no unseeded RNG calls** here, so under ``derandomize`` (the ``ci``
+profile) the generated data is reproducible byte for byte, and locally a
+failure can be reproduced from the seed Hypothesis prints.
+"""
 
 from __future__ import annotations
 
@@ -64,7 +70,11 @@ def arrays_with_nan(
     max_size: int = 100,
     nan_ratio: float = 0.5,
 ):
-    """Arrays that may contain NaN mixed with finite values."""
+    """Arrays that may contain NaN mixed with finite values.
+
+    The NaN mask is drawn from Hypothesis, so the array is a pure function of
+    the drawn data (reproducible under ``derandomize``).
+    """
     size = draw(st.integers(min_size, max_size))
     vals = draw(
         st.lists(
@@ -73,40 +83,57 @@ def arrays_with_nan(
             max_size=size,
         )
     )
-    return _build_mixed_array(size, vals, nan_ratio)
+    probs = draw(
+        st.lists(
+            st.floats(0.0, 1.0, allow_nan=False, allow_infinity=False),
+            min_size=size,
+            max_size=size,
+        )
+    )
+    return _build_mixed_array(size, vals, probs, nan_ratio)
 
 
-def _build_mixed_array(size: int, vals: list[float], nan_ratio: float) -> NDArray:
-    rng = np.random.default_rng()
-    arr = np.array(vals, dtype=float)
-    mask = rng.random(size) < nan_ratio
-    arr[mask] = np.nan
+def _build_mixed_array(
+    size: int,
+    vals: list[float],
+    probs: list[float],
+    nan_ratio: float,
+) -> NDArray:
+    """Array whose ``i``-th entry is NaN iff ``probs[i] < nan_ratio``."""
+    arr = np.array(vals[:size], dtype=float)
+    arr[np.asarray(probs[:size], dtype=float) < nan_ratio] = np.nan
     return arr
 
 
-def small_sweep_results():
-    """Synthetic SweepResult-like dicts with classification data."""
-    shape = st.tuples(st.integers(2, 8), st.integers(2, 8))
-    return st.builds(
-        _build_sweep_h,
-        shape,
+@st.composite
+def small_sweep_results(draw):
+    """Synthetic SweepResult-like dicts with classification data.
+
+    Both the values and the NaN mask are drawn from Hypothesis (no unseeded
+    RNG), so the strategy is reproducible under ``derandomize``.
+    """
+    shape = draw(st.tuples(st.integers(2, 8), st.integers(2, 8)))
+    total = shape[0] * shape[1]
+    vals = draw(
         st.lists(
-            st.floats(-1.0, 1.0, allow_nan=False, allow_infinity=False), min_size=4, max_size=64
-        ),
+            st.floats(-1.0, 1.0, allow_nan=False, allow_infinity=False),
+            min_size=total,
+            max_size=total,
+        )
     )
+    is_nan = draw(st.lists(st.booleans(), min_size=total, max_size=total))
+    if total > 4 and not any(is_nan):
+        is_nan[0] = True  # keep at least one divergent cell, as before
+    return _build_sweep_h(shape, vals, is_nan)
 
 
 def _build_sweep_h(
     shape: tuple[int, int],
     vals: list[float],
+    is_nan: list[bool],
 ) -> dict:
-    rng = np.random.default_rng()
     total = shape[0] * shape[1]
-    if len(vals) < total:
-        vals = list(vals) + [0.0] * (total - len(vals))
     arr = np.array(vals[:total], dtype=float).reshape(shape)
-    # Sprinkle some NaN
-    if total > 4:
-        nan_idx = rng.choice(total, size=max(1, total // 5), replace=False)
-        arr.flat[nan_idx] = np.nan
+    mask = np.asarray(is_nan[:total], dtype=bool).reshape(shape)
+    arr[mask] = np.nan
     return {"h": arr, "shape": shape}

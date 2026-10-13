@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-13 22:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -48,8 +48,10 @@ msgid ""
 ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
 "``_sweep_kernel``"
-msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
-
+msgstr ""
+":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
+"``_sweep_kernel``"
 
 #: ../../symbols.rst:20
 msgid ":math:`\\beta`"
@@ -99,43 +101,37 @@ msgstr ""
 msgid ":math:`N_s`"
 msgstr ":math:`N_s`"
 
-
 #: ../../symbols.rst:40
 msgid "Number of FIR filter coefficients (taps)"
 msgstr "Número de coeficientes (taps) do filtro FIR"
-
 
 #: ../../symbols.rst:41 ../../symbols.rst:46
 msgid "``_sweep_kernel``, :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`"
 msgstr "``_sweep_kernel``, :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`"
 
-
 #: ../../symbols.rst:44
 msgid ":math:`N_z = N_s - 1`"
 msgstr ":math:`N_z = N_s - 1`"
-
 
 #: ../../symbols.rst:45
 msgid "FIR filter order (number of zeros)"
 msgstr "Ordem do filtro FIR (número de zeros)"
 
-
 #: ../../symbols.rst:49
 msgid ":math:`N`"
 msgstr ":math:`N`"
-
 
 #: ../../symbols.rst:50
 msgid "Number of samples in a transmitted sequence"
 msgstr "Número de amostras em uma sequência transmitida"
 
-
 #: ../../symbols.rst:51
 msgid ""
 ":func:`~chaotic_pfc.config.CommConfig`, "
 ":func:`~chaotic_pfc.comms.transmitter.transmit`"
-msgstr ":func:`~chaotic_pfc.config.CommConfig`, :func:`~chaotic_pfc.comms.transmitter.transmit`"
-
+msgstr ""
+":func:`~chaotic_pfc.config.CommConfig`, "
+":func:`~chaotic_pfc.comms.transmitter.transmit`"
 
 #: ../../symbols.rst:54
 msgid ":math:`\\omega_c`, :math:`f_c`"
@@ -149,8 +145,9 @@ msgstr "Frequência de corte normalizada, :math:`\\omega_c / \\pi \\in (0, 1)`"
 msgid ""
 ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
 ":func:`~chaotic_pfc.config.InternalFIRConfig`"
-msgstr ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, :func:`~chaotic_pfc.config.InternalFIRConfig`"
-
+msgstr ""
+":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
+":func:`~chaotic_pfc.config.InternalFIRConfig`"
 
 #: ../../symbols.rst:59
 msgid ":math:`c_k`, :math:`b_k`"
@@ -164,7 +161,6 @@ msgstr "Coeficientes do filtro FIR"
 msgid ":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, ``_henon_nN_inplace``"
 msgstr ":func:`~chaotic_pfc.dynamics.maps.henon_order_n`, ``_henon_nN_inplace``"
 
-
 #: ../../symbols.rst:64
 msgid ":math:`G`"
 msgstr ":math:`G`"
@@ -176,7 +172,6 @@ msgstr "Ganho DC do filtro, :math:`G = \\sum_k c_k`"
 #: ../../symbols.rst:66
 msgid "``_sweep_kernel``, ``_fixed_point``"
 msgstr "``_sweep_kernel``, ``_fixed_point``"
-
 
 #: ../../symbols.rst:69
 msgid ":math:`u_n`"
@@ -215,7 +210,6 @@ msgstr "Maior expoente de Lyapunov"
 #: ../../symbols.rst:81
 msgid ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
 msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``"
-
 
 #: ../../symbols.rst:84
 msgid ":math:`s[n]`"
@@ -282,8 +276,9 @@ msgstr "Parâmetro de forma da janela Kaiser"
 msgid ""
 ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
 "``run_beta_sweep``"
-msgstr ":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, ``run_beta_sweep``"
-
+msgstr ""
+":func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, "
+"``run_beta_sweep``"
 
 #: ../../symbols.rst:106
 msgid ":math:`N_{\\text{discard}}`"
@@ -313,8 +308,9 @@ msgstr "Número de condições iniciais no ensemble"
 msgid ""
 ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, "
 "``_sweep_kernel``"
-msgstr ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, ``_sweep_kernel``"
-
+msgstr ""
+":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, "
+"``_sweep_kernel``"
 
 #: ../../symbols.rst:116
 #, python-brace-format
@@ -342,6 +338,152 @@ msgstr "Taxa de erro de bit"
 msgid ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
 msgstr ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
 
+#: ../../symbols.rst:125
+msgid "Terminology"
+msgstr "Terminologia"
+
+#: ../../symbols.rst:127
+msgid ""
+"The English documentation and the Brazilian-Portuguese translation use "
+"one canonical form per concept; the table gives both, with the forms to "
+"avoid."
+msgstr ""
+"A documentação em inglês e a tradução em português do Brasil usam uma "
+"forma canônica por conceito; a tabela dá as duas, com as formas a evitar."
+
+#: ../../symbols.rst:134
+msgid "Concept"
+msgstr "Conceito"
+
+#: ../../symbols.rst:135
+msgid "English"
+msgstr "Inglês"
+
+#: ../../symbols.rst:136
+msgid "Portuguese (pt-BR)"
+msgstr "Português (pt-BR)"
+
+#: ../../symbols.rst:137
+msgid "orbit class"
+msgstr "classe de órbita"
+
+#: ../../symbols.rst:138
+msgid "**divergent** (the class); *unbounded* (the orbit)"
+msgstr "**divergente** (a classe); *não limitada* (a órbita)"
+
+#: ../../symbols.rst:139
+msgid "**divergente**; *órbita não limitada* (avoid \"ilimitado\")"
+msgstr "**divergente**; *órbita não limitada* (evitar \"ilimitado\")"
+
+#: ../../symbols.rst:140
+msgid "cutoff"
+msgstr "corte"
+
+#: ../../symbols.rst:141
+msgid "**cutoff frequency**"
+msgstr "**frequência de corte**"
+
+#: ../../symbols.rst:142
+msgid "**frequência de corte** (avoid a bare \"corte\")"
+msgstr "**frequência de corte** (evitar o \"corte\" isolado)"
+
+#: ../../symbols.rst:143
+msgid "order / coefficients"
+msgstr "ordem / coeficientes"
+
+#: ../../symbols.rst:144
+msgid "**order** :math:`N_z`; **number of coefficients** :math:`N_s`"
+msgstr "**ordem** :math:`N_z`; **número de coeficientes** :math:`N_s`"
+
+#: ../../symbols.rst:145
+msgid "**ordem**; **número de coeficientes** (avoid \"taps\")"
+msgstr "**ordem**; **número de coeficientes** (evitar \"taps\")"
+
+#: ../../symbols.rst:146
+msgid "chaotic coverage"
+msgstr "cobertura caótica"
+
+#: ../../symbols.rst:147
+msgid "**chaotic coverage**"
+msgstr "**cobertura caótica**"
+
+#: ../../symbols.rst:148
+msgid "**cobertura caótica**"
+msgstr "**cobertura caótica**"
+
+#: ../../symbols.rst:149
+msgid "design window"
+msgstr "janela de projeto"
+
+#: ../../symbols.rst:150
+msgid "**design window**"
+msgstr "**janela de projeto**"
+
+#: ../../symbols.rst:151
+msgid "**janela de projeto**"
+msgstr "**janela de projeto**"
+
+#: ../../symbols.rst:152
+msgid "fixed point"
+msgstr "ponto fixo"
+
+#: ../../symbols.rst:153
+msgid "**fixed point**"
+msgstr "**ponto fixo**"
+
+#: ../../symbols.rst:154
+msgid "**ponto fixo**"
+msgstr "**ponto fixo**"
+
+#: ../../symbols.rst:155
+msgid "checkpoint"
+msgstr "checkpoint"
+
+#: ../../symbols.rst:156
+msgid "**checkpoint** (``.npz``)"
+msgstr "**checkpoint** (``.npz``)"
+
+#: ../../symbols.rst:157
+msgid "**checkpoint**"
+msgstr "**checkpoint**"
+
+#: ../../symbols.rst:158
+msgid "filter types"
+msgstr "tipos de filtro"
+
+#: ../../symbols.rst:159
+msgid "lowpass, highpass, bandpass, bandstop"
+msgstr "passa-baixas, passa-altas, passa-faixa, rejeita-faixa"
+
+#: ../../symbols.rst:160
+msgid "passa-baixas, passa-altas, passa-faixa, rejeita-faixa"
+msgstr "passa-baixas, passa-altas, passa-faixa, rejeita-faixa"
+
+#: ../../symbols.rst:162
+msgid ""
+"The classification figures label the three orbit classes with **periodic "
+"orbits**, **chaotic orbits** and **unbounded orbits**. This follows the "
+"terminology of the advisor's article (reference [14] of the manuscript, "
+"``BorgesCNSNS2024``): V. S. Borges, M. T. M. Silva, M. Eisencraft, "
+"\"Chaotic properties of an FIR filtered Hénon map\", *Communications in "
+"Nonlinear Science and Numerical Simulation*, vol. 131, p. 107845, 2024, "
+"which uses \"unbounded orbits\" for the orbits that diverge to infinity "
+"(its classification lists periodic orbits in blue, chaotic orbits in red "
+"and divergence to infinity in gray). The manuscript's figure captions "
+"describe the same class as *divergent*."
+msgstr ""
+"As figuras de classificação rotulam as três classes de órbita com "
+"**órbitas periódicas**, **órbitas caóticas** e **órbitas não-limitadas**. "
+"Isto segue a terminologia do artigo do orientador (referência [14] do "
+"manuscrito, ``BorgesCNSNS2024``): V. S. Borges, M. T. M. Silva, M. "
+"Eisencraft, \"Chaotic properties of an FIR filtered Hénon map\", "
+"*Communications in Nonlinear Science and Numerical Simulation*, vol. 131, "
+"p. 107845, 2024, que usa \"unbounded orbits\" para as órbitas que divergem "
+"para o infinito (a sua classificação lista órbitas periódicas em azul, "
+"órbitas caóticas em vermelho e divergência para o infinito em cinza). As "
+"legendas das figuras do manuscrito descrevem a mesma classe como "
+"*divergente*."
+
 #~ msgid ""
 #~ ":func:`~chaotic_pfc.dynamics.maps.henon_generalised`, "
 #~ ":func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, "
@@ -360,4 +502,5 @@ msgstr ":func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)"
 #~ msgstr ""
 #~ ":func:`~chaotic_pfc.analysis.sweep._kernel._sweep_kernel`, "
 #~ ":func:`~chaotic_pfc.dynamics.lyapunov._fixed_point`"
+
 

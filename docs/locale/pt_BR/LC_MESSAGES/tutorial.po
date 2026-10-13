@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 22:33-0300\n"
+"POT-Creation-Date: 2026-10-13 17:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -25,18 +25,87 @@ msgstr "Tutorial"
 
 #: ../../tutorial.rst:6
 msgid ""
-"A self-contained Jupyter notebook walks through the full ``chaotic-pfc`` "
-"pipeline , from the Hénon map to FIR-filtered chaotic communication — in "
-"about one minute of compute time."
+"This tutorial runs the whole ``chaotic-pfc`` pipeline once, from the "
+"Hénon map to FIR-filtered chaotic communication, in about a minute of "
+"compute time. It uses the 0.9 API (see :doc:`/usage` for the rename "
+"table)."
 msgstr ""
-"Um notebook Jupyter autocontido percorre o pipeline completo do "
-"``chaotic-pfc`` — do mapa de Hénon à comunicação caótica com filtro FIR, "
-"em cerca de um minuto de tempo de computação."
+"Este tutorial executa todo o pipeline do ``chaotic-pfc`` uma vez, do mapa "
+"de Hénon à comunicação caótica com filtro FIR, em cerca de um minuto de "
+"computação. Ele usa a API da 0.9 (veja :doc:`/usage` para a tabela de "
+"renomeações)."
 
-#: ../../tutorial.rst:18
-msgid ""
-"The notebook is also run in CI on every push to ensure it stays up-to-"
-"date with the API."
+#: ../../tutorial.rst:11
+msgid "1. Install"
 msgstr ""
-"O notebook também é executado no CI a cada push para garantir que "
-"permaneça atualizado com a API."
+"1. Instalação"
+
+#: ../../tutorial.rst:20
+msgid "2. A Hénon orbit, in Python"
+msgstr ""
+"2. Uma órbita de Hénon, em Python"
+
+#: ../../tutorial.rst:31
+msgid "The generic estimator takes any map and its Jacobian:"
+msgstr ""
+"O estimador genérico aceita qualquer mapa e a sua Jacobiana:"
+
+#: ../../tutorial.rst:44
+msgid "3. The full pipeline, from the CLI"
+msgstr ""
+"3. O pipeline completo, pela CLI"
+
+#: ../../tutorial.rst:50
+msgid ""
+"This runs every experiment with a reduced Lyapunov grid (seconds instead "
+"of hours): attractor portraits, the SDIC visualisation, the communication"
+" figures, the Lyapunov tables, the sweep checkpoints and the "
+"classification maps. Drop ``--quick-sweep`` for the full-resolution "
+"sweep."
+msgstr ""
+"Isto executa cada experimento com uma grade de Lyapunov reduzida (segundos "
+"em vez de horas): retratos de atratores, a visualização da SDIC, as "
+"figuras de comunicação, as tabelas de Lyapunov, os checkpoints da "
+"varredura e os mapas de classificação. Remova ``--quick-sweep`` para a "
+"varredura completa."
+
+#: ../../tutorial.rst:56
+msgid "4. The notebook"
+msgstr ""
+"4. O notebook"
+
+#: ../../tutorial.rst:58
+msgid "For a guided version with the figures inline:"
+msgstr ""
+"Para uma versão guiada com as figuras embutidas:"
+
+#: ../../tutorial.rst:65
+msgid ""
+"The notebook is also run in CI on every push, so it stays up to date with"
+" the API."
+msgstr ""
+"O notebook também é executado no CI a cada push, de modo que se mantém "
+"atualizado com a API."
+
+#: ../../tutorial.rst:69
+msgid "Next steps"
+msgstr ""
+"Próximos passos"
+
+#: ../../tutorial.rst:71
+msgid ":doc:`/usage` — every CLI workflow, flag by flag."
+msgstr ""
+":doc:`/usage` — cada fluxo da CLI, flag por flag."
+
+#: ../../tutorial.rst:72
+msgid ":doc:`/source/algorithms/lyapunov` — how the exponents are estimated."
+msgstr ""
+":doc:`/source/algorithms/lyapunov` — como os expoentes são estimados."
+
+#: ../../tutorial.rst:73
+msgid ":doc:`/source/algorithms/sweep` — the parameter sweep and reproducibility."
+msgstr ""
+":doc:`/source/algorithms/sweep` — a varredura de parâmetros e a "
+"reprodutibilidade."
+
+

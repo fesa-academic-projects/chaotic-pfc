@@ -103,7 +103,8 @@ gets its own version DOI. Record the new version DOI.
   and keep `version` / `date-released` in sync.
 - `docs/citing.rst`: add the new version DOI next to the concept DOI.
 - `articles/jcis/references.bib`: set the version DOI of the software entry
-  (the `chaotic-pfc` `@software` record) to the DOI of the released version.
+  (the `chaotic-pfc` `@misc` record, key `chaoticPFC2026`) to the DOI of the
+  released version.
 
 ### 8. Read the Docs
 

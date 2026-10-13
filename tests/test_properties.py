@@ -95,21 +95,51 @@ class TestHenonFilteredInvariants(unittest.TestCase):
 class TestLyapunovInvariants(unittest.TestCase):
     """Property tests for Lyapunov functions."""
 
+    # Literature value of the largest Hénon exponent at (1.4, 0.3)
+    # (Sprott, *Chaos and Time-Series Analysis*): λ1 ≈ 0.41922.
+    HENON_LAMBDA1_LITERATURE = 0.41922
+
+    def test_canonical_henon_point_is_chaotic(self):
+        """The canonical Hénon map (a, b) = (1.4, 0.3) is chaotic.
+
+        Deterministic check with fixed seeds: λ_max is strictly positive and
+        within 0.01 of the literature value 0.41922. The finite-time estimator
+        converges to that value (``Nitera=5000``, ``Ndiscard=2000``).
+        """
+        for seed in (0, 1, 2, 3, 4):
+            result = lyapunov_henon2d(alpha=1.4, beta=0.3, Nitera=5000, Ndiscard=2000, seed=seed)
+            self.assertGreater(result.lyapunov_max, 0.0, f"λ_max ≤ 0 for seed={seed}")
+            self.assertAlmostEqual(
+                result.lyapunov_max,
+                self.HENON_LAMBDA1_LITERATURE,
+                delta=0.01,
+                msg=f"seed={seed}",
+            )
+
     @given(
         a=st.floats(1.38, 1.42, allow_nan=False, allow_infinity=False),
         b=st.floats(0.28, 0.32, allow_nan=False, allow_infinity=False),
         seed=st.integers(0, 100),
     )
     @settings(max_examples=30, deadline=10000, database=None)
-    def test_standard_henon_yields_positive_lyapunov_max(self, a, b, seed):
-        """For (a,b) very close to (1.4, 0.3). If bounded, λ_max > 0."""
-        assume(abs(a - 1.4) < 0.06 and abs(b - 0.3) < 0.06)
-        result = lyapunov_henon2d(alpha=a, beta=b, Nitera=500, Ndiscard=200, seed=seed)
+    def test_standard_henon_exponent_invariants(self, a, b, seed):
+        """Invariants that hold for *every* bounded orbit in the box around
+        (1.4, 0.3): the two exponents satisfy λ1 + λ2 = ln|b| (the Hénon
+        Jacobian has constant determinant −b) and λ1 ≥ λ2.
 
-        assume(np.isfinite(result.lyapunov_max))
-        self.assertGreater(
-            result.lyapunov_max, 0.0, f"λ_max ≤ 0 for a={a}, b={b}: {result.lyapunov_max}"
-        )
+        The box also contains **periodic windows**, where the bounded orbit is
+        periodic and λ_max ≤ 0; λ_max > 0 is therefore *not* asserted here but
+        checked deterministically at the canonical chaotic point in
+        :meth:`test_canonical_henon_point_is_chaotic`.
+        """
+        result = lyapunov_henon2d(alpha=a, beta=b, Nitera=500, Ndiscard=200, seed=seed)
+        exps = np.asarray(result.all_exponents)
+        # Non-bounded (diverging) orbits are out of scope for the invariant.
+        assume(np.all(np.isfinite(exps)))
+        lam1 = float(result.lyapunov_max)  # = max(exps)
+        lam2 = float(np.min(exps))
+        self.assertGreaterEqual(lam1, lam2)
+        np.testing.assert_allclose(lam1 + lam2, float(np.log(abs(b))), rtol=1e-4)
 
     @given(
         a=st.floats(1.3, 1.5, allow_nan=False, allow_infinity=False),

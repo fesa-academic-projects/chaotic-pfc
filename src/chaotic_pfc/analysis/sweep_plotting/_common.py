@@ -102,6 +102,11 @@ def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
 
     The integer values match the :class:`matplotlib.colors.BoundaryNorm` bins
     used below.
+
+    Examples
+    --------
+    >>> classify(np.array([np.nan, -0.5, 0.5])).tolist()
+    [2, -1, 0]
     """
     out = np.empty_like(h, dtype=np.int64)
     mask_diverged = np.isnan(h)

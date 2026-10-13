@@ -6,6 +6,39 @@ Usage guide
 This page walks through every CLI workflow with example commands and
 their expected outputs.
 
+Command-line conventions
+------------------------
+
+Every command accepts the same global flags:
+
+* ``--quiet`` / ``-q`` — suppress informational output (errors still print).
+* ``--verbose`` / ``-v`` — print extra progress information.
+* ``--debug`` (or ``CHAOTIC_PFC_DEBUG=1``) — show the full traceback on error.
+* ``--color {auto,always,never}`` — an explicit value wins; ``auto`` honours a
+  non-empty ``NO_COLOR``.
+* ``--no-progress`` — disable the progress counter.
+
+Long operations (``sweeps regenerate``, ``run all``, ``run sweep compute``,
+``run sweep beta-sweep``, ``paper numbers``) print an ``index/total`` progress
+counter to **stderr**, only when stderr is a terminal and neither ``--quiet``
+nor ``--no-progress`` was passed; it never appears on stdout (so ``--json``
+output stays clean). ``chaotic-pfc sweeps regenerate --dry-run`` lists what would
+be recomputed without writing anything.
+
+Migrating from 0.8 to 0.9
+-------------------------
+
+The 0.9 public API renames several parameters and one function (see the
+:doc:`/changelog` for the full old→new table):
+
+* ``alpha``/``beta`` everywhere (``HenonConfig``, the maps and the comms
+  functions);
+* ``num_taps``/``cutoff`` for a single filter and ``num_taps_grid``/
+  ``cutoff_grid`` for the sweep and plotting functions;
+* the 4-D ``lyapunov_max`` is now ``lyapunov_max_pole_filtered`` and
+  ``lyapunov_max``/``lyapunov_spectrum`` are the generic estimators;
+* ``classify`` returns ``int64`` codes (``OrbitClass``).
+
 Full pipeline (quick mode)
 --------------------------
 

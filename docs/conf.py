@@ -154,8 +154,18 @@ epub_uid = "chaotic-pfc-docs"
 
 # doctest — run the ``>>>`` examples in the docstrings
 doctest_global_setup = """
-from chaotic_pfc.dynamics.signals import binary_message, text_message
 import numpy as np
+from chaotic_pfc import (
+    binary_message,
+    classify,
+    henon_standard,
+    precompute_fir_bank,
+    receive,
+    run_sweep,
+    text_message,
+    transmit,
+)
+from chaotic_pfc.analysis.sweep import load_sweep, save_sweep
 """
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -175,7 +185,10 @@ nitpicky = False
 # the docstrings (``ndarray, shape (Ncoef, Ncut)`` and similar) or the
 # re-exported type names; those words are literal text, not cross-references.
 nitpick_ignore_regex = [
+    # External libraries and NumPy-style ``shape``/type tokens used in the
+    # docstrings; everything else must resolve (or be qualified in the source).
     (r"py:class", r"numpy\..*"),
+    (r"py:class", r"np\..*"),
     (r"py:class", r"scipy\..*"),
     (r"py:class", r"^(ndarray|NDArray|shape|dim|optional|Ncoef|Ncut)$"),
     (r"py:class", r"^(Path|Figure|Axes|Patch|PolyCollection)$"),
@@ -186,18 +199,10 @@ nitpick_ignore_regex = [
     (r"py:class", r'^".*'),
     (r"py:class", r"^(argparse|plotly)\..*"),
     (r"py:class", r"^sys\.argv.*$"),
+    # Module-level data constants referenced from docstrings (not autodocumented).
     (r"py:data", r"^(WINDOWS|FILTER_TYPES|WINDOW_DISPLAY_NAMES)$"),
-    (r"ref\.python", r".*n_initial.*"),
-    (r"py:obj", r"^n_initial$"),
     (r"py:data", r"^(FIGURE_FILENAMES|DIFFICULTY_FIGURE_FILENAME)$"),
     (r"py:data", r"^(CHAOTIC_MAP_FILENAME|CHAOTIC_DENSITY_FILENAME)$"),
-    (r"py:func", r"^text_message$"),
-    (r"py:func", r"^(run_sweep|psd_normalised|make_classification_legend)$"),
-    (r"py:func", r"^_henon_n4_step_inplace$"),
-    (r"py:func", r"^(chaotic_pfc\._i18n\.t|_build_task_order)$"),
-    (r"py:func", r"^chaotic_pfc\.analysis\.sweep\._kernel\._build_task_order$"),
-    (r"py:mod", r"^chaotic_pfc\.plotting$"),
-    (r"py:obj", r"^tests\.test_cli$"),
 ]
 
 suppress_warnings = [

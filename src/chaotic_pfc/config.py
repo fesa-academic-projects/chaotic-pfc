@@ -45,9 +45,9 @@ class CommConfig:
         match on both ends.
     message_period
         Period of the default binary message, in samples. Also used as
-        the samples-per-bit hold time of :func:`text_message`.
+        the samples-per-bit hold time of :func:`~chaotic_pfc.dynamics.signals.text_message`.
     message_text
-        Default ASCII text carried by :func:`text_message` in the
+        Default ASCII text carried by :func:`~chaotic_pfc.dynamics.signals.text_message` in the
         ``comm-*`` experiments.
     transient
         Number of samples discarded at the start of each run before

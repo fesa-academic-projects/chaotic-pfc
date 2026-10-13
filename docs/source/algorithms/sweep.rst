@@ -94,6 +94,11 @@ The convergence criterion:
 where :math:`\bar{\lambda}_k` is the running mean at checkpoint :math:`k`.
 Default values: :math:`K = 100`, :math:`M = 2`, :math:`\varepsilon = 10^{-3}`.
 
+Across the 124 versioned sweeps the effective accumulation horizon lands in a
+narrow band: the median number of iterations per configuration is between about
+**700 and 1200**, with a floor of 700 (the minimum before the criterion may
+fire), and the cap of 3000 is reached at only 2 of the 372000 grid points.
+
 In practice this provides a 3–4× speedup on typical sweeps with negligible
 accuracy loss (the exponent estimate is already converged long before
 :math:`N_{\text{itera}} = 3000` for stable orbits).
@@ -192,6 +197,14 @@ bit-exact reproduction described above. A dedicated optimization attempt
 bounds the saving at the burn-in share, ~5.6 % of the total) did not reach the
 10 % adoption threshold and was dropped; see the project's issue tracker.
 
+The fallback changes very few classes. On the **full grid** of the four
+Table II configurations, comparing ``fallback_mode`` 0, 1 and 2 changes the class
+of **2 cells** for the highpass configuration and **2** for the bandpass one (all
+periodic to chaotic); on the reduced grid used by
+``tests/test_fallback_class_changes.py`` no cell changes class. The direction is
+the expected one: the full-spectrum recomputation can promote a marginal
+periodic cell to chaotic, never the other way.
+
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -236,7 +249,12 @@ tangent-propagation kernels
 (``row2 = c1*w0 + cb02*w1 + m22*w2`` plus the ``tail`` accumulation) is
 contracted/reassociated at the last bit by LLVM; the map's sensitive
 dependence then amplifies that ~1 ULP seed.  Install Numba (the ``[fast]``
-extra) whenever the checkpoints must be reproduced exactly.
+extra) whenever the checkpoints must be reproduced exactly.  The coefficient
+bank itself comes from :func:`scipy.signal.firwin`, so the bit-for-bit
+reproduction also depends on SciPy: ``data/sweeps/ENVIRONMENT.json`` records
+the version used, ``tests/test_sweep_environment.py`` pins a fingerprint of the
+coefficient banks, and a SciPy change that altered ``firwin`` would shift the
+checkpoints.
 
 Divergence handling (Opção B)
 -----------------------------
@@ -280,8 +298,10 @@ Every sweep is **deterministic** given the same seed:
    random state of its own, only deterministic arithmetic.
 
 Running the same sweep twice with the same seed produces byte‑identical
-``.npz`` files.  This is critical for scientific reproducibility; the CI
-pipeline only smoke-tests the orchestration with
+``.npz`` files.  This is critical for scientific reproducibility.  The CI runs a
+dedicated ``baseline`` job that reproduces the 124 versioned checkpoints **bit
+for bit** (``CHAOTIC_PFC_RUN_BASELINE=1 pytest tests/test_sweep_regressions.py``)
+and a ``pipeline`` job that smoke-tests the orchestration with
 ``chaotic-pfc run all --quick-sweep``.
 
 Known limitations

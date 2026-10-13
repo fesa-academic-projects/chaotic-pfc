@@ -31,7 +31,24 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
 
 
 def load_sweep(path: str | Path) -> SweepResult:
-    """Load a sweep from ``.npz`` produced by :func:`save_sweep`."""
+    """Load a sweep from ``.npz`` produced by :func:`save_sweep`.
+
+    Examples
+    --------
+    A save/load round-trip preserves the ``lambda_max`` grid exactly:
+
+    >>> import os, tempfile
+    >>> res = run_sweep(
+    ...     "hamming", "lowpass",
+    ...     num_taps_grid=np.array([3]),
+    ...     cutoff_grid=np.array([0.25]),
+    ...     Nmap=300, n_initial=2, warmup=False,
+    ... )
+    >>> with tempfile.TemporaryDirectory() as d:
+    ...     again = load_sweep(save_sweep(res, os.path.join(d, "demo.npz")))
+    ...     np.array_equal(again.h, res.h)
+    True
+    """
     path = Path(path)
     try:
         data = np.load(path, allow_pickle=True)

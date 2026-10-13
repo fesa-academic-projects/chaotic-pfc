@@ -138,6 +138,13 @@ def lmax_statistics(
     LmaxStats
         Descriptive statistics including bootstrap 95% CI.
         When fewer than 3 valid points exist, the CI fields are NaN.
+
+    Notes
+    -----
+    The bootstrap treats the grid points as **independent** samples. Neighbouring
+    cells are correlated, so the interval underestimates the true uncertainty and
+    is best read as a description of the dispersion over the region, not as a
+    hypothesis-test interval (see the article's statistical section).
     """
     from scipy.stats import bootstrap as scipy_bootstrap
 

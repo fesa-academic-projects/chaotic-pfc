@@ -48,6 +48,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.sweep import (
     FILTER_TYPES,
     WINDOWS,
@@ -150,6 +151,7 @@ def _run_all_sweeps(
     adaptive: bool,
     Nmap_min: int,
     tol: float,
+    progress_args: Any = None,
 ) -> None:
     """Run every (window, filter) combination.
 
@@ -193,6 +195,7 @@ def _run_all_sweeps(
 
     total = len(sweeps)
     for idx, (window, filter_type, beta) in enumerate(sweeps, start=1):
+        progress(idx, len(sweeps), f"{window} {filter_type}", progress_args)
         label = (
             f"Kaiser β={beta:.1f} / {filter_type}"
             if beta is not None
@@ -289,6 +292,7 @@ def run(args: argparse.Namespace) -> int:
             adaptive=adaptive,
             Nmap_min=args.Nmap_min,
             tol=args.tol,
+            progress_args=args,
         )
 
     # ── 3) Sweep plot (08) ────────────────────────────────────────────────

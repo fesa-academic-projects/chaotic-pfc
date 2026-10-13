@@ -72,6 +72,12 @@ def henon_standard(
         ``(alpha, beta) = (1.4, 0.3)``; smaller ``alpha`` yields periodic
         orbits, larger ``alpha`` yields unbounded trajectories for most ICs.
 
+    Examples
+    --------
+    >>> X, _ = henon_standard(4, x0=0.1, y0=0.1)
+    >>> [round(float(v), 4) for v in X]
+    [0.1, 1.086, -0.6212, 0.7856, -0.0505]
+
     Returns
     -------
     X, Y : ndarray, shape (steps + 1,)
@@ -251,7 +257,7 @@ def henon_order_n(
     The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``.
     At each step, the carrier output is the filtered state component
     ``x[2]``, and the next iterate is computed by
-    :func:`_henon_n4_step_inplace`.
+    ``_henon_n4_step_inplace``.
 
     The ``driving`` parameter lets callers override the nonlinear
     input: when ``driving=None`` the map runs autonomously (``s = x[2]``);

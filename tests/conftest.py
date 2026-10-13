@@ -18,6 +18,10 @@ settings.register_profile(
     deadline=10000,
     suppress_health_check=[HealthCheck.too_slow],
     database=None,
+    # In CI the generated examples are derived from a fixed seed, so a failure
+    # is reproducible byte for byte. Locally the "dev" profile keeps exploring
+    # (and Hypothesis prints the seed needed to reproduce a failure).
+    derandomize=True,
 )
 
 # Default profile for local development

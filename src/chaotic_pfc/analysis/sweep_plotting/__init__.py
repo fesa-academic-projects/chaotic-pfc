@@ -15,9 +15,9 @@ Three plot types are provided:
 All three accept a :class:`~chaotic_pfc.analysis.sweep.SweepResult` (or its
 individual arrays for the first two) and optionally a ``save_path``.
 They return the :class:`matplotlib.figure.Figure` so callers can
-compose or display them. The module also re-uses the RC params from
-:mod:`chaotic_pfc.plotting`, so sweep figures look consistent with the
-rest of the pipeline.
+compose or display them. The module also re-uses the RC params set by
+:func:`~chaotic_pfc.plotting.figures.setup_rc`, so sweep figures look consistent
+with the rest of the pipeline.
 
 .. rubric:: Functions
 

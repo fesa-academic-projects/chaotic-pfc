@@ -5,6 +5,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from chaotic_pfc._output import progress
+
 # ════════════════════════════════════════════════════════════════════════════
 # run sweep beta-sweep
 # ════════════════════════════════════════════════════════════════════════════
@@ -111,6 +113,7 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
 
     print(f"[beta-sweep] {len(betas)} β value(s): {betas}")
     for idx, beta in enumerate(betas, start=1):
+        progress(idx, len(betas), f"kaiser/{args.filter_type} beta_{beta:.2f}", args)
         print(f"\n[beta-sweep] {idx}/{len(betas)}  β = {beta}")
         t0 = time.perf_counter()
         result = run_sweep(

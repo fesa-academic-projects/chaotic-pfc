@@ -436,7 +436,8 @@ def plot_difficulty_map(
         If ``result`` was produced with ``adaptive=False`` (the heatmap
         would be a single colour, which is misleading rather than
         informative). The error message points the user to the
-        ``adaptive=True`` flag in :func:`run_sweep`.
+        ``adaptive=True`` flag in
+        :func:`~chaotic_pfc.analysis.sweep.run_sweep`.
     """
     if result.n_iters_used is None:
         raise ValueError(

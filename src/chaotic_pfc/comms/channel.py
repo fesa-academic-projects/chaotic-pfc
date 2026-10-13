@@ -15,7 +15,7 @@ Six channels are provided:
 All accept the transmitted signal ``s`` as a 1-D array and return the
 received signal ``r`` of the same length. The FIR channel additionally
 returns its filter coefficients so they can be overlaid on the PSD
-plots produced by :mod:`chaotic_pfc.plotting`.
+plots produced by :mod:`chaotic_pfc.plotting.figures`.
 """
 
 from __future__ import annotations

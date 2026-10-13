@@ -6,6 +6,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from chaotic_pfc._output import progress
+
 
 def _add_compute_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``run sweep compute``."""
@@ -158,7 +160,7 @@ def run_compute(args: argparse.Namespace) -> int:
     warmup_needed = True
 
     for idx, (window, filter_type) in enumerate(combos, start=1):
-        print(f"\n[07] {idx}/{len(combos)}  {window} / {filter_type}")
+        progress(idx, len(combos), f"{window} {filter_type}", args)
         t0 = time.perf_counter()
         result = run_sweep(
             window=window,

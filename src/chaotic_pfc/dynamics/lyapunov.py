@@ -580,11 +580,11 @@ class EnsembleResult:
         Eigenvalues of the Jacobian at ``fixed_point``.
     stable : bool
         ``True`` iff ``all(|eigenvalues| < 1)``.
-    initial_conditions : ndarray, shape (n_initial, dim)
+    initial_conditions : ndarray, shape ``(n_initial, dim)``
         Initial conditions drawn for each run.
-    exponents_per_ci : ndarray, shape (n_initial, dim)
+    exponents_per_ci : ndarray, shape ``(n_initial, dim)``
         Full Lyapunov spectrum for each IC.
-    lmax_per_ci : ndarray, shape (n_initial,)
+    lmax_per_ci : ndarray, shape ``(n_initial,)``
         Largest Lyapunov exponent for each IC.
     mean_exponents : ndarray, shape (dim,)
         Per-component mean of ``exponents_per_ci``.

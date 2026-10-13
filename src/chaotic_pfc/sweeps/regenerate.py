@@ -14,10 +14,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import time
 from pathlib import Path
 from typing import Any
 
+from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.sweep import load_sweep, run_sweep, save_sweep
 
 PAPER_BANDWIDTH = 0.05
@@ -42,7 +42,7 @@ def write_manifest(root: Path) -> Path:
     return manifest
 
 
-def regenerate(src: Path, dst: Path) -> None:
+def regenerate(src: Path, dst: Path, args: Any = None) -> None:
     """Recompute every checkpoint under ``src`` into ``dst``."""
     paths = sorted(src.rglob("variables_lyapunov.npz"))
     if not paths:
@@ -50,7 +50,6 @@ def regenerate(src: Path, dst: Path) -> None:
     for k, path in enumerate(paths, 1):
         old = load_sweep(path)
         m = old.metadata
-        t0 = time.perf_counter()
         result = run_sweep(
             window=old.window,
             filter_type=old.filter_type,
@@ -73,12 +72,7 @@ def regenerate(src: Path, dst: Path) -> None:
         out = dst / path.relative_to(src)
         out.parent.mkdir(parents=True, exist_ok=True)
         save_sweep(result, out)
-        print(
-            f"[{k:3d}/{len(paths)}] {path.relative_to(src)} "
-            f"n_fallback={result.metadata['n_fallback']} "
-            f"({time.perf_counter() - t0:.1f} s)",
-            flush=True,
-        )
+        progress(k, len(paths), str(path.relative_to(src)), args)
     print(f"wrote {write_manifest(dst)}", flush=True)
 
 
@@ -128,5 +122,5 @@ def run(args: argparse.Namespace) -> int:
         return 0
     if args.dst is None:
         raise SystemExit("--dst is required unless --manifest-only is given")
-    regenerate(args.src, args.dst)
+    regenerate(args.src, args.dst, args=args)
     return 0

@@ -120,3 +120,51 @@ Symbols glossary
    * - :math:`\text{BER}`
      - Bit error rate
      - :func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)
+
+Terminology
+-----------
+
+The English documentation and the Brazilian-Portuguese translation use one
+canonical form per concept; the table gives both, with the forms to avoid.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 28 36 36
+
+   * - Concept
+     - English
+     - Portuguese (pt-BR)
+   * - orbit class
+     - **divergent** (the class); *unbounded* (the orbit)
+     - **divergente**; *órbita não limitada* (avoid "ilimitado")
+   * - cutoff
+     - **cutoff frequency**
+     - **frequência de corte** (avoid a bare "corte")
+   * - order / coefficients
+     - **order** :math:`N_z`; **number of coefficients** :math:`N_s`
+     - **ordem**; **número de coeficientes** (avoid "taps")
+   * - chaotic coverage
+     - **chaotic coverage**
+     - **cobertura caótica**
+   * - design window
+     - **design window**
+     - **janela de projeto**
+   * - fixed point
+     - **fixed point**
+     - **ponto fixo**
+   * - checkpoint
+     - **checkpoint** (``.npz``)
+     - **checkpoint**
+   * - filter types
+     - lowpass, highpass, bandpass, bandstop
+     - passa-baixas, passa-altas, passa-faixa, rejeita-faixa
+
+The classification figures label the three orbit classes with **periodic
+orbits**, **chaotic orbits** and **unbounded orbits**. This follows the
+terminology of the advisor's article (reference [14] of the manuscript,
+``BorgesCNSNS2024``): V. S. Borges, M. T. M. Silva, M. Eisencraft, "Chaotic
+properties of an FIR filtered Hénon map", *Communications in Nonlinear Science
+and Numerical Simulation*, vol. 131, p. 107845, 2024, which uses "unbounded
+orbits" for the orbits that diverge to infinity (its classification lists
+periodic orbits in blue, chaotic orbits in red and divergence to infinity in
+gray). The manuscript's figure captions describe the same class as *divergent*.

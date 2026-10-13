@@ -80,6 +80,11 @@ def transmit(
 
     Implements: :class:`~chaotic_pfc.comms.protocols.Transmitter`.
 
+    Examples
+    --------
+    >>> s = transmit(binary_message(4, period=4), x0=0.1, y0=0.1)
+    >>> [round(float(v), 4) for v in s]
+    [0.11, 1.4279, -0.6189, 1.4323]
     """
     N = len(message)
     x1 = np.empty(N + 1)

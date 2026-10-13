@@ -96,22 +96,36 @@ Key experiments
      - High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
-   :hidden:
+   :caption: Tutorial
 
-   background
    tutorial
-   architecture
-   internals
-   testing
+
+.. toctree::
+   :maxdepth: 2
+   :caption: How-to guides
+
    usage
-   validation
    development
+   testing
    contributing
    citing
-   changelog
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+
+   api/index
+   symbols
    source/algorithms/lyapunov
    source/algorithms/sweep
    source/algorithms/fir_design
-   symbols
-   api/index
+   validation
+   changelog
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Explanation
+
+   background
+   architecture
+   internals

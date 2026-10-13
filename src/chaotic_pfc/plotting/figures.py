@@ -335,7 +335,7 @@ def plot_comm_grid(
     m_hat
         Recovered message estimate, shape ``(N,)``.
     omega
-        Normalised frequency axis from :func:`psd_normalised`.
+        Normalised frequency axis from :func:`~chaotic_pfc.dynamics.spectral.psd_normalised`.
     psd_m, psd_s, psd_r, psd_mhat
         PSD of each signal (same length as *omega*).
     opts

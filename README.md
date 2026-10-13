@@ -7,6 +7,8 @@
 
 [![CI](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/chaotic-pfc/badge/?version=latest)](https://chaotic-pfc.readthedocs.io/)
+[![Documentation Status — stable](https://readthedocs.org/projects/chaotic-pfc/badge/?version=stable)](https://chaotic-pfc.readthedocs.io/en/stable/)
+[![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-blue)](https://www.python.org/)
 [![codecov](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc/branch/main/graph/badge.svg)](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
@@ -45,7 +47,7 @@ grid.
 Requires Python 3.12 or later.
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev,fast]"   # dev tools + Numba JIT acceleration
 ```
@@ -62,6 +64,10 @@ when bisecting a regression), install from the lock file instead:
 ```bash
 pip install -r requirements-lock.txt
 ```
+
+Building the JCIS manuscript PDF with `make paper-pdf` additionally needs a TeX
+Live distribution (pdflatex, bibtex), Inkscape and `pdflatex -shell-escape`
+(the figures are SVG and are converted during the build).
 
 ## Usage
 
@@ -199,6 +205,13 @@ make test-fast     # exclude slow tests
 make check-all     # lint + format + typecheck + fast tests
 ```
 
+The bit-exact sweep regression is opt-in (it re-runs the kernel and compares the
+versioned `.npz` files byte for byte):
+
+```bash
+CHAOTIC_PFC_RUN_BASELINE=1 pytest tests/test_sweep_regressions.py
+```
+
 ## Makefile targets
 
 | Target | Action |
@@ -238,7 +251,7 @@ CLI:
 
 | Command | Purpose |
 |---------|---------|
-| `chaotic-pfc paper numbers` | Recompute every number of the manuscript from `data/sweeps/` and emit JSON. |
+| `chaotic-pfc paper numbers` | Recompute every number of the manuscript and emit JSON: `chaotic-pfc paper numbers --sweeps data/sweeps --json numbers.json`. |
 | `chaotic-pfc paper audit` | Cross-check `articles/jcis/article.tex` against the bibliography, figures and identity tables (`make check-paper`). |
 | `chaotic-pfc paper figures` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
 | `chaotic-pfc sweeps regenerate` | Recompute the versioned `data/sweeps/` checkpoints and rewrite the `SHA256SUMS` manifest. |
@@ -255,6 +268,35 @@ identical PDF.
 The LaTeX tables written by `chaotic-pfc run analysis export-tables` (and by
 `chaotic-pfc run all`) are versioned under `data/analysis_output/tables/{pt,en}/`
 as the reference output of the analysis step.
+
+### Scope
+
+* The Lyapunov machinery is for **maps with an analytic Jacobian** (the Hénon
+  family used here). For Lyapunov exponents from a time series, use a dedicated
+  library such as [nolds](https://github.com/CSchoel/nolds).
+* The parameter sweep covers **FIR filters only**; IIR filters are future work.
+* The versioned binary artifacts (`data/sweeps/*.npz`, the manuscript PDFs and
+  the SIMAC `.docx` files) are **canonical**: regenerate them with the CLI
+  rather than editing them by hand.
+
+### CLI conventions
+
+Every command accepts the global flags `--quiet`/`-q`, `--verbose`/`-v`,
+`--debug` (or `$CHAOTIC_PFC_DEBUG=1`, which shows the full traceback),
+`--color {auto,always,never}` (an explicit value wins; `auto` honours
+`$NO_COLOR`) and `--no-progress`. Long operations print an `index/total`
+progress counter to **stderr**, only on a terminal and not with `--quiet` or
+`--no-progress`. `sweeps regenerate --dry-run` lists what would be recomputed
+without writing anything.
+
+### Migrating from 0.8 to 0.9
+
+The 0.9 API renames several parameters (e.g. `a`/`b` → `alpha`/`beta` on the map
+and comms functions, `orders`/`cutoffs` → `num_taps_grid`/`cutoff_grid` on the
+sweep and plotting functions, `QuickSweepParams.orders_*` →
+`.num_taps_grid_*`), renames the 4-D `lyapunov_max` → `lyapunov_max_pole_filtered`
+and makes `classify` return `int64` codes. The full old→new table is in the
+[CHANGELOG](https://github.com/fesa-academic-projects/chaotic-pfc/blob/main/CHANGELOG.md#unreleased).
 
 ## Documentation
 

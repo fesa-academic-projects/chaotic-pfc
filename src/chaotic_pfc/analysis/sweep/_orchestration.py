@@ -70,6 +70,12 @@ def precompute_fir_bank(
         ``(order_i, cutoff_j)`` pair, zero-padded on the right.
     gains : ndarray, shape (Ncoef, Ncut)
         DC gain (sum of coefficients) of each filter.
+
+    Examples
+    --------
+    >>> _, gains = precompute_fir_bank(np.array([3, 5]), np.array([0.3]), "lowpass", "hamming")
+    >>> [round(float(g), 3) for g in gains[:, 0]]
+    [1.0, 1.0]
     """
     if filter_type not in FILTER_TYPES:
         raise ValueError(f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}")
@@ -394,6 +400,22 @@ def run_sweep(
     See Also
     --------
     :doc:`/source/algorithms/sweep` : Parallel architecture and divergence handling.
+
+    Examples
+    --------
+    A two-by-two sweep (two tap counts, two cutoffs) with the minimum iteration
+    budget runs in a few seconds, including the Numba warm-up:
+
+    >>> res = run_sweep(
+    ...     "hamming", "lowpass",
+    ...     num_taps_grid=np.array([3, 5]),
+    ...     cutoff_grid=np.array([0.25, 0.5]),
+    ...     Nmap=300, n_initial=3, warmup=False,
+    ... )
+    >>> res.h.shape
+    (2, 2)
+    >>> res.num_taps_grid.tolist()
+    [3, 5]
     """
     if fallback_mode not in (0, 1, 2):
         raise ValueError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")

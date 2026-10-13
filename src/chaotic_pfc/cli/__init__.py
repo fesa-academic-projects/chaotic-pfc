@@ -102,6 +102,12 @@ def build_parser() -> argparse.ArgumentParser:
         default="auto",
         help="Colourise terminal messages (auto honours $NO_COLOR; default: auto).",
     )
+    parser.add_argument(
+        "--no-progress",
+        dest="no_progress",
+        action="store_true",
+        help="Disable the progress counter on long operations.",
+    )
 
     # Top-level groups — only "run" for now, but keeping the tree open
     # for future additions (e.g. "chaotic-pfc info", "chaotic-pfc ls").

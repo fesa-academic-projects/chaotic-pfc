@@ -44,3 +44,15 @@ Documento de leitura do orientador. Contém apenas o registro das alterações.
 | II-B (justificação em frequência) | argumento apenas em prosa | acrescenta a figura do canal ideal (`fig:comm_ideal`, em inglês) e dois parágrafos com os três cenários, com BER de 0, 0,4324 e 0 e métricas calculadas após compensar o atraso de grupo de 100 amostras do canal de 201 taps | `figures/comm_ideal.svg` e as CLIs de comunicação; `articles/jcis/Figures/fig_comm_ideal.svg` | Nada; a afirmação de precondição passa a ter base quantitativa numa configuração específica. |
 
 v6: reescrita após a revisão do orientador.
+
+## Notas de leitura (histórico)
+
+Os caminhos citados nas tabelas acima referem-se ao estado do repositório na
+época de cada rodada (por exemplo, `tools/report_sweep_stats.py` foi depois
+substituído por `chaotic-pfc sweeps stats`, e `src/chaotic_pfc/sweep_plotting.py`
+por `src/chaotic_pfc/analysis/sweep_plotting/`); permanecem como registro
+histórico.
+
+O parágrafo da IV-C sobre o ganho DC (composição medida por tipo de filtro, com
+a dependência analítica de $p^+$ em $G$) foi acrescentado nesta rodada e é
+mantido como descrito, sem a narrativa causal única por $G$.

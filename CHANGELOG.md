@@ -69,8 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `make setup` (venv + extras + pre-commit hooks + optional-tool checks) and
   `make install` aligned with the README.
 - CLI (clig.dev): global `--debug` (or `$CHAOTIC_PFC_DEBUG=1`, full traceback),
-  `--quiet`/`--verbose`, `--color {auto,always,never}` (honours `$NO_COLOR`),
-  `sweeps regenerate --dry-run`, and a help string on every argument.
+  `--quiet`/`--verbose`, `--color {auto,always,never}` (an explicit value wins;
+  `auto` honours a non-empty `$NO_COLOR`), `--no-progress`, and a help string on
+  every argument. Long operations (`sweeps regenerate`, `run all`,
+  `sweep compute`, `run sweep beta-sweep`, `paper numbers`) print a
+  `index/total label` progress counter to stderr only when stderr is a terminal
+  and neither `--quiet` nor `--no-progress` was passed (never on stdout, even
+  with `--json`). `sweeps regenerate --dry-run` lists what would be regenerated
+  without writing anything.
 - `.editorconfig` and a pull-request template.
 - Regression and validation tests for the sweep kernel: the partial-divergence
   rule, the non-finite Hann/Bartlett filters at `N_s = 2`, the adaptive
@@ -111,6 +117,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `release` job now runs only after `lint`, `typecheck`, `test` and
   `baseline` pass on the tag (those jobs no longer skip tags), and it publishes
   the artefact built once by `build`.
+- `chaotic-pfc paper audit` now fails with exit code 1 and
+  `error: missing input file …` when the `.tex` or `.bib` does not exist
+  (it previously printed a warning and exited 0).
 - `chaotic-pfc.paper.audit` and `chaotic-pfc.paper.numbers` import each other
   normally (no more `tools/` sibling loading); the JCIS classification panels
   are defined once and shared with `chaotic-pfc run paper-figures`.
@@ -159,6 +168,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `make paper-pdf` pins `SOURCE_DATE_EPOCH` to the last commit that changed the
   manuscript sources, so the committed `articles/jcis/article.pdf` is
   reproducible across unrelated commits.
+- The Hypothesis property tests are reproducible again. The strategies in
+  `tests/_hypothesis_strategies.py` no longer call the unseeded
+  `np.random.default_rng()` (the NaN masks are drawn from Hypothesis), the `ci`
+  profile sets `derandomize=True`, and
+  `test_standard_henon_yields_positive_lyapunov_max` — whose premise (λ_max > 0
+  for every bounded orbit in the box around (1.4, 0.3)) is false inside the
+  periodic windows — is replaced by a deterministic check of the canonical
+  chaotic point (λ_max ≈ 0.41922) plus the invariants λ1 + λ2 = ln|b| and
+  λ1 ≥ λ2 for bounded orbits. This removes an intermittent failure of the test
+  suite.
+
+### Documentation
+- The narrative documentation follows the Diátaxis split (Tutorial,
+  How-to guides, Reference, Explanation); the tutorial is self-contained and
+  the main public functions (`henon_standard`, `classify`,
+  `precompute_fir_bank`, `run_sweep`, `load_sweep`, `transmit`, `receive`,
+  `lyapunov_spectrum`, …) carry executable doctests run by `make docs-strict`
+  (25 tests).
+- A terminology glossary (English + pt-BR, with the forms to avoid) was added to
+  `docs/symbols.rst`.
+- Corrections in the algorithm pages: the estimator narrative now describes the
+  production path (single tangent vector renormalised every ten iterations plus
+  the full-spectrum fallback for marginal cells), the reproducibility section
+  also names SciPy's `firwin`, the adaptive early-stop documents its measured
+  horizon, and the fallback section records the full-grid Table II measurement
+  and the `C8` cost; the stale "CI only smoke-tests" claim was fixed.
+- The README documents the project scope, the global CLI flags and
+  the 0.9 migration table (linked to this changelog), corrects the
+  `paper numbers` example, and documents the `CHAOTIC_PFC_RUN_BASELINE` baseline,
+  `python3`, the LaTeX/Inkscape toolchain and the badges; `docs/usage.rst` gains
+  the same CLI/API sections.
+- `docs/conf.py`: `nitpick_ignore_regex` was narrowed to the external libraries
+  and NumPy-style type tokens; the references to the project's own symbols are
+  now qualified in the source, and the `n_initial` special case was removed by
+  writing the shape as a literal.
 
 ## [0.8.0] - 2026-09-13
 
