@@ -19,8 +19,13 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
             "initial conditions to visualise exponential divergence."
         ),
     )
-    p.add_argument("--steps", type=int, default=50)
-    p.add_argument("--epsilon", type=float, default=1e-4)
+    p.add_argument("--steps", type=int, default=50, help="Iterations to plot (default: 50).")
+    p.add_argument(
+        "--epsilon",
+        type=float,
+        default=1e-4,
+        help="Separation of the two initial conditions (default: 1e-4).",
+    )
     add_save_display_flags(p)
     add_lang_flag(p)
     p.set_defaults(_run=run)

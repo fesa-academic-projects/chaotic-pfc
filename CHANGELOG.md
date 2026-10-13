@@ -68,6 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   other job and by the release.
 - `make setup` (venv + extras + pre-commit hooks + optional-tool checks) and
   `make install` aligned with the README.
+- CLI (clig.dev): global `--debug` (or `$CHAOTIC_PFC_DEBUG=1`, full traceback),
+  `--quiet`/`--verbose`, `--color {auto,always,never}` (honours `$NO_COLOR`),
+  `sweeps regenerate --dry-run`, and a help string on every argument.
 - `.editorconfig` and a pull-request template.
 - Regression and validation tests for the sweep kernel: the partial-divergence
   rule, the non-finite Hann/Bartlett filters at `N_s = 2`, the adaptive
@@ -128,6 +131,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The expected overflow of the diverging map in the pure-Python loops
   (`transmit`/`receive` and the `henon_*` iterators) is silenced with
   `np.errstate`; the Numba kernels never emitted the warning.
+- Every CLI command now routes expected failures through the `guard` helper
+  (one-line `error: …` on stderr, exit code 1); an unreadable `.npz` reports
+  `invalid or corrupted checkpoint: <path>`, and `paper numbers` filters the
+  expected SciPy `firwin` `RuntimeWarning` and explains it on stderr.
 - `mypy --strict` is enforced across `src/chaotic_pfc` (`strict = true`, plus
   `--strict` in the `typecheck` Makefile target and the CI job). The only
   overrides are the third-party `numba`/`scipy`/`matplotlib` stubs.

@@ -15,6 +15,32 @@ if TYPE_CHECKING:
     from chaotic_pfc.config import SpectralConfig
 
 
+def _debug_enabled(args: argparse.Namespace | None) -> bool:
+    """Return whether the full traceback should be shown on error."""
+    return bool(getattr(args, "debug", False)) or os.environ.get("CHAOTIC_PFC_DEBUG") == "1"
+
+
+def color_enabled(args: argparse.Namespace | None) -> bool:
+    """Return whether terminal colour should be used.
+
+    ``--color never`` and the ``NO_COLOR`` environment variable disable it;
+    ``--color always`` forces it; ``auto`` (default) enables it only on a TTY.
+    """
+    mode = getattr(args, "color", "auto")
+    if mode == "never" or os.environ.get("NO_COLOR"):
+        return False
+    if mode == "always":
+        return True
+    return sys.stderr.isatty()
+
+
+def info(message: str, args: argparse.Namespace | None = None) -> None:
+    """Print an informational message unless ``--quiet`` was passed."""
+    if getattr(args, "quiet", False):
+        return
+    print(message)
+
+
 def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namespace], int]:
     """Report expected failures as a one-line message and exit code 1.
 
@@ -22,6 +48,8 @@ def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namesp
     exits with code 2. Any other expected failure -- a missing input, an
     unreadable or corrupt checkpoint, an out-of-range value -- is printed to
     ``stderr`` as a single line and turned into exit code 1, with no traceback.
+    With ``--debug`` (or ``CHAOTIC_PFC_DEBUG=1``) the exception is re-raised so
+    the full traceback is shown.
     """
 
     @functools.wraps(run)
@@ -31,8 +59,13 @@ def guard(run: Callable[[argparse.Namespace], int]) -> Callable[[argparse.Namesp
         except (KeyboardInterrupt, SystemExit):
             raise
         except Exception as exc:  # expected I/O and parsing errors
+            if _debug_enabled(args):
+                raise
             message = " ".join(str(exc).split()) or type(exc).__name__
-            print(f"error: {message}", file=sys.stderr)
+            prefix = "error:"
+            if color_enabled(args):
+                prefix = "\033[31merror:\033[0m"
+            print(f"{prefix} {message}", file=sys.stderr)
             return 1
 
     return wrapper
@@ -74,8 +107,15 @@ def pick_backend(no_display: bool) -> bool:
 
 def add_save_display_flags(parser: argparse.ArgumentParser) -> None:
     """Register ``--save`` and ``--no-display`` flags on *parser*."""
-    parser.add_argument("--save", action="store_true")
-    parser.add_argument("--no-display", dest="no_display", action="store_true")
+    parser.add_argument(
+        "--save", action="store_true", help="Save the figures produced by the experiment."
+    )
+    parser.add_argument(
+        "--no-display",
+        dest="no_display",
+        action="store_true",
+        help="Run headless (implies --save).",
+    )
 
 
 def add_lang_flag(parser: argparse.ArgumentParser) -> None:
@@ -121,6 +161,7 @@ def report_comm_metrics(
     transient: int,
     bit_period: int,
     delay: int,
+    args: Any = None,
 ) -> tuple[Any, Any]:
     """Align, measure and print the communication error metrics.
 
@@ -138,15 +179,17 @@ def report_comm_metrics(
         # and the estimated lag fits noise, so aborting the pipeline would
         # be worse than reporting the disagreement and using the known
         # theoretical delay.
-        print(f"    WARNING: cross-correlation lag {est['lag']} != applied delay {delay}")
+        info(f"    WARNING: cross-correlation lag {est['lag']} != applied delay {delay}", args)
     met = comm_metrics(m, m_hat, transient=transient, bit_period=bit_period, delay=delay)
-    print(
+    info(
         f"    delay={delay}  (corr lag={est['lag']}  corr={est['corr_at_lag']:+.4f}  "
-        f"corr@0={est['corr_at_zero']:+.4f})"
+        f"corr@0={est['corr_at_zero']:+.4f})",
+        args,
     )
-    print(
+    info(
         f"    MSE={met['mse']:.4e}  sample_err={met['per_sample_error']:.4f}  "
-        f"BER={met['ber']:.4e}  corr={met['correlation']:+.4f}"
+        f"BER={met['ber']:.4e}  corr={met['correlation']:+.4f}",
+        args,
     )
     return est, met
 
@@ -158,6 +201,6 @@ def save_or_show(fig: Any, headless: bool, save_path: str | None, args: Any) -> 
     if headless:
         plt.close(fig)
         if args.save:
-            print(f"    Saved -> {save_path}")
+            info(f"    Saved -> {save_path}", args)
     else:
         plt.show()

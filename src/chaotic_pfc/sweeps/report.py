@@ -337,8 +337,12 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Per-configuration statistics read from the .npz checkpoints.",
         description="Per-configuration statistics read from the .npz checkpoints.",
     )
-    parser.add_argument("--sweep-dir", default="data/sweeps")
-    parser.add_argument("--tex", default="articles/jcis/article.tex")
+    parser.add_argument(
+        "--sweep-dir", default="data/sweeps", help="Root directory of the sweep checkpoints."
+    )
+    parser.add_argument(
+        "--tex", default="articles/jcis/article.tex", help="Manuscript .tex to cross-check against."
+    )
     parser.add_argument(
         "--csv", required=True, help="CSV output path (keep it out of version control)."
     )

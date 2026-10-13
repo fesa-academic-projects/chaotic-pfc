@@ -101,7 +101,9 @@ def fir_channel(
 # ── Channel models ───────────────────────────────────────────────────────────
 
 
-def awgn(sig: NDArray[np.float64], snr_db: float, rng: np.random.Generator | None = None) -> NDArray[np.float64]:
+def awgn(
+    sig: NDArray[np.float64], snr_db: float, rng: np.random.Generator | None = None
+) -> NDArray[np.float64]:
     """Add white Gaussian noise to *sig* for a given SNR in dB.
 
     The noise power is ``E[|sig|²] / 10^(SNR/10)``, so a higher SNR

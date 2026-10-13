@@ -16,7 +16,9 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Phase-space attractors for three Hénon variants.",
         description="Phase-space attractors for three Hénon variants.",
     )
-    p.add_argument("--steps", type=int, default=50_000)
+    p.add_argument(
+        "--steps", type=int, default=50_000, help="Iterations per attractor (default: 50000)."
+    )
     add_save_display_flags(p)
     add_lang_flag(p)
     p.set_defaults(_run=run)

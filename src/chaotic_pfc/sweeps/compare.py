@@ -85,8 +85,12 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Compare two sweep directories file by file.",
         description="Compare two sets of Lyapunov sweep checkpoints, file by file.",
     )
-    parser.add_argument("--old", type=Path, required=True)
-    parser.add_argument("--new", type=Path, required=True)
+    parser.add_argument(
+        "--old", type=Path, required=True, help="Directory of the reference checkpoints."
+    )
+    parser.add_argument(
+        "--new", type=Path, required=True, help="Directory of the checkpoints to compare."
+    )
     parser.set_defaults(_run=run)
 
 

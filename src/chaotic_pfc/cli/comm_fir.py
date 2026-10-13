@@ -25,16 +25,33 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Transmitter/receiver over a band-limited FIR channel.",
         description="Chaotic communication through an FIR low-pass channel.",
     )
-    p.add_argument("--N", type=int, default=cfg.comm.N)
-    p.add_argument("--mu", type=float, default=cfg.comm.mu)
-    p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument("--N", type=int, default=cfg.comm.N, help="Number of samples (default: config).")
+    p.add_argument(
+        "--mu", type=float, default=cfg.comm.mu, help="Modulation depth (default: config)."
+    )
+    p.add_argument(
+        "--period",
+        type=int,
+        default=cfg.comm.message_period,
+        help="Samples per bit (default: config).",
+    )
     p.add_argument(
         "--text",
         default=cfg.comm.message_text,
         help="ASCII message text encoded as ±1 bits (default: 'hello').",
     )
-    p.add_argument("--cutoff", type=float, default=cfg.channel.cutoff)
-    p.add_argument("--num-taps", type=int, default=cfg.channel.num_taps)
+    p.add_argument(
+        "--cutoff",
+        type=float,
+        default=cfg.channel.cutoff,
+        help="Channel cutoff, omega_c/pi (default: config).",
+    )
+    p.add_argument(
+        "--num-taps",
+        type=int,
+        default=cfg.channel.num_taps,
+        help="Channel FIR taps (default: config).",
+    )
     add_save_display_flags(p)
     add_lang_flag(p)
     p.set_defaults(_run=run)

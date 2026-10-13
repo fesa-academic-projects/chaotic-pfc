@@ -25,9 +25,16 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Transmitter/receiver over an ideal (noiseless) channel.",
         description="Full communication pipeline over an ideal (noiseless) channel.",
     )
-    p.add_argument("--N", type=int, default=cfg.comm.N)
-    p.add_argument("--mu", type=float, default=cfg.comm.mu)
-    p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument("--N", type=int, default=cfg.comm.N, help="Number of samples (default: config).")
+    p.add_argument(
+        "--mu", type=float, default=cfg.comm.mu, help="Modulation depth (default: config)."
+    )
+    p.add_argument(
+        "--period",
+        type=int,
+        default=cfg.comm.message_period,
+        help="Samples per bit (default: config).",
+    )
     p.add_argument(
         "--text",
         default=cfg.comm.message_text,
@@ -69,7 +76,7 @@ def run(args: argparse.Namespace) -> int:
     mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
     print(f"[03] Ideal channel  |  N={args.N:,}  mu={args.mu}  T={args.period}  text={args.text!r}")
     print(f"    MSE (n > {tr}): {mse:.4e}")
-    report_comm_metrics(m, m_hat, transient=tr, bit_period=args.period, delay=0)
+    report_comm_metrics(m, m_hat, args=args, transient=tr, bit_period=args.period, delay=0)
 
     omega, psd_m, psd_s, psd_r, psd_mhat = compute_psds(m, s, r, m_hat, cfg.spectral)
 

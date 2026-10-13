@@ -33,9 +33,16 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
 def load_sweep(path: str | Path) -> SweepResult:
     """Load a sweep from ``.npz`` produced by :func:`save_sweep`."""
     path = Path(path)
-    data = np.load(path, allow_pickle=True)
+    try:
+        data = np.load(path, allow_pickle=True)
+        files = data.files
+    except Exception as exc:  # unreadable or not an .npz archive
+        raise ValueError(
+            f"invalid or corrupted checkpoint: {path} "
+            f"(regenerate it with `chaotic-pfc sweeps regenerate`): {exc}"
+        ) from exc
 
-    if "window" in data.files and "filter_type" in data.files:
+    if "window" in files and "filter_type" in files:
         window = str(data["window"])
         filter_type = str(data["filter_type"])
     else:
@@ -50,7 +57,7 @@ def load_sweep(path: str | Path) -> SweepResult:
             ) from None
 
     metadata: dict[str, Any] = {}
-    if "metadata" in data.files:
+    if "metadata" in files:
         try:
             metadata = dict(data["metadata"].tolist())
         except (TypeError, ValueError):
@@ -60,7 +67,7 @@ def load_sweep(path: str | Path) -> SweepResult:
                 stacklevel=2,
             )
 
-    n_iters_used = data["n_iters_used"] if "n_iters_used" in data.files else None
+    n_iters_used = data["n_iters_used"] if "n_iters_used" in files else None
 
     return SweepResult(
         h=data["h"],

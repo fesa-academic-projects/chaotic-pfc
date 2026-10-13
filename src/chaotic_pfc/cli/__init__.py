@@ -79,6 +79,29 @@ def build_parser() -> argparse.ArgumentParser:
         action="version",
         version=f"%(prog)s {__version__}",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Show the full traceback on error (or set $CHAOTIC_PFC_DEBUG=1).",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Suppress informational output (errors are still printed).",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Print extra progress information.",
+    )
+    parser.add_argument(
+        "--color",
+        choices=["auto", "always", "never"],
+        default="auto",
+        help="Colourise terminal messages (auto honours $NO_COLOR; default: auto).",
+    )
 
     # Top-level groups — only "run" for now, but keeping the tree open
     # for future additions (e.g. "chaotic-pfc info", "chaotic-pfc ls").
@@ -134,13 +157,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 2
 
-    # The paper/sweeps tooling turns expected failures into a one-line message
-    # on stderr and exit code 1 (usage errors stay with argparse, i.e. 2).
-    module = getattr(runner, "__module__", "")
-    if module.startswith(("chaotic_pfc.paper.", "chaotic_pfc.sweeps.")):
-        runner = guard(runner)
-
-    return runner(args) or 0
+    # Expected failures become a one-line message on stderr and exit code 1
+    # (usage errors stay with argparse, i.e. 2); ``--debug`` re-raises.
+    return guard(runner)(args) or 0
 
 
 if __name__ == "__main__":

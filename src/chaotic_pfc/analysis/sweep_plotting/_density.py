@@ -264,9 +264,7 @@ def plot_chaotic_density(
 
 def chaotic_density_norm_table(
     sweep_dir: str | Path = "data/sweeps",
-) -> tuple[
-        NDArray[np.int64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]
-    ]:
+) -> tuple[NDArray[np.int64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
     """Percentage of the sweeps that contain each grid point and find it chaotic.
 
     ``Nz = order - 1``. A sweep contains ``Nz`` when its num_taps_grid include

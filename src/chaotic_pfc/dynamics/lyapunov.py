@@ -64,7 +64,9 @@ def _pole_filter_coeffs(
     return b, a
 
 
-def _fixed_point(alpha: float, beta: float, b: NDArray[np.float64], a: NDArray[np.float64]) -> NDArray[np.float64]:
+def _fixed_point(
+    alpha: float, beta: float, b: NDArray[np.float64], a: NDArray[np.float64]
+) -> NDArray[np.float64]:
     """Compute the stable fixed point of the 4-D pole-filtered Hénon map."""
     H = np.sum(a[1:])  # sum of a coeffs (excluding a[0])
     G = np.sum(b)  # sum of b coeffs
@@ -89,7 +91,9 @@ def _fixed_point(alpha: float, beta: float, b: NDArray[np.float64], a: NDArray[n
 # ── Jacobian ────────────────────────────────────────────────────────────────
 
 
-def _jacobian(beta: float, b: NDArray[np.float64], a: NDArray[np.float64], x: NDArray[np.float64]) -> NDArray[np.float64]:
+def _jacobian(
+    beta: float, b: NDArray[np.float64], a: NDArray[np.float64], x: NDArray[np.float64]
+) -> NDArray[np.float64]:
     """Jacobian of the 4-D pole-filtered Hénon map at state x."""
     return np.array(
         [
@@ -105,7 +109,11 @@ def _jacobian(beta: float, b: NDArray[np.float64], a: NDArray[np.float64], x: ND
 
 
 def _iterate(
-    alpha: float, beta: float, b: NDArray[np.float64], a: NDArray[np.float64], x: NDArray[np.float64]
+    alpha: float,
+    beta: float,
+    b: NDArray[np.float64],
+    a: NDArray[np.float64],
+    x: NDArray[np.float64],
 ) -> NDArray[np.float64]:
     """Single iteration of the 4-D pole-filtered Hénon map."""
     x1 = alpha - x[2] ** 2 + beta * x[1]
@@ -434,7 +442,9 @@ def fixed_point_stability(
 # Fixed points: x* = α − x*² + β·x*  ⟹  x*² + (1−β)·x* − α = 0
 
 
-def _henon2d_fixed_points(alpha: float, beta: float) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+def _henon2d_fixed_points(
+    alpha: float, beta: float
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Both fixed points of the 2-D Hénon map (positive and negative roots)."""
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
     x_p = float(fixed_point_positive(1.0, alpha, beta))

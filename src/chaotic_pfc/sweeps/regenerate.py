@@ -89,18 +89,40 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Recompute the versioned sweep checkpoints.",
         description="Recompute the versioned sweep checkpoints with the current kernel.",
     )
-    parser.add_argument("--src", type=Path, default=Path("data/sweeps"))
-    parser.add_argument("--dst", type=Path)
+    parser.add_argument(
+        "--src",
+        type=Path,
+        default=Path("data/sweeps"),
+        help="Directory of checkpoints to read (default: data/sweeps).",
+    )
+    parser.add_argument(
+        "--dst",
+        type=Path,
+        help="Directory to write the regenerated checkpoints to (required unless --manifest-only).",
+    )
     parser.add_argument(
         "--manifest-only",
         action="store_true",
-        help="only rewrite the SHA256SUMS manifest under --src",
+        help="Only rewrite the SHA256SUMS manifest under --src (no recomputation).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="List what would be regenerated without writing anything.",
     )
     parser.set_defaults(_run=run)
 
 
 def run(args: argparse.Namespace) -> int:
     """Execute ``chaotic-pfc sweeps regenerate``."""
+    if args.dry_run:
+        paths = sorted(args.src.rglob("variables_lyapunov.npz"))
+        if not paths:
+            raise FileNotFoundError(f"no checkpoints under {args.src}")
+        print(f"would regenerate {len(paths)} checkpoint(s) from {args.src}")
+        if args.dst is not None:
+            print(f"  -> {args.dst}")
+        return 0
     if args.manifest_only:
         print(f"wrote {write_manifest(args.src)}")
         return 0

@@ -413,8 +413,18 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Generate the JCIS figures that other commands do not produce.",
         description="Generate the JCIS figures that other commands do not produce.",
     )
-    parser.add_argument("--out-dir", default="articles/jcis/Figures", type=Path)
-    parser.add_argument("--only", choices=["all", *GENERATORS], default="all")
+    parser.add_argument(
+        "--out-dir",
+        default="articles/jcis/Figures",
+        type=Path,
+        help="Output directory for the SVGs.",
+    )
+    parser.add_argument(
+        "--only",
+        choices=["all", *GENERATORS],
+        default="all",
+        help="Generate only one figure group.",
+    )
     parser.set_defaults(_run=run)
 
 

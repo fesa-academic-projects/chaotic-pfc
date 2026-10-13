@@ -21,6 +21,8 @@ import itertools
 import json
 import math
 import os
+import sys
+import warnings
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
@@ -829,12 +831,20 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Recompute every manuscript number from the versioned sweeps.",
         description="Recompute every manuscript number from the versioned sweeps.",
     )
-    parser.add_argument("--sweeps", type=Path)
-    parser.add_argument("--json", type=Path)
+    parser.add_argument("--sweeps", type=Path, help="Root directory of the sweep checkpoints.")
+    parser.add_argument(
+        "--json", type=Path, help="Write the computed numbers as JSON to this path."
+    )
     parser.add_argument(
         "--extras", action="store_true", help="also run seeds and the Ns=1 validation"
     )
-    parser.add_argument("--compare", nargs=2, type=Path, metavar=("OLD", "NEW"))
+    parser.add_argument(
+        "--compare",
+        nargs=2,
+        type=Path,
+        metavar=("OLD", "NEW"),
+        help="Compare two previously written JSON files.",
+    )
     parser.add_argument(
         "--sensitivity", action="store_true", help="print the threshold sensitivity report"
     )
@@ -855,7 +865,20 @@ def run(args: argparse.Namespace) -> int:
         return 0
     if not args.sweeps or not args.json:
         raise SystemExit("--sweeps and --json are required unless --compare is given")
-    out = compute(args.sweeps, args.extras)
+    # ``firwin`` emits "invalid value encountered in divide" for the Hann and
+    # Bartlett lowpass/bandpass cells whose coefficients are non-finite; those
+    # cells are classified as divergent on purpose (see the algorithm docs).
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="invalid value encountered in divide", category=RuntimeWarning
+        )
+        out = compute(args.sweeps, args.extras)
+    if not getattr(args, "quiet", False):
+        print(
+            "note: non-finite FIR coefficients (Hann/Bartlett lowpass/bandpass) "
+            "are expected and classified as divergent.",
+            file=sys.stderr,
+        )
     args.json.parent.mkdir(parents=True, exist_ok=True)
     args.json.write_text(json.dumps(out, indent=1, ensure_ascii=False))
     for k, v in out.items():

@@ -29,10 +29,20 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
             "plus the N-IC ensemble protocol (parts C, D)."
         ),
     )
-    p.add_argument("--Nitera", type=int, default=2000)
-    p.add_argument("--Ndiscard", type=int, default=1000)
-    p.add_argument("--pole-radius", type=float, default=0.975)
-    p.add_argument("--w0", type=float, default=0.0)
+    p.add_argument(
+        "--Nitera",
+        type=int,
+        default=2000,
+        help="QR iterations after the transient (default: 2000).",
+    )
+    p.add_argument("--Ndiscard", type=int, default=1000, help="Burn-in iterations (default: 1000).")
+    p.add_argument(
+        "--pole-radius",
+        type=float,
+        default=0.975,
+        help="Pole radius of the 4-D filter (default: 0.975).",
+    )
+    p.add_argument("--w0", type=float, default=0.0, help="Pole angular frequency (default: 0.0).")
     p.add_argument(
         "--n-ci",
         type=int,

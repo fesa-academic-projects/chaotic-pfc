@@ -203,7 +203,9 @@ def _run_all_sweeps(
         result = run_sweep(
             window=window,
             filter_type=filter_type,
-            num_taps_grid=num_taps_grid_hp if filter_type in ("highpass", "bandstop") else num_taps_grid_lp,
+            num_taps_grid=num_taps_grid_hp
+            if filter_type in ("highpass", "bandstop")
+            else num_taps_grid_lp,
             cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=beta if beta is not None else 5.0,

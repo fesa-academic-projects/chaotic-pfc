@@ -25,9 +25,16 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         help="Transmitter/receiver using an N-th order Henon with internal FIR.",
         description="Communication using N-th order Henon with internal FIR filter.",
     )
-    p.add_argument("--N", type=int, default=cfg.comm.N)
-    p.add_argument("--mu", type=float, default=cfg.comm.mu)
-    p.add_argument("--period", type=int, default=cfg.comm.message_period)
+    p.add_argument("--N", type=int, default=cfg.comm.N, help="Number of samples (default: config).")
+    p.add_argument(
+        "--mu", type=float, default=cfg.comm.mu, help="Modulation depth (default: config)."
+    )
+    p.add_argument(
+        "--period",
+        type=int,
+        default=cfg.comm.message_period,
+        help="Samples per bit (default: config).",
+    )
     p.add_argument(
         "--text",
         default=cfg.comm.message_text,
