@@ -100,12 +100,14 @@ class InternalFIRConfig:
         """
         from scipy.signal import firwin
 
-        return firwin(
-            numtaps=self.num_taps,
-            cutoff=self.cutoff,
-            window="hamming",
-            pass_zero=True,
-            fs=2.0,
+        return np.asarray(
+            firwin(
+                numtaps=self.num_taps,
+                cutoff=self.cutoff,
+                window="hamming",
+                pass_zero=True,
+                fs=2.0,
+            )
         )
 
 

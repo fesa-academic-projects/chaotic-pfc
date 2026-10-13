@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -38,7 +39,7 @@ def summary_table(
     list[SummaryRow]
         One entry per sweep with the statistics listed above.
     """
-    rows: list[dict] = []
+    rows: list[dict[str, Any]] = []
     for result in _discover_all(data_dir):
         h = result.h
         chaotic = np.sum((~np.isnan(h)) & (h > 0))
@@ -48,7 +49,7 @@ def summary_table(
 
         mean_lmax, max_lmax = _safe_stats(h)
 
-        row: dict = {
+        row: dict[str, Any] = {
             "window": result.window,
             "filter_type": result.filter_type,
             "n_orders": len(result.num_taps_grid),
@@ -61,7 +62,7 @@ def summary_table(
             "beta": result.metadata.get("kaiser_beta"),
         }
         rows.append(row)
-    return rows  # type: ignore[return-value]
+    return rows  # type: ignore[return-value]  # list[SummaryRow]
 
 
 def area_summary(sweep_result: SweepResult) -> AreaSummary:

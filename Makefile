@@ -51,7 +51,7 @@ format-check: check-venv  ## Check formatting without changing files
 	$(PYTHON) -m ruff format --check .
 
 typecheck: check-venv  ## Run mypy static type checker
-	$(PYTHON) -m mypy src/chaotic_pfc
+	$(PYTHON) -m mypy --strict src/chaotic_pfc
 
 check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
 

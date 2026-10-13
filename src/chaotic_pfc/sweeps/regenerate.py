@@ -16,6 +16,7 @@ import argparse
 import hashlib
 import time
 from pathlib import Path
+from typing import Any
 
 from chaotic_pfc.analysis.sweep import load_sweep, run_sweep, save_sweep
 
@@ -81,7 +82,7 @@ def regenerate(src: Path, dst: Path) -> None:
     print(f"wrote {write_manifest(dst)}", flush=True)
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``chaotic-pfc sweeps regenerate``."""
     parser = subparsers.add_parser(
         "regenerate",

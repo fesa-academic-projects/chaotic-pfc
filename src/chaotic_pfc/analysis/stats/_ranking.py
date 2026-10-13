@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -343,7 +344,7 @@ def optimal_parameters(
     list[OptimalParams]
         The ``top_n`` points with the highest ``lambda_max``.
     """
-    best: list[dict] = []
+    best: list[dict[str, Any]] = []
     for result in _discover_all(data_dir):
         if window is not None and result.window != window:
             continue
@@ -367,4 +368,4 @@ def optimal_parameters(
                 )
 
     best.sort(key=lambda x: x["lmax"], reverse=True)
-    return best[:top_n]  # type: ignore[return-value]
+    return best[:top_n]  # type: ignore[return-value]  # list[ConfigRank]

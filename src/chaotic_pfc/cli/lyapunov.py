@@ -16,9 +16,10 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run lyapunov`` subcommand."""
     p = subparsers.add_parser(
         "lyapunov",
@@ -62,7 +63,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.set_defaults(_run=run)
 
 
-def _print_ensemble_summary(result, dim: int) -> None:
+def _print_ensemble_summary(result: Any, dim: int) -> None:
     """Compact summary of an EnsembleResult."""
     import numpy as np
 

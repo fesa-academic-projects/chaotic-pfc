@@ -4,9 +4,10 @@ import argparse
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 
-def _add_compute_parser(subparsers: argparse._SubParsersAction) -> None:
+def _add_compute_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``run sweep compute``."""
     from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS
 
@@ -147,7 +148,7 @@ def run_compute(args: argparse.Namespace) -> int:
     # Adaptive parameters propagated only when the user opted in. Passing
     # adaptive=False here makes Nmap_min/tol irrelevant in run_sweep
     # (it normalises kernel_Nmap_min == Nmap internally).
-    adaptive_kwargs: dict = {"adaptive": adaptive}
+    adaptive_kwargs: dict[str, Any] = {"adaptive": adaptive}
     if adaptive:
         adaptive_kwargs["Nmap_min"] = args.Nmap_min
         adaptive_kwargs["tol"] = args.tol

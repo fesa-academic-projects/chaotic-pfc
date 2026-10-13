@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 from chaotic_pfc.paper.figures import JCIS_FIG, JCIS_FIGURES, JCIS_W, _PanelOptions
 
@@ -51,7 +52,7 @@ SIMAC_PANELS = [
 FORMATS = ("pdf", "svg")
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run paper-figures`` subcommand."""
     p = subparsers.add_parser(
         "paper-figures",
@@ -102,13 +103,13 @@ def run(args: argparse.Namespace) -> int:
     out = Path(args.output_dir)
     formats = tuple(args.formats)
 
-    def _sweep(name: str):
+    def _sweep(name: str) -> Any:
         path = data_dir / name / "variables_lyapunov.npz"
         if not path.exists():
             raise FileNotFoundError(path)
         return load_sweep(path)
 
-    def _emit(fig, out_dir: Path, stem: str) -> None:
+    def _emit(fig: Any, out_dir: Path, stem: str) -> None:
         out_dir.mkdir(parents=True, exist_ok=True)
         for fmt in formats:
             extra = {"metadata": {"Date": None, "Creator": None}} if fmt == "svg" else {}

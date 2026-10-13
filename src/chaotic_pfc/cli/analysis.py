@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 from chaotic_pfc.analysis.stats import SummaryRow
 from chaotic_pfc.analysis.sweep import FILTER_TYPES
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run analysis`` group with sub-subcommands."""
     p = subparsers.add_parser(
         "analysis",
@@ -39,7 +40,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     p.set_defaults(_run=run)
 
 
-def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction) -> None:
+def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction[Any]) -> None:
     """Register ``plot-chaotic-map`` and ``plot-chaotic-density``."""
     p_cm = sub.add_parser(
         "plot-chaotic-map",
@@ -78,7 +79,7 @@ def _add_chaotic_plot_parsers(sub: argparse._SubParsersAction) -> None:
     p_cd.set_defaults(_run=_run_chaotic_density)
 
 
-def _add_export_tables_parser(sub: argparse._SubParsersAction) -> None:
+def _add_export_tables_parser(sub: argparse._SubParsersAction[Any]) -> None:
     """Register ``export-tables`` sub-subcommand."""
     p_et = sub.add_parser(
         "export-tables",

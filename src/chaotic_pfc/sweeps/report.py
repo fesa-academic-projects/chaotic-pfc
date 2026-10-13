@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import csv
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -51,7 +52,7 @@ CSV_FIELDS = [
 ]
 
 
-def _metadata(data: np.lib.npyio.NpzFile) -> dict:
+def _metadata(data: np.lib.npyio.NpzFile) -> dict[str, Any]:
     arr = data["metadata"]
     if arr.dtype == object and getattr(arr, "ndim", 0) == 2:
         return {str(row[0]): row[1] for row in arr}
@@ -62,9 +63,9 @@ def _percentile(values: np.ndarray, q: float) -> float:
     return float(np.percentile(values, q)) if values.size else float("nan")
 
 
-def load_configs(sweep_dir: Path) -> list[dict]:
+def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
     """Load the per-configuration statistics from the checkpoints."""
-    configs: list[dict] = []
+    configs: list[dict[str, Any]] = []
     for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         data = np.load(path, allow_pickle=True)
         md = _metadata(data)
@@ -110,12 +111,12 @@ def load_configs(sweep_dir: Path) -> list[dict]:
     return configs
 
 
-def _sort_key(config: dict):
+def _sort_key(config: dict[str, Any]) -> Any:
     beta = config["kaiser_beta"]
     return (config["filter_type"], config["window"], -1.0 if beta is None else float(beta))
 
 
-def print_table(configs: list[dict]) -> None:
+def print_table(configs: list[dict[str, Any]]) -> None:
     """Print the per-configuration statistics table."""
     header = (
         f"{'filter':<9} {'window':<15} {'beta':>5} {'N_grid':>6} {'N_chaotic':>9} "
@@ -134,7 +135,7 @@ def print_table(configs: list[dict]) -> None:
         )
 
 
-def write_csv(configs: list[dict], path: Path) -> None:
+def write_csv(configs: list[dict[str, Any]], path: Path) -> None:
     """Write the statistics table as CSV."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -144,7 +145,7 @@ def write_csv(configs: list[dict], path: Path) -> None:
             writer.writerow({key: cfg.get(key) for key in CSV_FIELDS})
 
 
-def _article_rows(tex_path: Path) -> tuple[list[dict], list[dict]]:
+def _article_rows(tex_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     text = tex_path.read_text(encoding="utf-8", errors="replace")
     clean = audit_paper._strip_comments(text)
     best_tab = audit_paper._extract_tabular(clean, "tab:best")
@@ -159,7 +160,7 @@ def _norm_window(name: str) -> str:
     return "boxcar" if key == "rectangular" else key
 
 
-def _match_config(row: dict, configs: list[dict]) -> dict | None:
+def _match_config(row: dict[str, Any], configs: list[dict[str, Any]]) -> dict[str, Any] | None:
     filt = row["filter"]
     window = row["window"]
     if window.startswith("Kaiser"):
@@ -181,7 +182,7 @@ def _match_config(row: dict, configs: list[dict]) -> dict | None:
     return None
 
 
-def print_by_filter(configs: list[dict]) -> None:
+def print_by_filter(configs: list[dict[str, Any]]) -> None:
     """Print the per-filter-type aggregation."""
     print("\naggregate divergent fraction by filter type (G ~ 1 vs G ~ 0 groups):")
     header = (
@@ -206,7 +207,7 @@ def print_by_filter(configs: list[dict]) -> None:
         )
 
 
-def print_iters_distribution(configs: list[dict]) -> None:
+def print_iters_distribution(configs: list[dict[str, Any]]) -> None:
     """Print the distribution of iterations used."""
     print("\nn_iters_used distribution per configuration (sorted by fraction at the Nmap cap):")
     header = (
@@ -255,7 +256,7 @@ def _exact_spearman_p(x: np.ndarray, y: np.ndarray) -> tuple[float, int]:
     return extreme / total, total
 
 
-def report_attenuation_correlation(configs: list[dict]) -> None:
+def report_attenuation_correlation(configs: list[dict[str, Any]]) -> None:
     """Print the attenuation/exponent correlation."""
     print(
         "\nSpearman: Table I stopband attenuation versus measured coverage, "
@@ -296,7 +297,7 @@ def report_attenuation_correlation(configs: list[dict]) -> None:
     print(f"  total tests: {tests} (note the multiplicity in the caption)")
 
 
-def cross_check(tex_path: Path, configs: list[dict]) -> dict:
+def cross_check(tex_path: Path, configs: list[dict[str, Any]]) -> dict[str, Any]:
     """Cross-check the tables against the checkpoints."""
     best, ranking = _article_rows(tex_path)
     issues: list[str] = []
@@ -329,7 +330,7 @@ def cross_check(tex_path: Path, configs: list[dict]) -> dict:
     }
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``chaotic-pfc sweeps stats``."""
     parser = subparsers.add_parser(
         "stats",

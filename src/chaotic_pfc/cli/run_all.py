@@ -44,6 +44,7 @@ from __future__ import annotations
 import argparse
 import time
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -74,7 +75,7 @@ COMM_EXPERIMENTS = (
 )
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run all`` subcommand."""
     p = subparsers.add_parser(
         "all",
@@ -144,7 +145,7 @@ def _common_args(no_display: bool, save: bool) -> dict[str, bool]:
 
 
 def _run_all_sweeps(
-    shared: dict,
+    shared: dict[str, Any],
     quick: bool,
     adaptive: bool,
     Nmap_min: int,
@@ -168,7 +169,7 @@ def _run_all_sweeps(
         params = QuickSweepConfig(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.05)
 
     # Adaptive parameters propagated only when the user opted in.
-    adaptive_kwargs: dict = {"adaptive": adaptive}
+    adaptive_kwargs: dict[str, Any] = {"adaptive": adaptive}
     if adaptive:
         adaptive_kwargs["Nmap_min"] = Nmap_min
         adaptive_kwargs["tol"] = tol
@@ -387,7 +388,7 @@ def run(args: argparse.Namespace) -> int:
     return 0
 
 
-def _build_step_args(shared: dict) -> argparse.Namespace:
+def _build_step_args(shared: dict[str, Any]) -> argparse.Namespace:
     """Build an argparse.Namespace for each experiment step."""
     ns = cfg.to_namespace()
     for k, v in shared.items():

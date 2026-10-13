@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -30,8 +31,8 @@ def classes(h: np.ndarray) -> np.ndarray:
 def compare(old_dir: Path, new_dir: Path) -> None:
     """Print a file-by-file comparison of two sweep directories."""
     rel_paths = sorted(p.relative_to(old_dir) for p in old_dir.rglob("variables_lyapunov.npz"))
-    totals: Counter = Counter()
-    directions: Counter = Counter()
+    totals: Counter[str] = Counter[str]()
+    directions: Counter[str] = Counter[str]()
     max_abs = 0.0
     print(
         f"{'checkpoint':<60} {'Nc o->n':>12} {'Nper o->n':>12} {'Ndiv o->n':>12} "
@@ -77,7 +78,7 @@ def compare(old_dir: Path, new_dir: Path) -> None:
     print(f"max |delta lambda| over chaotic-in-both points: {max_abs:.6e}")
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``chaotic-pfc sweeps compare``."""
     parser = subparsers.add_parser(
         "compare",

@@ -652,8 +652,8 @@ def _data_chunks(tabular: str) -> list[str]:
     return [chunk.strip() for chunk in cleaned.split(r"\\") if chunk.strip()]
 
 
-def _parse_best_rows(tabular: str) -> tuple[list[dict], list[str]]:
-    rows: list[dict] = []
+def _parse_best_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
     warnings: list[str] = []
     current_filter = ""
     for chunk in _data_chunks(tabular):
@@ -687,8 +687,8 @@ def _parse_best_rows(tabular: str) -> tuple[list[dict], list[str]]:
     return rows, warnings
 
 
-def _parse_ranking_rows(tabular: str) -> tuple[list[dict], list[str]]:
-    rows: list[dict] = []
+def _parse_ranking_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
     warnings: list[str] = []
     for chunk in _data_chunks(tabular):
         cells = [_clean_cell(cell) for cell in chunk.split("&")]
@@ -726,7 +726,7 @@ def _same(value_a: object, value_b: object) -> bool:
         return len(value_a) == len(value_b) and all(
             abs(x - y) < 1e-9 for x, y in zip(value_a, value_b, strict=True)
         )
-    return abs(float(value_a) - float(value_b)) < 1e-9  # type: ignore[arg-type]
+    return abs(float(value_a) - float(value_b)) < 1e-9  # type: ignore[arg-type]  # numeric strings accepted
 
 
 def check_tables(tex_text: str) -> CheckResult:
@@ -1020,7 +1020,7 @@ def render_text(results: dict[str, CheckResult]) -> str:
     return "\n".join(lines)
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``chaotic-pfc paper audit``."""
     parser = subparsers.add_parser(
         "audit",

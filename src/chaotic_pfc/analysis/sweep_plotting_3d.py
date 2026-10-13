@@ -12,6 +12,7 @@ Plotly installed will raise an actionable :class:`ImportError`.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -19,7 +20,7 @@ from numpy.typing import NDArray
 from .sweep import load_sweep
 
 
-def _get_go():
+def _get_go() -> Any:
     """Lazy-import plotly; raises a helpful error if not installed."""
     try:
         import plotly.graph_objects as go
@@ -34,7 +35,7 @@ def _get_go():
 
 def aggregate_beta_sweeps(
     data_dir: str | Path,
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Load every per-β sweep under ``data_dir`` into a single volume.
 
     Parameters
@@ -66,8 +67,8 @@ def aggregate_beta_sweeps(
     if not npz_paths:
         raise FileNotFoundError(f"No variables_lyapunov.npz files under {data_dir}")
 
-    groups: dict[str, dict[float, NDArray]] = {}
-    grid_meta: dict[str, tuple[NDArray, NDArray]] = {}
+    groups: dict[str, dict[float, NDArray[Any]]] = {}
+    grid_meta: dict[str, tuple[NDArray[Any], NDArray[Any]]] = {}
     ft_labels: dict[str, str] = {}
 
     for path in npz_paths:
@@ -108,12 +109,12 @@ def aggregate_beta_sweeps(
 
 
 def plot_3d_beta_volume(
-    h_volume: NDArray,
-    betas: NDArray,
-    num_taps_grid: NDArray,
-    cutoff_grid: NDArray,
+    h_volume: NDArray[Any],
+    betas: NDArray[Any],
+    num_taps_grid: NDArray[Any],
+    cutoff_grid: NDArray[Any],
     save_path: str | Path | None = None,
-):  # -> plotly.graph_objects.Figure  (plotly is optional; see _get_go)
+) -> Any:  # plotly Figure (optional dep; see _get_go)
     """Render a stack of λ_max surfaces, one per β.
 
     Each β contributes a 2-D heat-coloured surface placed at altitude

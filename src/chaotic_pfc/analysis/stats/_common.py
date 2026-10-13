@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -21,7 +22,7 @@ def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     return results
 
 
-def _safe_stats(h: NDArray) -> tuple[float, float]:
+def _safe_stats(h: NDArray[Any]) -> tuple[float, float]:
     """Mean and max of *h* ignoring NaN and Inf.
 
     Returns ``(NaN, NaN)`` when all entries of *h* are non-finite

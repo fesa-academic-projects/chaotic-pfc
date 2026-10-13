@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -83,9 +84,9 @@ def make_classification_legend(
 def plot_heatmap_continuous(
     result: SweepResult | None = None,
     *,
-    h: NDArray | None = None,
-    num_taps_grid: NDArray | None = None,
-    cutoff_grid: NDArray | None = None,
+    h: NDArray[Any] | None = None,
+    num_taps_grid: NDArray[Any] | None = None,
+    cutoff_grid: NDArray[Any] | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,
@@ -145,7 +146,7 @@ def plot_heatmap_continuous(
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _cutoff_edges(cut: NDArray) -> NDArray:
+def _cutoff_edges(cut: NDArray[Any]) -> NDArray[Any]:
     """Convert cutoff centres to cell edges for the interleaved rectangles."""
     if cut.size == 1:
         return np.array([cut[0] - 0.5, cut[0] + 0.5])
@@ -161,13 +162,13 @@ _CLASS_COLORS: dict[float, str] = {
 
 
 def _run_length_polygons(
-    h_color: NDArray,
+    h_color: NDArray[Any],
     *,
     n_coef: int,
     n_cut: int,
     slot_total: int,
     data_slots: int,
-    y_edges: NDArray,
+    y_edges: NDArray[Any],
 ) -> tuple[list[list[tuple[float, float]]], list[str]]:
     """Build the run-length polygon vertices and their class colours."""
     verts: list[list[tuple[float, float]]] = []
@@ -196,9 +197,9 @@ def _run_length_polygons(
 
 
 def _configure_interleaved_axes(
-    ax,
+    ax: Any,
     *,
-    Nz: NDArray,
+    Nz: NDArray[Any],
     n_coef: int,
     slot_total: int,
     data_slots: int,
@@ -228,9 +229,9 @@ def _configure_interleaved_axes(
 def plot_classification_interleaved(
     result: SweepResult | None = None,
     *,
-    h: NDArray | None = None,
-    num_taps_grid: NDArray | None = None,
-    cutoff_grid: NDArray | None = None,
+    h: NDArray[Any] | None = None,
+    num_taps_grid: NDArray[Any] | None = None,
+    cutoff_grid: NDArray[Any] | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,

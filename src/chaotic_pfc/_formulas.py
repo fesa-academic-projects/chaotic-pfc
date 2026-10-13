@@ -18,6 +18,8 @@ the two agree on the orthonormality property.
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -25,7 +27,7 @@ from chaotic_pfc._compat import njit
 
 
 @njit(cache=True, inline="always")
-def fixed_point_positive(gain, alpha, beta):
+def fixed_point_positive(gain: Any, alpha: Any, beta: Any) -> Any:
     """Positive fixed point of the filtered Hénon map (cancellation-free).
 
     Solves ``G^2 p^2 + (1 - beta) p - alpha = 0`` with ``G = gain`` and returns
@@ -37,7 +39,7 @@ def fixed_point_positive(gain, alpha, beta):
 
 
 @njit(cache=True)
-def henon2d_step(x, alpha, beta):
+def henon2d_step(x: Any, alpha: Any, beta: Any) -> Any:
     """One iterate of the generalised 2-D Hénon map.
 
     ``x = [x1, x2]`` -> ``[alpha - x1**2 + beta * x2, x1]``.
@@ -48,7 +50,7 @@ def henon2d_step(x, alpha, beta):
     return out
 
 
-def gram_schmidt_python(Z: NDArray) -> tuple[NDArray, NDArray]:
+def gram_schmidt_python(Z: NDArray[Any]) -> tuple[NDArray[Any], NDArray[Any]]:
     """Orthonormalise the columns of ``Z`` with modified Gram-Schmidt (NumPy path).
 
     Returns the orthonormal columns ``Q`` and the column norms before

@@ -15,7 +15,7 @@ from __future__ import annotations
 import argparse
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -88,7 +88,7 @@ def pct(count: int, total: int, places: int) -> str:
     return str((Decimal(100 * count) / Decimal(total)).quantize(q, rounding=ROUND_HALF_UP))
 
 
-def _save(fig, path: Path) -> None:
+def _save(fig: Any, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(
         path,
@@ -340,7 +340,7 @@ def fig_comm_ideal(out_dir: Path) -> None:
         f"[fig_comm_ideal] MSE(n>{tr})={np.mean((m[tr:] - m_hat[tr:]) ** 2):.4e} BER={met['ber']:.4f}"
     )
 
-    def psd(x):
+    def psd(x: Any) -> Any:
         return psd_normalised(
             x, spec.nfft, spec.window_length, window=spec.window, kaiser_beta=spec.kaiser_beta
         )
@@ -406,7 +406,7 @@ GENERATORS = {
 }
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``chaotic-pfc paper figures``."""
     parser = subparsers.add_parser(
         "figures",

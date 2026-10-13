@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 from numpy.typing import NDArray
 
@@ -98,18 +99,18 @@ class SweepResult:
         ``Nmap_min`` to ``Nmap``, providing a "difficulty map" of the
         parameter space. ``None`` when loaded from a legacy ``.npz``
         without this field.
-    metadata : dict
+    metadata : dict[str, Any]
         Free-form metadata (simulation parameters, timing, etc.).
     """
 
-    h: NDArray
-    h_std: NDArray
-    num_taps_grid: NDArray
-    cutoff_grid: NDArray
+    h: NDArray[Any]
+    h_std: NDArray[Any]
+    num_taps_grid: NDArray[Any]
+    cutoff_grid: NDArray[Any]
     window: str
     filter_type: str
-    n_iters_used: NDArray | None = None
-    metadata: dict = field(default_factory=dict)
+    n_iters_used: NDArray[Any] | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def display_name(self) -> str:

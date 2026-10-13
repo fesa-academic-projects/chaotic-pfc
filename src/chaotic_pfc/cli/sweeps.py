@@ -14,11 +14,12 @@ Three actions are provided:
 from __future__ import annotations
 
 import argparse
+from typing import Any
 
 from chaotic_pfc.sweeps import compare, regenerate, report
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the top-level ``sweeps`` group and its actions."""
     parser = subparsers.add_parser(
         "sweeps",

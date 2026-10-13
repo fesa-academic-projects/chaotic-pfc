@@ -11,11 +11,12 @@ Two actions are provided:
 from __future__ import annotations
 
 import argparse
+from typing import Any
 
 from chaotic_pfc.paper import audit, figures, numbers
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the top-level ``paper`` group and its actions."""
     parser = subparsers.add_parser(
         "paper",

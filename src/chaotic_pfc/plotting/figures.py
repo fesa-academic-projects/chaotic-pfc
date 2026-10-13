@@ -22,6 +22,7 @@ import os
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -62,7 +63,7 @@ def latex_available() -> bool:
 # ── Global RC params for LaTeX-like rendering ───────────────────────────────
 
 
-def setup_rc():
+def setup_rc() -> None:
     """Configure matplotlib for publication-quality LaTeX-style SVG output.
 
     Auto-detects whether a full LaTeX installation is available:
@@ -157,7 +158,7 @@ def _style(ax: Axes, ts: int = 12) -> None:
         sp.set_linewidth(1.2)
 
 
-def _save(fig: Figure, path: str | Path | None, **savefig_kwargs) -> None:
+def _save(fig: Figure, path: str | Path | None, **savefig_kwargs: Any) -> None:
     """Write ``fig`` to ``path`` if not ``None``, creating parent directories.
 
     Extra keyword arguments are forwarded to ``fig.savefig()``.
@@ -169,8 +170,8 @@ def _save(fig: Figure, path: str | Path | None, **savefig_kwargs) -> None:
 
 
 def plot_attractor(
-    X: NDArray,
-    Y: NDArray,
+    X: NDArray[Any],
+    Y: NDArray[Any],
     title: str = "",
     xlabel: str = r"$x_1[n]$",
     ylabel: str = r"$x_2[n]$",
@@ -224,9 +225,9 @@ def plot_attractor(
 
 
 def plot_sensitivity(
-    n: NDArray,
-    X1: NDArray,
-    X2: NDArray,
+    n: NDArray[Any],
+    X1: NDArray[Any],
+    X2: NDArray[Any],
     save_path: str | None = None,
     lang: str = "pt",
 ) -> Figure:
@@ -284,7 +285,7 @@ class PlotGridOptions:
     y_lim_msg: tuple[float, float] = (-1.5, 1.5)
     y_lim_sig: tuple[float, float] = (-2.5, 2.5)
     y_lim_mhat: tuple[float, float] | None = None
-    h_channel: NDArray | None = None
+    h_channel: NDArray[Any] | None = None
     save_path: str | None = None
 
 
@@ -292,24 +293,24 @@ _UNSET = object()
 
 
 def plot_comm_grid(
-    n: NDArray,
-    m: NDArray,
-    s: NDArray,
-    r: NDArray,
-    m_hat: NDArray,
-    omega: NDArray,
-    psd_m: NDArray,
-    psd_s: NDArray,
-    psd_r: NDArray,
-    psd_mhat: NDArray,
+    n: NDArray[Any],
+    m: NDArray[Any],
+    s: NDArray[Any],
+    r: NDArray[Any],
+    m_hat: NDArray[Any],
+    omega: NDArray[Any],
+    psd_m: NDArray[Any],
+    psd_s: NDArray[Any],
+    psd_r: NDArray[Any],
+    psd_mhat: NDArray[Any],
     *,
     opts: PlotGridOptions | None = None,
     time_window: slice = slice(0, 300),
     suptitle: str = "",
-    y_lim_msg: tuple[float, float] = _UNSET,  # type: ignore[assignment]
-    y_lim_sig: tuple[float, float] = _UNSET,  # type: ignore[assignment]
-    y_lim_mhat: tuple[float, float] | None = _UNSET,  # type: ignore[assignment]
-    h_channel: NDArray | None = None,
+    y_lim_msg: tuple[float, float] = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
+    y_lim_sig: tuple[float, float] = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
+    y_lim_mhat: tuple[float, float] | None = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
+    h_channel: NDArray[Any] | None = None,
     save_path: str | None = None,
     lang: str = "pt",
 ) -> Figure:

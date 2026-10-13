@@ -117,7 +117,7 @@ jobs:
           pip install --find-links dist "chaotic-pfc[dev,fast]"
 
       - name: Run mypy
-        run: mypy src/chaotic_pfc
+        run: mypy --strict src/chaotic_pfc
 
   # ───────────────────────────────────────────────────────────────────────
   # Unit tests: pytest with coverage, upload to Codecov.

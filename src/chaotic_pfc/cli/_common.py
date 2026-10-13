@@ -7,7 +7,7 @@ import functools
 import os
 import sys
 from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -93,12 +93,12 @@ def add_lang_flag(parser: argparse.ArgumentParser) -> None:
 
 
 def compute_psds(
-    m: NDArray,
-    s: NDArray,
-    r: NDArray,
-    m_hat: NDArray,
+    m: NDArray[Any],
+    s: NDArray[Any],
+    r: NDArray[Any],
+    m_hat: NDArray[Any],
     sp_cfg: SpectralConfig,
-) -> tuple[NDArray, NDArray, NDArray, NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Compute normalised PSDs for message, carrier, received, and recovered signals.
 
     Returns (omega, psd_m, psd_s, psd_r, psd_mhat).
@@ -115,13 +115,13 @@ def compute_psds(
 
 
 def report_comm_metrics(
-    m,
-    m_hat,
+    m: Any,
+    m_hat: Any,
     *,
     transient: int,
     bit_period: int,
     delay: int,
-):
+) -> tuple[Any, Any]:
     """Align, measure and print the communication error metrics.
 
     *delay* is the applied group delay ``(N_taps - 1) / 2`` (0 for an
@@ -151,7 +151,7 @@ def report_comm_metrics(
     return est, met
 
 
-def save_or_show(fig, headless: bool, save_path: str | None, args) -> None:
+def save_or_show(fig: Any, headless: bool, save_path: str | None, args: Any) -> None:
     """Save figure if *save_path* is given, otherwise display it."""
     import matplotlib.pyplot as plt
 

@@ -36,7 +36,7 @@ import csv
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
@@ -47,22 +47,24 @@ from chaotic_pfc._formulas import fixed_point_positive, henon2d_step
 class FixedPointInfo(TypedDict):
     """Result of :func:`fixed_point_stability` — fixed point, eigenvalues, stability."""
 
-    fixed_point: NDArray
-    eigenvalues: NDArray
+    fixed_point: NDArray[Any]
+    eigenvalues: NDArray[Any]
     stable: bool
 
 
 # ── Fixed-point computation ─────────────────────────────────────────────────
 
 
-def _pole_filter_coeffs(Gz: float, pole_radius: float, w0: float) -> tuple[NDArray, NDArray]:
+def _pole_filter_coeffs(
+    Gz: float, pole_radius: float, w0: float
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Build the (b, a) vectors for the 4-D pole-filtered Hénon map."""
     b = Gz * np.array([1.0, 0.0, 0.0])
     a = -np.array([1.0, -2.0 * pole_radius * np.cos(w0), pole_radius**2])
     return b, a
 
 
-def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
+def _fixed_point(alpha: float, beta: float, b: NDArray[Any], a: NDArray[Any]) -> NDArray[Any]:
     """Compute the stable fixed point of the 4-D pole-filtered Hénon map."""
     H = np.sum(a[1:])  # sum of a coeffs (excluding a[0])
     G = np.sum(b)  # sum of b coeffs
@@ -87,7 +89,7 @@ def _fixed_point(alpha: float, beta: float, b: NDArray, a: NDArray) -> NDArray:
 # ── Jacobian ────────────────────────────────────────────────────────────────
 
 
-def _jacobian(beta: float, b: NDArray, a: NDArray, x: NDArray) -> NDArray:
+def _jacobian(beta: float, b: NDArray[Any], a: NDArray[Any], x: NDArray[Any]) -> NDArray[Any]:
     """Jacobian of the 4-D pole-filtered Hénon map at state x."""
     return np.array(
         [
@@ -102,7 +104,9 @@ def _jacobian(beta: float, b: NDArray, a: NDArray, x: NDArray) -> NDArray:
 # ── Map iteration ──────────────────────────────────────────────────────────
 
 
-def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray, x: NDArray) -> NDArray:
+def _iterate(
+    alpha: float, beta: float, b: NDArray[Any], a: NDArray[Any], x: NDArray[Any]
+) -> NDArray[Any]:
     """Single iteration of the 4-D pole-filtered Hénon map."""
     x1 = alpha - x[2] ** 2 + beta * x[1]
     x2 = x[0]
@@ -114,7 +118,7 @@ def _iterate(alpha: float, beta: float, b: NDArray, a: NDArray, x: NDArray) -> N
 # ── Gram-Schmidt orthogonalisation ─────────────────────────────────────────
 
 
-def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
+def _gram_schmidt(Z: NDArray[Any]) -> tuple[NDArray[Any], NDArray[Any]]:
     """Orthonormalise the columns of ``Z`` by modified Gram-Schmidt.
 
     NumPy variant used by the validation wrappers
@@ -127,7 +131,7 @@ def _gram_schmidt(Z: NDArray) -> tuple[NDArray, NDArray]:
 
     Returns
     -------
-    tuple[NDArray, NDArray]
+    tuple[NDArray[Any], NDArray[Any]]
         The orthonormal columns ``Q`` and the column norms before normalising.
     """
     _d, n = Z.shape
@@ -162,25 +166,25 @@ class LyapunovResult:
     """
 
     lyapunov_max: float
-    all_exponents: NDArray
-    fixed_point: NDArray | None = None
-    eigenvalues: NDArray | None = None
+    all_exponents: NDArray[Any]
+    fixed_point: NDArray[Any] | None = None
+    eigenvalues: NDArray[Any] | None = None
     stable: bool | None = None
-    fixed_point_p: NDArray | None = None
-    fixed_point_n: NDArray | None = None
-    eigenvalues_p: NDArray | None = None
-    eigenvalues_n: NDArray | None = None
+    fixed_point_p: NDArray[Any] | None = None
+    fixed_point_n: NDArray[Any] | None = None
+    eigenvalues_p: NDArray[Any] | None = None
+    eigenvalues_n: NDArray[Any] | None = None
     stable_p: bool | None = None
     stable_n: bool | None = None
 
 
 def _lyapunov_spectrum(
-    x: NDArray,
-    iterate: Callable[[NDArray], NDArray],
-    jacobian: Callable[[NDArray], NDArray],
+    x: NDArray[Any],
+    iterate: Callable[[NDArray[Any]], NDArray[Any]],
+    jacobian: Callable[[NDArray[Any]], NDArray[Any]],
     Nitera: int,
     Ndiscard: int,
-) -> NDArray:
+) -> NDArray[Any]:
     """Run the QR/Gram-Schmidt Lyapunov estimator from a single IC.
 
     Parameters
@@ -219,13 +223,13 @@ def _lyapunov_spectrum(
 
 
 def lyapunov_spectrum(
-    iterate: Callable[[NDArray], NDArray],
-    jacobian: Callable[[NDArray], NDArray],
-    x0: NDArray,
+    iterate: Callable[[NDArray[Any]], NDArray[Any]],
+    jacobian: Callable[[NDArray[Any]], NDArray[Any]],
+    x0: NDArray[Any],
     *,
     Nitera: int = 2000,
     Ndiscard: int = 1000,
-) -> NDArray:
+) -> NDArray[Any]:
     """Estimate the full Lyapunov spectrum of an arbitrary discrete-time map.
 
     The estimator is generic: give it the map ``x -> iterate(x)`` and its
@@ -274,9 +278,9 @@ def lyapunov_spectrum(
 
 
 def lyapunov_max(
-    iterate: Callable[[NDArray], NDArray],
-    jacobian: Callable[[NDArray], NDArray],
-    x0: NDArray,
+    iterate: Callable[[NDArray[Any]], NDArray[Any]],
+    jacobian: Callable[[NDArray[Any]], NDArray[Any]],
+    x0: NDArray[Any],
     *,
     Nitera: int = 2000,
     Ndiscard: int = 1000,
@@ -430,7 +434,7 @@ def fixed_point_stability(
 # Fixed points: x* = α − x*² + β·x*  ⟹  x*² + (1−β)·x* − α = 0
 
 
-def _henon2d_fixed_points(alpha: float, beta: float):
+def _henon2d_fixed_points(alpha: float, beta: float) -> tuple[NDArray[Any], NDArray[Any]]:
     """Both fixed points of the 2-D Hénon map (positive and negative roots)."""
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
     x_p = float(fixed_point_positive(1.0, alpha, beta))
@@ -438,7 +442,7 @@ def _henon2d_fixed_points(alpha: float, beta: float):
     return np.array([x_p, x_p]), np.array([x_n, x_n])
 
 
-def _henon2d_jacobian(beta: float, x: NDArray) -> NDArray:
+def _henon2d_jacobian(beta: float, x: NDArray[Any]) -> NDArray[Any]:
     """Jacobian of the 2-D Hénon map at state x."""
     return np.array(
         [
@@ -448,9 +452,9 @@ def _henon2d_jacobian(beta: float, x: NDArray) -> NDArray:
     )
 
 
-def _henon2d_iterate(alpha: float, beta: float, x: NDArray) -> NDArray:
+def _henon2d_iterate(alpha: float, beta: float, x: NDArray[Any]) -> NDArray[Any]:
     """Single iteration of the 2-D Hénon map."""
-    return henon2d_step(x, alpha, beta)
+    return np.asarray(henon2d_step(x, alpha, beta))
 
 
 def lyapunov_henon2d(
@@ -578,22 +582,22 @@ class EnsembleResult:
         Aggregates of ``lmax_per_ci``.
     n_chaotic, n_stable : int
         Counts of ICs with ``λ_max > 0`` and ``λ_max ≤ 0``.
-    metadata : dict
+    metadata : dict[str, Any]
         Free-form metadata (parameters used for the run).
     """
 
-    fixed_point: NDArray
-    eigenvalues: NDArray
+    fixed_point: NDArray[Any]
+    eigenvalues: NDArray[Any]
     stable: bool
-    initial_conditions: NDArray
-    exponents_per_ci: NDArray
-    lmax_per_ci: NDArray
-    mean_exponents: NDArray
+    initial_conditions: NDArray[Any]
+    exponents_per_ci: NDArray[Any]
+    lmax_per_ci: NDArray[Any]
+    mean_exponents: NDArray[Any]
     mean_lmax: float
     max_lmax: float
     n_chaotic: int
     n_stable: int
-    metadata: dict = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     # ── CSV export ─────────────────────────────────────────────────────
 
@@ -641,11 +645,11 @@ class EnsembleResult:
 
 
 def _sample_ics(
-    fixed_point: NDArray,
+    fixed_point: NDArray[Any],
     perturbation: float,
     n_initial: int,
     seed: int | None,
-) -> NDArray:
+) -> NDArray[Any]:
     """Draw ``n_initial`` ICs uniformly in ``[fp·(1−p), fp·(1+p)]``.
 
     Uses ``np.random.default_rng(seed)`` so that results are
@@ -662,17 +666,17 @@ def _sample_ics(
 
 
 def _run_ensemble(
-    fixed_point: NDArray,
-    eigenvalues: NDArray,
+    fixed_point: NDArray[Any],
+    eigenvalues: NDArray[Any],
     stable: bool,
-    iterate: Callable[[NDArray], NDArray],
-    jacobian: Callable[[NDArray], NDArray],
+    iterate: Callable[[NDArray[Any]], NDArray[Any]],
+    jacobian: Callable[[NDArray[Any]], NDArray[Any]],
     Nitera: int,
     Ndiscard: int,
     perturbation: float,
     n_initial: int,
     seed: int | None,
-    metadata: dict,
+    metadata: dict[str, Any],
 ) -> EnsembleResult:
     """Run the ensemble Lyapunov protocol around ``fixed_point``.
 

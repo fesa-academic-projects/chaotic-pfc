@@ -20,12 +20,14 @@ plots produced by :mod:`chaotic_pfc.plotting`.
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin, lfilter
 
 
-def ideal_channel(s: NDArray) -> NDArray:
+def ideal_channel(s: NDArray[Any]) -> NDArray[Any]:
     """Transmit ``s`` through a noiseless, distortion-free channel.
 
     This is literally a copy of the input. It is still defined as a
@@ -50,12 +52,12 @@ def ideal_channel(s: NDArray) -> NDArray:
 
 
 def fir_channel(
-    s: NDArray,
+    s: NDArray[Any],
     *,
     num_taps: int = 201,
     cutoff: float = 0.99,
     window: str = "hamming",
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Transmit ``s`` through a symmetric FIR low-pass channel.
 
     The channel is built with :func:`scipy.signal.firwin` using
@@ -91,7 +93,7 @@ def fir_channel(
     Unlike :func:`ideal_channel`, this function returns the filter
     taps alongside the filtered signal.  It therefore does **not**
     satisfy :class:`~chaotic_pfc.comms.protocols.Channel` (which
-    expects a single ``NDArray`` return).
+    expects a single ``NDArray[Any]`` return).
     """
     h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
     r = lfilter(h, [1.0], s)
@@ -101,7 +103,7 @@ def fir_channel(
 # ── Channel models ───────────────────────────────────────────────────────────
 
 
-def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) -> NDArray:
+def awgn(sig: NDArray[Any], snr_db: float, rng: np.random.Generator | None = None) -> NDArray[Any]:
     """Add white Gaussian noise to *sig* for a given SNR in dB.
 
     The noise power is ``E[|sig|²] / 10^(SNR/10)``, so a higher SNR
@@ -140,12 +142,12 @@ def awgn(sig: NDArray, snr_db: float, rng: np.random.Generator | None = None) ->
 
 
 def channel_impulsive(
-    sig: NDArray,
+    sig: NDArray[Any],
     snr_db: float,
     prob_impulse: float = 0.01,
     amp_factor: float = 10.0,
     rng: np.random.Generator | None = None,
-) -> NDArray:
+) -> NDArray[Any]:
     """AWGN channel with Middleton Class-A impulsive noise.
 
     A fraction *prob_impulse* of samples receive an additional impulse
@@ -180,12 +182,12 @@ def channel_impulsive(
 
 
 def channel_multipath(
-    sig: NDArray,
+    sig: NDArray[Any],
     snr_db: float,
     delays: list[int] | None = None,
     gains: list[float] | None = None,
     rng: np.random.Generator | None = None,
-) -> NDArray:
+) -> NDArray[Any]:
     """Multipath channel with configurable tap delays and gains.
 
     Simulates a frequency-selective channel by summing delayed copies

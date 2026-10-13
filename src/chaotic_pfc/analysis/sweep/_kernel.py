@@ -7,6 +7,8 @@ performance when called tens of millions of times.
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -31,7 +33,7 @@ from ._types import (
 
 
 @njit(cache=True)
-def _henon_n12_inplace(x, x_new, alpha, beta, c):
+def _henon_n12_inplace(x: Any, x_new: Any, alpha: Any, beta: Any, c: Any) -> None:
     """1- or 2-tap filtered Henon iterate (Ns in {1, 2}). Writes into ``x_new``.
 
     Subsumes the previous ``_henon_n1`` / ``_henon_n2`` pair via a tiny
@@ -55,7 +57,7 @@ def _henon_n12_inplace(x, x_new, alpha, beta, c):
 
 
 @njit(cache=True)
-def _henon_nN_inplace(x, x_new, alpha, beta, c):
+def _henon_nN_inplace(x: Any, x_new: Any, alpha: Any, beta: Any, c: Any) -> None:
     """General N-tap (N >= 3) filtered Henon iterate. Writes into ``x_new``.
 
     Subsumes the previous ``_henon_n3``/``_henon_n4`` pair: with Ns=3
@@ -92,7 +94,7 @@ def _henon_nN_inplace(x, x_new, alpha, beta, c):
 
 
 @njit(cache=True, inline="always")
-def _mgs_accumulate(z, Ns, lyap_sum):
+def _mgs_accumulate(z: Any, Ns: Any, lyap_sum: Any) -> None:
     """Full-spectrum reference MGS (all columns).
 
     This is the bit-exact reference used by the versioned sweeps: the fallback
@@ -121,7 +123,7 @@ def _mgs_accumulate(z, Ns, lyap_sum):
 
 
 @njit(cache=True, inline="always")
-def _norm_accumulate_v(v, Ns, lyap_sum):
+def _norm_accumulate_v(v: Any, Ns: Any, lyap_sum: Any) -> None:
     """Single-vector norm + log accumulation (k=0 of MGS)."""
     nrm = 0.0
     for row in range(Ns):
@@ -136,7 +138,17 @@ def _norm_accumulate_v(v, Ns, lyap_sum):
 
 # Adaptive early-stop: shared by both n12 and nN kernels.
 @njit(cache=True, inline="always")
-def _adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, prev_est, streak, n_used):
+def _adaptive_checkpoint(
+    lyap_sum: Any,
+    Ns: Any,
+    n_use: Any,
+    n_done: Any,
+    Nitera_min: Any,
+    tol: Any,
+    prev_est: Any,
+    streak: Any,
+    n_used: Any,
+) -> tuple[Any, Any, Any, Any]:
     """Evaluate convergence at one checkpoint. Returns (prev_est, streak, n_used, should_break).
 
     ``n_use`` is the number of leading ``lyap_sum`` columns folded into the
@@ -160,8 +172,19 @@ def _adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, prev_est,
 
 @njit(cache=True)
 def _lyap_online_core(
-    xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta, n_use=0
-):
+    xx: Any,
+    ww: Any,
+    lyap_sum: Any,
+    Nitera: Any,
+    Nitera_min: Any,
+    tol: Any,
+    Ns: Any,
+    _step_id: Any,
+    c: Any,
+    alpha: Any,
+    beta: Any,
+    n_use: Any = 0,
+) -> tuple[Any, Any]:
     """Full-spectrum reference: shared adaptive Lyapunov loop with Benettin block.
 
     ``_step_id`` is 0 for the n12 kernel (Ns ∈ {1, 2}) or 1 for nN (Ns ≥ 3).
@@ -278,7 +301,19 @@ def _lyap_online_core(
 
 
 @njit(cache=True)
-def _lyap_online_core_v(xx, vv, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id, c, alpha, beta):
+def _lyap_online_core_v(
+    xx: Any,
+    vv: Any,
+    lyap_sum: Any,
+    Nitera: Any,
+    Nitera_min: Any,
+    tol: Any,
+    Ns: Any,
+    _step_id: Any,
+    c: Any,
+    alpha: Any,
+    beta: Any,
+) -> tuple[Any, Any]:
     """Single-vector Lyapunov loop (tangent column 0 only), Benettin block K.
 
     Propagates one tangent vector and normalises it every ``_BENETTIN_K``
@@ -357,7 +392,7 @@ def _lyap_online_core_v(xx, vv, lyap_sum, Nitera, Nitera_min, tol, Ns, _step_id,
 
 
 @njit(cache=True, inline="always")
-def _propagate_n12(tick, xx, ww, Ns, c, alpha, beta):
+def _propagate_n12(tick: int, xx: Any, ww: Any, Ns: Any, c: Any, alpha: Any, beta: Any) -> int:
     """Full-spectrum reference: propagate tangent vectors + map for Ns ∈ {1, 2} (no MGS)."""
     Ns_full = 2
     w_in = ww[tick]
@@ -378,7 +413,7 @@ def _propagate_n12(tick, xx, ww, Ns, c, alpha, beta):
 
 
 @njit(cache=True, inline="always")
-def _propagate_v_n12(tick, xx, vv, Ns, c, alpha, beta):
+def _propagate_v_n12(tick: int, xx: Any, vv: Any, Ns: Any, c: Any, alpha: Any, beta: Any) -> int:
     """Single-vector propagate + map for Ns ∈ {1, 2} (col 0 only, no MGS)."""
     w_in = vv[tick]
     z_out = vv[1 - tick]
@@ -396,7 +431,9 @@ def _propagate_v_n12(tick, xx, vv, Ns, c, alpha, beta):
 
 
 @njit(cache=True, inline="always")
-def _step_n12_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+def _step_n12_ref(
+    tick: int, xx: Any, ww: Any, lyap_sum: Any, Ns: Any, c: Any, alpha: Any, beta: Any
+) -> int:
     """Per-iteration reference step (J@W + MGS + map) for Ns ∈ {1, 2}."""
     tick = _propagate_n12(tick, xx, ww, Ns, c, alpha, beta)
     _mgs_accumulate(ww[tick], 2, lyap_sum)
@@ -404,13 +441,25 @@ def _step_n12_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
 
 
 @njit(cache=True)
-def _lyap_online_n12(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta, n_use=0):
+def _lyap_online_n12(
+    xx: Any,
+    ww: Any,
+    lyap_sum: Any,
+    Nitera: Any,
+    Nitera_min: Any,
+    tol: Any,
+    Ns: Any,
+    c: Any,
+    alpha: Any,
+    beta: Any,
+    n_use: Any = 0,
+) -> tuple[Any, Any]:
     """Lyapunov kernel for Ns ∈ {1, 2}. Delegates to :func:`_lyap_online_core`."""
     return _lyap_online_core(xx, ww, lyap_sum, Nitera, Nitera_min, tol, 2, 0, c, alpha, beta, n_use)
 
 
 @njit(cache=True, inline="always")
-def _propagate_nN(tick, xx, ww, Ns, c, alpha, beta):
+def _propagate_nN(tick: int, xx: Any, ww: Any, Ns: Any, c: Any, alpha: Any, beta: Any) -> int:
     """Propagate tangent vectors + map for Ns ≥ 3 (no MGS)."""
     w_in = ww[tick]
     z_out = ww[1 - tick]
@@ -442,7 +491,7 @@ def _propagate_nN(tick, xx, ww, Ns, c, alpha, beta):
 
 
 @njit(cache=True, inline="always")
-def _propagate_v_nN(tick, xx, vv, Ns, c, alpha, beta):
+def _propagate_v_nN(tick: int, xx: Any, vv: Any, Ns: Any, c: Any, alpha: Any, beta: Any) -> int:
     """Single-vector propagate + map for Ns ≥ 3 (col 0 only, no MGS)."""
     w_in = vv[tick]
     z_out = vv[1 - tick]
@@ -473,7 +522,9 @@ def _propagate_v_nN(tick, xx, vv, Ns, c, alpha, beta):
 
 
 @njit(cache=True, inline="always")
-def _step_nN_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
+def _step_nN_ref(
+    tick: int, xx: Any, ww: Any, lyap_sum: Any, Ns: Any, c: Any, alpha: Any, beta: Any
+) -> int:
     """Per-iteration reference step (J@W + MGS + map) for Ns ≥ 3."""
     tick = _propagate_nN(tick, xx, ww, Ns, c, alpha, beta)
     _mgs_accumulate(ww[tick], Ns, lyap_sum)
@@ -481,14 +532,26 @@ def _step_nN_ref(tick, xx, ww, lyap_sum, Ns, c, alpha, beta):
 
 
 @njit(cache=True)
-def _lyap_online_nN(xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, c, alpha, beta, n_use=0):
+def _lyap_online_nN(
+    xx: Any,
+    ww: Any,
+    lyap_sum: Any,
+    Nitera: Any,
+    Nitera_min: Any,
+    tol: Any,
+    Ns: Any,
+    c: Any,
+    alpha: Any,
+    beta: Any,
+    n_use: Any = 0,
+) -> tuple[Any, Any]:
     """Lyapunov kernel for Ns ≥ 3. Delegates to :func:`_lyap_online_core`."""
     return _lyap_online_core(
         xx, ww, lyap_sum, Nitera, Nitera_min, tol, Ns, 1, c, alpha, beta, n_use
     )
 
 
-def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
+def _build_task_order(orders_arr: NDArray[Any], Ncut: int) -> NDArray[Any]:
     """Produce a permutation of ``[0, Ncoef * Ncut)`` that balances thread load.
 
     Numba's ``prange`` schedule is static: each thread receives a
@@ -528,7 +591,7 @@ def _build_task_order(orders_arr: NDArray, Ncut: int) -> NDArray:
 
 
 @njit(cache=True)
-def _burn_in_n12(xx, Nitera, alpha, beta, c):
+def _burn_in_n12(xx: Any, Nitera: Any, alpha: Any, beta: Any, c: Any) -> None:
     """Discard the Ns<=2 transient in place, leaving the state in row 0.
 
     Non-finite states are absorbing, so the loop stops early (checked every 64
@@ -546,7 +609,7 @@ def _burn_in_n12(xx, Nitera, alpha, beta, c):
 
 
 @njit(cache=True)
-def _burn_in_nN(xx, Ns, Nitera, alpha, beta, c):
+def _burn_in_nN(xx: Any, Ns: Any, Nitera: Any, alpha: Any, beta: Any, c: Any) -> None:
     """Discard the Ns>=3 transient in place, leaving the state in row 0."""
     tick = 0
     for it_t in range(Nitera):
@@ -560,7 +623,7 @@ def _burn_in_nN(xx, Ns, Nitera, alpha, beta, c):
 
 
 @njit(cache=True)
-def _samples_summary(samples, iters_samples, n_initial):
+def _samples_summary(samples: Any, iters_samples: Any, n_initial: Any) -> tuple[Any, Any, Any]:
     """Mean, std and mean iteration count over the finite samples.
 
     Returns ``(nan, nan, nan)`` when every sample is non-finite.
@@ -586,12 +649,12 @@ def _samples_summary(samples, iters_samples, n_initial):
 
 @njit(parallel=True, cache=True)
 def _sweep_kernel(
-    num_taps_grid: NDArray,
-    cutoff_grid: NDArray,
-    fir_bank: NDArray,
-    gains: NDArray,
-    perturbations: NDArray,
-    task_order: NDArray,
+    num_taps_grid: NDArray[Any],
+    cutoff_grid: NDArray[Any],
+    fir_bank: NDArray[Any],
+    gains: NDArray[Any],
+    perturbations: NDArray[Any],
+    task_order: NDArray[Any],
     Nitera: int,
     Nmap: int,
     Nmap_min: int,
@@ -600,7 +663,7 @@ def _sweep_kernel(
     alpha: float,
     beta: float,
     fallback_mode: int = 1,
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Parallel inner sweep. Returns (h, h_std, n_iters_mean, n_fallback), all (Ncoef, Ncut).
 
     ``fallback_mode`` selects the recomputation policy for marginal cells

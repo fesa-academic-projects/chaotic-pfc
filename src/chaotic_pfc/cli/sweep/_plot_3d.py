@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 
-def _add_plot_3d_parser(subparsers: argparse._SubParsersAction) -> None:
+def _add_plot_3d_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``run sweep plot-3d``."""
     p = subparsers.add_parser(
         "plot-3d",

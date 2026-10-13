@@ -10,7 +10,7 @@ The parser layout is ``chaotic-pfc run <experiment> [options]``, where
 Each experiment lives in its own submodule and exposes two functions:
 
 * ``add_parser(subparsers)`` — register the experiment's own parser and
-  flags onto the given ``argparse._SubParsersAction``.
+  flags onto the given ``argparse._SubParsersAction[Any]``.
 * ``run(args)`` — execute the experiment using the parsed namespace.
 
 The sub-commands under ``sweep`` (``compute`` and ``plot``) use the

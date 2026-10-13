@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -63,7 +64,7 @@ def beta_summary(
 def beta_curve(
     data_dir: str | Path = "data/sweeps/kaiser",
     filter_type: str = "lowpass",
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Return (betas, pct_chaotic) arrays for a single filter type.
 
     Useful for plotting the β-dependence of chaotic coverage.
@@ -78,7 +79,7 @@ def beta_curve(
 
     Returns
     -------
-    tuple[NDArray, NDArray]
+    tuple[NDArray[Any], NDArray[Any]]
         ``(betas, pct_chaotic)``; empty arrays when absent.
     """
     summary = beta_summary(data_dir)
@@ -141,7 +142,7 @@ def transition_boundary(
     data_dir: str | Path = "data/sweeps",
     window: str | None = None,
     filter_type: str = "lowpass",
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Find the cutoff where each order transitions from non-chaotic to chaotic.
 
     For each order, returns the *first* cutoff (lowest frequency) where
@@ -193,7 +194,7 @@ def chaos_margin(
     data_dir: str | Path = "data/sweeps",
     window: str | None = None,
     filter_type: str = "lowpass",
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """For each order, compute the width of the chaotic region in cutoff space.
 
     Parameters
@@ -306,7 +307,7 @@ def bootstrap_confidence(
         vals = vals[np.isfinite(vals)]
         all_vals[result.filter_type].extend(vals.tolist())
 
-    out: dict[str, dict] = {}
+    out: dict[str, dict[str, Any]] = {}
     for ft, val_list in all_vals.items():
         arr = np.array(val_list)
         if len(arr) == 0:
@@ -321,4 +322,4 @@ def bootstrap_confidence(
             "ci_high": round(float(np.percentile(means, 97.5)), 4),
             "n": len(arr),
         }
-    return out  # type: ignore[return-value]
+    return out  # type: ignore[return-value]  # dict[str, BootstrapConfidence]

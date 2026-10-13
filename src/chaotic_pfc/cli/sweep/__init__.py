@@ -19,6 +19,7 @@ sweep.
 from __future__ import annotations
 
 import argparse
+from typing import Any
 
 from ._beta import _add_beta_sweep_parser
 from ._beta import beta_values as beta_values
@@ -35,7 +36,7 @@ from ._plot_3d import run_plot_3d as run_plot_3d
 # ════════════════════════════════════════════════════════════════════════════
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run sweep`` group with its own sub-subcommands."""
     sweep_parser = subparsers.add_parser(
         "sweep",

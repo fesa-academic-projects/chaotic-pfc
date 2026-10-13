@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 from ._common import add_lang_flag, add_save_display_flags, pick_backend
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run attractors`` subcommand."""
     p = subparsers.add_parser(
         "attractors",

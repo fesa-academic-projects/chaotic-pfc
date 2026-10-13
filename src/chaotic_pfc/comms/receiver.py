@@ -28,6 +28,8 @@ Two receivers are provided, mirroring
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -35,14 +37,14 @@ from ..dynamics.maps import _henon_n4_step_inplace
 
 
 def receive(
-    r: NDArray,
+    r: NDArray[Any],
     *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
     y0: float = 0.0,
     z0: float = 0.0,
-) -> NDArray:
+) -> NDArray[Any]:
     r"""Demodulate the carrier ``r`` via 2-D Hénon synchronisation.
 
     The local oscillator is driven by ``r`` itself:
@@ -104,15 +106,15 @@ def receive(
 
 
 def receive_order_n(
-    r: NDArray,
-    fir_coeffs: NDArray,
+    r: NDArray[Any],
+    fir_coeffs: NDArray[Any],
     *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
-    y0: NDArray | None = None,
+    y0: NDArray[Any] | None = None,
     seed: int | None = None,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     r"""Demodulate the carrier ``r`` via N-th order Hénon synchronisation.
 
     Runs a local copy of the N-th order filtered Hénon map driven by

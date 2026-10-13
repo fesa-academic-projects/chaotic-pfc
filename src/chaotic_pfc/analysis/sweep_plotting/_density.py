@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ from chaotic_pfc.analysis.sweep_plotting._common import (
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
 
 
-def _binary_union(loaded) -> NDArray:
+def _binary_union(loaded: Any) -> NDArray[Any]:
     """Binary union over sweeps: 1 where any sweep is chaotic, NaN elsewhere."""
     binary = np.zeros_like(loaded[0].h, dtype=np.float64)
     for sr in loaded:
@@ -31,7 +32,7 @@ def _binary_union(loaded) -> NDArray:
     return np.where(binary > 0.0, binary, np.nan)
 
 
-def _chaotic_count(loaded) -> NDArray:
+def _chaotic_count(loaded: Any) -> NDArray[Any]:
     """Count the sweeps that are chaotic at each grid point."""
     count = np.zeros_like(loaded[0].h, dtype=np.float64)
     for sr in loaded:
@@ -40,7 +41,7 @@ def _chaotic_count(loaded) -> NDArray:
 
 
 def _marker_of_max(
-    density: NDArray, cutoff_grid: NDArray, data_slots: int, gap_slots: int
+    density: NDArray[Any], cutoff_grid: NDArray[Any], data_slots: int, gap_slots: int
 ) -> tuple[float, float]:
     """Interleaved ``(x, y)`` of the grid point with the highest density."""
     idx_order, idx_cutoff = np.unravel_index(np.nanargmax(density), density.shape)
@@ -263,7 +264,7 @@ def plot_chaotic_density(
 
 def chaotic_density_norm_table(
     sweep_dir: str | Path = "data/sweeps",
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Percentage of the sweeps that contain each grid point and find it chaotic.
 
     ``Nz = order - 1``. A sweep contains ``Nz`` when its num_taps_grid include
@@ -278,7 +279,7 @@ def chaotic_density_norm_table(
 
     Returns
     -------
-    tuple[NDArray, NDArray, NDArray, NDArray]
+    tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]
         ``(Nz, cutoff_grid, percent, n_containing)``.  ``percent[k, j]`` is the
         percentage of the sweeps containing ``Nz[k]`` in which the point
         ``(Nz[k], cutoff_grid[j])`` has ``lambda_max > 0``; it is NaN where no

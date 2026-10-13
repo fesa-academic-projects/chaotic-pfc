@@ -42,6 +42,7 @@ Four Henon map variants and one chaotic-sequence generator are provided:
 from __future__ import annotations
 
 import warnings
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -57,7 +58,7 @@ def henon_standard(
     y0: float = 0.0,
     alpha: float = 1.4,
     beta: float = 0.3,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Iterate the standard 2-D Hénon map.
 
     Parameters
@@ -102,7 +103,7 @@ def henon_generalised(
     y0: float = 0.0,
     alpha: float = 1.4,
     beta: float = 0.3,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Iterate the generalised 2-D Hénon map.
 
     Mathematically equivalent to :func:`henon_standard` under a change
@@ -148,7 +149,7 @@ def henon_filtered(
     beta: float = 0.3,
     c0: float = 0.7,
     c1: float = 0.3,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Iterate the 2-tap filtered Hénon map.
 
     The quadratic nonlinearity acts on a weighted combination of the
@@ -195,12 +196,12 @@ def henon_filtered(
 
 
 def _henon_n4_step_inplace(
-    out: NDArray,
-    x: NDArray,
+    out: NDArray[Any],
+    x: NDArray[Any],
     s: float,
     alpha: float,
     beta: float,
-    c: NDArray,
+    c: NDArray[Any],
 ) -> None:
     """Single step of the N-th order filtered Hénon map, writing into *out*.
 
@@ -239,13 +240,13 @@ def _henon_n4_step_inplace(
 def henon_order_n(
     steps: int,
     *,
-    fir_coeffs: NDArray,
-    x0: NDArray | None = None,
+    fir_coeffs: NDArray[Any],
+    x0: NDArray[Any] | None = None,
     alpha: float = 1.4,
     beta: float = 0.3,
-    driving: NDArray | None = None,
+    driving: NDArray[Any] | None = None,
     seed: int | None = None,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Iterate the N-th order Hénon map with an internal FIR filter.
 
     The system dimension ``N_c`` is inferred from ``len(fir_coeffs)``.
@@ -315,7 +316,7 @@ def henon_fir_sequence(
     num_taps: int = 5,
     cutoff: float = 0.9091,
     window: str = "hamming",
-) -> NDArray:
+) -> NDArray[Any]:
     r"""Generate a chaotic sequence from the FIR-filtered Hénon map.
 
     Iterates the generalised Hénon form ``x[n+1] = a - xf[n]^2 + b * y[n]``,

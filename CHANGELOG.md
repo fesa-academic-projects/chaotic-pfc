@@ -127,6 +127,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The expected overflow of the diverging map in the pure-Python loops
   (`transmit`/`receive` and the `henon_*` iterators) is silenced with
   `np.errstate`; the Numba kernels never emitted the warning.
+- `mypy --strict` is enforced across `src/chaotic_pfc` (`strict = true`, plus
+  `--strict` in the `typecheck` Makefile target and the CI job). The only
+  overrides are the third-party `numba`/`scipy`/`matplotlib` stubs.
 
 ### Fixed
 - The CI coverage gate (`--cov-fail-under=75`) is met again (70.33 % before

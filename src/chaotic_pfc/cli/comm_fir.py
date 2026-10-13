@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 from ._common import (
     add_lang_flag,
@@ -15,7 +16,7 @@ from ._common import (
 )
 
 
-def add_parser(subparsers: argparse._SubParsersAction) -> None:
+def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register the ``run comm-fir`` subcommand."""
     from chaotic_pfc.config import DEFAULT_CONFIG as cfg
 

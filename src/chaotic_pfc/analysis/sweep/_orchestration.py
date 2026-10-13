@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import NamedTuple, TypedDict
+from typing import Any, NamedTuple, TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
@@ -16,11 +16,11 @@ from ._types import _KAISER_BETA, FILTER_TYPES, WINDOWS, SweepResult
 
 
 def _precompute_perturbations(
-    num_taps_grid: NDArray,
+    num_taps_grid: NDArray[Any],
     n_cutoffs: int,
     n_initial: int,
     seed: int | None,
-) -> NDArray:
+) -> NDArray[Any]:
     """Build the deterministic perturbation tensor consumed by the kernel.
 
     Returns an array of shape ``(Ncoef, n_cutoffs, n_initial, max_Ns)``
@@ -34,14 +34,14 @@ def _precompute_perturbations(
 
 
 def precompute_fir_bank(
-    num_taps_grid: Sequence[int] | NDArray,
-    cutoff_grid: NDArray,
+    num_taps_grid: Sequence[int] | NDArray[Any],
+    cutoff_grid: NDArray[Any],
     filter_type: str,
     window: str,
     *,
     kaiser_beta: float = _KAISER_BETA,
     bandwidth: float = 0.05,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Build the FIR coefficient tensor and gain matrix for a sweep.
 
     Parameters
@@ -129,9 +129,9 @@ class QuickSweepParams(NamedTuple):
     Fields replace the previous positional four-tuple.
     """
 
-    orders_lp: NDArray
-    orders_hp: NDArray
-    cutoff_grid: NDArray
+    orders_lp: NDArray[Any]
+    orders_hp: NDArray[Any]
+    cutoff_grid: NDArray[Any]
     params: QuickSweepConfig
 
 
@@ -152,16 +152,16 @@ def quick_sweep_params() -> QuickSweepParams:
 
 
 def _resolve_fir_bank(
-    num_taps_grid: NDArray,
-    cutoff_grid: NDArray,
+    num_taps_grid: NDArray[Any],
+    cutoff_grid: NDArray[Any],
     filter_type: str,
     window: str,
     *,
     kaiser_beta: float,
     bandwidth: float,
-    fir_bank: NDArray | None,
-    fir_design: Callable[[int, float], NDArray] | None,
-) -> tuple[NDArray, NDArray]:
+    fir_bank: NDArray[Any] | None,
+    fir_design: Callable[[int, float], NDArray[Any]] | None,
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Return the FIR coefficient tensor, from the catalogue or a user design.
 
     Implements the ``run_sweep`` extension point: the sweep can use
@@ -229,10 +229,10 @@ def _resolve_adaptive_params(
 
 
 def _default_sweep_grid(
-    num_taps_grid: Sequence[int] | NDArray | None,
-    cutoff_grid: NDArray | None,
+    num_taps_grid: Sequence[int] | NDArray[Any] | None,
+    cutoff_grid: NDArray[Any] | None,
     filter_type: str,
-) -> tuple[NDArray, NDArray]:
+) -> tuple[NDArray[Any], NDArray[Any]]:
     """Fill the default tap/cutoff grids and return them as int64/float64 arrays."""
     if num_taps_grid is None:
         order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
@@ -247,10 +247,10 @@ def _default_sweep_grid(
 
 
 def _warmup_kernel(
-    orders_arr: NDArray,
-    cutoffs_arr: NDArray,
-    fir_bank: NDArray,
-    gains: NDArray,
+    orders_arr: NDArray[Any],
+    cutoffs_arr: NDArray[Any],
+    fir_bank: NDArray[Any],
+    gains: NDArray[Any],
     alpha: float,
     beta: float,
     fallback_mode: int,
@@ -290,8 +290,8 @@ def _sweep_metadata(
     Nmap_min: int,
     tol: float,
     fallback_mode: int,
-    n_fallback: NDArray,
-) -> dict:
+    n_fallback: NDArray[Any],
+) -> dict[str, Any]:
     """Build the ``SweepResult.metadata`` mapping."""
     return {
         "Nitera": Nitera,
@@ -313,8 +313,8 @@ def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
     *,
-    num_taps_grid: Sequence[int] | NDArray | None = None,
-    cutoff_grid: NDArray | None = None,
+    num_taps_grid: Sequence[int] | NDArray[Any] | None = None,
+    cutoff_grid: NDArray[Any] | None = None,
     Nitera: int = 500,
     Nmap: int = 3000,
     n_initial: int = 25,
@@ -328,8 +328,8 @@ def run_sweep(
     Nmap_min: int = 500,
     tol: float = 1e-3,
     fallback_mode: int = 1,
-    fir_bank: NDArray | None = None,
-    fir_design: Callable[[int, float], NDArray] | None = None,
+    fir_bank: NDArray[Any] | None = None,
+    fir_design: Callable[[int, float], NDArray[Any]] | None = None,
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 

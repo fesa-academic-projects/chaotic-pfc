@@ -13,7 +13,8 @@ used. The sweep kernels will run without Numba — just much slower.
 from __future__ import annotations
 
 import builtins
-from typing import Any
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, overload
 
 try:
     from numba import get_num_threads as _get_num_threads
@@ -46,15 +47,18 @@ def _get_num_threads_slow() -> int:
     return 1
 
 
-njit: Any
-prange: Any
-get_num_threads: Any
+if TYPE_CHECKING:
 
-if HAS_NUMBA:
-    njit = _njit
-    prange = _prange
-    get_num_threads = _get_num_threads
+    @overload
+    def njit[F: Callable[..., Any]](func: F, /) -> F: ...
+    @overload
+    def njit[F: Callable[..., Any]](func: None = ..., /, **kwargs: Any) -> Callable[[F], F]: ...
+    def njit(func: Any = None, /, **kwargs: Any) -> Any: ...
+
+    def prange(*args: Any, **kwargs: Any) -> range: ...
+    def get_num_threads() -> int: ...
+
 else:
-    njit = _njit_slow
-    prange = _prange_slow
-    get_num_threads = _get_num_threads_slow
+    njit = _njit if HAS_NUMBA else _njit_slow
+    prange = _prange if HAS_NUMBA else _prange_slow
+    get_num_threads = _get_num_threads if HAS_NUMBA else _get_num_threads_slow

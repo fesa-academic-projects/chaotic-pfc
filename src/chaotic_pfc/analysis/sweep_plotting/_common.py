@@ -5,10 +5,11 @@ from __future__ import annotations
 from collections.abc import Iterable
 from enum import IntEnum
 from pathlib import Path
+from typing import Any
 
 import matplotlib.colors as mcolors
-import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.patches import Patch
 from numpy.typing import NDArray
@@ -39,7 +40,7 @@ _bounds_disc = [-1.5, -0.5, 0.5, 2.5, 3.5]
 _norm_disc = mcolors.BoundaryNorm(_bounds_disc, _cmap_disc.N)
 
 
-def _build_legend_handles(lang: str = "pt") -> list:
+def _build_legend_handles(lang: str = "pt") -> list[Any]:
     """Build the discrete-classification legend in the requested language."""
     return [
         Patch(
@@ -81,7 +82,7 @@ class OrbitClass(IntEnum):
     DIVERGENT = 2
 
 
-def classify(h: NDArray) -> NDArray:
+def classify(h: NDArray[Any]) -> NDArray[Any]:
     """Map raw λ_max values to discrete classes.
 
     Parameters
@@ -91,7 +92,7 @@ def classify(h: NDArray) -> NDArray:
 
     Returns
     -------
-    NDArray
+    NDArray[Any]
         Array of the same shape as ``h`` where each entry is an
         :class:`OrbitClass` value:
 
@@ -114,7 +115,7 @@ def classify(h: NDArray) -> NDArray:
 
 
 def _pick_xticks(
-    Nz: NDArray,
+    Nz: NDArray[Any],
     slot_total: int,
     data_slots: int,
     step: int,
@@ -160,7 +161,7 @@ _PANEL_LABEL_ABOVE: dict[str, tuple[float, str]] = {
 
 def _draw_panel_label(
     fig: Figure,
-    ax: plt.Axes,
+    ax: Axes,
     text: str,
     fontsize: float,
     loc: str,
@@ -215,11 +216,11 @@ def _draw_panel_label(
     fig.canvas.draw()
     # get_renderer lives on the concrete canvas (e.g. FigureCanvasAgg),
     # not on FigureCanvasBase, so the matplotlib stubs miss it.
-    renderer = fig.canvas.get_renderer()  # type: ignore[attr-defined]
+    renderer = fig.canvas.get_renderer()  # type: ignore[attr-defined]  # only on the Agg canvas
     bbox = ax.xaxis.get_tightbbox(renderer)
     # get_tightbbox returns None only for an empty axis; the draw pass
     # above guarantees the x-axis has a measurable tight bbox.
-    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]  # type: ignore[union-attr]
+    y_fig = fig.transFigure.inverted().transform((0.0, bbox.y0))[1]  # type: ignore[union-attr]  # non-None after the draw pass
     gap = 5.0 / (fig.get_figheight() * 72.0)
     box = ax.get_position()
     fig.text(
@@ -253,7 +254,7 @@ def _save(fig: Figure, path: str | Path | None) -> None:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArray]:
+def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray[Any], NDArray[Any]]:
     """Load all sweeps under *sweep_dir* and unify to the finest grid.
 
     Returns (sweeps, Nz, cutoff_grid) where every sweep has been resampled
@@ -305,11 +306,11 @@ def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray, NDArr
 
 
 def _interleaved_expand(
-    data_2d: NDArray,
+    data_2d: NDArray[Any],
     data_slots: int = 3,
     gap_slots: int = 1,
     fill_value: float = np.nan,
-) -> NDArray:
+) -> NDArray[Any]:
     """Expand (Ncoef, Ncut) into (total_slots, Ncut) with gap columns.
 
     Gap slots are filled with *fill_value* (default ``NaN``).  Callers
@@ -329,9 +330,9 @@ def _interleaved_expand(
 
 
 def _setup_interleaved_axes(
-    ax: plt.Axes,
-    Nz: NDArray,
-    cutoff_grid: NDArray,
+    ax: Axes,
+    Nz: NDArray[Any],
+    cutoff_grid: NDArray[Any],
     data_slots: int = 3,
     gap_slots: int = 1,
     label_fontsize: float = 16.0,
@@ -370,10 +371,10 @@ def _save_svg(fig: Figure, stem: Path) -> None:
 
 def _unpack(
     result: SweepResult | None,
-    h: NDArray | None,
-    num_taps_grid: NDArray | None,
-    cutoff_grid: NDArray | None,
-) -> tuple[NDArray, NDArray, NDArray]:
+    h: NDArray[Any] | None,
+    num_taps_grid: NDArray[Any] | None,
+    cutoff_grid: NDArray[Any] | None,
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Resolve the two accepted calling conventions into (h, Nz, cutoff_grid)."""
     if result is not None:
         h = result.h

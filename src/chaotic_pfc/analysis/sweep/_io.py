@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import warnings
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -25,7 +26,7 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     }
     if result.n_iters_used is not None:
         payload["n_iters_used"] = result.n_iters_used
-    np.savez(path, **payload)  # type: ignore[arg-type]
+    np.savez(path, **payload)  # type: ignore[arg-type]  # kwargs are arrays/scalars by construction
     return path
 
 
@@ -48,7 +49,7 @@ def load_sweep(path: str | Path) -> SweepResult:
                 f"<(filter_type)> pattern"
             ) from None
 
-    metadata: dict = {}
+    metadata: dict[str, Any] = {}
     if "metadata" in data.files:
         try:
             metadata = dict(data["metadata"].tolist())

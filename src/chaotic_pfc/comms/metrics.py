@@ -13,7 +13,7 @@ module only aligns the two signals before measuring.
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
@@ -39,8 +39,8 @@ class CommMetrics(TypedDict):
 
 
 def estimate_delay(
-    m: NDArray,
-    m_hat: NDArray,
+    m: NDArray[Any],
+    m_hat: NDArray[Any],
     *,
     transient: int,
     max_lag: int = 500,
@@ -98,8 +98,8 @@ def estimate_delay(
 
 
 def comm_metrics(
-    m: NDArray,
-    m_hat: NDArray,
+    m: NDArray[Any],
+    m_hat: NDArray[Any],
     *,
     transient: int,
     bit_period: int,

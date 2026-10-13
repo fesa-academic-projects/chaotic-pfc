@@ -3,13 +3,14 @@ from __future__ import annotations
 import argparse
 import time
 from pathlib import Path
+from typing import Any
 
 # ════════════════════════════════════════════════════════════════════════════
 # run sweep beta-sweep
 # ════════════════════════════════════════════════════════════════════════════
 
 
-def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction) -> None:
+def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``run sweep beta-sweep``."""
     from chaotic_pfc.analysis.sweep import FILTER_TYPES
 

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 from .._common import add_lang_flag, pick_backend
 
 
-def _add_plot_parser(subparsers: argparse._SubParsersAction) -> None:
+def _add_plot_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     """Register ``run sweep plot``."""
     from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS
 
@@ -85,7 +86,9 @@ def _target_dir(figures_dir: Path, npz_path: Path, data_dir: Path) -> Path:
     return figures_dir / rel
 
 
-def _render_one(npz_path: Path, figures_dir: Path, data_dir: Path, fmt: str, lang: str) -> dict:
+def _render_one(
+    npz_path: Path, figures_dir: Path, data_dir: Path, fmt: str, lang: str
+) -> dict[str, Any]:
     """Load a sweep ``.npz`` and render all figures for one format.
 
     Module-level function so it is picklable by
