@@ -37,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `plot_classification_interleaved`, `plot_heatmap_continuous` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
   | `SweepResult` (attributes) | `.orders`, `.cutoffs` | `.num_taps_grid`, `.cutoff_grid` (the `.npz` keys `coef`/`wcorte` are unchanged in 0.9) |
   | `beta_summary` | `dict[str, dict[float, dict]]` | `dict[str, dict[float, BetaPoint]]` (`BetaPoint` TypedDict) |
-  | `quick_sweep_params` | positional 4-tuple | `QuickSweepParams` NamedTuple (`orders_lp`, `orders_hp`, `cutoff_grid`, `params`) with `params` a `QuickSweepConfig` TypedDict |
+  | `quick_sweep_params` | positional 4-tuple | `QuickSweepParams` NamedTuple (`num_taps_grid_lp`, `num_taps_grid_hp`, `cutoff_grid`, `params`) with `params` a `QuickSweepConfig` TypedDict |
+  | `QuickSweepParams` (fields) | `.orders_lp`, `.orders_hp` | `.num_taps_grid_lp`, `.num_taps_grid_hp` |
 - Public functions take their non-leading arguments by keyword only,
   e.g. `henon_standard(steps, *, x0, y0, alpha, beta)`,
   `transmit(message, *, mu, alpha, beta, x0, y0)`,
@@ -130,6 +131,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `mypy --strict` is enforced across `src/chaotic_pfc` (`strict = true`, plus
   `--strict` in the `typecheck` Makefile target and the CI job). The only
   overrides are the third-party `numba`/`scipy`/`matplotlib` stubs.
+- `classify` now returns an `NDArray[np.int64]` array carrying the `OrbitClass`
+  codes (it returned `float64` before); the classification figures are
+  unchanged.
 - The public-API array annotations carry the concrete element type:
   `NDArray[np.float64]` for states, signals, coefficients, cutoffs and exponents
   and `NDArray[np.int64]` for the tap counts and the `classify`/`OrbitClass`

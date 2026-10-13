@@ -129,8 +129,8 @@ class QuickSweepParams(NamedTuple):
     Fields replace the previous positional four-tuple.
     """
 
-    orders_lp: NDArray[np.int64]
-    orders_hp: NDArray[np.int64]
+    num_taps_grid_lp: NDArray[np.int64]
+    num_taps_grid_hp: NDArray[np.int64]
     cutoff_grid: NDArray[np.float64]
     params: QuickSweepConfig
 
@@ -141,7 +141,7 @@ def quick_sweep_params() -> QuickSweepParams:
     Returns
     -------
     QuickSweepParams
-        ``orders_lp``, ``orders_hp``, ``cutoff_grid`` and ``params``.
+        ``num_taps_grid_lp``, ``num_taps_grid_hp``, ``cutoff_grid`` and ``params``.
     """
     return QuickSweepParams(
         np.arange(2, 8),

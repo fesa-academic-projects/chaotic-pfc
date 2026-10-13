@@ -94,15 +94,15 @@ def run_beta_sweep(args: argparse.Namespace) -> int:
     data_dir = Path(args.data_dir)
 
     if args.quick:
-        orders_lp, orders_hp, cutoff_grid, params = quick_sweep_params()
+        num_taps_grid_lp, num_taps_grid_hp, cutoff_grid, params = quick_sweep_params()
     else:
-        orders_lp = None
-        orders_hp = None
+        num_taps_grid_lp = None
+        num_taps_grid_hp = None
         cutoff_grid = None
         params = QuickSweepConfig(
             Nitera=500, Nmap=3000, n_initial=25, bandwidth=getattr(args, "bandwidth", 0.05)
         )
-    num_taps_grid = orders_hp if args.filter_type in ("highpass", "bandstop") else orders_lp
+    num_taps_grid = num_taps_grid_hp if args.filter_type in ("highpass", "bandstop") else num_taps_grid_lp
 
     total_start = time.perf_counter()
     warmup_needed = True

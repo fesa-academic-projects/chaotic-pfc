@@ -161,10 +161,10 @@ def _run_all_sweeps(
     early-stop with the supplied ``Nmap_min`` and ``tol`` parameters.
     """
     if quick:
-        orders_lp, orders_hp, cutoff_grid, params = quick_sweep_params()
+        num_taps_grid_lp, num_taps_grid_hp, cutoff_grid, params = quick_sweep_params()
     else:
-        orders_lp = None  # → run_sweep default (np.arange(2, 42))
-        orders_hp = None  # → run_sweep default (np.arange(3, 43, 2))
+        num_taps_grid_lp = None  # → run_sweep default (np.arange(2, 42))
+        num_taps_grid_hp = None  # → run_sweep default (np.arange(3, 43, 2))
         cutoff_grid = None
         params = QuickSweepConfig(Nitera=500, Nmap=3000, n_initial=25, bandwidth=0.05)
 
@@ -203,7 +203,7 @@ def _run_all_sweeps(
         result = run_sweep(
             window=window,
             filter_type=filter_type,
-            num_taps_grid=orders_hp if filter_type in ("highpass", "bandstop") else orders_lp,
+            num_taps_grid=num_taps_grid_hp if filter_type in ("highpass", "bandstop") else num_taps_grid_lp,
             cutoff_grid=cutoff_grid,
             warmup=warmup_needed,
             kaiser_beta=beta if beta is not None else 5.0,

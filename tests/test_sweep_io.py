@@ -116,8 +116,8 @@ class TestIO(unittest.TestCase):
 
 class TestHelpers(unittest.TestCase):
     def test_quick_sweep_params_reduces_work(self):
-        orders_lp, _orders_hp, cutoff_grid, params = quick_sweep_params()
-        self.assertLess(len(orders_lp), 10)
+        num_taps_grid_lp, _num_taps_grid_hp, cutoff_grid, params = quick_sweep_params()
+        self.assertLess(len(num_taps_grid_lp), 10)
         self.assertLess(len(cutoff_grid), 20)
         self.assertIsInstance(params, dict)
         self.assertIn("Nitera", params)
