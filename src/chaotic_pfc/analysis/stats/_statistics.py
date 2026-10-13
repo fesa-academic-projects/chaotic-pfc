@@ -12,6 +12,7 @@ from chaotic_pfc.analysis.stats._common import (
     _safe_stats,
 )
 from chaotic_pfc.analysis.stats._types import (
+    BetaPoint,
     BootstrapConfidence,
     CorrelationMatrix,
     LmaxDistribution,
@@ -21,10 +22,10 @@ from chaotic_pfc.analysis.sweep import FILTER_TYPES, load_sweep
 
 def beta_summary(
     data_dir: str | Path = "data/sweeps/kaiser",
-) -> dict[str, dict[float, dict]]:
+) -> dict[str, dict[float, BetaPoint]]:
     """Aggregate per-β statistics for each filter type.
 
-    Returns a nested dict: ``{filter_type: {beta: {pct_chaotic, mean_lmax, ...}}}``
+    Returns a nested dict: ``{filter_type: {beta: BetaPoint}}``
 
     Parameters
     ----------
@@ -33,10 +34,10 @@ def beta_summary(
 
     Returns
     -------
-    dict[str, dict[float, dict]]
+    dict[str, dict[float, BetaPoint]]
         Aggregated per-β statistics for each filter type.
     """
-    out: dict[str, dict[float, dict]] = {}
+    out: dict[str, dict[float, BetaPoint]] = {}
     for ft in FILTER_TYPES:
         ft_dir = Path(data_dir) / ft
         if not ft_dir.is_dir():

@@ -23,6 +23,8 @@ from __future__ import annotations
 from ._io import _infer_config_from_path, load_sweep, save_sweep  # noqa: F401
 from ._kernel import _build_task_order  # noqa: F401
 from ._orchestration import (
+    QuickSweepConfig,
+    QuickSweepParams,
     precompute_fir_bank,
     quick_sweep_params,
     run_sweep,
@@ -38,6 +40,8 @@ __all__ = [
     "FILTER_TYPES",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
+    "QuickSweepConfig",
+    "QuickSweepParams",
     "SweepResult",
     "load_sweep",
     "precompute_fir_bank",

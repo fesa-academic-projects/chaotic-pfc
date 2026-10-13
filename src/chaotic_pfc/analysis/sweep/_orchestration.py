@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from typing import NamedTuple, TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
@@ -113,16 +114,40 @@ def precompute_fir_bank(
     return fir_bank, gains
 
 
-def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | int]]:
-    """Return the (orders_lp, orders_hp, cutoff_grid, params) for quick-sweep mode.
+class QuickSweepConfig(TypedDict):
+    """Parameters passed to :func:`run_sweep` in quick mode."""
 
-    These are small grids suitable for testing and CI smoke runs.
+    Nitera: int
+    Nmap: int
+    n_initial: int
+    bandwidth: float
+
+
+class QuickSweepParams(NamedTuple):
+    """Return value of :func:`quick_sweep_params`.
+
+    Fields replace the previous positional four-tuple.
     """
-    return (
+
+    orders_lp: NDArray
+    orders_hp: NDArray
+    cutoff_grid: NDArray
+    params: QuickSweepConfig
+
+
+def quick_sweep_params() -> QuickSweepParams:
+    """Return the quick-sweep grids and parameters.
+
+    Returns
+    -------
+    QuickSweepParams
+        ``orders_lp``, ``orders_hp``, ``cutoff_grid`` and ``params``.
+    """
+    return QuickSweepParams(
         np.arange(2, 8),
         np.arange(3, 9, 2),
         np.linspace(0.1, 0.9, 10),
-        dict(Nitera=50, Nmap=200, n_initial=3, bandwidth=0.0375),
+        QuickSweepConfig(Nitera=50, Nmap=200, n_initial=3, bandwidth=0.0375),
     )
 
 

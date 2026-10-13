@@ -149,3 +149,14 @@ class KaiserBetaOptimal(TypedDict):
     pct_chaotic_finite: float
     lmax_mean: float
     lmax_max: float
+
+
+class BetaPoint(TypedDict):
+    r"""Per-:math:`\beta_K` statistics inside :func:`beta_summary`.
+
+    One entry of the ``{filter_type: {beta: BetaPoint}}`` mapping.
+    """
+
+    pct_chaotic: float
+    mean_lmax: float
+    max_lmax: float

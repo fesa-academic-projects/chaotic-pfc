@@ -36,11 +36,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `run_sweep`, `precompute_fir_bank` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
   | `plot_classification_interleaved`, `plot_heatmap_continuous` | `orders`, `cutoffs` | `num_taps_grid`, `cutoff_grid` |
   | `SweepResult` (attributes) | `.orders`, `.cutoffs` | `.num_taps_grid`, `.cutoff_grid` (the `.npz` keys `coef`/`wcorte` are unchanged in 0.9) |
+  | `beta_summary` | `dict[str, dict[float, dict]]` | `dict[str, dict[float, BetaPoint]]` (`BetaPoint` TypedDict) |
+  | `quick_sweep_params` | positional 4-tuple | `QuickSweepParams` NamedTuple (`orders_lp`, `orders_hp`, `cutoff_grid`, `params`) with `params` a `QuickSweepConfig` TypedDict |
 - Public functions take their non-leading arguments by keyword only,
   e.g. `henon_standard(steps, *, x0, y0, alpha, beta)`,
   `transmit(message, *, mu, alpha, beta, x0, y0)`,
   `fir_channel(s, *, num_taps, cutoff, window)`; the filter argument order is
   `num_taps` then `cutoff`.
+- The remaining public functions that return a mapping already carry a named
+  element type and keep the mapping: `bootstrap_confidence`,
+  `compare_filter_types`, `kaiser_beta_optimal`, `lmax_distribution`,
+  `sweet_spot_per_filter`, `top_k_per_filter` (`dict[str, <TypedDict>]`) and
+  `consolidate_kaiser`, `load_all_sweeps` (`dict[tuple[str, str], SweepResult]`).
+  Their key set is data-dependent (a filter type or a window may be absent), so a
+  fixed-key `TypedDict` would over-constrain them.
 
 ### Added
 - `chaotic-pfc paper numbers|audit|figures` and

@@ -73,6 +73,7 @@ __all__ = [  # noqa: RUF022
     "OptimalParams",
     "LmaxDistribution",
     "CorrelationMatrix",
+    "BetaPoint",
     "BootstrapConfidence",
     "AreaSummary",
     "LmaxStats",
@@ -163,6 +164,9 @@ from chaotic_pfc.analysis.stats._summary import (
 )
 from chaotic_pfc.analysis.stats._types import (
     AreaSummary as AreaSummary,
+)
+from chaotic_pfc.analysis.stats._types import (
+    BetaPoint as BetaPoint,
 )
 from chaotic_pfc.analysis.stats._types import (
     BootstrapConfidence as BootstrapConfidence,
