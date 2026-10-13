@@ -97,7 +97,7 @@ def run(args: argparse.Namespace) -> int:
         lyapunov_max_pole_filtered,
     )
 
-    alpha, beta = cfg.comm.henon.a, cfg.comm.henon.b
+    alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
     data_dir = Path(args.data_dir)
 
     # ─── Part A: Pure 2-D Henon (single IC) ────────────────────────────────

@@ -27,7 +27,7 @@ class TestHenonStandard(unittest.TestCase):
         self.assertEqual(Y[0], 0.2)
 
     def test_first_iteration(self):
-        X, _Y = henon_standard(10, a=1.2, b=0.2, x0=0.0, y0=0.0)
+        X, _Y = henon_standard(10, alpha=1.2, beta=0.2, x0=0.0, y0=0.0)
         # x[1] = 1 - a*x[0]^2 + b*y[0] = 1 - 0 + 0 = 1
         self.assertAlmostEqual(X[1], 1.0, places=10)
 

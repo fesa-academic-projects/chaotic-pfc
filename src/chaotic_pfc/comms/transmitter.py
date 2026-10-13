@@ -14,7 +14,7 @@ Two transmitters are provided, mirroring the two receiver modes:
       s[n] = x_1[n] + \\mu \\, m[n]
 
   and the updated state becomes
-  ``x_1[n+1] = a - s[n]^2 + b \\, x_2[n]``.
+  ``x_1[n+1] = \\alpha - s[n]^2 + \\beta \\, x_2[n]``.
 
 * :func:`transmit_order_n` — higher-order Hénon with an internal FIR
   filter whose taps form the coefficient vector ``c``. The carrier is
@@ -36,8 +36,8 @@ from ..dynamics.maps import _henon_n4_step_inplace
 def transmit(
     message: NDArray,
     mu: float = 0.01,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
     x0: float = 0.0,
     y0: float = 0.0,
 ) -> NDArray:
@@ -53,7 +53,7 @@ def transmit(
         near their autonomous regime, which is important for reliable
         chaos synchronisation at the receiver. The default ``0.01``
         matches the convention used throughout the project.
-    a, b
+    alpha, beta
         Hénon parameters. The canonical chaotic regime is ``(1.4, 0.3)``.
     x0, y0
         Initial conditions of the transmitter's internal state.
@@ -70,7 +70,7 @@ def transmit(
     .. math::
 
         s[n]       &= x_1[n] + \\mu \\, m[n] \\\\
-        x_1[n+1]   &= a - s[n]^2 + b \\, x_2[n] \\\\
+        x_1[n+1]   &= \\alpha - s[n]^2 + \\beta \\, x_2[n] \\\\
         x_2[n+1]   &= x_1[n]
 
     The output ``s`` has the same chaotic broadband spectrum as the
@@ -89,7 +89,7 @@ def transmit(
     with np.errstate(over="ignore", invalid="ignore"):
         for k in range(N):
             s[k] = x1[k] + mu * message[k]
-            x1[k + 1] = a - s[k] ** 2 + b * x2[k]
+            x1[k + 1] = alpha - s[k] ** 2 + beta * x2[k]
             x2[k + 1] = x1[k]
     return s
 
@@ -98,8 +98,8 @@ def transmit_order_n(
     message: NDArray,
     fir_coeffs: NDArray,
     mu: float = 0.01,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
     x0: NDArray | None = None,
     seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
@@ -119,7 +119,7 @@ def transmit_order_n(
         at least 3. Usually produced by :func:`scipy.signal.firwin`.
     mu
         Modulation depth. Same semantics as in :func:`transmit`.
-    a, b
+    alpha, beta
         Hénon parameters.
     x0
         Optional explicit initial state, shape ``(Nc,)``. If omitted, a
@@ -155,5 +155,5 @@ def transmit_order_n(
     for i in range(N):
         v = state[2, i]
         s[i] = v + mu * message[i]
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], a, b, c)
+        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], alpha, beta, c)
     return s, state

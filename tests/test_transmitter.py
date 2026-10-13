@@ -30,20 +30,20 @@ class TestTransmitStandard(unittest.TestCase):
         """With mu=0 the output must be the autonomous Hénon trajectory,
         independent of the message content."""
         x0, y0 = 0.1, 0.2
-        a, b = 1.4, 0.3
+        alpha, beta = 1.4, 0.3
         N = 200
         m1 = np.ones(N)
         m2 = -np.ones(N)
-        s1 = transmit(m1, mu=0.0, a=a, b=b, x0=x0, y0=y0)
-        s2 = transmit(m2, mu=0.0, a=a, b=b, x0=x0, y0=y0)
+        s1 = transmit(m1, mu=0.0, alpha=alpha, beta=beta, x0=x0, y0=y0)
+        s2 = transmit(m2, mu=0.0, alpha=alpha, beta=beta, x0=x0, y0=y0)
         np.testing.assert_array_equal(s1, s2)
         # At mu=0, the emitted signal is the autonomous Hénon x-state.
         self.assertAlmostEqual(float(s1[0]), x0, places=12)
-        self.assertAlmostEqual(float(s1[1]), a - s1[0] ** 2 + b * y0, places=12)
+        self.assertAlmostEqual(float(s1[1]), alpha - s1[0] ** 2 + beta * y0, places=12)
         for n in range(2, N):
             self.assertAlmostEqual(
                 float(s1[n]),
-                float(a - s1[n - 1] ** 2 + b * s1[n - 2]),
+                float(alpha - s1[n - 1] ** 2 + beta * s1[n - 2]),
                 places=12,
             )
 
@@ -67,14 +67,14 @@ class TestTransmitStandard(unittest.TestCase):
 
         Tests the recurrence formula explicitly for a known seed state.
         """
-        mu, a, b = 0.01, 1.4, 0.3
+        mu, alpha, beta = 0.01, 1.4, 0.3
         x0, y0 = 0.0, 0.0
         m = np.array([0.5, -0.5, 0.0])
-        s = transmit(m, mu=mu, a=a, b=b, x0=x0, y0=y0)
+        s = transmit(m, mu=mu, alpha=alpha, beta=beta, x0=x0, y0=y0)
 
         # Manual one-step simulation
         s0_expected = x0 + mu * m[0]
-        x1_after = a - s0_expected**2 + b * y0
+        x1_after = alpha - s0_expected**2 + beta * y0
         s1_expected = x1_after + mu * m[1]
         self.assertAlmostEqual(float(s[0]), s0_expected, places=12)
         self.assertAlmostEqual(float(s[1]), s1_expected, places=12)

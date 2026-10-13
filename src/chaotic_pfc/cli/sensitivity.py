@@ -36,7 +36,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.dynamics.maps import henon_standard
     from chaotic_pfc.plotting.figures import plot_sensitivity
 
-    a, b = cfg.comm.henon.a, cfg.comm.henon.b
+    alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
     fmt = cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
     if args.save:
@@ -44,8 +44,8 @@ def run(args: argparse.Namespace) -> int:
 
     print(f"[02] SDIC  |  steps={args.steps}  ε={args.epsilon:.0e}")
 
-    X1, _ = henon_standard(args.steps, x0=0.0, y0=0.0, a=a, b=b)
-    X2, _ = henon_standard(args.steps, x0=args.epsilon, y0=args.epsilon, a=a, b=b)
+    X1, _ = henon_standard(args.steps, x0=0.0, y0=0.0, alpha=alpha, beta=beta)
+    X2, _ = henon_standard(args.steps, x0=args.epsilon, y0=args.epsilon, alpha=alpha, beta=beta)
     n = np.arange(args.steps + 1)
 
     save_path = str(fdir / f"sensitivity.{fmt}") if args.save else None

@@ -37,8 +37,8 @@ from ..dynamics.maps import _henon_n4_step_inplace
 def receive(
     r: NDArray,
     mu: float = 0.01,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
     y0: float = 0.0,
     z0: float = 0.0,
 ) -> NDArray:
@@ -48,7 +48,7 @@ def receive(
 
     .. math::
 
-        y_1[n+1] &= a - r[n]^2 + b \\, y_2[n] \\\\
+        y_1[n+1] &= \\alpha - r[n]^2 + \\beta \\, y_2[n] \\\\
         y_2[n+1] &= y_1[n]
 
     This is the Pecora-Carroll trick: once ``y`` locks onto the
@@ -64,7 +64,7 @@ def receive(
     mu
         Modulation depth — must match the value used at the
         transmitter, otherwise the recovered amplitude is rescaled.
-    a, b
+    alpha, beta
         Hénon parameters — must match the transmitter's.
     y0, z0
         Initial conditions of the local oscillator. A random pair is a
@@ -96,7 +96,7 @@ def receive(
 
     with np.errstate(over="ignore", invalid="ignore"):
         for k in range(N):
-            y1[k + 1] = a - r[k] ** 2 + b * y2[k]
+            y1[k + 1] = alpha - r[k] ** 2 + beta * y2[k]
             y2[k + 1] = y1[k]
             m_hat[k] = (r[k] - y1[k]) / mu
     return m_hat
@@ -106,8 +106,8 @@ def receive_order_n(
     r: NDArray,
     fir_coeffs: NDArray,
     mu: float = 0.01,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
     y0: NDArray | None = None,
     seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
@@ -129,7 +129,7 @@ def receive_order_n(
         FIR feedback coefficients, shape ``(Nc,)``. Must match the
         ones used at the transmitter — otherwise synchronisation
         fails.
-    mu, a, b
+    mu, alpha, beta
         Must match the transmitter's parameters.
     y0
         Optional explicit initial state, shape ``(Nc,)``. If omitted, a
@@ -171,5 +171,5 @@ def receive_order_n(
     for i in range(N):
         v = state[2, i]
         m_hat[i] = (r[i] - v) / mu
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], a, b, c)
+        _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], alpha, beta, c)
     return m_hat, state

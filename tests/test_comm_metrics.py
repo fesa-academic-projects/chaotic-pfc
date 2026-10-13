@@ -28,22 +28,22 @@ GDELAY = (TAPS - 1) // 2
 class TestCommDelayAlignment(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        a, b = cfg.comm.henon.a, cfg.comm.henon.b
+        alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
         mu, per, tr = cfg.comm.mu, cfg.comm.message_period, cfg.comm.transient
         cls.bits, cls.tr = per, tr
         m = text_message("hello world", N, bit_period=per)
         cls.m = m
 
         rng = np.random.default_rng(cfg.seed)
-        s = transmit(m, mu=mu, a=a, b=b, x0=0.0, y0=0.0)
+        s = transmit(m, mu=mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
         cls.mhat_ideal = receive(
-            ideal_channel(s), mu=mu, a=a, b=b, y0=rng.random(), z0=rng.random()
+            ideal_channel(s), mu=mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random()
         )
 
         rng = np.random.default_rng(cfg.seed)
-        s = transmit(m, mu=mu, a=a, b=b, x0=0.0, y0=0.0)
+        s = transmit(m, mu=mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
         r, _ = fir_channel(s, cutoff=cfg.channel.cutoff, num_taps=TAPS)
-        cls.mhat_fir = receive(r, mu=mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+        cls.mhat_fir = receive(r, mu=mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random())
 
         rng = np.random.default_rng(cfg.seed)
         c = firwin(
@@ -56,9 +56,9 @@ class TestCommDelayAlignment(unittest.TestCase):
         nc = len(c)
         x0 = 0.5 * rng.random(nc)
         y0 = 0.5 * rng.random(nc)
-        s, _ = transmit_order_n(m, c, mu=mu, a=a, b=b, x0=x0)
+        s, _ = transmit_order_n(m, c, mu=mu, alpha=alpha, beta=beta, x0=x0)
         r, _ = fir_channel(s, cutoff=cfg.channel.cutoff, num_taps=TAPS)
-        cls.mhat_order = receive_order_n(r, c, mu=mu, a=a, b=b, y0=y0)[0]
+        cls.mhat_order = receive_order_n(r, c, mu=mu, alpha=alpha, beta=beta, y0=y0)[0]
 
     def _metrics(self, mhat: np.ndarray, delay: int):
         return comm_metrics(self.m, mhat, transient=self.tr, bit_period=self.bits, delay=delay)

@@ -16,16 +16,16 @@ Instead of writing:
 .. code-block:: python
 
    def test_henon_a14_b03():
-       X, Y = henon_standard(100, a=1.4, b=0.3)
+       X, Y = henon_standard(100, alpha=1.4, beta=0.3)
        assert X.shape == (101,)
 
 you write:
 
 .. code-block:: python
 
-   @given(a=st.floats(0.1, 2.0), b=st.floats(0.01, 0.9), n=st.integers(5, 50))
-   def test_henon_output_length(self, a, b, n):
-       X, Y = henon_standard(n, a=a, b=b)
+   @given(alpha=st.floats(0.1, 2.0), beta=st.floats(0.01, 0.9), n=st.integers(5, 50))
+   def test_henon_output_length(self, alpha, beta, n):
+       X, Y = henon_standard(n, alpha=alpha, beta=beta)
        assert len(X) == n + 1
 
 Hypothesis generates hundreds of random ``(a, b, n)`` tuples and
@@ -125,6 +125,13 @@ Adding a new property test
    not replace them.  Example tests document expected behaviour for
    specific, meaningful cases; property tests guard against
    regressions in edge cases that humans would never write manually.
+
+Fuzzing
+-------
+
+Fuzzing does not apply to this package: it parses no untrusted input. The
+relevant input space is numerical and is covered by the Hypothesis property
+tests above (``tests/test_properties.py``).
 
 Performance benchmarks
 ----------------------

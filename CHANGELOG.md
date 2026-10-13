@@ -23,6 +23,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 4-D pole-filtered Lyapunov estimator `lyapunov_max` is renamed
   `lyapunov_max_pole_filtered`; the name `lyapunov_max` now denotes the generic
   estimator for an arbitrary map.
+- Old-to-new names (per function/parameter):
+
+  | Function | Old | New |
+  |---|---|---|
+  | `henon_standard` | `a`, `b` | `alpha`, `beta` |
+  | `henon_fir_sequence` | `a`, `b`, `n_taps`, `wc` | `alpha`, `beta`, `num_taps`, `cutoff` |
+  | `henon_order_n` | `a`, `b` | `alpha`, `beta` |
+  | `transmit`, `transmit_order_n` | `a`, `b` | `alpha`, `beta` |
+  | `receive`, `receive_order_n` | `a`, `b` | `alpha`, `beta` |
+  | `HenonConfig` | `a`, `b` | `alpha`, `beta` |
 
 ### Added
 - `chaotic-pfc paper numbers|audit|figures` and

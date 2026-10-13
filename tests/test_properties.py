@@ -43,8 +43,8 @@ class TestHenonStandardInvariants(unittest.TestCase):
         """For every (a,b) in safe range, henon_standard either produces
         all-finite output or diverges definitively (once NaN appears,
         everything after is also NaN/Inf — no recovery)."""
-        a, b = params
-        X, Y = henon_standard(n, x0=0.0, y0=0.0, a=a, b=b)
+        alpha, beta = params
+        X, Y = henon_standard(n, x0=0.0, y0=0.0, alpha=alpha, beta=beta)
 
         # Shape contract
         self.assertEqual(X.shape, (n + 1,))
@@ -60,14 +60,14 @@ class TestHenonStandardInvariants(unittest.TestCase):
             self.assertFalse(
                 np.any(after),
                 f"henon_standard recovered to finite after divergence "
-                f"at index {first_bad} for a={a:.4f}, b={b:.4f}",
+                f"at index {first_bad} for alpha={alpha:.4f}, beta={beta:.4f}",
             )
 
     @given(params=safe_henon_params(), n=st.integers(5, 100))
     @COMMON
     def test_length_equals_steps_plus_one(self, params, n):
-        a, b = params
-        X, Y = henon_standard(n, x0=0.0, y0=0.0, a=a, b=b)
+        alpha, beta = params
+        X, Y = henon_standard(n, x0=0.0, y0=0.0, alpha=alpha, beta=beta)
         self.assertEqual(len(X), n + 1)
         self.assertEqual(len(Y), n + 1)
 
@@ -82,12 +82,12 @@ class TestHenonFilteredInvariants(unittest.TestCase):
     )
     @COMMON
     def test_lowpass_filtered_output_has_correct_shape(self, params, fir, n):
-        a, b = params
+        alpha, beta = params
         N_filter, wc = fir
         from scipy.signal import firwin
 
         coeffs = firwin(N_filter + 1, wc)
-        X, Y = henon_filtered(n, x0=0.0, y0=0.0, alpha=a, beta=b, c0=coeffs[0], c1=coeffs[1])
+        X, Y = henon_filtered(n, x0=0.0, y0=0.0, alpha=alpha, beta=beta, c0=coeffs[0], c1=coeffs[1])
         self.assertEqual(len(X), n + 1)
         self.assertEqual(len(Y), n + 1)
 

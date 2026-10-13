@@ -33,7 +33,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.plotting.figures import plot_attractor
 
     lang = args.lang
-    a, b = cfg.comm.henon.a, cfg.comm.henon.b
+    alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
     steps, fmt = args.steps, cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
     if args.save:
@@ -44,7 +44,7 @@ def run(args: argparse.Namespace) -> int:
 
     print(f"[01] Hénon attractors  |  steps={steps:,}")
 
-    X, Y = henon_standard(steps, a=a, b=b)
+    X, Y = henon_standard(steps, alpha=alpha, beta=beta)
     f1 = plot_attractor(
         X,
         Y,
@@ -54,7 +54,7 @@ def run(args: argparse.Namespace) -> int:
         save_path=_build_path(f"attractor_standard.{fmt}"),
     )
 
-    X, Y = henon_generalised(steps, alpha=a, beta=b)
+    X, Y = henon_generalised(steps, alpha=alpha, beta=beta)
     f2 = plot_attractor(
         X,
         Y,
@@ -64,7 +64,7 @@ def run(args: argparse.Namespace) -> int:
         save_path=_build_path(f"attractor_generalised.{fmt}"),
     )
 
-    X, Y = henon_filtered(steps, alpha=a, beta=b, c0=1.0, c1=0.0)
+    X, Y = henon_filtered(steps, alpha=alpha, beta=beta, c0=1.0, c1=0.0)
     f3 = plot_attractor(
         X,
         Y,

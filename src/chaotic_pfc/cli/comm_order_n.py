@@ -70,7 +70,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.dynamics.signals import text_message
     from chaotic_pfc.plotting.figures import plot_comm_grid
 
-    a, b = cfg.comm.henon.a, cfg.comm.henon.b
+    alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
     fmt = cfg.plot.fmt
 
     c = firwin(
@@ -87,9 +87,9 @@ def run(args: argparse.Namespace) -> int:
     y0 = 0.5 * rng.random(Nc)
 
     m = text_message(args.text, args.N, bit_period=args.period)
-    s, _ = transmit_order_n(m, c, mu=args.mu, a=a, b=b, x0=x0)
+    s, _ = transmit_order_n(m, c, mu=args.mu, alpha=alpha, beta=beta, x0=x0)
     r, h = fir_channel(s, cutoff=args.cutoff, num_taps=args.taps)
-    m_hat, _ = receive_order_n(r, c, mu=args.mu, a=a, b=b, y0=y0)
+    m_hat, _ = receive_order_n(r, c, mu=args.mu, alpha=alpha, beta=beta, y0=y0)
 
     mse = np.mean((m[cfg.comm.transient :] - m_hat[cfg.comm.transient :]) ** 2)
     print(f"[05] N-th order Henon  |  N={args.N:,}  mu={args.mu}  Nc={Nc}  text={args.text!r}")

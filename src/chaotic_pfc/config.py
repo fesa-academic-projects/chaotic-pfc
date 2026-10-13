@@ -28,8 +28,8 @@ class HenonConfig:
     pipeline assumes a strange attractor.
     """
 
-    a: float = 1.4
-    b: float = 0.3
+    alpha: float = 1.4
+    beta: float = 0.3
 
 
 @dataclass

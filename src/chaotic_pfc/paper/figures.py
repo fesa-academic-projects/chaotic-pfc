@@ -164,15 +164,15 @@ def fig_henon_signals(out_dir: Path) -> None:
 def fig_comm_bandlimited(out_dir: Path) -> None:
     """Write the band-limited FIR channel figure."""
     comm = CFG.comm
-    a, b, mu = comm.henon.a, comm.henon.b, comm.mu
+    alpha, beta, mu = comm.henon.alpha, comm.henon.beta, comm.mu
     tr = comm.transient
     delay = (CFG.channel.num_taps - 1) // 2
     m = text_message(comm.message_text, comm.N, bit_period=comm.message_period)
 
     rng = np.random.default_rng(CFG.seed)
-    s_a = transmit(m, mu=mu, a=a, b=b, x0=0.0, y0=0.0)
+    s_a = transmit(m, mu=mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
     r_a, _ = fir_channel(s_a, cutoff=CFG.channel.cutoff, num_taps=CFG.channel.num_taps)
-    m_hat_a = receive(r_a, mu=mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+    m_hat_a = receive(r_a, mu=mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random())
 
     c = firwin(
         numtaps=CFG.internal_fir.num_taps,
@@ -211,9 +211,9 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
     rng = np.random.default_rng(CFG.seed)
     x0 = 0.5 * rng.random(len(c))
     y0 = 0.5 * rng.random(len(c))
-    s_b, _ = transmit_order_n(m, c, mu=mu, a=a, b=b, x0=x0)
+    s_b, _ = transmit_order_n(m, c, mu=mu, alpha=alpha, beta=beta, x0=x0)
     r_b, _ = fir_channel(s_b, cutoff=CFG.channel.cutoff, num_taps=CFG.channel.num_taps)
-    m_hat_b, _ = receive_order_n(r_b, c, mu=mu, a=a, b=b, y0=y0)
+    m_hat_b, _ = receive_order_n(r_b, c, mu=mu, alpha=alpha, beta=beta, y0=y0)
 
     for label, m_hat in (("a", m_hat_a), ("b", m_hat_b)):
         met = comm_metrics(m, m_hat, transient=tr, bit_period=comm.message_period, delay=delay)
@@ -327,13 +327,13 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
 def fig_comm_ideal(out_dir: Path) -> None:
     """Write the ideal-channel communication figure."""
     comm, spec = CFG.comm, CFG.spectral
-    a, b, mu = comm.henon.a, comm.henon.b, comm.mu
+    alpha, beta, mu = comm.henon.alpha, comm.henon.beta, comm.mu
     tr = comm.transient
     m = text_message(comm.message_text, comm.N, bit_period=comm.message_period)
-    s = transmit(m, mu=mu, a=a, b=b, x0=0.0, y0=0.0)
+    s = transmit(m, mu=mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
     r = ideal_channel(s)
     rng = np.random.default_rng(CFG.seed)
-    m_hat = receive(r, mu=mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+    m_hat = receive(r, mu=mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random())
 
     met = comm_metrics(m, m_hat, transient=tr, bit_period=comm.message_period, delay=0)
     print(

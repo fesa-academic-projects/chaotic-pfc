@@ -54,8 +54,8 @@ def henon_standard(
     steps: int,
     x0: float = 0.0,
     y0: float = 0.0,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
 ) -> tuple[NDArray, NDArray]:
     """Iterate the standard 2-D Hénon map.
 
@@ -66,10 +66,10 @@ def henon_standard(
         ``steps + 1`` (initial condition included).
     x0, y0
         Initial conditions of the two state variables.
-    a, b
+    alpha, beta
         Hénon parameters. The canonical chaotic regime is
-        ``(a, b) = (1.4, 0.3)``; smaller ``a`` yields periodic orbits,
-        larger ``a`` yields unbounded trajectories for most ICs.
+        ``(alpha, beta) = (1.4, 0.3)``; smaller ``alpha`` yields periodic
+        orbits, larger ``alpha`` yields unbounded trajectories for most ICs.
 
     Returns
     -------
@@ -83,8 +83,8 @@ def henon_standard(
     X[0], Y[0] = x0, y0
     with np.errstate(over="ignore", invalid="ignore"):
         for i in range(steps):
-            xn = 1.0 - a * X[i] ** 2 + Y[i]
-            yn = b * X[i]
+            xn = 1.0 - alpha * X[i] ** 2 + Y[i]
+            yn = beta * X[i]
             if not (np.isfinite(xn) and np.isfinite(yn)):
                 X[i + 1 :] = np.nan
                 Y[i + 1 :] = np.nan
@@ -195,8 +195,8 @@ def _henon_n4_step_inplace(
     out: NDArray,
     x: NDArray,
     s: float,
-    a: float,
-    b: float,
+    alpha: float,
+    beta: float,
     c: NDArray,
 ) -> None:
     """Single step of the N-th order filtered Hénon map, writing into *out*.
@@ -209,14 +209,14 @@ def _henon_n4_step_inplace(
         Current state, shape ``(Nc,)``.
     s
         Current driving value.
-    a, b
+    alpha, beta
         Hénon parameters.
     c
         FIR coefficients, shape ``(Nc,)``.
     """
     Nc = len(c)
 
-    x1_new = a - s**2 + b * x[1]
+    x1_new = alpha - s**2 + beta * x[1]
     x2_new = x[0]
 
     v = c[0] * x1_new + c[1] * x[0] + c[2] * x[1]
@@ -238,8 +238,8 @@ def henon_order_n(
     *,
     fir_coeffs: NDArray,
     x0: NDArray | None = None,
-    a: float = 1.4,
-    b: float = 0.3,
+    alpha: float = 1.4,
+    beta: float = 0.3,
     driving: NDArray | None = None,
     seed: int | None = None,
 ) -> tuple[NDArray, NDArray]:
@@ -266,7 +266,7 @@ def henon_order_n(
     x0
         Optional explicit initial state, shape ``(Nc,)``. If ``None``,
         a random state is drawn from ``Uniform(0, 0.5)`` per component.
-    a, b
+    alpha, beta
         Hénon parameters.
     driving
         Optional external driving signal, shape ``(steps,)``. When
@@ -297,7 +297,7 @@ def henon_order_n(
         for i in range(steps):
             s_i = float(driving[i]) if driving is not None else state[2, i]
             output[i] = state[2, i]
-            _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, a, b, c)
+            _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, alpha, beta, c)
     return state, output
 
 
@@ -306,10 +306,10 @@ def henon_order_n(
 
 def henon_fir_sequence(
     N: int,
-    a: float = 1.4,
-    b: float = 0.3,
-    n_taps: int = 5,
-    wc: float = 0.9091,
+    alpha: float = 1.4,
+    beta: float = 0.3,
+    num_taps: int = 5,
+    cutoff: float = 0.9091,
     window: str = "hamming",
 ) -> NDArray:
     r"""Generate a chaotic sequence from the FIR-filtered Hénon map.
@@ -322,11 +322,11 @@ def henon_fir_sequence(
     ----------
     N
         Number of samples to produce.
-    a, b
+    alpha, beta
         Hénon map parameters (default: 1.4, 0.3).
-    n_taps
+    num_taps
         FIR filter order (number of coefficients).
-    wc
+    cutoff
         Normalised cutoff frequency in (0, 1).
     window
         SciPy window name (e.g. ``"hamming"``, ``"kaiser"``).
@@ -354,22 +354,22 @@ def henon_fir_sequence(
         DeprecationWarning,
         stacklevel=2,
     )
-    h = firwin(n_taps, wc, window=window)
-    buf = np.full(n_taps, 0.1)
+    h = firwin(num_taps, cutoff, window=window)
+    buf = np.full(num_taps, 0.1)
     x_val, y_val = 0.1, 0.1
     seq = np.empty(N)
 
     write_idx = 0
     for n in range(N):
         xf = 0.0
-        for k in range(n_taps):
-            xf += h[k] * buf[(write_idx - 1 - k) % n_taps]
-        xn = a - xf * xf + b * y_val
+        for k in range(num_taps):
+            xf += h[k] * buf[(write_idx - 1 - k) % num_taps]
+        xn = alpha - xf * xf + beta * y_val
         yn = x_val
         if not np.isfinite(xn) or abs(xn) > 100:
             raise ValueError(f"henon_fir_sequence diverged at n={n}")
         buf[write_idx] = xn
-        write_idx = (write_idx + 1) % n_taps
+        write_idx = (write_idx + 1) % num_taps
         x_val, y_val = xn, yn
         seq[n] = xn
 

@@ -51,7 +51,7 @@ def run(args: argparse.Namespace) -> int:
     from chaotic_pfc.dynamics.signals import text_message
     from chaotic_pfc.plotting.figures import plot_comm_grid
 
-    a, b = cfg.comm.henon.a, cfg.comm.henon.b
+    alpha, beta = cfg.comm.henon.alpha, cfg.comm.henon.beta
     tr = cfg.comm.transient
     fmt = cfg.plot.fmt
     fdir = Path(cfg.plot.figures_dir)
@@ -59,11 +59,11 @@ def run(args: argparse.Namespace) -> int:
         fdir.mkdir(parents=True, exist_ok=True)
 
     m = text_message(args.text, args.N, bit_period=args.period)
-    s = transmit(m, mu=args.mu, a=a, b=b, x0=0.0, y0=0.0)
+    s = transmit(m, mu=args.mu, alpha=alpha, beta=beta, x0=0.0, y0=0.0)
     r = ideal_channel(s)
 
     rng = np.random.default_rng(cfg.seed)
-    m_hat = receive(r, mu=args.mu, a=a, b=b, y0=rng.random(), z0=rng.random())
+    m_hat = receive(r, mu=args.mu, alpha=alpha, beta=beta, y0=rng.random(), z0=rng.random())
 
     mse = np.mean((m[tr:] - m_hat[tr:]) ** 2)
     print(f"[03] Ideal channel  |  N={args.N:,}  mu={args.mu}  T={args.period}  text={args.text!r}")
