@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 import numpy as np
 from numpy.typing import NDArray
@@ -126,6 +126,63 @@ def quick_sweep_params() -> tuple[NDArray, NDArray, NDArray, dict[str, float | i
     )
 
 
+def _resolve_fir_bank(
+    orders: NDArray,
+    cutoffs: NDArray,
+    filter_type: str,
+    window: str,
+    *,
+    kaiser_beta: float,
+    bandwidth: float,
+    fir_bank: NDArray | None,
+    fir_design: Callable[[int, float], NDArray] | None,
+) -> tuple[NDArray, NDArray]:
+    """Return the FIR coefficient tensor, from the catalogue or a user design.
+
+    Implements the ``run_sweep`` extension point: the sweep can use
+    the built-in window catalogue, a pre-computed ``fir_bank`` or a
+    ``fir_design`` callable. FIR only.
+    """
+    if fir_bank is not None and fir_design is not None:
+        raise ValueError("pass either fir_bank or fir_design, not both")
+
+    orders_arr = np.asarray(orders, dtype=np.int64)
+    cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
+    n_taps_max = int(orders_arr.max())
+
+    if fir_bank is not None:
+        bank = np.asarray(fir_bank, dtype=np.float64)
+        expected = (len(orders_arr), len(cutoffs_arr), n_taps_max)
+        if bank.shape != expected:
+            raise ValueError(
+                f"fir_bank must have shape {expected} "
+                f"(orders x cutoffs x max num_taps), got {bank.shape}"
+            )
+        return bank, bank.sum(axis=2)
+
+    if fir_design is not None:
+        bank = np.zeros((len(orders_arr), len(cutoffs_arr), n_taps_max))
+        for i, num_taps in enumerate(orders_arr):
+            for j, cutoff in enumerate(cutoffs_arr):
+                coeffs = np.asarray(fir_design(int(num_taps), float(cutoff)), dtype=np.float64)
+                if coeffs.shape != (int(num_taps),):
+                    raise ValueError(
+                        f"fir_design({int(num_taps)}, {float(cutoff)}) returned shape "
+                        f"{coeffs.shape}, expected ({int(num_taps)},)"
+                    )
+                bank[i, j, : int(num_taps)] = coeffs
+        return bank, bank.sum(axis=2)
+
+    return precompute_fir_bank(
+        orders_arr,
+        cutoffs_arr,
+        filter_type,
+        window,
+        kaiser_beta=kaiser_beta,
+        bandwidth=bandwidth,
+    )
+
+
 def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
@@ -145,6 +202,8 @@ def run_sweep(
     Nmap_min: int = 500,
     tol: float = 1e-3,
     fallback_mode: int = 1,
+    fir_bank: NDArray | None = None,
+    fir_design: Callable[[int, float], NDArray] | None = None,
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 
@@ -190,6 +249,16 @@ def run_sweep(
         ``0`` disables recomputation, ``1`` (default) recomputes with the
         full spectrum and returns its maximum, ``2`` recomputes with the
         full spectrum but returns and adapts on column 0 only.
+    fir_bank
+        Optional pre-computed FIR coefficient bank with shape
+        ``(len(orders), len(cutoffs), max(orders))``, zero-padded on the tap
+        axis. Use it to sweep a filter that is not produced by the built-in
+        window catalogue. Mutually exclusive with *fir_design*.
+    fir_design
+        Optional callable ``fir_design(num_taps, cutoff) -> coefficients`` used
+        to build the bank one cell at a time (also allowed instead of the
+        catalogue). Only FIR designs are supported. Mutually exclusive with
+        *fir_bank*.
 
     Returns
     -------
@@ -234,13 +303,15 @@ def run_sweep(
     orders_arr = np.asarray(orders, dtype=np.int64)
     cutoffs_arr = np.asarray(cutoffs, dtype=np.float64)
 
-    fir_bank, gains = precompute_fir_bank(
+    fir_bank, gains = _resolve_fir_bank(
         orders_arr,
         cutoffs_arr,
         filter_type,
         window,
         kaiser_beta=kaiser_beta,
         bandwidth=bandwidth,
+        fir_bank=fir_bank,
+        fir_design=fir_design,
     )
 
     perturbations = _precompute_perturbations(
