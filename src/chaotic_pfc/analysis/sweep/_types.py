@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+import numpy as np
 from numpy.typing import NDArray
 
 # ───────────────────────────────────────────────────────────────────────────
@@ -103,13 +104,13 @@ class SweepResult:
         Free-form metadata (simulation parameters, timing, etc.).
     """
 
-    h: NDArray[Any]
-    h_std: NDArray[Any]
-    num_taps_grid: NDArray[Any]
-    cutoff_grid: NDArray[Any]
+    h: NDArray[np.float64]
+    h_std: NDArray[np.float64]
+    num_taps_grid: NDArray[np.int64]
+    cutoff_grid: NDArray[np.float64]
     window: str
     filter_type: str
-    n_iters_used: NDArray[Any] | None = None
+    n_iters_used: NDArray[np.float64] | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property

@@ -82,7 +82,7 @@ class OrbitClass(IntEnum):
     DIVERGENT = 2
 
 
-def classify(h: NDArray[Any]) -> NDArray[Any]:
+def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
     """Map raw λ_max values to discrete classes.
 
     Parameters
@@ -103,14 +103,14 @@ def classify(h: NDArray[Any]) -> NDArray[Any]:
     The integer values match the :class:`matplotlib.colors.BoundaryNorm` bins
     used below.
     """
-    out = np.full_like(h, np.nan, dtype=np.float64)
+    out = np.empty_like(h, dtype=np.int64)
     mask_diverged = np.isnan(h)
     mask_periodic = (~mask_diverged) & (h <= 0.0)
     mask_chaotic = (~mask_diverged) & (h > 0.0)
 
-    out[mask_diverged] = OrbitClass.DIVERGENT
-    out[mask_periodic] = OrbitClass.PERIODIC
-    out[mask_chaotic] = OrbitClass.CHAOTIC
+    out[mask_diverged] = int(OrbitClass.DIVERGENT)
+    out[mask_periodic] = int(OrbitClass.PERIODIC)
+    out[mask_chaotic] = int(OrbitClass.CHAOTIC)
     return out
 
 

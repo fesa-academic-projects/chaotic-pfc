@@ -16,13 +16,11 @@ directly to :func:`chaotic_pfc.comms.transmitter.transmit`.
 
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 from numpy.typing import NDArray
 
 
-def binary_message(N: int, period: int = 20) -> NDArray[Any]:
+def binary_message(N: int, period: int = 20) -> NDArray[np.float64]:
     """Generate a periodic square-wave binary message.
 
     The output takes values in ``{+1, -1}``, with the first half of each
@@ -60,7 +58,7 @@ def binary_message(N: int, period: int = 20) -> NDArray[Any]:
     return np.tile(block, num_blocks)[:N]
 
 
-def text_message(text: str, N: int, *, bit_period: int = 20) -> NDArray[Any]:
+def text_message(text: str, N: int, *, bit_period: int = 20) -> NDArray[np.float64]:
     """Encode *text* as an NRZ BPSK message of length *N*.
 
     Each character is converted to its 8-bit ASCII representation, the
@@ -116,7 +114,7 @@ def text_message(text: str, N: int, *, bit_period: int = 20) -> NDArray[Any]:
     return np.tile(block, num_blocks)[:N]
 
 
-def sinusoidal_message(N: int, normalised_freq: float = 0.1) -> NDArray[Any]:
+def sinusoidal_message(N: int, normalised_freq: float = 0.1) -> NDArray[np.float64]:
     """Generate a single-tone sinusoidal probe signal.
 
     Useful for frequency-response characterisation: feeding the output of

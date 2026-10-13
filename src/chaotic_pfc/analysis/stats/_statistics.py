@@ -64,7 +64,7 @@ def beta_summary(
 def beta_curve(
     data_dir: str | Path = "data/sweeps/kaiser",
     filter_type: str = "lowpass",
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Return (betas, pct_chaotic) arrays for a single filter type.
 
     Useful for plotting the β-dependence of chaotic coverage.
@@ -79,7 +79,7 @@ def beta_curve(
 
     Returns
     -------
-    tuple[NDArray[Any], NDArray[Any]]
+    tuple[NDArray[np.float64], NDArray[np.float64]]
         ``(betas, pct_chaotic)``; empty arrays when absent.
     """
     summary = beta_summary(data_dir)
@@ -142,7 +142,7 @@ def transition_boundary(
     data_dir: str | Path = "data/sweeps",
     window: str | None = None,
     filter_type: str = "lowpass",
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Find the cutoff where each order transitions from non-chaotic to chaotic.
 
     For each order, returns the *first* cutoff (lowest frequency) where
@@ -194,7 +194,7 @@ def chaos_margin(
     data_dir: str | Path = "data/sweeps",
     window: str | None = None,
     filter_type: str = "lowpass",
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """For each order, compute the width of the chaotic region in cutoff space.
 
     Parameters

@@ -27,8 +27,6 @@ initial condition is needed (``transmit_order_n`` with ``x0=None``), a
 
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 from numpy.typing import NDArray
 
@@ -36,14 +34,14 @@ from ..dynamics.maps import _henon_n4_step_inplace
 
 
 def transmit(
-    message: NDArray[Any],
+    message: NDArray[np.float64],
     *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
     x0: float = 0.0,
     y0: float = 0.0,
-) -> NDArray[Any]:
+) -> NDArray[np.float64]:
     r"""Modulate a message onto a 2-D Hénon carrier.
 
     Parameters
@@ -98,15 +96,15 @@ def transmit(
 
 
 def transmit_order_n(
-    message: NDArray[Any],
-    fir_coeffs: NDArray[Any],
+    message: NDArray[np.float64],
+    fir_coeffs: NDArray[np.float64],
     *,
     mu: float = 0.01,
     alpha: float = 1.4,
     beta: float = 0.3,
-    x0: NDArray[Any] | None = None,
+    x0: NDArray[np.float64] | None = None,
     seed: int | None = None,
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Modulate a message onto an N-th order filtered Hénon carrier.
 
     The carrier is taken from the filtered state component ``x[2][n]``,

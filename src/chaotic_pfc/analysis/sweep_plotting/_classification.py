@@ -84,9 +84,9 @@ def make_classification_legend(
 def plot_heatmap_continuous(
     result: SweepResult | None = None,
     *,
-    h: NDArray[Any] | None = None,
-    num_taps_grid: NDArray[Any] | None = None,
-    cutoff_grid: NDArray[Any] | None = None,
+    h: NDArray[np.float64] | None = None,
+    num_taps_grid: NDArray[np.int64] | None = None,
+    cutoff_grid: NDArray[np.float64] | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,
@@ -146,7 +146,7 @@ def plot_heatmap_continuous(
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _cutoff_edges(cut: NDArray[Any]) -> NDArray[Any]:
+def _cutoff_edges(cut: NDArray[np.float64]) -> NDArray[np.float64]:
     """Convert cutoff centres to cell edges for the interleaved rectangles."""
     if cut.size == 1:
         return np.array([cut[0] - 0.5, cut[0] + 0.5])
@@ -162,13 +162,13 @@ _CLASS_COLORS: dict[float, str] = {
 
 
 def _run_length_polygons(
-    h_color: NDArray[Any],
+    h_color: NDArray[np.int64],
     *,
     n_coef: int,
     n_cut: int,
     slot_total: int,
     data_slots: int,
-    y_edges: NDArray[Any],
+    y_edges: NDArray[np.float64],
 ) -> tuple[list[list[tuple[float, float]]], list[str]]:
     """Build the run-length polygon vertices and their class colours."""
     verts: list[list[tuple[float, float]]] = []
@@ -199,7 +199,7 @@ def _run_length_polygons(
 def _configure_interleaved_axes(
     ax: Any,
     *,
-    Nz: NDArray[Any],
+    Nz: NDArray[np.int64],
     n_coef: int,
     slot_total: int,
     data_slots: int,
@@ -229,9 +229,9 @@ def _configure_interleaved_axes(
 def plot_classification_interleaved(
     result: SweepResult | None = None,
     *,
-    h: NDArray[Any] | None = None,
-    num_taps_grid: NDArray[Any] | None = None,
-    cutoff_grid: NDArray[Any] | None = None,
+    h: NDArray[np.float64] | None = None,
+    num_taps_grid: NDArray[np.int64] | None = None,
+    cutoff_grid: NDArray[np.float64] | None = None,
     save_path: str | Path | None = None,
     data_slots: int = 3,
     gap_slots: int = 1,

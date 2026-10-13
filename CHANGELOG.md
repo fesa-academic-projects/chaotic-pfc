@@ -130,6 +130,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `mypy --strict` is enforced across `src/chaotic_pfc` (`strict = true`, plus
   `--strict` in the `typecheck` Makefile target and the CI job). The only
   overrides are the third-party `numba`/`scipy`/`matplotlib` stubs.
+- The public-API array annotations carry the concrete element type:
+  `NDArray[np.float64]` for states, signals, coefficients, cutoffs and exponents
+  and `NDArray[np.int64]` for the tap counts and the `classify`/`OrbitClass`
+  codes (`classify` now returns an `int64` array). Only the `eigenvalues` fields
+  keep `NDArray[Any]`, because they are real or complex depending on the
+  Jacobian.
 
 ### Fixed
 - The CI coverage gate (`--cov-fail-under=75`) is met again (70.33 % before

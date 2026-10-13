@@ -34,14 +34,14 @@ def _precompute_perturbations(
 
 
 def precompute_fir_bank(
-    num_taps_grid: Sequence[int] | NDArray[Any],
-    cutoff_grid: NDArray[Any],
+    num_taps_grid: Sequence[int] | NDArray[np.int64],
+    cutoff_grid: NDArray[np.float64],
     filter_type: str,
     window: str,
     *,
     kaiser_beta: float = _KAISER_BETA,
     bandwidth: float = 0.05,
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Build the FIR coefficient tensor and gain matrix for a sweep.
 
     Parameters
@@ -129,9 +129,9 @@ class QuickSweepParams(NamedTuple):
     Fields replace the previous positional four-tuple.
     """
 
-    orders_lp: NDArray[Any]
-    orders_hp: NDArray[Any]
-    cutoff_grid: NDArray[Any]
+    orders_lp: NDArray[np.int64]
+    orders_hp: NDArray[np.int64]
+    cutoff_grid: NDArray[np.float64]
     params: QuickSweepConfig
 
 
@@ -313,8 +313,8 @@ def run_sweep(
     window: str = "hamming",
     filter_type: str = "lowpass",
     *,
-    num_taps_grid: Sequence[int] | NDArray[Any] | None = None,
-    cutoff_grid: NDArray[Any] | None = None,
+    num_taps_grid: Sequence[int] | NDArray[np.int64] | None = None,
+    cutoff_grid: NDArray[np.float64] | None = None,
     Nitera: int = 500,
     Nmap: int = 3000,
     n_initial: int = 25,
@@ -328,8 +328,8 @@ def run_sweep(
     Nmap_min: int = 500,
     tol: float = 1e-3,
     fallback_mode: int = 1,
-    fir_bank: NDArray[Any] | None = None,
-    fir_design: Callable[[int, float], NDArray[Any]] | None = None,
+    fir_bank: NDArray[np.float64] | None = None,
+    fir_design: Callable[[int, float], NDArray[np.float64]] | None = None,
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 

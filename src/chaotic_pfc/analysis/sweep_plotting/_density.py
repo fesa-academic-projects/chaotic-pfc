@@ -264,7 +264,9 @@ def plot_chaotic_density(
 
 def chaotic_density_norm_table(
     sweep_dir: str | Path = "data/sweeps",
-) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
+) -> tuple[
+        NDArray[np.int64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]
+    ]:
     """Percentage of the sweeps that contain each grid point and find it chaotic.
 
     ``Nz = order - 1``. A sweep contains ``Nz`` when its num_taps_grid include
@@ -300,7 +302,9 @@ def chaotic_density_norm_table(
         if not np.array_equal(np.asarray(sr.cutoff_grid, dtype=np.float64), cutoff_grid):
             raise ValueError("sweeps do not share the same cutoff grid")
 
-    Nz = np.array(sorted({int(o) - 1 for sr in raw for o in np.asarray(sr.num_taps_grid)}))
+    Nz: NDArray[np.int64] = np.array(
+        sorted({int(o) - 1 for sr in raw for o in np.asarray(sr.num_taps_grid)})
+    )
     index = {int(nz): k for k, nz in enumerate(Nz)}
     n_chaotic = np.zeros((len(Nz), len(cutoff_grid)))
     n_containing = np.zeros(len(Nz))

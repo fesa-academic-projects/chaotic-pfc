@@ -170,8 +170,8 @@ def _save(fig: Figure, path: str | Path | None, **savefig_kwargs: Any) -> None:
 
 
 def plot_attractor(
-    X: NDArray[Any],
-    Y: NDArray[Any],
+    X: NDArray[np.float64],
+    Y: NDArray[np.float64],
     title: str = "",
     xlabel: str = r"$x_1[n]$",
     ylabel: str = r"$x_2[n]$",
@@ -225,9 +225,9 @@ def plot_attractor(
 
 
 def plot_sensitivity(
-    n: NDArray[Any],
-    X1: NDArray[Any],
-    X2: NDArray[Any],
+    n: NDArray[np.int64],
+    X1: NDArray[np.float64],
+    X2: NDArray[np.float64],
     save_path: str | None = None,
     lang: str = "pt",
 ) -> Figure:
@@ -285,7 +285,7 @@ class PlotGridOptions:
     y_lim_msg: tuple[float, float] = (-1.5, 1.5)
     y_lim_sig: tuple[float, float] = (-2.5, 2.5)
     y_lim_mhat: tuple[float, float] | None = None
-    h_channel: NDArray[Any] | None = None
+    h_channel: NDArray[np.float64] | None = None
     save_path: str | None = None
 
 
@@ -293,16 +293,16 @@ _UNSET = object()
 
 
 def plot_comm_grid(
-    n: NDArray[Any],
-    m: NDArray[Any],
-    s: NDArray[Any],
-    r: NDArray[Any],
-    m_hat: NDArray[Any],
-    omega: NDArray[Any],
-    psd_m: NDArray[Any],
-    psd_s: NDArray[Any],
-    psd_r: NDArray[Any],
-    psd_mhat: NDArray[Any],
+    n: NDArray[np.int64],
+    m: NDArray[np.float64],
+    s: NDArray[np.float64],
+    r: NDArray[np.float64],
+    m_hat: NDArray[np.float64],
+    omega: NDArray[np.float64],
+    psd_m: NDArray[np.float64],
+    psd_s: NDArray[np.float64],
+    psd_r: NDArray[np.float64],
+    psd_mhat: NDArray[np.float64],
     *,
     opts: PlotGridOptions | None = None,
     time_window: slice = slice(0, 300),
@@ -310,7 +310,7 @@ def plot_comm_grid(
     y_lim_msg: tuple[float, float] = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
     y_lim_sig: tuple[float, float] = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
     y_lim_mhat: tuple[float, float] | None = _UNSET,  # type: ignore[assignment]  # sentinel replaced below
-    h_channel: NDArray[Any] | None = None,
+    h_channel: NDArray[np.float64] | None = None,
     save_path: str | None = None,
     lang: str = "pt",
 ) -> Figure:

@@ -8,8 +8,6 @@ project: peak-normalised magnitude, and the frequency axis expressed as
 
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import welch, windows
@@ -25,7 +23,7 @@ _WINDOWS = {
 
 
 def psd_normalised(
-    x: NDArray[Any],
+    x: NDArray[np.float64],
     nfft: int = 4096,
     window_length: int = 1024,
     fs: float = 1.0,
@@ -33,7 +31,7 @@ def psd_normalised(
     *,
     window: str = "hamming",
     kaiser_beta: float = 5.0,
-) -> tuple[NDArray[Any], NDArray[Any]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Estimate the normalised power-spectral density of ``x`` via Welch.
 
     The PSD is one-sided, peak-normalised to ``1.0``, and the frequency
