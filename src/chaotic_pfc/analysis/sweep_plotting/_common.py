@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from enum import IntEnum
 from pathlib import Path
 
 import matplotlib.colors as mcolors
@@ -67,6 +68,19 @@ _YTICKS = np.arange(0.0, 1.01, 0.1)
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+class OrbitClass(IntEnum):
+    """Discrete classification of an orbit on a grid point.
+
+    The integer values are the ones the discrete colour map expects and are
+    unchanged from the bare ``-1``/``0``/``2`` literals they replace, so the
+    classification figures are byte-identical.
+    """
+
+    PERIODIC = -1
+    CHAOTIC = 0
+    DIVERGENT = 2
+
+
 def classify(h: NDArray) -> NDArray:
     """Map raw λ_max values to discrete classes.
 
@@ -78,23 +92,24 @@ def classify(h: NDArray) -> NDArray:
     Returns
     -------
     NDArray
-        Array of the same shape as ``h`` where each entry is:
+        Array of the same shape as ``h`` where each entry is an
+        :class:`OrbitClass` value:
 
-        * ``-1`` — periodic orbit (λ_max ≤ 0)
-        * ``0``  — chaotic orbit (λ_max > 0)
-        * ``2``  — unbounded / divergent (NaN in ``h``)
+        * :attr:`OrbitClass.PERIODIC` — periodic orbit (λ_max ≤ 0)
+        * :attr:`OrbitClass.CHAOTIC` — chaotic orbit (λ_max > 0)
+        * :attr:`OrbitClass.DIVERGENT` — unbounded / divergent (NaN in ``h``)
 
-    The unusual integer codes match the :class:`matplotlib.colors.BoundaryNorm`
-    bins used below.
+    The integer values match the :class:`matplotlib.colors.BoundaryNorm` bins
+    used below.
     """
     out = np.full_like(h, np.nan, dtype=np.float64)
     mask_diverged = np.isnan(h)
     mask_periodic = (~mask_diverged) & (h <= 0.0)
     mask_chaotic = (~mask_diverged) & (h > 0.0)
 
-    out[mask_diverged] = 2
-    out[mask_periodic] = -1
-    out[mask_chaotic] = 0
+    out[mask_diverged] = OrbitClass.DIVERGENT
+    out[mask_periodic] = OrbitClass.PERIODIC
+    out[mask_chaotic] = OrbitClass.CHAOTIC
     return out
 
 

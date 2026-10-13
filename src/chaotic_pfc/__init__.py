@@ -48,6 +48,7 @@ from chaotic_pfc.analysis.sweep import (
     save_sweep,
 )
 from chaotic_pfc.analysis.sweep_plotting import (
+    OrbitClass,
     classify,
     plot_all,
     plot_chaotic_all,
@@ -96,6 +97,7 @@ __all__ = [
     "Channel",
     "EnsembleResult",
     "LyapunovResult",
+    "OrbitClass",
     "Receiver",
     "SweepResult",
     "Transmitter",

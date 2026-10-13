@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   their names (`paper-pdf`, `paper-diff`, `check-paper`, `jcis-figures`).
 - `chaotic-pfc run sweep beta-sweep` writes to `data/sweeps/kaiser/` (the
   layout `run all` and the analysis tools read) instead of `data/sweeps/beta/`.
+- The 4-D pole-filtered Lyapunov estimator `lyapunov_max` is renamed
+  `lyapunov_max_pole_filtered`; the name `lyapunov_max` now denotes the generic
+  estimator for an arbitrary map.
 
 ### Added
 - `chaotic-pfc paper numbers|audit|figures` and
@@ -58,6 +61,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frequency-response tests for every window of the catalogue times the four
   filter types, and a fallback-mode class-stability test on the baseline
   configurations.
+- `lyapunov_spectrum(iterate, jacobian, x0)` and `lyapunov_max(...)`: a public,
+  map-agnostic Lyapunov estimator with doctests and tests against the standard
+  Hénon map and the analytic `alpha=2, beta=0` map (`ln 2`).
+- `OrbitClass` (`IntEnum`): the `classify` codes `-1`/`0`/`2` now have names
+  (`PERIODIC`/`CHAOTIC`/`DIVERGENT`); the values are unchanged.
+- `run_sweep(fir_bank=...)` and `run_sweep(fir_design=...)`: sweep a
+  user-supplied FIR coefficient bank or design function, validated and
+  documented (FIR only).
+- `chaotic_pfc._formulas`: the single definition of the cancellation-free
+  positive fixed point and the 2-D Hénon step used by the kernel and the
+  Python code.
 
 ### Changed
 - `chaotic_pfc.analysis.sweep_plotting` and `chaotic_pfc.analysis.stats` were
@@ -80,6 +94,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   124 checkpoints (`data/sweeps/ENVIRONMENT.json`), and now includes
   `hypothesis` so the test suite (and the bit-exact baseline) runs from the
   lock.
+- The shared figure-writing helper moved to `chaotic_pfc._figure_io`, so the
+  `analysis` package no longer imports a private name from `plotting`
+  (`tests/test_layering.py` keeps the edge removed).
+- The expected overflow of the diverging map in the pure-Python loops
+  (`transmit`/`receive` and the `henon_*` iterators) is silenced with
+  `np.errstate`; the Numba kernels never emitted the warning.
 
 ### Fixed
 - The CI coverage gate (`--cov-fail-under=75`) is met again (70.33 % before

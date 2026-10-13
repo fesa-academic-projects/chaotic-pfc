@@ -45,6 +45,7 @@ rest of the pipeline.
 from __future__ import annotations
 
 __all__ = [  # noqa: RUF022
+    "OrbitClass",
     "classify",
     "make_classification_legend",
     "plot_heatmap_continuous",
@@ -96,6 +97,9 @@ from chaotic_pfc.analysis.sweep_plotting._common import (
 )
 from chaotic_pfc.analysis.sweep_plotting._common import (
     COLOR_UNBOUNDED as COLOR_UNBOUNDED,
+)
+from chaotic_pfc.analysis.sweep_plotting._common import (
+    OrbitClass as OrbitClass,
 )
 from chaotic_pfc.analysis.sweep_plotting._common import (
     _interleaved_expand as _interleaved_expand,
