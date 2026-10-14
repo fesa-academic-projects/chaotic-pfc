@@ -263,7 +263,11 @@ CLI:
 `make paper-pdf`; its timestamp follows the last commit that touched
 `articles/jcis/article.tex`, `articles/jcis/references.bib` or
 `articles/jcis/Figures`, so rebuilding without changing those sources yields an
-identical PDF.
+identical PDF. The CI rebuilds it in a pinned TeX Live image
+(`texlive/texlive:TL2024-historic`) with a fixed Inkscape and compares it with
+the versioned artifact; byte-for-byte equality is **not** guaranteed across
+TeX Live/Inkscape builds, so the gate compares the extracted text and the page
+count (and reports when the bytes do match).
 
 The LaTeX tables written by `chaotic-pfc run analysis export-tables` (and by
 `chaotic-pfc run all`) are versioned under `data/analysis_output/tables/{pt,en}/`

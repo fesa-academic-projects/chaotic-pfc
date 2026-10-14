@@ -106,7 +106,18 @@ gets its own version DOI. Record the new version DOI.
   (the `chaotic-pfc` `@misc` record, key `chaoticPFC2026`) to the DOI of the
   released version.
 
-### 8. Read the Docs
+### 8. Rebuild the manuscript PDF
+
+`articles/jcis/article.pdf` is versioned and rebuilt by `make paper-pdf`. The CI
+job *Manuscript PDF reproducibility* rebuilds it inside the pinned
+`texlive/texlive:TL2024-historic` image (with the Inkscape version fixed by the
+image) and compares it with the committed file. Byte-for-byte equality is
+**not** guaranteed across different TeX Live/Inkscape builds (font and SVG
+rasterisation differences), so the gate compares the extracted text and the page
+count, and reports when the bytes do coincide. Rerun `make paper-pdf` after
+changing the manuscript sources so the versioned PDF matches the tagged text.
+
+### 9. Read the Docs
 
 In the Read the Docs project, activate the new tag as the **`stable`** version
 (and keep `latest` on `main`). Confirm the build for the tag is green and that

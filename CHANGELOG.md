@@ -53,6 +53,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- CI job *Manuscript PDF reproducibility*: it rebuilds
+  `articles/jcis/article.pdf` inside the pinned `texlive/texlive:TL2024-historic`
+  image (fixed Inkscape) and compares it with the versioned artefact. Since
+  byte-for-byte equality is not guaranteed across TeX Live/Inkscape builds, the
+  gate compares the extracted text and the page count (the caveat is documented
+  in the README and RELEASING).
+- `articles/simac/SHA256SUMS` pins the two frozen SIMAC PDFs and the two
+  reconstructed `.docx` files, with `tests/test_simac_manifest.py` validating
+  the manifest on every test run.
 - Audit check **C8** (`chaotic-pfc paper audit --sweeps data/sweeps`) verifies
   that every number cited in the Results and the Final Remarks matches a
   `paper numbers` label (compared as half-up roundings), with a documented list

@@ -17,6 +17,10 @@ verdade. O PDF não identificado foi originalmente depositado como
 `simac__nao_identificado.pdf` (com dois underscores) e foi renomeado para
 `simac_nao_identificado.pdf` ao ser versionado aqui.
 
+Os quatro artefactos (os dois PDFs e os dois `.docx`) estão fixados por
+`SHA256SUMS` e verificados por `tests/test_simac_manifest.py`;
+`cd articles/simac && sha256sum -c SHA256SUMS` confirma a integridade.
+
 ## Código e dados usados na época
 
 Os números do SIMAC para a janela **Hamming** (pontos caóticos `Nc` / fração
