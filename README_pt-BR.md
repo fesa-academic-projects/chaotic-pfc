@@ -28,7 +28,7 @@ Projeto de PFC (*Projeto Final de Curso*).
 
 Este repositório contém a implementação de um sistema de comunicação digital
 caótico baseado no mapa de Hénon. O transmissor modula uma mensagem binária
-no estado de um oscilador caótico; o receptor recupera a mensagem por
+no estado de um mapa caótico; o receptor recupera a mensagem por
 sincronização de Pecora-Carroll. O projeto inclui ainda um estudo numérico
 completo dos expoentes de Lyapunov do mapa de Hénon e de variantes de ordem
 superior com filtros FIR internos, incluindo varreduras de parâmetros sobre
@@ -226,6 +226,72 @@ make check-all     # lint + format + typecheck + testes rápidos
 | `make pre-commit` | Executa todos os hooks de pre-commit |
 | `make clean` | Remove artefatos de build e cache |
 | `make help` | Mostra todos os comandos |
+
+## Ferramentas de artigo e análise
+
+A ferramenta do manuscrito e das varreduras vive no pacote e é conduzida pela
+CLI:
+
+| Comando | Finalidade |
+|---------|------------|
+| `chaotic-pfc paper numbers` | Recalcula cada número do manuscrito e emite JSON: `chaotic-pfc paper numbers --sweeps data/sweeps --json numbers.json`. |
+| `chaotic-pfc paper audit` | Confere `articles/jcis/article.tex` com a bibliografia, as figuras e as tabelas de identidade (`make check-paper`). |
+| `chaotic-pfc paper figures` | Gera as figuras do JCIS não produzidas em outro lugar (`make jcis-figures`). |
+| `chaotic-pfc sweeps regenerate` | Recalcula os checkpoints versionados de `data/sweeps/` e reescreve o manifesto `SHA256SUMS`. |
+| `chaotic-pfc sweeps compare` | Compara dois diretórios de varredura arquivo a arquivo (igualdade bit a bit após uma refatoração). |
+| `chaotic-pfc sweeps stats` | Estatísticas por configuração lidas dos checkpoints `.npz` (CSV). |
+| `tools/check_pt_br_translations.sh` | Verifica os catálogos pt-BR da documentação narrativa (ferramenta de documentação). |
+
+`articles/jcis/article.pdf` é um artefato derivado e **versionado**, construído
+de forma reprodutível por `make paper-pdf`, que o compila dentro da imagem
+fixada do TeX Live `texlive/texlive@sha256:acd65bd2…` (TeX Live 2026, com o
+Inkscape instalado no contêiner). Seu timestamp segue o último commit que tocou
+`articles/jcis/article.tex`, `articles/jcis/references.bib` ou
+`articles/jcis/Figures`, de modo que reconstruir o mesmo commit produz um PDF
+idêntico. `make paper-pdf` exige Docker ou Podman (verificado por `make setup`);
+se nenhum estiver instalado, ele falha e aponta para `make paper-pdf-local`, que
+produz uma pré-visualização rápida com o TeX Live do sistema em
+`articles/jcis/build/` (ignorado pelo git, nunca versionado). O job de CI
+*Reprodutibilidade do PDF do manuscrito* reconstrói o PDF na mesma imagem fixada
+e exige que ele seja idêntico byte a byte ao arquivo versionado. Outras
+distribuições do TeX Live **não** são idênticas byte a byte: pacotes de fontes
+diferentes dão a mesma saída visível mas bytes diferentes e até um mapeamento
+`pdftotext` diferente, de modo que apenas a imagem fixada é autoritativa.
+
+As tabelas LaTeX escritas por `chaotic-pfc run analysis export-tables` (e por
+`chaotic-pfc run all`) são versionadas em `data/analysis_output/tables/{pt,en}/`
+como a saída de referência da etapa de análise.
+
+### Escopo
+
+* A maquinaria de Lyapunov é para **mapas com Jacobiana analítica** (a família de
+  Hénon aqui usada). Para expoentes de Lyapunov a partir de uma série temporal,
+  use uma biblioteca dedicada, como [nolds](https://github.com/CSchoel/nolds).
+* A varredura de parâmetros cobre **apenas filtros FIR**; filtros IIR são
+  trabalho futuro.
+* Os artefatos binários versionados (`data/sweeps/*.npz`, os PDFs do manuscrito
+  e os arquivos `.docx` do SIMAC) são **canônicos**: regenere-os com a CLI em
+  vez de editá-los à mão.
+
+### Convenções da CLI
+
+Todo comando aceita as flags globais `--quiet`/`-q`, `--verbose`/`-v`,
+`--debug` (ou `$CHAOTIC_PFC_DEBUG=1`, que mostra o traceback completo),
+`--color {auto,always,never}` (um valor explícito tem precedência; `auto`
+respeita `$NO_COLOR`) e `--no-progress`. Operações longas imprimem um contador
+`index/total` no **stderr**, apenas em um terminal e nem com `--quiet` nem com
+`--no-progress`. `sweeps regenerate --dry-run` lista o que seria recalculado sem
+escrever nada.
+
+### Migrando de 0.8 para 0.9
+
+A API da 0.9 renomeia vários parâmetros (por exemplo `a`/`b` → `alpha`/`beta`
+nos mapas e nas funções de comunicação, `orders`/`cutoffs` →
+`num_taps_grid`/`cutoff_grid` na varredura e nas funções de plotagem,
+`QuickSweepParams.orders_*` → `.num_taps_grid_*`), renomeia o `lyapunov_max` 4-D
+para `lyapunov_max_pole_filtered` e faz `classify` devolver códigos `int64`. A
+tabela completa antigo→novo está no
+[CHANGELOG](./CHANGELOG.md#unreleased).
 
 ## Documentação
 

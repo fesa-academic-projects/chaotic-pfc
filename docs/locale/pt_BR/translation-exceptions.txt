@@ -1,0 +1,262 @@
+# Entries allowed to stay identical to the English source.
+# One normalised msgid per line (whitespace collapsed, one level of
+# backslash unescaped).  Only genuine identities: code identifiers,
+# maths, tool names, bibliographic entries and the bilingual glossary
+# table cells.  Everything else must be translated.
+
+# api/index.po
+This page documents every public module in the ``chaotic_pfc`` package. Each link below opens the module's reference, listing its functions, classes, and dataclasses with full signatures and NumPy-style docstrings extracted from the source.
+:py:obj:`chaotic_pfc.dynamics.maps <chaotic_pfc.dynamics.maps>`
+:py:obj:`chaotic_pfc.dynamics.signals <chaotic_pfc.dynamics.signals>`
+:py:obj:`chaotic_pfc.dynamics.lyapunov <chaotic_pfc.dynamics.lyapunov>`
+:py:obj:`chaotic_pfc.dynamics.spectral <chaotic_pfc.dynamics.spectral>`
+:py:obj:`chaotic_pfc.comms.transmitter <chaotic_pfc.comms.transmitter>`
+:py:obj:`chaotic_pfc.comms.channel <chaotic_pfc.comms.channel>`
+:py:obj:`chaotic_pfc.comms.receiver <chaotic_pfc.comms.receiver>`
+:py:obj:`chaotic_pfc.comms.protocols <chaotic_pfc.comms.protocols>`
+:py:obj:`chaotic_pfc.comms.metrics <chaotic_pfc.comms.metrics>`
+:py:obj:`chaotic_pfc.analysis.sweep <chaotic_pfc.analysis.sweep>`
+:py:obj:`chaotic_pfc.analysis.stats <chaotic_pfc.analysis.stats>`
+:py:obj:`chaotic_pfc.analysis.latex_export <chaotic_pfc.analysis.latex_export>`
+:py:obj:`chaotic_pfc.analysis.sweep_plotting <chaotic_pfc.analysis.sweep_plotting>`
+Figures for the Lyapunov classification maps of :mod:`chaotic_pfc.analysis.sweep`.
+:py:obj:`chaotic_pfc.analysis.sweep_plotting_3d <chaotic_pfc.analysis.sweep_plotting_3d>`
+:py:obj:`chaotic_pfc.plotting.figures <chaotic_pfc.plotting.figures>`
+:py:obj:`chaotic_pfc.config <chaotic_pfc.config>`
+:py:obj:`chaotic_pfc.cli <chaotic_pfc.cli>`
+Public API
+The stable public API is the top-level ``chaotic_pfc`` namespace (its ``__all__`` list: 75 symbols). Each symbol is documented once, in its defining submodule above; import it directly from the package root::
+Sweep catalogue
+Constant
+Meaning
+Values
+``WINDOWS``
+``hamming``, ``hann``, ``blackman``, ``kaiser``, ``blackmanharris``, ``boxcar``, ``bartlett``
+``FILTER_TYPES``
+``lowpass``, ``highpass``, ``bandpass``, ``bandstop``
+``WINDOW_DISPLAY_NAMES``
+``hamming`` → ``Hamming``, …
+Human-readable display names for each :data:`WINDOWS` key.
+
+# architecture.po
+``dynamics``
+``comms``
+``analysis``
+``plotting``
+``cli``
+``config``
+
+# background.po
+x_1[n+1] &= \alpha - x_1[n]^2 + \beta \, x_2[n] \\nx_2[n+1] &= x_1[n]
+x_1[n+1] = \alpha - x_1[n]^2 + \beta \, x_2[n]
+x_1[n+1] = \alpha - (c_0 x_1[n] + c_1 x_1[n-1])^2 + \beta \, x_2[n]
+K = N_s \quad (N_s \ge 3), \qquad K = 2 \quad (N_s \le 2),
+Regime
+:math:`\lambda_{\max} > 0`
+:math:`\lambda_{\max} \leq 0`
+:math:`\lambda_{\max} = \text{NaN}`
+y_1[n+1] &= \alpha - r[n]^2 + \beta \, y_2[n] \\ny_2[n+1] &= y_1[n]
+\hat{m}[n] \approx m[n] = \frac{r[n] - y_1[n]}{\mu}
+M. S. Baptista. "Chaos-based communication systems: Current trends and challenges." Springer, 2021.
+V. S. Borges, M. Eisencraft. "A filtered Hénon map." Chaos, Solitons and Fractals, vol. 165, 2022.
+V. S. Borges, R. Silva, M. Eisencraft. "Stability analysis of the filtered Hénon map." (preprint), 2024.
+L. M. Pecora, T. L. Carroll. "Synchronization in chaotic systems." Physical Review Letters, v. 64, n. 8, p. 821, 1990.
+
+# changelog.po
+
+# citing.po
+Software
+
+# contributing.po
+Docstrings
+
+# development.po
+**pytest**
+**ruff**
+``make lint`` / ``make format``
+**mypy**
+``make typecheck``
+**pre-commit**
+``pre-commit run --all-files``
+**coverage**
+``pytest --cov=chaotic_pfc``
+CI/CD
+Docstrings
+Conventional Commits (``feat``, ``fix``, ``docs``, ``test``, ``chore``, ``ci``, ``refactor``)
+
+# index.po
+Tutorial
+
+# internals.po
+``_henon_n12_inplace(x, x_new, alpha, beta, c)``
+``_henon_nN_inplace(x, x_new, alpha, beta, c)``
+``_mgs_accumulate(z, Ns, lyap_sum)`` performs the Modified Gram-Schmidt (MGS) re-orthonormalisation of the perturbation vectors at each iteration. Unlike classical Gram-Schmidt (CGS), MGS computes the projection coefficients sequentially *after each projection subtraction*, which significantly improves numerical stability for near-degenerate subspaces:
+\left| \lambda_{\text{current}} - \lambda_{\text{previous}} \right| < \text{tol}
+Compute the eigenvalues of :math:`\mathbf{J}` via
+:func:`numpy.linalg.eigvals`.
+This two-stage approach saves significant computation: points with stable fixed points can often be classified without running the full MGS estimator. However, points with unstable fixed points require the full estimator because the Lyapunov exponent can be negative (periodic orbit) or positive (chaotic) despite the instability.
+:func:`~chaotic_pfc.dynamics.signals.binary_message`
+:func:`~chaotic_pfc.dynamics.signals.sinusoidal_message`
+:func:`~chaotic_pfc.dynamics.signals.text_message`
+:func:`~chaotic_pfc.comms.channel.awgn`
+:func:`~chaotic_pfc.comms.channel.channel_impulsive`
+:func:`~chaotic_pfc.comms.channel.channel_multipath`
+
+# source/algorithms/fir_design.po
+``firwin`` vs. MATLAB ``fir1``
+``lowpass``
+:math:`[0, \omega_c]`
+``highpass``
+``bandpass``
+``bandstop``
+Hamming
+``hamming``
+~53 dB
+−43 dB
+Hann
+``hann``
+~44 dB
+−32 dB
+Blackman
+``blackman``
+~74 dB
+−58 dB
+Blackman-Harris
+``blackmanharris``
+~92 dB
+−92 dB
+``boxcar``
+~13 dB
+−13 dB
+Bartlett
+``bartlett``
+~25 dB
+−27 dB
+Kaiser
+``kaiser``
+Adjustable via :math:`\beta`
+**Kaiser window** deserves special attention. The shape parameter :math:`\beta` controls the trade‑off between main‑lobe width and sidelobe level. The project includes a dedicated :math:`\beta`-sweep (``chaotic-pfc run sweep beta-sweep``) that evaluates Lyapunov exponents across :math:`\beta \in [2, 14]` in steps of :math:`0.5` for each filter type.
+p^{+} = \frac{2\alpha}{(1-\beta) + \sqrt{(1-\beta)^2 + 4\alpha G^2}},
+F. J. Harris, "On the use of windows for harmonic analysis with the discrete Fourier transform," *Proceedings of the IEEE*, vol. 66, no. 1, pp. 51-83, 1978.
+
+# source/algorithms/lyapunov.po
+Replace :math:`W \leftarrow Q`.
+
+# source/algorithms/sweep.po
+
+# symbols.po
+:math:`\alpha`
+:func:`~chaotic_pfc.dynamics.maps.henon_generalised`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``
+:math:`\beta`
+:math:`a`
+:func:`~chaotic_pfc.dynamics.maps.henon_standard`
+:math:`b`
+:math:`\mu`
+:func:`~chaotic_pfc.comms.transmitter.transmit`, :func:`~chaotic_pfc.comms.receiver.receive`
+:math:`N_s`
+``_sweep_kernel``, :func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`
+:math:`N_z = N_s - 1`
+:math:`N`
+:func:`~chaotic_pfc.config.CommConfig`, :func:`~chaotic_pfc.comms.transmitter.transmit`
+:math:`\omega_c`, :math:`f_c`
+:func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, :func:`~chaotic_pfc.config.InternalFIRConfig`
+:math:`c_k`, :math:`b_k`
+:func:`~chaotic_pfc.dynamics.maps.henon_order_n`, ``_henon_nN_inplace``
+:math:`G`
+``_sweep_kernel``, ``_fixed_point``
+:math:`u_n`
+:math:`x_n, y_n`
+:func:`~chaotic_pfc.dynamics.maps.henon_standard`, :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`
+:math:`\lambda_1`, :math:`\lambda_{\max}`
+:func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, ``_sweep_kernel``
+:math:`s[n]`
+:func:`~chaotic_pfc.comms.transmitter.transmit`
+:math:`r[n]`
+:func:`~chaotic_pfc.comms.receiver.receive`, :func:`~chaotic_pfc.comms.channel.awgn`
+:math:`m[n]`
+:func:`~chaotic_pfc.dynamics.signals.binary_message`
+:math:`\hat{m}[n]`
+:func:`~chaotic_pfc.comms.receiver.receive`
+:math:`\beta_K`
+:func:`~chaotic_pfc.analysis.sweep.precompute_fir_bank`, ``run_beta_sweep``
+:math:`N_{\text{discard}}`
+:func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d`, :func:`~chaotic_pfc.config.LyapunovConfig`
+:math:`N_{\text{IC}}`
+:func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble`, ``_sweep_kernel``
+:math:`\text{SNR}`, :math:`E_b/N_0`
+:func:`~chaotic_pfc.comms.channel.awgn`
+:math:`\text{BER}`
+:func:`~chaotic_pfc.comms.receiver.receive` (via MSE proxy)
+**cobertura caótica**
+**janela de projeto**
+**ponto fixo**
+checkpoint
+**checkpoint** (``.npz``)
+**checkpoint**
+passa-baixas, passa-altas, passa-faixa, rejeita-faixa
+
+# testing.po
+``henon_standard``
+``henon_filtered``
+``lyapunov_henon2d``
+``binary_message``
+``sinusoidal_message``
+``area_summary``
+``lmax_statistics``
+``consolidate_kaiser``
+``max_examples``
+``dev``
+50
+``ci``
+500
+Benchmark
+``test_henon_standard_1000_iters``
+~2.6
+``test_henon_generalised_1000_iters``
+~2.7
+``test_henon_filtered_1000_iters``
+~3.1
+``test_henon_order_n_1000_iters``
+~4.3
+``test_henon_standard_10000_iters``
+~27
+``test_lyapunov_henon2d_2000_iters``
+~53
+``test_lyapunov_max_4d_2000_iters``
+~120
+``test_lyapunov_ensemble_25_ics``
+~330
+``test_mini_sweep_30_points``
+~2330
+
+# tutorial.po
+Tutorial
+
+# usage.po
+
+# validation.po
+:math:`\lambda_1`
+:math:`\lambda_2`
+:math:`\lambda_1 + \lambda_2`
+Wolf et al. (1985) [1]_
+:math:`+0.418`
+:math:`-1.622`
+:math:`-1.204`
+Sprott (2003) [2]_
+:math:`+0.419`
+:math:`-1.623`
+:math:`\ln|\beta| = \ln(0.3)`
+—
+:math:`-1.203\,973`
+:math:`+0.417\,567`
+:math:`-1.621\,539`
+:math:`\lambda_1` vs. Wolf 1985
+:math:`\lambda_1` vs. Sprott 2003
+:math:`\lambda_2` vs. Wolf 1985
+:math:`\lambda_2` vs. Sprott 2003
+:math:`2.2 \times 10^{-16}` (machine precision)
+\lambda_1 + \lambda_2 = \ln|\det J| = \ln \beta.
+:math:`(\alpha = 1.4, \; \beta = 0.3)` — standard chaotic regime
+:math:`(\alpha = 1.4, \; \beta = 0.2)` — strongly dissipative
+:math:`(\alpha = 1.0, \; \beta = 0.5)` — non-chaotic (periodic)
+A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, "Determining Lyapunov exponents from a time series," *Physica D: Nonlinear Phenomena*, vol. 16, no. 3, pp. 285–317, 1985. DOI: `10.1016/0167-2789(85)90011-9 <https://doi.org/10.1016/0167-2789(85)90011-9>`_

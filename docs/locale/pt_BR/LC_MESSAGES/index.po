@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 17:45-0300\n"
+"POT-Creation-Date: 2026-10-14 00:40-0300\n"
 "PO-Revision-Date: 2026-05-07 18:00-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger_freitas@live.com>\n"
 "Language: pt_BR\n"
@@ -21,23 +21,19 @@ msgstr ""
 
 #: ../../index.rst:97
 msgid "Tutorial"
-msgstr ""
-"Tutorial"
+msgstr "Tutorial"
 
 #: ../../index.rst:103
 msgid "How-to guides"
-msgstr ""
-"Guias de tarefas"
+msgstr "Guias de tarefas"
 
 #: ../../index.rst:113
 msgid "Reference"
-msgstr ""
-"Referência"
+msgstr "Referência"
 
 #: ../../index.rst:125
 msgid "Explanation"
-msgstr ""
-"Explicação"
+msgstr "Explicação"
 
 #: ../../index.rst:2
 msgid "chaotic-pfc documentation"
@@ -74,7 +70,7 @@ msgstr ""
 
 #: ../../index.rst:16
 msgid "Status"
-msgstr "Status"
+msgstr "Situação"
 
 #: ../../index.rst:19
 msgid ""
@@ -188,8 +184,9 @@ msgid "Installation"
 msgstr "Instalação"
 
 #: ../../index.rst:57
-msgid "Requires **Python 3.12+**."
-msgstr "Requer **Python 3.12+**."
+msgid "Requires **Python 3.13+**."
+msgstr ""
+"Requer **Python 3.13+**."
 
 #: ../../index.rst:65
 msgid ""
@@ -203,7 +200,7 @@ msgstr ""
 
 #: ../../index.rst:70
 msgid "Quick start"
-msgstr "Início Rápido"
+msgstr "Início rápido"
 
 #: ../../index.rst:76
 msgid ""
@@ -262,7 +259,7 @@ msgstr "**Varredura de Parâmetros**"
 
 #: ../../index.rst:96
 msgid "High-resolution (order × cutoff) grid: ``chaotic-pfc run sweep compute``"
-msgstr "Grade de alta resolução (ordem × corte): ``chaotic-pfc run sweep compute``"
+msgstr "Grade de alta resolução (ordem × frequência de corte): ``chaotic-pfc run sweep compute``"
 
 #~ msgid "Contents"
 #~ msgstr "Conteúdo"

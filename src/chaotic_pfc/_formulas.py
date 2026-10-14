@@ -3,8 +3,9 @@
 The positive fixed point of the filtered Hénon map and the two-dimensional Hénon
 recurrence appear both in the Numba sweep kernel (``analysis.sweep._kernel``)
 and in the pure-Python code (``dynamics.lyapunov``, ``dynamics.maps``). They are
-defined once here — Numba-compilable — and imported by both, so the two paths
-cannot drift apart.
+defined once here — Numba-compilable — and imported by the sweep kernel. The
+pure-Python validation wrappers keep their own NumPy copies on purpose (see
+below).
 
 The modified Gram-Schmidt (MGS) orthogonalisation has two shapes that must stay
 bit-compatible with the versioned sweeps: the in-place, log-accumulating variant
@@ -14,6 +15,17 @@ by the full-spectrum fallback) and the NumPy variant in
 kept as two implementations of the same algorithm because the fallback's
 bit-exactness depends on the scalar loop; ``tests/test_formulas.py`` pins that
 the two agree on the orthonormality property.
+
+The pure-Python validation wrappers in ``dynamics.lyapunov`` deliberately keep
+their **own NumPy copies** of :func:`fixed_point_positive` and
+:func:`henon2d_step`: the Numba-compiled versions here differ from the NumPy
+evaluation by ~1 ULP, which the chaotic map amplifies (the two trajectories
+first diverge around iteration 6750), so the single-seed estimator would move
+from the published ``0.41756661`` to ``0.42280037``.  The shared compiled
+formulas are the reference for the **sweeps** (the versioned ``.npz`` and the
+``paper numbers``); the NumPy copies are the reference for the single-seed
+**validation** numbers (``docs/validation.rst``), pinned by
+``tests/test_lyapunov_regression.py``.
 """
 
 from __future__ import annotations

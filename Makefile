@@ -190,6 +190,7 @@ docs-strict: check-venv docs-i18n-check  ## Build the docs with -W -n and run th
 docs-i18n-check: check-venv  ## Fail when a pt-BR narrative catalogue is stale or untranslated
 	SPHINX_BUILD="$(abspath $(SPHINXBUILD))" \
 	SPHINX_INTL="$(abspath $(VENV))/bin/sphinx-intl" \
+	PYTHON="$(abspath $(PYTHON))" \
 	tools/check_pt_br_translations.sh
 
 docs-pdf:  ## Build Sphinx PDF documentation (English)

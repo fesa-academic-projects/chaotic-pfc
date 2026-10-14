@@ -117,8 +117,9 @@ was chosen well below machine underflow for ``float64``
 **Ensemble protocol.**  A single initial condition samples one trajectory.
 To assess the **statistical robustness** of the Lyapunov estimate,
 :func:`~chaotic_pfc.dynamics.lyapunov.lyapunov_henon2d_ensemble` draws
-:math:`N_{\text{CI}}` independent initial conditions from a uniform box
-around the positive fixed point and computes the spectrum for each.  The
+:math:`N_{\text{CI}}` independent initial conditions from a **centred**
+uniform box (:math:`\pm 10\%`, as a fraction of each coordinate) around the
+positive fixed point and computes the spectrum for each.  The
 output (:class:`~chaotic_pfc.dynamics.lyapunov.EnsembleResult`) reports
 the mean, maximum, and per-IC values, plus a count of how many ICs yield
 positive :math:`\lambda_{\max}` (chaotic) versus non-positive (periodic).
@@ -143,8 +144,9 @@ Known limitations
 -----------------
 
 - **Finite-time convergence.**  Published values correspond to
-  :math:`N \to \infty`.  With the sweep default of :math:`N = 500`, the
-  estimate can deviate by ~2–3% from the asymptotic value.  The sum
+  :math:`N \to \infty`.  With the sweep default of :math:`N = 3\,000`, the
+  estimate can deviate by ~2–3% from the asymptotic value (the adaptive
+  early-stop may stop as early as :math:`N_{\text{map,min}} = 500`).  The sum
   identity :math:`\lambda_1 + \lambda_2 = \ln|b|` remains exact at any
   :math:`N`, confirming that the bias is a convergence-rate issue, not a
   bug.

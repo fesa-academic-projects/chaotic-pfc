@@ -138,6 +138,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- The Brazilian-Portuguese filter names in the exported LaTeX tables are now
+  plural (`Passa-baixas`, `Passa-altas`); the eight tables under
+  `data/analysis_output/tables/pt/` were regenerated (all numbers unchanged,
+  and the JCIS/SIMAC figures are untouched).
 - All GitHub Actions are pinned by commit SHA (with a version comment), and
   every workflow declares `permissions: contents: read` at the top, granting
   extra scopes (`id-token: write`, `security-events: write`) only to the jobs
@@ -195,6 +199,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- The pure-Python Lyapunov wrappers (`chaotic_pfc.dynamics.lyapunov`) were
+  reverted to their own NumPy Hénon step and fixed point. The single-formula refactor
+  had swapped them for the Numba-compiled `_formulas` versions, which differ by
+  ~1 ULP (first divergence at iteration 6750, amplified by the chaotic map) and
+  moved the single-seed validation value from `0.41756661` to `0.42280037`. The
+  sweep kernel keeps the shared compiled formula, so the versioned `.npz`, the
+  `paper numbers` and the bit-exact baseline are unchanged; a new
+  `tests/test_lyapunov_regression.py` pins the published values.
 - Every bibliography entry now carries an identifier: `Sprott2003` and
   `Oppenheim2009` (books with no publisher DOI) keep their ISBN and gained a
   publisher URL, and `articles/jcis/article.pdf` was rebuilt.
@@ -224,6 +236,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   suite.
 
 ### Documentation
+- The pt-BR catalogue check now fails on an entry whose `msgstr` still equals
+  its `msgid` (unless it is listed in the new
+  `docs/locale/pt_BR/translation-exceptions.txt`) and on forbidden glossary
+  terms (`taps`, `esfera`, singular `passa-baixa`, and the pt-PT forms
+  `partilh*`, `secç*`, `registad*`, `ficheir*`, `utilizador*`, `ecrã`).
 - The narrative documentation follows the Diátaxis split (Tutorial,
   How-to guides, Reference, Explanation); the tutorial is self-contained and
   the main public functions (`henon_standard`, `classify`,

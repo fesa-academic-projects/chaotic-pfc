@@ -156,11 +156,11 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": "$\\omega_c/\\pi$",
     },
     "analysis.filter.lowpass": {
-        "pt": "Passa-baixa",
+        "pt": "Passa-baixas",
         "en": "Lowpass",
     },
     "analysis.filter.highpass": {
-        "pt": "Passa-alta",
+        "pt": "Passa-altas",
         "en": "Highpass",
     },
     "analysis.filter.bandpass": {

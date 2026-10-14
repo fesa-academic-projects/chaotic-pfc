@@ -276,15 +276,19 @@ parameter space. For each grid point:
 1. **FIR bank precomputation**: all filter coefficient sets are
 computed once using SciPy's :func:`~scipy.signal.firwin`.
 
-2. **Initial condition generation**: :math:`N_{\text{IC}}` initial
-conditions are sampled from a uniform box around the fixed point.
+2. **Initial condition generation**: each component of the :math:`N_{\text{IC}}`
+initial conditions is drawn as :math:`p_k^+ + 0.1\,U`, with :math:`U` uniform
+in :math:`[0,1)` — a cube of edge :math:`0.1` with a vertex at the positive
+fixed point :math:`\mathbf{p}^+`.
 
 3. **Transient discard**: the first :math:`N_{\text{discard}}`
 iterations are discarded to eliminate transient dynamics.
 
 4. **Lyapunov estimation**: :math:`N_{\text{itera}}` iterations are
-performed, tracking the evolution of :math:`N_s` tangent vectors
-via modified Gram-Schmidt orthogonalisation.
+performed, propagating a **single tangent vector** multiplied by the Jacobian
+and renormalised every ten iterations; the full :math:`N_s`-vector
+Gram-Schmidt spectrum is computed only for the marginal cells
+(``fallback_mode=1``).
 
 5. **Ensemble aggregation**: :math:`\lambda_{\max}` is reported as
    the mean over all :math:`N_{\text{IC}}` initial conditions.

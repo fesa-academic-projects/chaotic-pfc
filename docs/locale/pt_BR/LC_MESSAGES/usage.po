@@ -333,7 +333,9 @@ msgstr "Varredura — Beta"
 
 #: ../../usage.rst:202
 msgid "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
-msgstr "Runs the Lyapunov sweep for a range of Kaiser :math:`\\beta` values:"
+msgstr ""
+"Executa a varredura de Lyapunov para uma faixa de valores de "
+":math:`\\beta` de Kaiser:"
 
 #: ../../usage.rst:208
 msgid ""
@@ -470,8 +472,8 @@ msgid ""
 "**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
 "statistics and 95% CI."
 msgstr ""
-"**tab_top_k_extended.tex** — Top-3 with :math:`\\lambda_{\\max}` "
-"statistics and 95% CI."
+"**tab_top_k_extended.tex** — Top-3 com estatísticas de "
+":math:`\\lambda_{\\max}` e IC de 95%."
 
 #: ../../usage.rst:285
 msgid "**tab_full_ranking.tex** — Full 124-entry ranking (longtable)."
@@ -483,15 +485,15 @@ msgid ""
 "**tab_sweet_spots.tex** — Grid point with highest "
 ":math:`\\lambda_{\\max}` per filter."
 msgstr ""
-"**tab_sweet_spots.tex** — Grid point with highest "
-":math:`\\lambda_{\\max}` per filter."
+"**tab_sweet_spots.tex** — Ponto da grade com o maior "
+":math:`\\lambda_{\\max}` por filtro."
 
 #: ../../usage.rst:287
 msgid ""
 "**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
 ":math:`\\beta`."
 msgstr ""
-"**tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best "
+"**tab_consolidated_top_k.tex** — Top-3 com o Kaiser colapsado ao melhor "
 ":math:`\\beta`."
 
 #: ../../usage.rst:288
@@ -505,12 +507,13 @@ msgid ""
 "**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), "
 "balanced."
 msgstr ""
-"**tab_consolidated_full_ranking.tex** — Full ranking (28 entries), "
-"balanced."
+"**tab_consolidated_full_ranking.tex** — Classificação completa (28 "
+"entradas), balanceada."
 
 #: ../../usage.rst:290
 msgid "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
-msgstr "**tab_kaiser_beta_optimal.tex** — Optimal :math:`\\beta` per filter type."
+msgstr ""
+"**tab_kaiser_beta_optimal.tex** — :math:`\\beta` ótimo por tipo de filtro."
 
 #: ../../usage.rst:305
 msgid ""
@@ -676,4 +679,5 @@ msgstr ":doc:`development` — ambiente de desenvolvimento e ferramentas."
 #~ msgstr ""
 #~ "**Melhores filtros preservadores de caos**:"
 #~ " ranqueados por cobertura caótica."
+
 

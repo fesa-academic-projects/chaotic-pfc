@@ -26,6 +26,7 @@ SPHINX_BUILD="${SPHINX_BUILD:-sphinx-build}"
 SPHINX_INTL="${SPHINX_INTL:-sphinx-intl}"
 MSGCAT="${MSGCAT:-msgcat}"
 MSGFMT="${MSGFMT:-msgfmt}"
+PYTHON="${PYTHON:-python3}"
 
 for tool in "$SPHINX_BUILD" "$SPHINX_INTL" "$MSGCAT" "$MSGFMT"; do
     if ! command -v "$tool" >/dev/null 2>&1; then
@@ -86,6 +87,9 @@ while IFS= read -r refreshed; do
         failed=1
     fi
 done < <(find "$work/locale/$MESSAGES_SUBDIR" -type f -name '*.po' | sort)
+
+# 3. Untranslated entries (msgstr == msgid) and forbidden glossary terms.
+"$PYTHON" "$REPO_ROOT/tools/check_pt_br_terms.py" || failed=1
 
 if [ "$failed" -ne 0 ]; then
     cat >&2 <<'EOF'

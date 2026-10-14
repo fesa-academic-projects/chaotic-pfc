@@ -41,8 +41,6 @@ from typing import Any, TypedDict
 import numpy as np
 from numpy.typing import NDArray
 
-from chaotic_pfc._formulas import fixed_point_positive, henon2d_step
-
 
 class FixedPointInfo(TypedDict):
     """Result of :func:`fixed_point_stability` — fixed point, eigenvalues, stability."""
@@ -82,7 +80,15 @@ def _fixed_point(
         )
 
     ratio = G / (1.0 - H)
-    xf = float(fixed_point_positive(ratio, alpha, beta))
+    # Pure-NumPy form kept on purpose (not ``_formulas.fixed_point_positive``):
+    # the Numba-compiled version differs by ~1 ULP, which the chaotic map
+    # amplifies and would move the published single-seed validation value.  It
+    # is the reference for the validation wrappers, pinned by
+    # ``tests/test_lyapunov_regression.py``; the sweeps use the compiled form.
+    denom = ratio**2
+
+    disc = (1.0 - beta) ** 2 + 4.0 * alpha * denom
+    xf = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
 
     vf = G * xf / (1.0 - H)
     return np.array([xf, xf, vf, vf])
@@ -445,9 +451,15 @@ def fixed_point_stability(
 def _henon2d_fixed_points(
     alpha: float, beta: float
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
-    """Both fixed points of the 2-D Hénon map (positive and negative roots)."""
+    """Both fixed points of the 2-D Hénon map (positive and negative roots).
+
+    The positive root uses the pure-NumPy form on purpose (see
+    :func:`_fixed_point`): the shared, Numba-compiled
+    ``_formulas.fixed_point_positive`` differs by ~1 ULP, which the chaotic map
+    amplifies and would move the published single-seed validation value.
+    """
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
-    x_p = float(fixed_point_positive(1.0, alpha, beta))
+    x_p = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
     x_n = ((beta - 1.0) - np.sqrt(disc)) / 2.0
     return np.array([x_p, x_p]), np.array([x_n, x_n])
 
@@ -463,8 +475,20 @@ def _henon2d_jacobian(beta: float, x: NDArray[np.float64]) -> NDArray[np.float64
 
 
 def _henon2d_iterate(alpha: float, beta: float, x: NDArray[np.float64]) -> NDArray[np.float64]:
-    """Single iteration of the 2-D Hénon map."""
-    return np.asarray(henon2d_step(x, alpha, beta))
+    """Single iteration of the 2-D Hénon map.
+
+    Kept as a pure-NumPy expression (rather than the shared, Numba-compiled
+    ``_formulas.henon2d_step``) so the single-seed validation wrappers stay
+    bit-compatible with the published reference values; the sweep kernel uses
+    the compiled ``_formulas`` version.  The two differ by ~1 ULP, which the
+    chaotic map amplifies (see ``tests/test_lyapunov_regression.py``).
+    """
+    return np.array(
+        [
+            alpha - x[0] ** 2 + beta * x[1],
+            x[0],
+        ]
+    )
 
 
 def lyapunov_henon2d(

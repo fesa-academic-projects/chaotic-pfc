@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:48-0300\n"
+"POT-Creation-Date: 2026-10-14 00:40-0300\n"
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
+"Language-Team: Portuguese (Brazil) <>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -40,8 +40,9 @@ msgid "Requirements:"
 msgstr "Requisitos:"
 
 #: ../../development.rst:14
-msgid "**Python 3.12+** (3.12, 3.13, 3.14 tested in CI)."
-msgstr "**Python 3.12+** (3.12, 3.13, 3.14 testados no CI)."
+msgid "**Python 3.13+** (3.13, 3.14 tested in CI)."
+msgstr ""
+"**Python 3.13+** (3.13 e 3.14 testados no CI)."
 
 #: ../../development.rst:15
 msgid "**Git** for version control."
@@ -180,8 +181,12 @@ msgid ""
 "fallback (see :ref:`the backend-dependence note <backend-dependence>`). "
 "The versioned ``.npz`` checkpoints are reproduced exactly only with "
 "Numba."
-msgstr "Os kernels compilados com Numba são testados diretamente (sem mocks).  Eles são estatisticamente equivalentes, mas não bit a bit idênticos, ao fallback em Python puro (ver :ref:`a nota de dependência de backend <backend-dependence>`). Os checkpoints ``.npz`` versionados são reproduzidos exatamente apenas com Numba."
-
+msgstr ""
+"Os kernels compilados com Numba são testados diretamente (sem mocks).  "
+"Eles são estatisticamente equivalentes, mas não bit a bit idênticos, ao "
+"fallback em Python puro (ver :ref:`a nota de dependência de backend "
+"<backend-dependence>`). Os checkpoints ``.npz`` versionados são "
+"reproduzidos exatamente apenas com Numba."
 
 #: ../../development.rst:132
 msgid "CI/CD"
@@ -236,8 +241,10 @@ msgid ""
 "The documentation is built with Sphinx and hosted on Read the Docs. "
 "Output goes to ``docs/_build/html/`` (English) and "
 "``docs/_build/html/pt_BR/`` (Portuguese)."
-msgstr "A documentação é construída com Sphinx e hospedada no Read the Docs. A saída vai para ``docs/_build/html/`` (inglês) e ``docs/_build/html/pt_BR/`` (português)."
-
+msgstr ""
+"A documentação é construída com Sphinx e hospedada no Read the Docs. A "
+"saída vai para ``docs/_build/html/`` (inglês) e "
+"``docs/_build/html/pt_BR/`` (português)."
 
 #: ../../development.rst:180
 msgid "To update translations after changing English sources:"
@@ -250,12 +257,7 @@ msgid ""
 "``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
 "reference pages are **not** translated: they stay in English because they"
 " are auto-generated from Python docstrings."
-msgstr ""
-"Documentation sources are in ``docs/`` as reStructuredText (``.rst``). "
-"Translations (Brazilian Portuguese) are in "
-"``docs/locale/pt_BR/LC_MESSAGES/`` as Gettext ``.po`` files. API "
-"reference pages are **not** translated: they stay in English because they"
-" are auto-generated from Python docstrings."
+msgstr "As fontes da documentação estão em ``docs/`` como reStructuredText (``.rst``). As traduções (português do Brasil) estão em ``docs/locale/pt_BR/LC_MESSAGES/`` como arquivos Gettext ``.po``. As páginas de referência da API **não** são traduzidas: permanecem em inglês porque são geradas automaticamente a partir das docstrings do Python."
 
 #: ../../development.rst:196
 msgid "Code style"
@@ -336,4 +338,5 @@ msgstr "Código e docstrings em inglês; rótulos de figuras bilíngues (pt / en
 #~ "garantir equivalência bit a bit entre"
 #~ " os caminhos JIT e fallback em "
 #~ "Python puro."
+
 

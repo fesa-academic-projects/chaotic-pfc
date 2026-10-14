@@ -12,7 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2026-05-08 00:12-0300\n"
 "Last-Translator: Roger Freitas Pereira <roger@chaotic-pfc>\n"
 "Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
+"Language-Team: Portuguese (Brazil) <>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -54,8 +54,9 @@ msgstr "Iteradores do mapa de Hénon"
 msgid ""
 "Two private in-place iterator functions live in "
 "``chaotic_pfc.analysis.sweep._kernel``:"
-msgstr "Duas funções iteradoras privadas in-place residem em ``chaotic_pfc.analysis.sweep._kernel``:"
-
+msgstr ""
+"Duas funções iteradoras privadas in-place residem em "
+"``chaotic_pfc.analysis.sweep._kernel``:"
 
 #: ../../internals.rst:21
 msgid "``_henon_n12_inplace(x, x_new, alpha, beta, c)``"
@@ -66,9 +67,9 @@ msgid ""
 "Optimised for 1–2 filter taps. Uses a fixed-size unrolled loop over the "
 "filter dimension, avoiding dynamic array indexing overhead."
 msgstr ""
-"Otimizada para 1–2 taps de filtro. Utiliza um laço desenrolado de tamanho"
-" fixo sobre a dimensão do filtro, evitando a sobrecarga de indexação "
-"dinâmica de array."
+"Otimizada para 1–2 coeficientes de filtro. Utiliza um laço desenrolado de"
+" tamanho fixo sobre a dimensão do filtro, evitando a sobrecarga de "
+"indexação dinâmica de array."
 
 #: ../../internals.rst:25
 msgid "``_henon_nN_inplace(x, x_new, alpha, beta, c)``"
@@ -78,9 +79,7 @@ msgstr "``_henon_nN_inplace(x, x_new, alpha, beta, c)``"
 msgid ""
 "General-purpose for :math:`N \\ge 3` taps. Uses a parametric loop over "
 "the filter coefficients."
-msgstr ""
-"Propósito geral para :math:`N \\ge 3` taps. Utiliza um laço paramétrico "
-"sobre os coeficientes do filtro."
+msgstr "**Propósito geral** para :math:`N \\ge 3` coeficientes. Utiliza um laço paramétrico sobre os coeficientes do filtro."
 
 #: ../../internals.rst:29
 msgid ""
@@ -143,13 +142,17 @@ msgid "Adaptive early-stop mechanism"
 msgstr "Mecanismo adaptativo de parada antecipada"
 
 #: ../../internals.rst:56
+#, python-brace-format
 msgid ""
 "``_adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, "
 "prev_est, streak, n_used)`` is called every ``_ADAPTIVE_CHECKPOINT_EVERY "
 "= 100`` iterations. It computes the current :math:`\\lambda_{\\max}` "
 "estimate and checks whether it has stabilised:"
-msgstr "``_adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, prev_est, streak, n_used)`` é chamada a cada ``_ADAPTIVE_CHECKPOINT_EVERY = 100`` iterações. Calcula a estimativa atual de :math:`\\lambda_{\\max}` e verifica se estabilizou:"
-
+msgstr ""
+"``_adaptive_checkpoint(lyap_sum, Ns, n_use, n_done, Nitera_min, tol, "
+"prev_est, streak, n_used)`` é chamada a cada ``_ADAPTIVE_CHECKPOINT_EVERY"
+" = 100`` iterações. Calcula a estimativa atual de "
+":math:`\\lambda_{\\max}` e verifica se estabilizou:"
 
 #: ../../internals.rst:62
 msgid ""
@@ -192,8 +195,9 @@ msgstr ""
 msgid ""
 "Evolve the perturbation vectors through the Jacobian (tangent map) and "
 "re-orthonormalise them (MGS) every ``_BENETTIN_K`` iterations."
-msgstr "Evolui os vetores de perturbação através do Jacobiano (mapa tangente) e os re-ortonormaliza (MGS) a cada ``_BENETTIN_K`` iterações."
-
+msgstr ""
+"Evolui os vetores de perturbação através do Jacobiano (mapa tangente) e "
+"os re-ortonormaliza (MGS) a cada ``_BENETTIN_K`` iterações."
 
 #: ../../internals.rst:81
 msgid ""
@@ -204,19 +208,23 @@ msgstr ""
 "antecipada adaptativa for acionada)."
 
 #: ../../internals.rst:83
+#, python-brace-format
 msgid ""
 "Return ``(best, n_used)``: the :math:`\\lambda_{\\max}` estimate for a "
 "single initial condition and the number of iterations used."
-msgstr "Retorna ``(best, n_used)``: a estimativa de :math:`\\lambda_{\\max}` para uma única condição inicial e o número de iterações utilizadas."
-
+msgstr ""
+"Retorna ``(best, n_used)``: a estimativa de :math:`\\lambda_{\\max}` para"
+" uma única condição inicial e o número de iterações utilizadas."
 
 #: ../../internals.rst:86
 msgid ""
 "The ``Nitera`` burn-in is applied by ``_sweep_kernel`` *before* these "
 "kernels are called, and the aggregation across ``n_initial`` independent "
 "ICs is also performed by ``_sweep_kernel``."
-msgstr "O burn-in ``Nitera`` é aplicado por ``_sweep_kernel`` *antes* de chamar esses kernels, e a agregação entre as ``n_initial`` CIs independentes também é feita por ``_sweep_kernel``."
-
+msgstr ""
+"O burn-in ``Nitera`` é aplicado por ``_sweep_kernel`` *antes* de chamar "
+"esses kernels, e a agregação entre as ``n_initial`` CIs independentes "
+"também é feita por ``_sweep_kernel``."
 
 #: ../../internals.rst:90
 msgid ""
@@ -245,6 +253,7 @@ msgstr ""
 "perturbação e a permutação de ordem das tarefas."
 
 #: ../../internals.rst:102
+#, python-brace-format
 msgid ""
 "The ``_build_task_order`` function creates a permuted list of "
 "``(order_idx, cutoff_idx)`` pairs that interleaves tasks from different "
@@ -252,8 +261,14 @@ msgid ""
 "loop over orders would assign threads to vastly unequal workloads (the "
 "MGS inner loop scales as :math:`\\mathcal{O}(N_s^3)` with the number of "
 "filter taps :math:`N_s`)."
-msgstr "A função ``_build_task_order`` cria uma lista permutada de pares ``(order_idx, cutoff_idx)`` que entrelaça tarefas de diferentes ordens, garantindo carga balanceada entre as threads. Sem essa permutação, um laço ingênuo sobre as ordens atribuiria às threads cargas de trabalho muito desiguais (o laço interno MGS escala como :math:`\\mathcal{O}(N_s^3)` com o número de coeficientes de filtro :math:`N_s`)."
-
+msgstr ""
+"A função ``_build_task_order`` cria uma lista permutada de pares "
+"``(order_idx, cutoff_idx)`` que entrelaça tarefas de diferentes ordens, "
+"garantindo carga balanceada entre as threads. Sem essa permutação, um "
+"laço ingênuo sobre as ordens atribuiria às threads cargas de trabalho "
+"muito desiguais (o laço interno MGS escala como "
+":math:`\\mathcal{O}(N_s^3)` com o número de coeficientes de filtro "
+":math:`N_s`)."
 
 #: ../../internals.rst:110
 msgid "Fixed-point stability analysis"
@@ -339,9 +354,9 @@ msgid ""
 "Shape ``(N_coef, N_cutoffs, max_taps)``: each ``(order, cutoff)`` pair "
 "produces a filter of length ``order``, zero-padded to ``max_taps``."
 msgstr ""
-"Formato ``(N_coef, N_cutoffs, max_taps)`` — cada par ``(ordem, corte)`` "
-"produz um filtro de comprimento ``ordem``, preenchido com zeros até "
-"``max_taps``."
+"Formato ``(N_coef, N_cutoffs, max_taps)`` — cada par ``(ordem, frequência"
+" de corte)`` produz um filtro de comprimento ``ordem``, preenchido com "
+"zeros até ``max_taps``."
 
 #: ../../internals.rst:143
 msgid ""
@@ -373,8 +388,9 @@ msgstr "Geradores de sinais"
 msgid ""
 "Three message waveform generators in :mod:`chaotic_pfc.dynamics.signals` "
 "feed the communication pipeline:"
-msgstr "Três geradores de forma de onda de mensagem em :mod:`chaotic_pfc.dynamics.signals` alimentam o pipeline de comunicação:"
-
+msgstr ""
+"Três geradores de forma de onda de mensagem em "
+":mod:`chaotic_pfc.dynamics.signals` alimentam o pipeline de comunicação:"
 
 #: ../../internals.rst:157
 msgid ":func:`~chaotic_pfc.dynamics.signals.binary_message`"
@@ -409,15 +425,16 @@ msgstr ""
 msgid ":func:`~chaotic_pfc.dynamics.signals.text_message`"
 msgstr ":func:`~chaotic_pfc.dynamics.signals.text_message`"
 
-
 #: ../../internals.rst:168
 msgid ""
 "Encodes an ASCII string as an NRZ BPSK bit stream (8 bits per character, "
 "bit ``1`` → ``+1``, bit ``0`` → ``-1``) and holds each bit for a "
 "configurable period. This is the generator used by the ``comm-*`` "
 "experiments."
-msgstr "Codifica uma string ASCII como um fluxo de bits NRZ BPSK (8 bits por caractere, bit ``1`` → ``+1``, bit ``0`` → ``-1``) e mantém cada bit por um período configurável. É o gerador usado pelos experimentos ``comm-*``."
-
+msgstr ""
+"Codifica uma string ASCII como um fluxo de bits NRZ BPSK (8 bits por "
+"caractere, bit ``1`` → ``+1``, bit ``0`` → ``-1``) e mantém cada bit por "
+"um período configurável. É o gerador usado pelos experimentos ``comm-*``."
 
 #: ../../internals.rst:174
 msgid "PSD estimation"
@@ -530,8 +547,9 @@ msgstr "Camada de tradução"
 msgid ""
 "``chaotic_pfc._i18n`` provides bilingual figure labels (Portuguese and "
 "English) without requiring ``gettext`` at runtime. Features:"
-msgstr "``chaotic_pfc._i18n`` fornece rótulos de figura bilíngues (português e inglês) sem exigir ``gettext`` em tempo de execução. Características:"
-
+msgstr ""
+"``chaotic_pfc._i18n`` fornece rótulos de figura bilíngues (português e "
+"inglês) sem exigir ``gettext`` em tempo de execução. Características:"
 
 #: ../../internals.rst:218
 msgid "Simple dictionary-based lookup via chaotic_pfc._i18n.t."
