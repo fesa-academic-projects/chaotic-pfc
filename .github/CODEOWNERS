@@ -1,0 +1,8 @@
+# Default owners for everything in the repository.
+#
+# The team handle below must match a team in the ``fesa-academic-projects``
+# organisation (see the initial-configuration section of RELEASING.md); update it if the team is renamed.
+* @fesa-academic-projects/maintainers
+
+# Versioned, frozen artefacts: the SIMAC record and the manuscript sources are
+# owned by the maintainers as a whole (no per-path override needed).

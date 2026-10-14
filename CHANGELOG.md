@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking
+- `requires-python` is now `>=3.13` (SPEC 0): Python 3.12 is no longer
+  supported. The dependency floors are NumPy 2.3, SciPy 1.15 and Matplotlib
+  3.11, and a CI job installs exactly those minimums and runs the suite.
 - The standalone scripts in `tools/` are replaced by CLI subcommands:
   `tools/paper_numbers.py` and `tools/audit_paper.py` by
   `chaotic-pfc paper numbers|audit`; `tools/regenerate_sweeps.py`,
@@ -53,6 +56,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- A `minimums` CI job installs the SPEC 0 floors (Python 3.13, NumPy 2.3,
+  SciPy 1.15, Matplotlib 3.11) and runs the whole suite; a `release-pypi` job
+  publishes to PyPI with OIDC Trusted Publishing on `v*` tags, after
+  `release-testpypi`.
+- Security and compliance: `SECURITY.md`, `CODEOWNERS`, CodeQL (Python) and
+  OpenSSF Scorecard workflows, REUSE (`LICENSES/`, `REUSE.toml`, `reuse lint`
+  in CI), `codemeta.json` and `.zenodo.json`.
 - `make paper-pdf` now compiles the manuscript inside the pinned image
   `texlive/texlive@sha256:acd65bd2…` (TeX Live 2026; needs Docker or Podman, and
   `make setup` warns when neither is installed), so `articles/jcis/article.pdf`
@@ -128,6 +138,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- All GitHub Actions are pinned by commit SHA (with a version comment), and
+  every workflow declares `permissions: contents: read` at the top, granting
+  extra scopes (`id-token: write`, `security-events: write`) only to the jobs
+  that need them.
+- `pyproject.toml` uses a PEP 639 licence expression and `license-files`, the
+  `Typing :: Typed` classifier and a minimal `build-system`
+  (`setuptools>=77`); the CI lists and checks the sdist/wheel contents. REUSE
+  declares BSD-3-Clause for the whole tree.
+- Dependabot groups NumPy, SciPy and Numba into a single `scientific-core`
+  pull request, separate from the other dependencies.
 - `chaotic_pfc.analysis.sweep_plotting` and `chaotic_pfc.analysis.stats` were
   split into private subpackages (`sweep_plotting/`, `stats/`) behind unchanged
   facades; `tests/test_sweep.py` was split by subject.

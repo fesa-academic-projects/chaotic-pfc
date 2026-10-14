@@ -8,6 +8,15 @@ updates:
     schedule:
       interval: "weekly"
     groups:
+      scientific-core:
+        # numpy, scipy and numba must move together: their ABI/API coupling
+        # means a single grouped PR is the only way to review the change, and a
+        # baseline failure here is expected when the bits change (see
+        # CONTRIBUTING/RELEASING).
+        patterns:
+          - "numpy"
+          - "scipy"
+          - "numba"
       dev-deps:
         patterns:
           - "pytest*"

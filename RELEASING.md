@@ -3,9 +3,22 @@
 ## Prerequisites
 
 - Push access to the repository and a signing key configured for `git tag -s`.
-- Trusted publisher configured on [TestPyPI](https://test.pypi.org) for this repo.
+- Trusted publishers configured on **[TestPyPI](https://test.pypi.org) and
+  [PyPI](https://pypi.org)** for this repository (one-time, manual; see below).
 - Maintainer access to the Zenodo GitHub integration (for the data DOI).
 - Write access to the Read the Docs project (to activate the `stable` version).
+
+### One-time PyPI Trusted Publishing (manual)
+
+Both the TestPyPI and the PyPI projects need a **Trusted Publisher** pointing at
+this repository (workflow `ci.yml`, environment left empty):
+
+1. On [PyPI](https://pypi.org) create the `chaotic-pfc` project and add a
+   pending publisher: owner `fesa-academic-projects`, repository `chaotic-pfc`,
+   workflow `ci.yml`, environment *(empty)*.
+2. Repeat on [TestPyPI](https://test.pypi.org).
+3. No API token is stored: the `release-testpypi` and `release-pypi` jobs
+   authenticate through the OIDC `id-token`.
 
 ## Steps
 
@@ -65,13 +78,20 @@ git tag -s vX.Y.Z -m "vX.Y.Z: <short description>"
 git push origin vX.Y.Z
 ```
 
-Pushing the tag triggers the `release` job in CI. It starts only after the
-`lint`, `typecheck`, `test` (the full 3.12–3.14 matrix) and `baseline` jobs have
-passed on the tag, so a tag can no longer publish untested code. The `release`
-job then:
+Pushing the tag triggers the release jobs in CI. They start only after the
+`lint`, `typecheck`, `test` (the 3.13–3.14 matrix) and `baseline` jobs have
+passed on the tag, so a tag can no longer publish untested code. Then:
 
-1. Builds a wheel (`.whl`) and source distribution (`.tar.gz`).
-2. Publishes both to https://test.pypi.org.
+1. `release-testpypi` builds nothing new — it reuses the `dist` artefact from
+   the `build` job — and publishes the wheel and sdist to
+   https://test.pypi.org.
+2. `release-pypi` publishes the **same** artefacts to the real PyPI with OIDC
+   Trusted Publishing (no token).
+
+A **baseline failure** in a Dependabot `scientific-core` PR (numpy/scipy/numba)
+is expected when the numerical bits change; regenerate the sweeps, compare them
+and update the numbers, figures and `benchmarks/baseline/` in that same PR
+before tagging (see CONTRIBUTING).
 
 ### 4. Verify on TestPyPI
 
@@ -124,3 +144,58 @@ text.
 In the Read the Docs project, activate the new tag as the **`stable`** version
 (and keep `latest` on `main`). Confirm the build for the tag is green and that
 https://chaotic-pfc.readthedocs.io/en/stable/ serves the released documentation.
+
+
+## Initial configuration (one-time)
+
+Repository settings and external accounts configured once, before the first
+release from this branch. Nothing here is automated.
+
+### Repository protection (GitHub)
+
+- Branch protection on `main`: require a pull request and at least one approval,
+  require the status checks `Lint (Ruff)`, `Type check (mypy)`,
+  `Unit tests (pytest …)`, `Minimum versions (SPEC 0)`,
+  `Manuscript audit (check-paper)`, `REUSE compliance` and `CodeQL`, and
+  disallow force pushes.
+- Confirm the `CODEOWNERS` team (`@fesa-academic-projects/maintainers`) exists
+  and matches `.github/CODEOWNERS`.
+- Enable Dependabot alerts and security updates.
+
+### PyPI and TestPyPI (Trusted Publishing)
+
+Register a pending publisher on both indexes (no API token is stored): project
+`chaotic-pfc`, owner `fesa-academic-projects`, repository `chaotic-pfc`,
+workflow `ci.yml`, environment empty. The `release-testpypi` and `release-pypi`
+jobs use OIDC `id-token: write` and publish on `v*` tags, in that order.
+
+### Zenodo and DOI
+
+Enable the GitHub–Zenodo integration for the repository and keep `main` in the
+release branch list. After the GitHub release, record the version DOI in
+`CITATION.cff`, `codemeta.json`, `docs/citing.rst` and the software entry of
+`articles/jcis/references.bib`.
+
+### Read the Docs
+
+Activate the new tag as the `stable` version and keep `latest` on `main`;
+confirm the built documentation is green.
+
+### OpenSSF Best Practices badge
+
+Register the project and complete the questionnaire (aim for the "passing"
+badge).
+
+### Re-sign the commits and push
+
+The commits in this branch are unsigned by design. Before publishing, re-sign
+them and push:
+
+```bash
+git fetch origin
+git rebase --exec 'git commit --amend --no-edit -S' origin/main
+git push origin main
+```
+
+Watch the first full CI run and fix anything that only appears in CI before
+tagging.

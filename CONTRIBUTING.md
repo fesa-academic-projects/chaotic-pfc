@@ -137,6 +137,26 @@ User-visible changes are recorded in `CHANGELOG.md` under an `[Unreleased]` sect
 
 Heavy or specialised dependencies (currently Plotly for 3-D visualisation) are declared as optional extras in `pyproject.toml` and must not be imported at package-import time. Code that depends on an optional extra is reachable only through a deeper import path; importing the top-level `chaotic_pfc` package must succeed without any extras installed.
 
+### Dependency updates (Dependabot)
+
+- Dependabot groups **numpy, scipy and numba** into a single `scientific-core`
+  pull request, separate from `dev-deps`, `docs-deps` and the rest; they move
+  together because their ABI/API coupling makes a mixed environment hard to
+  review.
+- A **baseline failure in that PR is expected** when the numerical bits change
+  (a new NumPy/SciPy alters the `firwin` coefficients or the floating-point
+  path). That is not a reason to relax the test. The procedure is to
+  regenerate and update everything in the **same** PR:
+
+  1. `chaotic-pfc sweeps regenerate --src data/sweeps --dst /tmp/regen`, then
+     `chaotic-pfc sweeps compare data/sweeps /tmp/regen` to review the diff.
+  2. `chaotic-pfc paper numbers --sweeps /tmp/regen --json /tmp/new.json`, and
+     compare against the previous JSON to see which manuscript numbers moved.
+  3. Update `data/sweeps/` (with its `SHA256SUMS`), the affected manuscript
+     numbers and figures, and `benchmarks/baseline/` in the same PR, then run
+     the full battery (`make check-all`, `pytest -q`, `make docs-strict`,
+     `make check-paper`).
+
 ---
 
 These conventions are working if: diffs contain only changes that trace to the task, regressions are caught by tests rather than by users, and clarifying questions arrive before implementation rather than after mistakes.

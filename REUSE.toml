@@ -1,0 +1,18 @@
+version = 1
+
+SPDX-PackageName = "chaotic-pfc"
+SPDX-PackageSupplier = "the respective contributors, as shown by the AUTHORS file"
+SPDX-PackageDownloadLocation = "https://github.com/fesa-academic-projects/chaotic-pfc"
+
+# SPDX-FileCopyrightText: 2026 the respective contributors, as shown by the AUTHORS file
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# The whole repository is BSD-3-Clause. Rather than a header in every file
+# (including binary artefacts, data and generated figures), the licence is
+# declared for the tree as a whole.
+[[annotations]]
+path = ["**"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 the respective contributors, as shown by the AUTHORS file"
+SPDX-License-Identifier = "BSD-3-Clause"

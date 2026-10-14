@@ -1,0 +1,58 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "chaotic-pfc",
+  "title": "chaotic-pfc: parametric characterization of the filtered Hénon map",
+  "description": "Python package for parametric sweeps of the Hénon map with internal FIR filters, with Lyapunov-based dynamic classification.",
+  "version": "0.8.0",
+  "datePublished": "2026-09-13",
+  "license": "https://spdx.org/licenses/BSD-3-Clause",
+  "identifier": "https://doi.org/10.5281/zenodo.22740317",
+  "codeRepository": "https://github.com/fesa-academic-projects/chaotic-pfc",
+  "issueTracker": "https://github.com/fesa-academic-projects/chaotic-pfc/issues",
+  "readme": "https://github.com/fesa-academic-projects/chaotic-pfc/blob/main/README.md",
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "Python"
+  },
+  "runtimePlatform": "Python >= 3.13",
+  "keywords": [
+    "chaos",
+    "Hénon map",
+    "FIR filters",
+    "Lyapunov exponent"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Kauê",
+      "familyName": "de Souza Silva",
+      "@id": "https://orcid.org/0009-0009-1283-0996"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Roger",
+      "familyName": "Freitas Pereira",
+      "@id": "https://orcid.org/0009-0000-5624-7422"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Marcos Felipe",
+      "familyName": "Correa Soares",
+      "@id": "https://orcid.org/0009-0009-9968-2227"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Guilherme",
+      "familyName": "Rodrigues dos Santos",
+      "@id": "https://orcid.org/0009-0004-0281-8663"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Vinícius",
+      "familyName": "da Silva Borges",
+      "@id": "https://orcid.org/0000-0001-5546-6842"
+    }
+  ]
+}
