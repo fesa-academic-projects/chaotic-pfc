@@ -434,35 +434,34 @@ jobs:
         run: make check-paper PYTHON=python
 
   # ───────────────────────────────────────────────────────────────────────
-  # Manuscript PDF: rebuild article.pdf inside a pinned TeX Live image with a
-  # fixed Inkscape and compare it with the versioned artefact. Byte-for-byte
-  # equality is not guaranteed across TeX Live/Inkscape builds, so the gate is
-  # the extracted text and the page count (see README/RELEASING).
+  # Manuscript PDF: rebuild article.pdf inside the pinned TeX Live image and
+  # compare it byte for byte with the versioned artefact. ``make paper-pdf``
+  # produces that artefact with the same image, so the two must match.
   # ───────────────────────────────────────────────────────────────────────
   paper-pdf:
     name: Manuscript PDF reproducibility
     needs: build
     if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     container:
-      image: texlive/texlive:TL2024-historic
+      image: texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Install Inkscape and the PDF tools
+      - name: Install Inkscape and the build tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends inkscape poppler-utils make git
+          apt-get install -y --no-install-recommends inkscape make git
           inkscape --version
           pdflatex --version | head -1
 
       - name: Rebuild the manuscript PDF
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          make paper-pdf
+          make paper-pdf-build
 
       - name: Compare with the versioned PDF
         run: |
@@ -470,19 +469,14 @@ jobs:
           git show HEAD:articles/jcis/article.pdf > /tmp/committed.pdf
           committed=$(sha256sum /tmp/committed.pdf | cut -d' ' -f1)
           rebuilt=$(sha256sum articles/jcis/article.pdf | cut -d' ' -f1)
-          if [ "$committed" = "$rebuilt" ]; then
-            echo "OK: the rebuilt PDF is byte-identical to the versioned one."
-          else
-            echo "note: the rebuilt PDF differs byte for byte (expected across"
-            echo "      TeX Live/Inkscape builds); comparing text and page count."
+          echo "committed: $committed"
+          echo "rebuilt:   $rebuilt"
+          if [ "$committed" != "$rebuilt" ]; then
+            echo "::error::the rebuilt PDF differs from the versioned one;"
+            echo "::error::run 'make paper-pdf' and commit articles/jcis/article.pdf"
+            exit 1
           fi
-          pdftotext -layout /tmp/committed.pdf /tmp/committed.txt
-          pdftotext -layout articles/jcis/article.pdf /tmp/rebuilt.txt
-          diff -u /tmp/committed.txt /tmp/rebuilt.txt
-          cpages=$(pdfinfo /tmp/committed.pdf | awk '/^Pages:/{print $2}')
-          rpages=$(pdfinfo articles/jcis/article.pdf | awk '/^Pages:/{print $2}')
-          test "$cpages" = "$rpages" || { echo "page count differs: $cpages vs $rpages"; exit 1; }
-          echo "OK: extracted text and page count match ($cpages pages)."
+          echo "OK: the rebuilt PDF is byte-identical to the versioned artefact."
 
   # ───────────────────────────────────────────────────────────────────────
   # Release: publish the artefact built by ``build`` to TestPyPI. Only

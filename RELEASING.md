@@ -108,14 +108,16 @@ gets its own version DOI. Record the new version DOI.
 
 ### 8. Rebuild the manuscript PDF
 
-`articles/jcis/article.pdf` is versioned and rebuilt by `make paper-pdf`. The CI
-job *Manuscript PDF reproducibility* rebuilds it inside the pinned
-`texlive/texlive:TL2024-historic` image (with the Inkscape version fixed by the
-image) and compares it with the committed file. Byte-for-byte equality is
-**not** guaranteed across different TeX Live/Inkscape builds (font and SVG
-rasterisation differences), so the gate compares the extracted text and the page
-count, and reports when the bytes do coincide. Rerun `make paper-pdf` after
-changing the manuscript sources so the versioned PDF matches the tagged text.
+`articles/jcis/article.pdf` is versioned and rebuilt by `make paper-pdf`, which
+compiles it inside the pinned image `texlive/texlive@sha256:acd65bd2…`
+(TeX Live 2026; Docker or Podman is required, and `make setup` checks for it).
+Use `make paper-pdf-local` only for a quick preview with the system TeX Live (it
+writes to `articles/jcis/build/`, never versioned). The CI job *Manuscript PDF
+reproducibility* rebuilds the PDF in the same pinned image and requires it to be
+**byte-identical** to the committed file. Other TeX Live distributions are not
+byte-identical (font-package and `ToUnicode` differences), so always regenerate
+with `make paper-pdf` before tagging so the versioned PDF matches the tagged
+text.
 
 ### 9. Read the Docs
 

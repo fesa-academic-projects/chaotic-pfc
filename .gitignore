@@ -14,6 +14,8 @@ __pycache__/
 # ─── Distribution / packaging ─────────────────────────────────────────────
 .Python
 build/
+# Preview build of the manuscript (make paper-pdf-local); never versioned.
+articles/jcis/build/
 develop-eggs/
 dist/
 downloads/

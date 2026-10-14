@@ -259,15 +259,20 @@ CLI:
 | `chaotic-pfc sweeps stats` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
 | `tools/check_pt_br_translations.sh` | Verify the pt-BR narrative documentation catalogues (documentation tooling). |
 
-`articles/jcis/article.pdf` is a derived artifact regenerated reproducibly by
-`make paper-pdf`; its timestamp follows the last commit that touched
+`articles/jcis/article.pdf` is a derived, **versioned** artifact built
+reproducibly by `make paper-pdf`, which compiles it inside the pinned TeX Live
+image `texlive/texlive@sha256:acd65bd2…` (TeX Live 2026, with Inkscape installed
+in the container). Its timestamp follows the last commit that touched
 `articles/jcis/article.tex`, `articles/jcis/references.bib` or
-`articles/jcis/Figures`, so rebuilding without changing those sources yields an
-identical PDF. The CI rebuilds it in a pinned TeX Live image
-(`texlive/texlive:TL2024-historic`) with a fixed Inkscape and compares it with
-the versioned artifact; byte-for-byte equality is **not** guaranteed across
-TeX Live/Inkscape builds, so the gate compares the extracted text and the page
-count (and reports when the bytes do match).
+`articles/jcis/Figures`, so rebuilding the same commit yields an identical PDF.
+`make paper-pdf` needs Docker or Podman (checked by `make setup`); if neither is
+installed it fails and points to `make paper-pdf-local`, which builds a quick
+preview with the system TeX Live into `articles/jcis/build/` (gitignored, never
+versioned). The CI job *Manuscript PDF reproducibility* rebuilds the PDF in the
+same pinned image and requires it to be byte-identical to the versioned file.
+Other TeX Live distributions are **not** byte-identical: different font packages
+give the same visible output but different bytes and even a different
+`pdftotext` mapping, so only the pinned image is authoritative.
 
 The LaTeX tables written by `chaotic-pfc run analysis export-tables` (and by
 `chaotic-pfc run all`) are versioned under `data/analysis_output/tables/{pt,en}/`

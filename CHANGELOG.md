@@ -53,12 +53,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
-- CI job *Manuscript PDF reproducibility*: it rebuilds
-  `articles/jcis/article.pdf` inside the pinned `texlive/texlive:TL2024-historic`
-  image (fixed Inkscape) and compares it with the versioned artefact. Since
-  byte-for-byte equality is not guaranteed across TeX Live/Inkscape builds, the
-  gate compares the extracted text and the page count (the caveat is documented
-  in the README and RELEASING).
+- `make paper-pdf` now compiles the manuscript inside the pinned image
+  `texlive/texlive@sha256:acd65bd2…` (TeX Live 2026; needs Docker or Podman, and
+  `make setup` warns when neither is installed), so `articles/jcis/article.pdf`
+  is byte-reproducible; `make paper-pdf-local` builds a system-TeX-Live preview
+  into `articles/jcis/build/` (gitignored). The CI job *Manuscript PDF
+  reproducibility* rebuilds the PDF in the same image and requires it to be
+  byte-identical to the versioned file (other TeX Live distributions are not
+  byte-identical; the caveat is documented in the README and RELEASING).
 - `articles/simac/SHA256SUMS` pins the two frozen SIMAC PDFs and the two
   reconstructed `.docx` files, with `tests/test_simac_manifest.py` validating
   the manifest on every test run.

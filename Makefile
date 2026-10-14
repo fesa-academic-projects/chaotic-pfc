@@ -1,4 +1,4 @@
-.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -31,6 +31,11 @@ setup:  ## Create the venv, install the dev/docs extras and the pre-commit hooks
 			echo "  [warn] $$name not found ($$cmd); some optional targets will not run"; \
 		fi; \
 	done
+	@if command -v docker >/dev/null 2>&1 || command -v podman >/dev/null 2>&1; then \
+		echo "  [ok]   container runtime -> $$(command -v docker || command -v podman) (make paper-pdf)"; \
+	else \
+		echo "  [warn] neither docker nor podman found; make paper-pdf needs one (use make paper-pdf-local for a preview)"; \
+	fi
 
 install:  ## Install the package with dev dependencies and Numba
 	pip install -e ".[dev,fast]"
@@ -78,14 +83,49 @@ check-paper: check-venv  ## Audit the JCIS manuscript sources against the reposi
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
 	$(PYTHON) -m chaotic_pfc paper figures --out-dir $(PAPER_DIR)/Figures
 
-paper-pdf: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
-paper-pdf: export FORCE_SOURCE_DATE = 1
-paper-pdf:  ## Build the JCIS manuscript PDF with a clean SVG conversion cache
+# Canonical manuscript build: the PDF is compiled inside the pinned TeX Live
+# image, so the versioned artefact is reproducible and matches the CI job. Other
+# TeX distributions are not byte-identical (see README and RELEASING).
+PAPER_IMAGE ?= texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4
+CONTAINER ?= $(shell command -v docker 2>/dev/null || command -v podman 2>/dev/null)
+
+paper-pdf:  ## Build the canonical JCIS PDF inside the pinned TeX Live image
+	@test -n "$(CONTAINER)" || { \
+		echo "error: neither docker nor podman was found."; \
+		echo "make paper-pdf builds the canonical PDF inside the pinned image:"; \
+		echo "    $(PAPER_IMAGE)"; \
+		echo "install docker or podman, or run 'make paper-pdf-local' for a quick"; \
+		echo "preview with the system TeX Live (written to $(PAPER_DIR)/build/)."; \
+		exit 1; \
+	}
+	$(CONTAINER) run --rm -e HOST_UID=$$(id -u) -e HOST_GID=$$(id -g) \
+		-v "$(CURDIR):/work" -w /work $(PAPER_IMAGE) bash -euc \
+		'apt-get update -qq && apt-get install -y -qq --no-install-recommends inkscape make >/dev/null && \
+		 git config --global --add safe.directory /work && \
+		 make paper-pdf-build && \
+		 chown -R "$$HOST_UID:$$HOST_GID" /work/$(PAPER_DIR)'
+
+paper-pdf-build: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
+paper-pdf-build: export FORCE_SOURCE_DATE = 1
+paper-pdf-build:  ## (internal) compile the PDF with the TeX Live of the current image
 	rm -rf $(PAPER_DIR)/svg-inkscape
 	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_STEM)
 	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
 	cd $(PAPER_DIR) && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+
+paper-pdf-local: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
+paper-pdf-local: export FORCE_SOURCE_DATE = 1
+paper-pdf-local:  ## Preview the JCIS PDF with the system TeX Live, into $(PAPER_DIR)/build/ (not versioned)
+	rm -rf $(PAPER_DIR)/build
+	mkdir -p $(PAPER_DIR)/build
+	cp $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/build/
+	cp -r $(PAPER_DIR)/Figures $(PAPER_DIR)/build/
+	cd $(PAPER_DIR)/build && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+	cd $(PAPER_DIR)/build && bibtex $(PAPER_STEM)
+	cd $(PAPER_DIR)/build && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+	cd $(PAPER_DIR)/build && pdflatex -shell-escape -interaction=nonstopmode $(PAPER_STEM).tex
+	@echo "preview PDF (not versioned): $(PAPER_DIR)/build/$(PAPER_STEM).pdf"
 
 PAPER_DIFF_DIR ?= .cache/diff
 PAPER_DIFF_OUT ?= $(PAPER_DIR)/diff
