@@ -53,6 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- Audit check **C8** (`chaotic-pfc paper audit --sweeps data/sweeps`) verifies
+  that every number cited in the Results and the Final Remarks matches a
+  `paper numbers` label (compared as half-up roundings), with a documented list
+  of intentional ignores (map/harness constants, figure-layout lengths,
+  publication years, values derived inline). `make check-paper` passes
+  `--sweeps data/sweeps`, so the check runs in the manuscript-audit CI job.
 - `chaotic-pfc paper numbers|audit|figures` and
   `chaotic-pfc sweeps regenerate|compare|stats`: the manuscript and sweep
   tooling now lives in the package (`chaotic_pfc.paper`, `chaotic_pfc.sweeps`)
@@ -158,6 +164,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- Every bibliography entry now carries an identifier: `Sprott2003` and
+  `Oppenheim2009` (books with no publisher DOI) keep their ISBN and gained a
+  publisher URL, and `articles/jcis/article.pdf` was rebuilt.
+- `make check-paper` now scans the article figure tree
+  (`--figures articles/jcis/Figures --all-figures`), verifying the 9 SVGs of
+  the manuscript; it previously pointed at the unrelated `figures/` tree and
+  skipped the scan.
 - The CI coverage gate (`--cov-fail-under=75`) is met again (70.33 % before
   the coverage work): the manuscript tooling moved into the package is now covered by
   `tests/test_paper_tools.py`.

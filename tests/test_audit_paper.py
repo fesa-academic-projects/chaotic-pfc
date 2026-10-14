@@ -9,6 +9,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 
@@ -342,6 +343,39 @@ class TestRender(unittest.TestCase):
         self.assertIn("coverage: parsed 1 bib entries", rendered)
         self.assertIn("Summary: 1 ERROR, 1 WARN", rendered)
         self.assertIn("line 3", rendered)
+
+
+class TestTextNumbers(unittest.TestCase):
+    """C8: numbers cited in the Results/Final Remarks versus paper numbers."""
+
+    _TEX = (
+        "\\section{Results and Discussion}\n"
+        "The best lowpass configuration has $N_c=980$ and "
+        "$\\rho_c^{\\text{fin}}=77.6\\%$.\n"
+        "\\section{Final Remarks}\n"
+        "The whole run took $498$\\,s.\n"
+    )
+
+    _NUMBERS: ClassVar[dict[str, str]] = {
+        "T2.lowpass.1.Nc": "980",
+        "T2.lowpass.1.rho_fin": "77.6",
+        "COST.regen_wall_seconds": "497.775142663",
+    }
+
+    def test_numbers_matching_labels_pass(self):
+        result = audit.check_text_numbers(self._TEX, self._NUMBERS)
+        self.assertEqual(_levels(result), [])
+        self.assertIn("3 distinct", result.coverage)
+
+    def test_changed_number_is_error(self):
+        tex = self._TEX.replace("$N_c=980$", "$N_c=987$")
+        result = audit.check_text_numbers(tex, self._NUMBERS)
+        self.assertEqual(_levels(result), ["ERROR"])
+
+    def test_documented_ignore_covers_publication_year(self):
+        tex = "\\section{Results and Discussion}\nPublished in 2003."
+        result = audit.check_text_numbers(tex, {})
+        self.assertEqual(_levels(result), [])
 
 
 if __name__ == "__main__":

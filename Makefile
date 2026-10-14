@@ -73,7 +73,7 @@ PAPER_SOURCES = $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/Figures \
 PAPER_EPOCH = $(shell git log -1 --format=%ct --diff-filter=CMT -- $(PAPER_SOURCES))
 
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
-	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures figures/
+	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures $(PAPER_DIR)/Figures --all-figures --sweeps data/sweeps
 
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
 	$(PYTHON) -m chaotic_pfc paper figures --out-dir $(PAPER_DIR)/Figures

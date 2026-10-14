@@ -27,8 +27,10 @@ import html
 import json
 import re
 import unicodedata
+import warnings
 from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
+from decimal import ROUND_HALF_UP, Decimal
 from importlib import resources
 from pathlib import Path
 from typing import Any
@@ -62,7 +64,7 @@ PORTUGUESE_TERMS = (
 # (check C2). The list ships as package data (``paper/doi_whitelist.txt``) and
 # is read with :mod:`importlib.resources` (see :func:`_load_whitelist`).
 
-CHECK_ORDER = ("IN", "C1", "C2", "C3", "C4", "C5", "C6", "C7")
+CHECK_ORDER = ("IN", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8")
 
 CHECK_TITLES = {
     "IN": "input files",
@@ -73,6 +75,7 @@ CHECK_TITLES = {
     "C5": "figure language",
     "C6": "table identities",
     "C7": "article constants versus config",
+    "C8": "text numbers versus paper numbers",
 }
 
 # LaTeX log lines treated as fatal.
@@ -912,6 +915,120 @@ def check_config() -> CheckResult:
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# C8: numbers cited in the text versus the paper-numbers labels
+# ---------------------------------------------------------------------------
+
+# Sections whose prose cites manuscript results.
+_TEXT_NUMBER_SECTIONS = ("Results and Discussion", "Final Remarks")
+
+# Tokens that are deliberately not tied to a ``paper numbers`` label, with the
+# reason. Everything else that does not match a label is an ERROR, so the text
+# cannot drift from ``paper numbers`` silently.
+_TEXT_NUMBER_IGNORES: dict[str, str] = {
+    "1.4": "Hénon parameter alpha (map constant, not a result)",
+    "1.5": "figure layout length (\\vspace fraction)",
+    "0.37": "figure layout fraction (\\textwidth)",
+    "0.48": "figure layout fraction (\\textwidth)",
+    "0.0125": "Bonferroni threshold 0.05/4 computed inline",
+    "0.0167": "Bonferroni-adjusted Spearman p-value derived in the text",
+    "0.94": "alternative Spearman coefficient discussed for the Kaiser windows",
+    "957": "lower end of the seed N_c range, inside the SEED label list",
+    "3000": "Nmap, the maximum number of iterations (harness constant)",
+    "720": "number of permutations of the six windows (6!)",
+    "8.3": "ratio between configurations, derived in the text",
+    "4636": "bounded bandstop cells (TOT.bandstop.chaotic + periodic)",
+    "62000": "highpass grid points (sum of TOT.highpass.*)",
+    "124000": "lowpass grid points (sum of TOT.lowpass.*)",
+    "372000": "total grid points across the 124 sweeps (derived)",
+    "8550": "CPU model in the machine description",
+}
+
+_TEXT_NUMBER_IGNORE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"^(19|20)\d\d$"), "reference publication year"),
+)
+
+
+def _paper_number_values(numbers: dict[str, Any]) -> list[float]:
+    """Every number that appears inside a ``paper numbers`` value."""
+    values: list[float] = []
+    for value in numbers.values():
+        text = str(value).replace("{,}", "").replace(",", "")
+        for match in re.findall(r"-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?", text):
+            try:
+                values.append(float(match))
+            except ValueError:  # pragma: no cover - regex guarantees a float
+                continue
+    return values
+
+
+def _round_half_up(value: float, places: int) -> float:
+    q = Decimal(1).scaleb(-places)
+    return float(Decimal(repr(float(value))).quantize(q, rounding=ROUND_HALF_UP))
+
+
+def _token_matches(token: str, values: list[float]) -> bool:
+    """Return whether the token is the half-up rounding of some label."""
+    places = len(token.split(".")[1]) if "." in token else 0
+    target = float(token)
+    return any(_round_half_up(value, places) == target for value in values)
+
+
+def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
+    r"""Check that every cited text number maps to a ``paper numbers`` label.
+
+    C8: the prose of the Results and the Final Remarks is scanned for numeric
+    citations; a token is accepted when it equals (as a number, ignoring
+    trailing zeros) one of the values inside the ``paper numbers`` mapping. A
+    short, documented list of tokens that are not results (map/harness
+    constants, figure-layout lengths, publication years, values derived inline)
+    is exempted with a reason; anything else is an ERROR.
+    """
+    clean = _strip_comments(tex_text)
+    start = -1
+    for title in _TEXT_NUMBER_SECTIONS:
+        pos = clean.find(f"\\section{{{title}}}")
+        if pos != -1 and (start == -1 or pos < start):
+            start = pos
+    if start == -1:
+        return CheckResult(
+            [Finding("WARN", "C8", "Results/Final Remarks sections not found")],
+            "sections not found",
+        )
+    end = clean.find("\\bibliographystyle", start)
+    body = clean[start:] if end == -1 else clean[start:end]
+    body = body.replace("{,}", "").replace("\\,", "").replace("~", " ")
+
+    known = _paper_number_values(numbers)
+    findings: list[Finding] = []
+    matched: set[str] = set()
+    ignored: dict[str, str] = {}
+    for raw in re.findall(r"\d+(?:\.\d+)?", body):
+        token = raw
+        if _token_matches(token, known):
+            matched.add(token)
+            continue
+        reason = _TEXT_NUMBER_IGNORES.get(token)
+        if reason is None:
+            for pattern, why in _TEXT_NUMBER_IGNORE_PATTERNS:
+                if pattern.match(token):
+                    reason = why
+                    break
+        if reason is not None:
+            ignored[token] = reason
+            continue
+        findings.append(
+            Finding("ERROR", "C8", f"cited number {raw} matches no 'paper numbers' label")
+        )
+    coverage = (
+        f"{len(matched)} distinct cited numbers match a label, "
+        f"{len(ignored)} intentionally ignored, {len(findings)} unmatched"
+    )
+    details = [f"ignored {token}: {ignored[token]}" for token in sorted(ignored)]
+    details.append("covered: " + " ".join(sorted(matched)))
+    return CheckResult(findings, coverage, details)
+
+
 def _safe(check: str, func: Callable[[], CheckResult]) -> CheckResult:
     """Run *func*, converting any exception into a WARN so nothing aborts."""
     try:
@@ -993,6 +1110,27 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
     results["C6"] = _safe("C6", lambda: check_tables(tex))
 
     results["C7"] = _safe("C7", check_config)
+
+    numbers_map: dict[str, Any] | None = None
+    if args.numbers_json:
+        numbers_map = json.loads(Path(args.numbers_json).read_text())
+    elif args.sweeps:
+        from chaotic_pfc.paper import numbers as numbers_module
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message="invalid value encountered in divide",
+                category=RuntimeWarning,
+            )
+            numbers_map = numbers_module.compute(Path(args.sweeps), True, args)
+    if numbers_map is None:
+        results["C8"] = CheckResult(
+            [Finding("WARN", "C8", "no --sweeps or --numbers-json given; check skipped")],
+            "skipped (no paper numbers)",
+        )
+    else:
+        results["C8"] = _safe("C8", lambda: check_text_numbers(tex, numbers_map))
     return results
 
 
@@ -1042,6 +1180,17 @@ def add_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     )
     parser.add_argument("--log", help="Path to the LaTeX .log file (optional).")
     parser.add_argument("--blg", help="Path to the BibTeX .blg file (optional).")
+    parser.add_argument(
+        "--sweeps",
+        type=Path,
+        help="Sweep root; computes the paper numbers in-process for check C8.",
+    )
+    parser.add_argument(
+        "--numbers-json",
+        type=Path,
+        dest="numbers_json",
+        help="Precomputed 'paper numbers' JSON for check C8 (avoids recomputation).",
+    )
     parser.add_argument("--json", dest="json_out", help="Write the findings as JSON to this path.")
     parser.set_defaults(_run=run)
 
