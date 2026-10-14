@@ -54,7 +54,7 @@ Features
 Installation
 ------------
 
-Requires **Python 3.12+**.
+Requires **Python 3.13+**.
 
 .. code-block:: bash
 

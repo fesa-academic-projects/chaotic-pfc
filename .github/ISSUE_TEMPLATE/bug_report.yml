@@ -27,4 +27,4 @@ body:
       label: Environment
       description: OS, Python version, Numba availability (`import numba; print(numba.__version__)`).
       placeholder: |
-        Ubuntu 22.04, Python 3.12.4, Numba 0.60.0
+        Ubuntu 24.04, Python 3.13.4, Numba 0.61.0

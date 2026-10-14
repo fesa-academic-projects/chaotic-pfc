@@ -31,7 +31,7 @@ authors = [
 dependencies = [
     # SPEC 0 (https://scientific-python.org/specs/spec-0000/): support Python
     # and core packages for 3 and 2 years respectively. Reviewed 2026-10-14.
-    "numpy>=2.3",
+    "numpy>=2.2",
     "scipy>=1.15",
     "matplotlib>=3.11",
 ]
@@ -177,7 +177,7 @@ indent-style = "space"
 # ───────────────────────────────────────────────────────────────────────────
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 files = ["src/chaotic_pfc"]
 strict = true
 ignore_missing_imports = true  # numba, scipy, etc. ship partial stubs

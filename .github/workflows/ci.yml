@@ -209,7 +209,7 @@ jobs:
 
   # ───────────────────────────────────────────────────────────────────────
   # SPEC 0 minimum versions: install exactly the declared floors (Python 3.13,
-  # NumPy 2.3, SciPy 1.15, Matplotlib 3.11) and run the whole suite, so an
+  # NumPy 2.2, SciPy 1.15, Matplotlib 3.11) and run the whole suite, so an
   # accidental use of a newer API is caught. If a declared minimum breaks,
   # adjust the floor, not the test.
   # ───────────────────────────────────────────────────────────────────────
@@ -240,7 +240,7 @@ jobs:
       - name: Install the SPEC 0 minimum versions
         run: |
           python -m pip install --upgrade pip
-          pip install "numpy==2.3.*" "scipy==1.15.*" "matplotlib==3.11.*"
+          pip install "numpy==2.2.*" "scipy==1.15.*" "matplotlib==3.11.*"
           pip install --find-links dist "chaotic-pfc[dev,fast]"
           python -c "import numpy, scipy, matplotlib; print('numpy', numpy.__version__, 'scipy', scipy.__version__, 'matplotlib', matplotlib.__version__)"
 
@@ -386,10 +386,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: pyproject.toml
 
@@ -431,10 +431,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: pyproject.toml
 

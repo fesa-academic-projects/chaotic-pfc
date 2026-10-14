@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 - `requires-python` is now `>=3.13` (SPEC 0): Python 3.12 is no longer
-  supported. The dependency floors are NumPy 2.3, SciPy 1.15 and Matplotlib
+  supported. The dependency floors are NumPy 2.2, SciPy 1.15 and Matplotlib
   3.11, and a CI job installs exactly those minimums and runs the suite.
 - The standalone scripts in `tools/` are replaced by CLI subcommands:
   `tools/paper_numbers.py` and `tools/audit_paper.py` by
