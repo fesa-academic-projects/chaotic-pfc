@@ -8,7 +8,7 @@
 [![CI](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml/badge.svg)](https://github.com/fesa-academic-projects/chaotic-pfc/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/chaotic-pfc/badge/?version=latest)](https://chaotic-pfc.readthedocs.io/)
 [![Documentation Status — stable](https://readthedocs.org/projects/chaotic-pfc/badge/?version=stable)](https://chaotic-pfc.readthedocs.io/en/stable/)
-[![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.13%20%7C%203.14-blue)](https://www.python.org/)
 [![codecov](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc/branch/main/graph/badge.svg)](https://codecov.io/gh/fesa-academic-projects/chaotic-pfc)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
@@ -44,7 +44,7 @@ grid.
 
 ## Installation
 
-Requires Python 3.12 or later.
+Requires Python 3.13 or later (SPEC 0).
 
 ```bash
 python3 -m venv .venv

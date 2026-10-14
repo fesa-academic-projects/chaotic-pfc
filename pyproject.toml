@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,8 +7,9 @@ name = "chaotic-pfc"
 version = "0.8.0"
 description = "Pecora-Carroll chaos-based communication with FIR-filtered Hénon map"
 readme = "README.md"
-license = { text = "BSD-3-Clause" }
-requires-python = ">=3.12"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.13"
 keywords = [
     "chaos",
     "henon-map",
@@ -28,20 +29,21 @@ authors = [
     { name = "Vinícius da Silva Borges" },
 ]
 dependencies = [
-    "numpy>=1.26",
-    "scipy>=1.12",
-    "matplotlib>=3.8",
+    # SPEC 0 (https://scientific-python.org/specs/spec-0000/): support Python
+    # and core packages for 3 and 2 years respectively. Reviewed 2026-10-14.
+    "numpy>=2.3",
+    "scipy>=1.15",
+    "matplotlib>=3.11",
 ]
 
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
 ]
@@ -83,6 +85,7 @@ chaotic-pfc = "chaotic_pfc.__main__:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
+"chaotic_pfc" = ["py.typed"]
 "chaotic_pfc.paper" = ["doi_whitelist.txt"]
 
 [tool.pytest.ini_options]
@@ -126,7 +129,7 @@ skip_covered = false
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 extend-exclude = ["data", "figures", ".venv"]
 
 [tool.ruff.lint]
