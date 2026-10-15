@@ -18,8 +18,8 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     payload = {
         "h": result.h,
         "h_desvio": result.h_std,
-        "wcorte": result.cutoff_grid,
-        "coef": result.num_taps_grid,
+        "cutoff_grid": result.cutoff_grid,
+        "num_taps_grid": result.num_taps_grid,
         "window": result.window,
         "filter_type": result.filter_type,
         "metadata": np.array(list(result.metadata.items()), dtype=object),
@@ -86,11 +86,17 @@ def load_sweep(path: str | Path) -> SweepResult:
 
     n_iters_used = data["n_iters_used"] if "n_iters_used" in files else None
 
+    # New key names, with a fallback to the pre-0.9 names ("coef"/"wcorte") so
+    # that checkpoint files written by older versions (including the frozen
+    # SIMAC state f517e0a) still load.
+    num_taps_grid = data["num_taps_grid"] if "num_taps_grid" in files else data["coef"]
+    cutoff_grid = data["cutoff_grid"] if "cutoff_grid" in files else data["wcorte"]
+
     return SweepResult(
         h=data["h"],
         h_std=data["h_desvio"],
-        num_taps_grid=data["coef"],
-        cutoff_grid=data["wcorte"],
+        num_taps_grid=num_taps_grid,
+        cutoff_grid=cutoff_grid,
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,

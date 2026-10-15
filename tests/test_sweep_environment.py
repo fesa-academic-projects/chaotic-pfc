@@ -6,10 +6,10 @@ Two independent guarantees are encoded here:
   that regenerated the 124 checkpoints, and this stack must stay aligned with
   ``requirements-lock.txt`` so the lock reproduces the generation environment.
 
-* The FIR coefficients are not stored in the ``.npz`` files — the ``coef``
+* The FIR coefficients are not stored in the ``.npz`` files — the ``num_taps_grid``
   field holds the number of taps :math:`N_s` of each swept order. This module
   recomputes the taps with ``scipy.signal.firwin`` and checks them against the
-  ``coef`` field, and pins a fingerprint of the full coefficient bank so that a
+  ``num_taps_grid`` field, and pins a fingerprint of the full coefficient bank so that a
   change in ``firwin`` fails with a message that names SciPy.
 
 Set ``CHAOTIC_PFC_SWEEPS_DIR`` to point the checks at a copy of the tree.
@@ -112,7 +112,7 @@ def test_environment_records_the_key_fields() -> None:
 
 
 def test_firwin_reproduces_stored_taps() -> None:
-    """``firwin`` returns exactly the number of taps stored in the ``coef`` field.
+    """``firwin`` returns exactly the number of taps stored in the ``num_taps_grid`` field.
 
     The checkpoints do not store the coefficient values, so the reproducible
     link to SciPy is the number of taps of each swept order; a SciPy release
@@ -137,7 +137,7 @@ def test_firwin_reproduces_stored_taps() -> None:
             if coeffs.size != n_taps:
                 mismatches.append((path.parent.name, n_taps, int(coeffs.size)))
     assert not mismatches, (
-        "scipy.signal.firwin returned a different number of taps than the 'coef' "
+        "scipy.signal.firwin returned a different number of taps than the 'num_taps_grid' "
         f"field recorded in the checkpoints (config, stored, recomputed) = "
         f"{mismatches[:3]}; the checkpoints were generated with SciPy {expected}. "
         "Check the SciPy version (see data/sweeps/ENVIRONMENT.json)."
@@ -182,7 +182,7 @@ def test_firwin_coefficient_fingerprint() -> None:
 
 
 def test_stored_orders_are_the_canonical_grid() -> None:
-    """The ``coef`` field of every checkpoint is the documented order grid."""
+    """The ``num_taps_grid`` field of every checkpoint is the documented order grid."""
     bad: list[tuple[str, list[int]]] = []
     for path in _checkpoint_paths():
         result = load_sweep(path)

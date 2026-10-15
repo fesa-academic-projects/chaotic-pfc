@@ -189,6 +189,30 @@ class TestHelpers(unittest.TestCase):
                 cutoff_grid=np.array([0.2, 0.8]),
             )
 
+    def test_legacy_keys_are_accepted(self):
+        """A checkpoint written with the pre-0.9 keys ('coef'/'wcorte') loads.
+
+        ``load_sweep`` must keep reading files produced by older versions,
+        including the frozen SIMAC state ``f517e0a``.
+        """
+        with TemporaryDirectory() as td:
+            path = Path(td) / "legacy.npz"
+            np.savez(
+                path,
+                h=np.zeros((2, 2)),
+                h_desvio=np.zeros((2, 2)),
+                coef=np.array([3, 5]),
+                wcorte=np.array([0.25, 0.5]),
+                window=np.array("hamming"),
+                filter_type=np.array("lowpass"),
+                metadata=np.array([("Nmap", 300)], dtype=object),
+            )
+            loaded = load_sweep(path)
+            np.testing.assert_array_equal(loaded.num_taps_grid, [3, 5])
+            np.testing.assert_array_equal(loaded.cutoff_grid, [0.25, 0.5])
+            self.assertEqual(loaded.window, "hamming")
+            self.assertEqual(loaded.filter_type, "lowpass")
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Kernel function tests (Numba-JIT helpers)

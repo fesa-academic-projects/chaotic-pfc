@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking
+- The ``.npz`` sweep checkpoints now use the API vocabulary: the ``coef`` key
+  (number of coefficients) is ``num_taps_grid`` and ``wcorte`` is
+  ``cutoff_grid``. ``load_sweep`` still reads the old keys, so checkpoints from
+  earlier versions (including the frozen SIMAC state ``f517e0a``) load
+  unchanged.
 - `requires-python` is now `>=3.13` (SPEC 0): Python 3.12 is no longer
   supported. The dependency floors are NumPy 2.2, SciPy 1.15 and Matplotlib
   3.11, and a CI job installs exactly those minimums and runs the suite.
@@ -138,6 +143,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- Dependencies updated to the latest stable compatible with the SPEC 0 floors:
+  NumPy 2.5.4, SciPy 1.18.1, Numba 0.68.0, llvmlite 0.50.0, Matplotlib 3.11.2
+  (plus the dev/docs stacks); `requirements-lock.txt` was regenerated from the
+  new environment. The 124 sweep checkpoints were regenerated with the new
+  kernel: **no number changed** (`sweeps compare`: 0 class changes,
+  `max |Δλ| = 0`; `paper numbers`: 0 diffs; the JCIS figures and the exported
+  tables are byte-identical), so the manuscript, the figures and the bit-exact
+  baseline are untouched.
 - The Brazilian-Portuguese filter names in the exported LaTeX tables are now
   plural (`Passa-baixas`, `Passa-altas`); the eight tables under
   `data/analysis_output/tables/pt/` were regenerated (all numbers unchanged,
