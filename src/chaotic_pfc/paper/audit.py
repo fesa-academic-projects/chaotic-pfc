@@ -926,6 +926,7 @@ _TEXT_NUMBER_SECTIONS = ("Results and Discussion", "Final Remarks")
 # reason. Everything else that does not match a label is an ERROR, so the text
 # cannot drift from ``paper numbers`` silently.
 _TEXT_NUMBER_IGNORES: dict[str, str] = {
+    "498": "regeneration wall time (machine-specific; see data/sweeps/ENVIRONMENT.json)",
     "1.4": "Hénon parameter alpha (map constant, not a result)",
     "1.5": "figure layout length (\\vspace fraction)",
     "0.37": "figure layout fraction (\\textwidth)",

@@ -52,8 +52,11 @@ def test_compute_covers_every_section(sweeps_tree: Path) -> None:
         "GAIN.highpass.Nz_x_wc",
     ):
         assert key in out, f"missing label {key}"
-    # 194 labels for the canonical 124-configuration layout.
-    assert len(out) == 194
+    # 193 core labels for the canonical 124-configuration layout, plus
+    # ``COST.regen_wall_seconds`` when the local regeneration cache
+    # (``.cache/paper/regen_seconds.txt``) is present — a clean clone has none.
+    assert len(set(out) - {"COST.regen_wall_seconds"}) == 193
+    assert len(out) in (193, 194)
     assert len(load_all(sweeps_tree)) == 124
 
 

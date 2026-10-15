@@ -260,3 +260,4 @@ Sprott (2003) [2]_
 :math:`(\alpha = 1.4, \; \beta = 0.2)` — strongly dissipative
 :math:`(\alpha = 1.0, \; \beta = 0.5)` — non-chaotic (periodic)
 A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, "Determining Lyapunov exponents from a time series," *Physica D: Nonlinear Phenomena*, vol. 16, no. 3, pp. 285–317, 1985. DOI: `10.1016/0167-2789(85)90011-9 <https://doi.org/10.1016/0167-2789(85)90011-9>`_
+Fuzzing
