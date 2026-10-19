@@ -332,3 +332,40 @@ class TestWarmupKernel(unittest.TestCase):
 # ═══════════════════════════════════════════════════════════════════════════
 # Helpers and edge cases
 # ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestThreadDeterminism(unittest.TestCase):
+    """The sweep is deterministic regardless of the Numba thread count."""
+
+    def test_single_and_max_threads_are_bit_identical(self):
+        numba = __import__("numba")
+        available = int(numba.config.NUMBA_NUM_THREADS)
+        if available < 2:
+            self.skipTest("only one Numba thread available")
+        kwargs = dict(
+            window="hamming",
+            filter_type="lowpass",
+            num_taps_grid=np.array([2, 3, 4, 5]),
+            cutoff_grid=np.linspace(0.2, 0.8, 5),
+            Nitera=30,
+            Nmap=150,
+            n_initial=2,
+            seed=42,
+            warmup=False,
+        )
+        original = numba.get_num_threads()
+        try:
+            numba.set_num_threads(1)
+            single = run_sweep(**kwargs)
+            numba.set_num_threads(available)
+            parallel = run_sweep(**kwargs)
+        finally:
+            numba.set_num_threads(original)
+        for name in ("h", "h_std", "n_iters_used"):
+            one = getattr(single, name)
+            many = getattr(parallel, name)
+            self.assertIsNotNone(one)
+            self.assertIsNotNone(many)
+            np.testing.assert_array_equal(np.isnan(one), np.isnan(many), err_msg=name)
+            finite = ~np.isnan(one)
+            np.testing.assert_array_equal(one[finite], many[finite], err_msg=name)

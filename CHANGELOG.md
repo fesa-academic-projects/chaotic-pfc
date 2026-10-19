@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `TestThreadDeterminism`: `run_sweep` produces bit-identical `h`, `h_std` and
+  `n_iters_used` with one Numba thread and with the maximum available.
 - `tests/test_metamorphic.py`: spectrum-sum identity (`sum(lambda) = mean
   log|det J|`) for the 2-D and expanded filtered Hénon maps, a 50-digit
   `mpmath` reference for `_fixed_point_positive` (4 ulp), and the positional
