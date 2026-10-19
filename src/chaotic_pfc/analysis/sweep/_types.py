@@ -37,6 +37,18 @@ WINDOW_DISPLAY_NAMES: dict[str, str] = {
     "bartlett": "Bartlett",
 }
 
+#: Highest sidelobe level (in dB, Harris 1978) for each fixed FIR window.
+#: Includes ``"rectangular"`` as an alias of ``"boxcar"``.
+WINDOW_SIDELOBE_DB: dict[str, int] = {
+    "boxcar": 13,
+    "rectangular": 13,
+    "bartlett": 27,
+    "hann": 32,
+    "hamming": 43,
+    "blackman": 58,
+    "blackmanharris": 92,
+}
+
 # Kaiser window needs a beta parameter (attenuation trade-off).
 # beta = 5.0 gives ~50 dB stop-band attenuation, a common default.
 _KAISER_BETA: float = 5.0

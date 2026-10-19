@@ -229,3 +229,39 @@ def test_sweeps_stats_missing_tex_fails(tmp_path: Path, capsys: pytest.CaptureFi
     err = capsys.readouterr().err
     assert err.startswith("error:")
     assert "missing.tex" in err
+
+
+def test_spearman_matches_between_report_and_numbers() -> None:
+    """sweeps/report.py and paper/numbers.py share WINDOW_SIDELOBE_DB and agree on Spearman rho."""
+    import numpy as np
+
+    from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
+    from chaotic_pfc.paper import numbers as paper_numbers
+    from chaotic_pfc.sweeps import report as sweep_report
+
+    assert WINDOW_SIDELOBE_DB["boxcar"] == WINDOW_SIDELOBE_DB["rectangular"] == 13
+    assert WINDOW_SIDELOBE_DB["hann"] < WINDOW_SIDELOBE_DB["hamming"]
+
+    sweeps_dir = REPO / "data" / "sweeps"
+    recs = paper_numbers.load_all(sweeps_dir)
+    out: dict[str, object] = {}
+    paper_numbers.section_spearman(recs, out)
+
+    configs = sweep_report.load_configs(sweeps_dir)
+    for ft in paper_numbers.TYPES:
+        subset = [
+            cfg
+            for cfg in configs
+            if cfg["filter_type"] == ft
+            and cfg["window"] != "kaiser"
+            and sweep_report._norm_window(cfg["window"]) in WINDOW_SIDELOBE_DB
+        ]
+        att = np.array(
+            [WINDOW_SIDELOBE_DB[sweep_report._norm_window(c["window"])] for c in subset],
+            dtype=float,
+        )
+        nc = np.array([c["N_chaotic"] for c in subset], dtype=float)
+        rho = sweep_report._spearman_rho(att, nc)
+        p_val, _ = sweep_report._exact_spearman_p(att, nc)
+        expected = f"r_s={paper_numbers.fmt(rho, 3)}, p={paper_numbers.fmt(p_val, 4)}"
+        assert out[f"SP.{ft}"] == expected

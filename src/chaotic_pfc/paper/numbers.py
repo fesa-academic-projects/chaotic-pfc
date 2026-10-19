@@ -32,6 +32,7 @@ import numpy as np
 from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.stats import lmax_statistics
 from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank
+from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 LOW_GAIN = 0.1
@@ -39,12 +40,12 @@ LOW_GAIN = 0.1
 # it is not stored in the metadata.
 BANDWIDTH = 0.05
 FIXED = (
-    ("boxcar", "Rectangular", 13),
-    ("bartlett", "Bartlett", 27),
-    ("hann", "Hann", 32),
-    ("hamming", "Hamming", 43),
-    ("blackman", "Blackman", 58),
-    ("blackmanharris", "Blackman--Harris", 92),
+    ("boxcar", "Rectangular", WINDOW_SIDELOBE_DB["boxcar"]),
+    ("bartlett", "Bartlett", WINDOW_SIDELOBE_DB["bartlett"]),
+    ("hann", "Hann", WINDOW_SIDELOBE_DB["hann"]),
+    ("hamming", "Hamming", WINDOW_SIDELOBE_DB["hamming"]),
+    ("blackman", "Blackman", WINDOW_SIDELOBE_DB["blackman"]),
+    ("blackmanharris", "Blackman--Harris", WINDOW_SIDELOBE_DB["blackmanharris"]),
 )
 NITERA = 500
 NMAP = 3000

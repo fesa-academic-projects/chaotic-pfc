@@ -28,6 +28,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 from chaotic_pfc.paper import audit as audit_paper
 
 CSV_FIELDS = [
@@ -225,15 +226,7 @@ def print_iters_distribution(configs: list[dict[str, Any]]) -> None:
         )
 
 
-ATTENUATION_DB = {
-    "boxcar": 21,
-    "rectangular": 21,
-    "bartlett": 25,
-    "hamming": 41,
-    "hann": 44,
-    "blackman": 74,
-    "blackmanharris": 92,
-}
+ATTENUATION_DB = WINDOW_SIDELOBE_DB
 
 
 def _spearman_rho(x: np.ndarray, y: np.ndarray) -> float:
@@ -273,12 +266,12 @@ def report_attenuation_correlation(configs: list[dict[str, Any]]) -> None:
             for cfg in configs
             if cfg["filter_type"] == filter_type
             and cfg["window"] != "kaiser"
-            and _norm_window(cfg["window"]) in ATTENUATION_DB
+            and _norm_window(cfg["window"]) in WINDOW_SIDELOBE_DB
         ]
         if not subset:
             continue
         attenuation = np.array(
-            [ATTENUATION_DB[_norm_window(c["window"])] for c in subset], dtype=float
+            [WINDOW_SIDELOBE_DB[_norm_window(c["window"])] for c in subset], dtype=float
         )
         n_chaotic = np.array([c["N_chaotic"] for c in subset], dtype=float)
         rho_fin = np.array([c["rho_fin_pct"] for c in subset], dtype=float)

@@ -212,6 +212,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `chaotic_pfc.sweeps.report` and `chaotic_pfc.paper.numbers` now share a single
+  `WINDOW_SIDELOBE_DB` table (13/27/32/43/58/92 dB, Harris sidelobe levels),
+  fixing the inverted Hann/Hamming rank order in `chaotic-pfc sweeps stats`.
 - `export_full_ranking_table` and `export_consolidated_full_ranking` now emit
   valid LaTeX `longtable` syntax with the column specification `{col_spec}` and
   place `\caption` and `\label` followed by `\\` inside `\begin{longtable}`.
