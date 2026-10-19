@@ -153,3 +153,23 @@ def test_every_required_check_matches_a_pull_request_job() -> None:
     assert not missing, (
         f"required checks without a matching job on pull_request without paths filters: {missing}"
     )
+
+
+def test_supply_chain_tools_are_pinned_outside_the_lock() -> None:
+    """Semgrep runs from an isolated exact version and gitleaks is checksum-pinned."""
+    import tomllib
+
+    pyproject = tomllib.loads((REPO / "pyproject.toml").read_text(encoding="utf-8"))
+    dev = pyproject["project"]["optional-dependencies"]["dev"]
+    assert not any(spec.startswith("semgrep") for spec in dev), (
+        "semgrep must not be a development dependency"
+    )
+    lock = (REPO / "requirements-lock.txt").read_text(encoding="utf-8")
+    assert "semgrep==" not in lock
+    assert "mcp==" not in lock
+
+    ci = (REPO / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    assert "uvx semgrep==1.181.0" in ci
+    assert "sha256sum -c -" in ci
+    assert "gitleaks git --redact --exit-code 1" in ci
+    assert "gitleaks-action" not in ci

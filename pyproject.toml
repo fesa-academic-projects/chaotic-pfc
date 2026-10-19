@@ -66,7 +66,6 @@ dev = [
     "ruff>=0.6",
     "mypy>=1.11",
     "pre-commit>=3.7",
-    "semgrep>=1.100",
     "mutmut>=3.2",
 ]
 test = [

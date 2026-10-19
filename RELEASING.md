@@ -206,10 +206,12 @@ The CI enforces a hashed lock (`pip install --require-hashes`), `pip-audit`,
 `actions/attest-build-provenance` attestation for `dist/*`; both are attached
 to the workflow run alongside the distributions.
 
-`gitleaks-action` is free for public repositories owned by individuals; an
-organisation may need a licence. If the `gitleaks` job reports a missing
-licence, add the `GITLEAKS_LICENSE` repository secret (it is already wired into
-the workflow) or keep the job advisory for your organisation.
+`gitleaks` is installed in CI as the official MIT-licensed binary at the pinned
+version 8.30.1, with its SHA-256 checksum verified before execution
+(`gitleaks git --redact --exit-code 1`). Semgrep is not a development
+dependency: the job runs `uvx semgrep==1.181.0`, so the tool has its own
+isolated environment and does not add anything to the lock file or the
+`pip-audit` surface.
 
 ### Zenodo and DOI
 
