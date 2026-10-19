@@ -219,6 +219,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `load_all_sweeps` now keys its in-memory cache by `(resolved_dir, ((name,
+  mtime_ns, size), ...))` and returns a shallow copy of the cached mapping so
+  caller mutations or new `.npz` files do not serve stale entries.
 - `estimate_delay` now reuses the zero-lag dot-product correlation (with the
   zero-norm guard) for `corr_at_zero` instead of calling `np.corrcoef`, and
   `comm_metrics` raises `ValueError` when `delay < 0` or fewer than

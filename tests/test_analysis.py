@@ -263,6 +263,37 @@ class TestAnalysis(unittest.TestCase):
         loaded = load_all_sweeps(self.root)
         self.assertGreaterEqual(len(loaded), 3)
 
+    def test_load_all_sweeps_cache_invalidation_and_copy(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            sr1 = SweepResult(
+                h=np.array([[0.1]]),
+                h_std=np.array([[0.01]]),
+                num_taps_grid=np.array([2]),
+                cutoff_grid=np.array([0.5]),
+                window="hamming",
+                filter_type="lowpass",
+            )
+            save_sweep(sr1, root / "Hamming (lowpass)" / "variables_lyapunov.npz")
+            first = load_all_sweeps(root)
+            self.assertEqual(len(first), 1)
+            # Mutating the returned dict must not corrupt the cache
+            first.clear()
+            self.assertEqual(len(load_all_sweeps(root)), 1)
+
+            # Adding a new .npz invalidates the cache key
+            sr2 = SweepResult(
+                h=np.array([[0.2]]),
+                h_std=np.array([[0.02]]),
+                num_taps_grid=np.array([3]),
+                cutoff_grid=np.array([0.5]),
+                window="hann",
+                filter_type="highpass",
+            )
+            save_sweep(sr2, root / "Hann (highpass)" / "variables_lyapunov.npz")
+            second = load_all_sweeps(root)
+            self.assertEqual(len(second), 2)
+
     def test_rank_configurations(self):
         """Ranking with known chaotic counts should be in correct order."""
         rng = np.random.default_rng(0)

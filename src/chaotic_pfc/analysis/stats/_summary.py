@@ -201,7 +201,8 @@ def lmax_statistics(
 
 # ── Ranking helpers ─────────────────────────────────────────────────────────
 
-_LOADED_SWEEPS_CACHE: dict[Path, dict[tuple[str, str], SweepResult]] = {}
+_CacheKey = tuple[Path, tuple[tuple[str, int, int], ...]]
+_LOADED_SWEEPS_CACHE: dict[_CacheKey, dict[tuple[str, str], SweepResult]] = {}
 
 
 def load_all_sweeps(
@@ -225,11 +226,18 @@ def load_all_sweeps(
         Mapping from ``(filter_type, window_key)`` to :class:`~chaotic_pfc.analysis.sweep.SweepResult`.
     """
     sweep_dir = Path(sweep_dir).resolve()
-    if sweep_dir in _LOADED_SWEEPS_CACHE:
-        return _LOADED_SWEEPS_CACHE[sweep_dir]
+    paths = sorted(sweep_dir.rglob("variables_lyapunov.npz"))
+    files_key = tuple(
+        (path.relative_to(sweep_dir).as_posix(), st.st_mtime_ns, st.st_size)
+        for path in paths
+        for st in (path.stat(),)
+    )
+    cache_key: _CacheKey = (sweep_dir, files_key)
+    if cache_key in _LOADED_SWEEPS_CACHE:
+        return dict(_LOADED_SWEEPS_CACHE[cache_key])
 
     loaded: dict[tuple[str, str], SweepResult] = {}
-    for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
+    for path in paths:
         result = load_sweep(path)
         if result.window == "kaiser":
             beta = result.metadata.get("kaiser_beta", 0.0)
@@ -238,8 +246,8 @@ def load_all_sweeps(
             key = (result.filter_type, result.window)
         loaded[key] = result
 
-    _LOADED_SWEEPS_CACHE[sweep_dir] = loaded
-    return loaded
+    _LOADED_SWEEPS_CACHE[cache_key] = loaded
+    return dict(loaded)
 
 
 def export_summary_json(
