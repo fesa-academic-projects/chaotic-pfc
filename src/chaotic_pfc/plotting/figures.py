@@ -3,8 +3,8 @@
 Typography is configured via :func:`setup_rc`, which auto-detects
 whether a full LaTeX installation is available on the system:
 
-* If ``latex`` is found on ``$PATH``, real LaTeX rendering is used
-  (``usetex=True``, Computer Modern Roman).
+* If ``latex`` and the required packages are available, real LaTeX
+  rendering is used (``usetex=True``, Times via ``mathptmx``).
 * Otherwise, mathtext with STIX fonts is used as a fallback that
   visually matches LaTeX output without any external dependency.
 
@@ -18,6 +18,8 @@ render identically on any system.
 
 from __future__ import annotations
 
+import functools
+import io
 import os
 import shutil
 from dataclasses import dataclass, field
@@ -34,30 +36,55 @@ from scipy.signal import freqz
 from chaotic_pfc._figure_io import save_figure
 from chaotic_pfc._i18n import t
 
-# ── LaTeX availability (cached at import time) ──────────────────────────────
+# ── LaTeX availability (lazy cached probe) ──────────────────────────────────
 
-_force_var = os.environ.get("CHAOTIC_PFC_FORCE_LATEX")
-if _force_var == "1":
-    _LATEX_AVAILABLE = True
-elif _force_var == "0":
-    _LATEX_AVAILABLE = False
-else:
-    _LATEX_AVAILABLE = shutil.which("latex") is not None
+_LATEX_PREAMBLE = r"\usepackage{amsmath}\usepackage{amssymb}\usepackage{mathptmx}"
+
+
+@functools.cache
+def _probe_latex() -> bool:
+    """Return ``True`` if a minimal ``usetex`` figure renders with the project preamble."""
+    if shutil.which("latex") is None:
+        return False
+    try:
+        with plt.rc_context(
+            {
+                "text.usetex": True,
+                "text.latex.preamble": _LATEX_PREAMBLE,
+                "font.family": "serif",
+                "font.serif": ["Times", "Nimbus Roman", "Times New Roman"],
+                "svg.fonttype": "path",
+            }
+        ):
+            fig = Figure(figsize=(1.0, 1.0))
+            ax = fig.add_subplot(111)
+            ax.set_title(r"$x_1 = \alpha$")
+            buf = io.BytesIO()
+            fig.savefig(buf, format="svg")
+        return True
+    except Exception:
+        return False
 
 
 def latex_available() -> bool:
     """Return ``True`` if LaTeX is available for figure rendering.
 
-    The return value is determined at import time by checking
-    ``$PATH`` for the ``latex`` executable.  Set the environment
-    variable ``CHAOTIC_PFC_FORCE_LATEX=0`` or ``1`` to override.
+    Set the environment variable ``CHAOTIC_PFC_FORCE_LATEX=0`` or ``1`` to
+    override; otherwise a cached lazy probe renders a minimal SVG figure with
+    ``text.usetex=True`` and the project preamble on first call.
 
     Returns
     -------
     bool
-        ``True`` when a ``latex`` executable was found (or forced on).
+        ``True`` when the LaTeX toolchain and required packages are available
+        (or forced on).
     """
-    return _LATEX_AVAILABLE
+    force_var = os.environ.get("CHAOTIC_PFC_FORCE_LATEX")
+    if force_var == "1":
+        return True
+    if force_var == "0":
+        return False
+    return _probe_latex()
 
 
 # ── Global RC params for LaTeX-like rendering ───────────────────────────────
@@ -68,9 +95,9 @@ def setup_rc() -> None:
 
     Auto-detects whether a full LaTeX installation is available:
 
-    * If ``latex`` is found on ``$PATH``, uses real LaTeX rendering
-      (``usetex=True``, Computer Modern Roman, ``amsmath`` +
-      ``amssymb`` preamble).
+    * If ``latex`` and the required packages are available, uses real
+      LaTeX rendering (``usetex=True``, Times via ``mathptmx``,
+      ``amsmath`` + ``amssymb`` preamble).
     * Otherwise, falls back to mathtext with STIX fonts, which
       visually match LaTeX without external dependencies.
 
@@ -79,7 +106,7 @@ def setup_rc() -> None:
 
     All text is converted to vector paths in SVG output.
     """
-    if _LATEX_AVAILABLE:
+    if latex_available():
         plt.rcParams.update(
             {
                 "text.usetex": True,
@@ -87,9 +114,7 @@ def setup_rc() -> None:
                 # the article classes (IEEEtran / SIMAC's mathptmx). Without
                 # it this branch renders Computer Modern, which clashes with
                 # the surrounding body text.
-                "text.latex.preamble": (
-                    r"\usepackage{amsmath}\usepackage{amssymb}\usepackage{mathptmx}"
-                ),
+                "text.latex.preamble": _LATEX_PREAMBLE,
                 "font.family": "serif",
                 "font.serif": ["Times", "Nimbus Roman", "Times New Roman"],
                 "svg.fonttype": "path",

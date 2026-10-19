@@ -147,3 +147,29 @@ class TestSetupRc(unittest.TestCase):
     def test_latex_available_returns_bool(self):
         result = latex_available()
         self.assertIsInstance(result, bool)
+
+    def test_latex_probe_failure_falls_back_to_mathtext(self):
+        import os
+        from unittest.mock import patch
+
+        import chaotic_pfc.plotting.figures as fig_mod
+
+        fig_mod._probe_latex.cache_clear()
+        try:
+            with (
+                patch.dict(os.environ, {}, clear=False),
+                patch.object(fig_mod.shutil, "which", return_value="/usr/bin/latex"),
+                patch.object(fig_mod.Figure, "savefig", side_effect=RuntimeError("missing sty")),
+            ):
+                os.environ.pop("CHAOTIC_PFC_FORCE_LATEX", None)
+                self.assertFalse(fig_mod.latex_available())
+                fig_mod.setup_rc()
+                self.assertFalse(plt.rcParams["text.usetex"])
+
+            with patch.dict(os.environ, {"CHAOTIC_PFC_FORCE_LATEX": "1"}):
+                self.assertTrue(fig_mod.latex_available())
+            with patch.dict(os.environ, {"CHAOTIC_PFC_FORCE_LATEX": "0"}):
+                self.assertFalse(fig_mod.latex_available())
+        finally:
+            fig_mod._probe_latex.cache_clear()
+            setup_rc()
