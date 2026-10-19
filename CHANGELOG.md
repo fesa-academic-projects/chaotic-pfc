@@ -219,6 +219,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `_sample_ics` now orders interval bounds with `np.minimum`/`np.maximum` so
+  negative fixed-point components do not raise `ValueError: low >= high` in
+  `rng.uniform`, and `lyapunov_henon2d`, `lyapunov_max_ensemble` and
+  `lyapunov_henon2d_ensemble` now validate `perturbation > 0`.
 - `_lyapunov_spectrum` now runs inside `np.errstate(over="ignore",
   invalid="ignore")`, returns `np.full(dim, np.nan)` immediately when the state
   or `J @ W` becomes non-finite, and documents the QR column ordering in

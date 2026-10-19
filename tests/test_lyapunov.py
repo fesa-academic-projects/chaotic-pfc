@@ -108,6 +108,31 @@ class TestLyapunovEnsemble(unittest.TestCase):
             self.assertTrue(path.exists())
             self.assertGreater(path.stat().st_size, 0)
 
+    def test_sample_ics_handles_negative_and_zero_components(self):
+        from chaotic_pfc.dynamics.lyapunov import _sample_ics
+
+        fp = np.array([1.0, -2.0, 0.0])
+        ics = _sample_ics(fp, perturbation=0.1, n_initial=10, seed=42)
+        self.assertEqual(ics.shape, (10, 3))
+        self.assertTrue(np.all((ics[:, 0] >= 0.9) & (ics[:, 0] <= 1.1)))
+        self.assertTrue(np.all((ics[:, 1] >= -2.2) & (ics[:, 1] <= -1.8)))
+        np.testing.assert_array_equal(ics[:, 2], 0.0)
+
+        # Negative Gz produces negative fixed-point components in 4-D ensemble
+        r_neg = lyapunov_max_ensemble(Gz=-1.0, Nitera=20, Ndiscard=10, n_initial=2, seed=42)
+        self.assertEqual(r_neg.initial_conditions.shape, (2, 4))
+
+    def test_perturbation_validation_across_all_entrypoints(self):
+        for fn in (
+            lyapunov_max_pole_filtered,
+            lyapunov_henon2d,
+            lyapunov_max_ensemble,
+            lyapunov_henon2d_ensemble,
+        ):
+            for bad in (0.0, -0.1):
+                with self.assertRaisesRegex(ValueError, "perturbation must be > 0"):
+                    fn(perturbation=bad, Nitera=10, Ndiscard=5)
+
 
 if __name__ == "__main__":
     unittest.main()

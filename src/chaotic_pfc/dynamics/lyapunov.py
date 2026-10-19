@@ -558,6 +558,9 @@ def lyapunov_henon2d(
     """
     dim = 2
 
+    if perturbation <= 0:
+        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
     J_p = _henon2d_jacobian(beta, xf_p)
@@ -709,7 +712,9 @@ def _sample_ics(
     rng = np.random.default_rng(seed)
     low = fixed_point * (1.0 - perturbation)
     high = fixed_point * (1.0 + perturbation)
-    return rng.uniform(low=low, high=high, size=(n_initial, len(fixed_point)))
+    lo = np.minimum(low, high)
+    hi = np.maximum(low, high)
+    return rng.uniform(low=lo, high=hi, size=(n_initial, len(fixed_point)))
 
 
 # ── Generic ensemble runner ────────────────────────────────────────────────
@@ -807,6 +812,9 @@ def lyapunov_max_ensemble(
     -------
     EnsembleResult
     """
+    if perturbation <= 0:
+        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
     xf = _fixed_point(alpha, beta, b, a)
@@ -882,6 +890,9 @@ def lyapunov_henon2d_ensemble(
     lyapunov_henon2d : Single‑IC version.
     :doc:`/source/algorithms/lyapunov` : Algorithm overview and ensemble motivation.
     """
+    if perturbation <= 0:
+        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
     J_p = _henon2d_jacobian(beta, xf_p)
