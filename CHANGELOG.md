@@ -150,6 +150,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- `save_sweep` now serialises `metadata` as a JSON string (`dtype='<U'`) rather
+  than a pickled `object` array, and `load_sweep` opens archives with
+  `allow_pickle=False` ("verified integrity before trust"): legacy pickled
+  `metadata` is only deserialised when the file's SHA-256 matches a trusted
+  `SHA256SUMS` manifest or `trust_legacy_pickle=True` is passed, raising
+  `UntrustedDataError` otherwise. `sweeps.report` delegates to `load_sweep`.
 - `run_sweep` now records `bandwidth` in `SweepResult.metadata` for newly
   generated sweeps, and `chaotic_pfc.paper.numbers` reads `bandwidth` from
   metadata with a `0.05` fallback for the existing checkpoints.

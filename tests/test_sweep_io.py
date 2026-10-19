@@ -195,6 +195,8 @@ class TestHelpers(unittest.TestCase):
         ``load_sweep`` must keep reading files produced by older versions,
         including the frozen SIMAC state ``f517e0a``.
         """
+        from chaotic_pfc.errors import UntrustedDataError
+
         with TemporaryDirectory() as td:
             path = Path(td) / "legacy.npz"
             np.savez(
@@ -207,11 +209,84 @@ class TestHelpers(unittest.TestCase):
                 filter_type=np.array("lowpass"),
                 metadata=np.array([("Nmap", 300)], dtype=object),
             )
-            loaded = load_sweep(path)
+            with self.assertRaises(UntrustedDataError):
+                load_sweep(path)
+            with self.assertWarns(UserWarning):
+                loaded = load_sweep(path, trust_legacy_pickle=True)
             np.testing.assert_array_equal(loaded.num_taps_grid, [3, 5])
             np.testing.assert_array_equal(loaded.cutoff_grid, [0.25, 0.5])
             self.assertEqual(loaded.window, "hamming")
             self.assertEqual(loaded.filter_type, "lowpass")
+            self.assertEqual(loaded.metadata["Nmap"], 300)
+
+    def test_new_save_uses_json_string_without_pickle(self):
+        result = SweepResult(
+            h=np.array([[0.1, -0.2]]),
+            h_std=np.array([[0.01, 0.02]]),
+            num_taps_grid=np.array([3]),
+            cutoff_grid=np.array([0.2, 0.8]),
+            window="hamming",
+            filter_type="lowpass",
+            metadata={"Nitera": 500, "Nmap": 3000, "kaiser_beta": 5.0},
+        )
+        with TemporaryDirectory() as td:
+            path = Path(td) / "safe.npz"
+            save_sweep(result, path)
+            with np.load(path, allow_pickle=False) as raw:
+                self.assertEqual(raw["metadata"].dtype.kind, "U")
+            loaded = load_sweep(path)
+            self.assertEqual(loaded.metadata, result.metadata)
+
+    def test_malicious_pickled_npz_is_refused_without_executing_payload(self):
+        from chaotic_pfc.errors import UntrustedDataError
+
+        class _Exploit:
+            def __init__(self, target: Path) -> None:
+                self.target = target
+
+            def __reduce__(self):
+                return (Path.write_text, (self.target, "pwned"))
+
+        with TemporaryDirectory() as td:
+            sentinel = Path(td) / "sentinel.txt"
+            evil_npz = Path(td) / "Hamming (lowpass)" / "variables_lyapunov.npz"
+            evil_npz.parent.mkdir(parents=True)
+            np.savez(
+                evil_npz,
+                h=np.zeros((1, 1)),
+                h_desvio=np.zeros((1, 1)),
+                num_taps_grid=np.array([3]),
+                cutoff_grid=np.array([0.5]),
+                window=np.array("hamming"),
+                filter_type=np.array("lowpass"),
+                metadata=np.array([_Exploit(sentinel)], dtype=object),
+            )
+            with self.assertRaises(UntrustedDataError):
+                load_sweep(evil_npz)
+            self.assertFalse(sentinel.exists(), "Pickled payload was executed!")
+
+            # Also verify non-metadata pickled arrays are rejected even before metadata
+            evil_h = Path(td) / "evil_h.npz"
+            np.savez(
+                evil_h,
+                h=np.array([_Exploit(sentinel)], dtype=object),
+                h_desvio=np.zeros((1, 1)),
+                num_taps_grid=np.array([3]),
+                cutoff_grid=np.array([0.5]),
+                window=np.array("hamming"),
+                filter_type=np.array("lowpass"),
+            )
+            with self.assertRaises(UntrustedDataError):
+                load_sweep(evil_h, trust_legacy_pickle=True)
+            self.assertFalse(sentinel.exists(), "Pickled h payload was executed!")
+
+    def test_all_124_versioned_legacy_checkpoints_load(self):
+        sweeps_dir = Path(__file__).resolve().parents[1] / "data" / "sweeps"
+        paths = sorted(sweeps_dir.rglob("variables_lyapunov.npz"))
+        self.assertEqual(len(paths), 124)
+        for p in paths:
+            sr = load_sweep(p)
+            self.assertIn("Nmap", sr.metadata)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

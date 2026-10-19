@@ -1,20 +1,85 @@
-"""Sweep I/O: save, load, and path-inference helpers."""
+"""Sweep I/O: save, load, and path-inference helpers.
+
+Security design ("verified integrity before trust"):
+New checkpoints written by :func:`save_sweep` serialise ``metadata`` as a JSON
+string array (``dtype='<U'``) and are loaded with ``allow_pickle=False``.
+Legacy checkpoints that stored ``metadata`` as a pickled ``dtype=object`` array
+are only deserialised when their SHA-256 digest matches a trusted repository
+``SHA256SUMS`` manifest (or when the caller explicitly passes
+``trust_legacy_pickle=True``). Any other pickled ``.npz`` raises
+:class:`~chaotic_pfc.errors.UntrustedDataError`.
+"""
 
 from __future__ import annotations
 
+import functools
+import hashlib
+import json
 import warnings
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from chaotic_pfc.errors import InvalidParameterError
+from chaotic_pfc.errors import InvalidParameterError, UntrustedDataError
 
 from ._types import FILTER_TYPES, WINDOW_DISPLAY_NAMES, SweepResult
+
+_REPO_ROOT = Path(__file__).resolve().parents[4]
+
+
+@functools.cache
+def _trusted_manifest_hashes() -> frozenset[str]:
+    """Return the SHA-256 digests listed in the repository SHA256SUMS manifests."""
+    hashes: set[str] = set()
+    candidates = (
+        _REPO_ROOT / "data" / "sweeps" / "SHA256SUMS",
+        _REPO_ROOT / "articles" / "simac" / "SHA256SUMS",
+        Path("data/sweeps/SHA256SUMS"),
+        Path("articles/simac/SHA256SUMS"),
+    )
+    for manifest in candidates:
+        if not manifest.is_file():
+            continue
+        try:
+            for line in manifest.read_text(encoding="utf-8").splitlines():
+                parts = line.strip().split()
+                if parts and len(parts[0]) == 64:
+                    hashes.add(parts[0].lower())
+        except OSError:
+            continue
+    return frozenset(hashes)
+
+
+def _is_trusted_legacy_checkpoint(path: Path) -> bool:
+    """Return True if *path*'s SHA-256 digest is pinned in a trusted manifest."""
+    try:
+        digest = hashlib.sha256(path.read_bytes()).hexdigest().lower()
+    except OSError:
+        return False
+    return digest in _trusted_manifest_hashes()
+
+
+def _load_legacy_pickled_metadata(path: Path) -> dict[str, Any]:
+    """Read legacy object-array metadata after SHA-256 manifest verification."""
+    with np.load(path, allow_pickle=True) as data:
+        raw = data["metadata"]
+    try:
+        return dict(raw.tolist())
+    except (TypeError, ValueError):
+        warnings.warn(
+            f"corrupted metadata in {path}, using empty dict",
+            RuntimeWarning,
+            stacklevel=3,
+        )
+        return {}
 
 
 def save_sweep(result: SweepResult, path: str | Path) -> Path:
     """Save a :class:`~chaotic_pfc.analysis.sweep.SweepResult` to a compressed ``.npz``.
+
+    ``metadata`` is stored as a JSON string (``dtype='<U'``) so the resulting
+    archive can be loaded with ``allow_pickle=False``.
 
     Raises
     ------
@@ -34,7 +99,7 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
         "num_taps_grid": result.num_taps_grid,
         "window": result.window,
         "filter_type": result.filter_type,
-        "metadata": np.array(list(result.metadata.items()), dtype=object),
+        "metadata": np.array(json.dumps(result.metadata), dtype=str),
     }
     if result.n_iters_used is not None:
         payload["n_iters_used"] = result.n_iters_used
@@ -42,8 +107,33 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     return path
 
 
-def load_sweep(path: str | Path) -> SweepResult:
+def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepResult:
     """Load a sweep from ``.npz`` produced by :func:`save_sweep`.
+
+    Follows the "verified integrity before trust" rule: archives are opened with
+    ``allow_pickle=False``. If ``metadata`` is a legacy pickled object array, it
+    is only deserialised when the file's SHA-256 digest matches a trusted
+    ``SHA256SUMS`` manifest or when ``trust_legacy_pickle=True`` is explicitly
+    passed.
+
+    Parameters
+    ----------
+    path
+        Path to the ``.npz`` checkpoint.
+    trust_legacy_pickle
+        When ``True``, allow deserialising legacy pickled ``metadata`` from a
+        file not listed in ``SHA256SUMS`` (emits a :class:`UserWarning`).
+
+    Raises
+    ------
+    InvalidParameterError
+        If *path* or *trust_legacy_pickle* has an invalid type.
+    UntrustedDataError
+        If the archive contains pickled object arrays and is neither in a
+        trusted ``SHA256SUMS`` manifest nor loaded with
+        ``trust_legacy_pickle=True``.
+    ValueError
+        If the archive is unreadable or missing required fields.
 
     Examples
     --------
@@ -61,9 +151,15 @@ def load_sweep(path: str | Path) -> SweepResult:
     ...     np.array_equal(again.h, res.h)
     True
     """
+    if not isinstance(path, (str, Path)) or not str(path).strip():
+        raise InvalidParameterError("path must be a non-empty path")
+    if not isinstance(trust_legacy_pickle, bool):
+        raise InvalidParameterError(
+            f"trust_legacy_pickle must be a bool, got {trust_legacy_pickle!r}"
+        )
     path = Path(path)
     try:
-        data = np.load(path, allow_pickle=True)
+        data = np.load(path, allow_pickle=False)
         files = data.files
     except Exception as exc:  # unreadable or not an .npz archive
         raise ValueError(
@@ -71,42 +167,81 @@ def load_sweep(path: str | Path) -> SweepResult:
             f"(regenerate it with `chaotic-pfc sweeps regenerate`): {exc}"
         ) from exc
 
-    if "window" in files and "filter_type" in files:
-        window = str(data["window"])
-        filter_type = str(data["filter_type"])
-    else:
+    with data:
         try:
-            window, filter_type = _infer_config_from_path(path)
-        except ValueError:
-            raise ValueError(
-                f"cannot determine window/filter_type for {path}; "
-                f"the .npz file has no 'window'/'filter_type' entries "
-                f"and the parent directory name does not match any known "
-                f"<(filter_type)> pattern"
-            ) from None
+            if "window" in files and "filter_type" in files:
+                window = str(data["window"])
+                filter_type = str(data["filter_type"])
+            else:
+                try:
+                    window, filter_type = _infer_config_from_path(path)
+                except ValueError:
+                    raise ValueError(
+                        f"cannot determine window/filter_type for {path}; "
+                        f"the .npz file has no 'window'/'filter_type' entries "
+                        f"and the parent directory name does not match any known "
+                        f"<(filter_type)> pattern"
+                    ) from None
 
-    metadata: dict[str, Any] = {}
-    if "metadata" in files:
-        try:
-            metadata = dict(data["metadata"].tolist())
-        except (TypeError, ValueError):
+            n_iters_used = data["n_iters_used"] if "n_iters_used" in files else None
+            num_taps_grid = data["num_taps_grid"] if "num_taps_grid" in files else data["coef"]
+            cutoff_grid = data["cutoff_grid"] if "cutoff_grid" in files else data["wcorte"]
+            h = data["h"]
+            h_std = data["h_desvio"]
+        except ValueError as exc:
+            if "allow_pickle=False" in str(exc):
+                raise UntrustedDataError(
+                    f"Refusing to deserialise pickled object array in {path}: "
+                    "non-metadata fields must never use pickle."
+                ) from exc
+            raise
+
+        metadata: dict[str, Any] = {}
+        need_legacy_pickle = False
+        if "metadata" in files:
+            try:
+                raw_meta = data["metadata"]
+            except ValueError as exc:
+                if "allow_pickle=False" in str(exc):
+                    need_legacy_pickle = True
+                else:
+                    raise
+            else:
+                try:
+                    if raw_meta.ndim == 0:
+                        parsed = json.loads(str(raw_meta.item()))
+                        if not isinstance(parsed, dict):
+                            raise ValueError("JSON metadata is not an object")
+                        metadata = parsed
+                    else:
+                        metadata = dict(raw_meta.tolist())
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    warnings.warn(
+                        f"corrupted metadata in {path}, using empty dict",
+                        RuntimeWarning,
+                        stacklevel=2,
+                    )
+
+    if need_legacy_pickle:
+        if _is_trusted_legacy_checkpoint(path):
+            metadata = _load_legacy_pickled_metadata(path)
+        elif trust_legacy_pickle:
             warnings.warn(
-                f"corrupted metadata in {path} — using empty dict",
-                RuntimeWarning,
+                f"Loading untrusted pickled metadata from {path} with trust_legacy_pickle=True",
+                UserWarning,
                 stacklevel=2,
             )
-
-    n_iters_used = data["n_iters_used"] if "n_iters_used" in files else None
-
-    # New key names, with a fallback to the pre-0.9 names ("coef"/"wcorte") so
-    # that checkpoint files written by older versions (including the frozen
-    # SIMAC state f517e0a) still load.
-    num_taps_grid = data["num_taps_grid"] if "num_taps_grid" in files else data["coef"]
-    cutoff_grid = data["cutoff_grid"] if "cutoff_grid" in files else data["wcorte"]
+            metadata = _load_legacy_pickled_metadata(path)
+        else:
+            raise UntrustedDataError(
+                f"Refusing to deserialise pickled object array in {path}: "
+                "file SHA-256 is not in a trusted SHA256SUMS manifest. "
+                "Re-save with save_sweep() or pass trust_legacy_pickle=True if you trust the source."
+            )
 
     return SweepResult(
-        h=data["h"],
-        h_std=data["h_desvio"],
+        h=h,
+        h_std=h_std,
         num_taps_grid=num_taps_grid,
         cutoff_grid=cutoff_grid,
         window=window,

@@ -29,6 +29,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc.analysis.sweep import load_sweep
 from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 from chaotic_pfc.paper import audit as audit_paper
 
@@ -54,13 +55,6 @@ CSV_FIELDS = [
 ]
 
 
-def _metadata(data: np.lib.npyio.NpzFile) -> dict[str, Any]:
-    arr = data["metadata"]
-    if arr.dtype == object and getattr(arr, "ndim", 0) == 2:
-        return {str(row[0]): row[1] for row in arr}
-    return {}
-
-
 def _percentile(values: np.ndarray, q: float) -> float:
     return float(np.percentile(values, q)) if values.size else float("nan")
 
@@ -69,9 +63,9 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
     """Load the per-configuration statistics from the checkpoints."""
     configs: list[dict[str, Any]] = []
     for path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
-        data = np.load(path, allow_pickle=True)
-        md = _metadata(data)
-        h = np.asarray(data["h"], dtype=float)
+        sr = load_sweep(path)
+        md = sr.metadata
+        h = np.asarray(sr.h, dtype=float)
         finite = np.isfinite(h)
         chaotic = finite & (h > 0.0)
         periodic = finite & (h <= 0.0)
@@ -82,7 +76,11 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
         n_divergent = int(np.count_nonzero(divergent))
         n_bounded = n_grid - n_divergent
         n_fallback = int(md.get("n_fallback", 0))
-        niters = np.asarray(data["n_iters_used"], dtype=float)[finite]
+        niters = (
+            np.asarray(sr.n_iters_used, dtype=float)[finite]
+            if sr.n_iters_used is not None
+            else np.array([], dtype=float)
+        )
         cap = float(md.get("Nmap", 0) or 0)
         at_cap = (
             float(np.count_nonzero(niters >= cap) / niters.size) if niters.size and cap else 0.0
@@ -90,8 +88,8 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
         configs.append(
             {
                 "path": str(path),
-                "filter_type": str(data["filter_type"]),
-                "window": str(data["window"]),
+                "filter_type": sr.filter_type,
+                "window": sr.window,
                 "kaiser_beta": md.get("kaiser_beta"),
                 "N_grid": n_grid,
                 "N_chaotic": n_chaotic,
