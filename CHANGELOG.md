@@ -394,6 +394,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   suite.
 
 ### Documentation
+- Replaced the remaining em dashes in the consolidated full-ranking table
+  captions with colons and regenerated the `pt`/`en` reference tables.
 - Replaced the em dash in the `mutmut` section comment of `pyproject.toml`,
   keeping the repository free of the character.
 - New `docs/security.rst` threat model (assets, trust boundaries, threats and

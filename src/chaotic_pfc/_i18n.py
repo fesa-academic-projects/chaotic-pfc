@@ -188,8 +188,8 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": "Top-3 windows per filter type with statistics (Kaiser consolidated).",
     },
     "analysis.tables.consolidated_full_ranking.caption": {
-        "pt": "Ranking completo — janelas fixas + melhor Kaiser por filtro.",
-        "en": "Full ranking — fixed windows + best Kaiser per filter.",
+        "pt": "Ranking completo: janelas fixas + melhor Kaiser por filtro.",
+        "en": "Full ranking: fixed windows + best Kaiser per filter.",
     },
     "analysis.tables.col.beta": {
         "pt": "$\\beta$",
