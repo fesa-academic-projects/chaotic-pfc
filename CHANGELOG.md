@@ -61,6 +61,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- Mutation testing with `mutmut` for `_validate.py`, `comms/metrics.py`,
+  `analysis/stats/_ranking.py`, `analysis/stats/_summary.py` and
+  `analysis/latex_export.py`, plus a weekly advisory workflow. New exporter
+  tests for the consolidated and Kaiser-beta tables and extra
+  validator/metric boundary tests raised the killed-mutant share from 46.8 %
+  to 59.1 % of all generated mutants.
 - Repository guard rails: pre-commit hooks that reject staged edits under
   `data/sweeps/`, `articles/simac/` and `articles/jcis/Figures/` (override with
   `CHAOTIC_PFC_ALLOW_FROZEN=1`) and verify both `SHA256SUMS` manifests, plus

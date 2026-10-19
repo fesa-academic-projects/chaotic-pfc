@@ -313,3 +313,69 @@ class TestOnDivergencePolicy(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestValidationHelperEdges(unittest.TestCase):
+    """Boundary and message details of the validators (mutation-test targets)."""
+
+    def test_require_finite_accepts_explicit_magnitude_bound(self):
+        self.assertEqual(require_finite("x", 5.0, max_abs=10.0), 5.0)
+        with self.assertRaisesRegex(InvalidParameterError, "safe numerical bound"):
+            require_finite("x", 10.5, max_abs=10.0)
+        with self.assertRaisesRegex(InvalidParameterError, "must be a real number"):
+            require_finite("x", 1 + 2j)
+
+    def test_require_positive_int_accepts_integral_float_and_rejects_text(self):
+        self.assertEqual(require_positive_int("n", 5.0), 5)
+        self.assertEqual(require_positive_int("n", np.float64(6.0)), 6)
+        with self.assertRaises(InvalidParameterError):
+            require_positive_int("n", "5")
+
+    def test_require_in_range_closed_modes(self):
+        self.assertEqual(require_in_range("x", 0.0, 0.0, 1.0, closed="left"), 0.0)
+        self.assertEqual(require_in_range("x", 1.0, 0.0, 1.0, closed="right"), 1.0)
+        with self.assertRaises(InvalidParameterError):
+            require_in_range("x", 1.0, 0.0, 1.0, closed="left")
+        with self.assertRaises(InvalidParameterError):
+            require_in_range("x", 0.0, 0.0, 1.0, closed="right")
+        with self.assertRaisesRegex(InvalidParameterError, "invalid closed mode"):
+            require_in_range("x", 0.5, 0.0, 1.0, closed="sideways")  # type: ignore[arg-type]
+
+    def test_require_1d_nonempty_options(self):
+        arr = require_1d_nonempty("a", [np.nan, 1.0], allow_nan=True)
+        self.assertTrue(np.isnan(arr[0]))
+        with self.assertRaisesRegex(InvalidParameterError, "at least 3 entries"):
+            require_1d_nonempty("a", [1.0, 2.0], min_length=3)
+        with self.assertRaises(InvalidParameterError):
+            require_1d_nonempty("a", np.array([1 + 1j]))
+        with self.assertRaises(InvalidParameterError):
+            require_1d_nonempty("a", np.array([object()], dtype=object))
+
+    def test_require_int_grid_and_seed(self):
+        from chaotic_pfc._validate import require_int_grid, require_seed
+
+        np.testing.assert_array_equal(require_int_grid("g", [3, 5]), np.array([3, 5]))
+        with self.assertRaises(InvalidParameterError):
+            require_int_grid("g", [])
+        with self.assertRaises(InvalidParameterError):
+            require_int_grid("g", [3.5])
+        with self.assertRaises(InvalidParameterError):
+            require_int_grid("g", [0])
+        self.assertIsNone(require_seed("seed", None))
+        self.assertEqual(require_seed("seed", 0), 0)
+        with self.assertRaises(InvalidParameterError):
+            require_seed("seed", -1)
+
+    def test_divergence_policy_helpers(self):
+        from chaotic_pfc._validate import handle_divergence, require_divergence_policy
+
+        self.assertEqual(require_divergence_policy("nan"), "nan")
+        self.assertEqual(require_divergence_policy("warn"), "warn")
+        self.assertEqual(require_divergence_policy("raise"), "raise")
+        with self.assertRaisesRegex(InvalidParameterError, "on_divergence must be"):
+            require_divergence_policy("ignore")
+        handle_divergence("nan", "no effect")
+        with self.assertWarns(DivergenceWarning):
+            handle_divergence("warn", "message")
+        with self.assertRaisesRegex(DivergenceError, "message"):
+            handle_divergence("raise", "message")

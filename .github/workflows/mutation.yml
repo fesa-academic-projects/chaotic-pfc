@@ -1,0 +1,56 @@
+name: Mutation testing
+
+# Weekly mutation-testing measurement. This workflow is advisory: it never runs
+# on push and has no pass/fail threshold. It measures how many mutants of the
+# error-prone modules the suite kills and uploads the report.
+on:
+  schedule:
+    # Every Saturday at 04:41 UTC.
+    - cron: "41 4 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutation:
+    name: mutmut
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install the package and dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,fast]"
+
+      - name: Run mutation testing
+        env:
+          CHAOTIC_PFC_FORCE_LATEX: "0"
+        run: |
+          mutmut run --max-children 4 || true
+          mutmut results --all true | tee mutation-results.txt
+          mutmut results | tee mutation-survivors.txt
+
+      - name: Upload the mutation report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mutation-report
+          path: |
+            mutation-results.txt
+            mutation-survivors.txt
+          retention-days: 14

@@ -137,6 +137,8 @@ figures/sweeps/beta_sweep_3d_*.html
 paper-figures/
 
 # ─── Reviewer / audit scratch (generated outputs and patch files) ─────────
+# Mutation-testing working copy (mutmut); regenerate with `mutmut run`.
+mutants/
 # Command outputs and generated .diff patches from the review rounds; these
 # are reproducible scratch artefacts, not sources.
 audit_output.txt

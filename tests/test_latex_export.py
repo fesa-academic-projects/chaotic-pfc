@@ -5,8 +5,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from chaotic_pfc.analysis.latex_export import (
+    export_consolidated_extended_table,
+    export_consolidated_full_ranking,
+    export_consolidated_top_k_table,
     export_extended_top_k_table,
     export_full_ranking_table,
+    export_kaiser_beta_optimal_table,
     export_sweet_spots_table,
     export_top_k_table,
 )
@@ -231,3 +235,93 @@ class TestLatexExport(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _make_kaiser_beta_optimal(ft: str) -> dict:
+    return {
+        "filter_type": ft,
+        "beta": 13.5,
+        "n_chaotic": 980,
+        "pct_chaotic_finite": 77.6,
+        "lmax_mean": 0.0239,
+        "lmax_max": 0.1086,
+    }
+
+
+class TestConsolidatedAndKaiserExporters(unittest.TestCase):
+    """Cover every exporter that the CLI writes, not only the top-k family."""
+
+    def setUp(self):
+        self.tmp = TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+
+    def _rows(self) -> dict:
+        return {
+            "lowpass": [
+                _make_config_rank(1, "lowpass", "kaiser_13.50", n_chaotic=980, beta=13.5),
+                _make_config_rank(2, "lowpass", "kaiser_13.00", n_chaotic=972, beta=13.0),
+                _make_config_rank(3, "lowpass", "kaiser_14.00", n_chaotic=964, beta=14.0),
+            ],
+            "bandpass": [
+                _make_config_rank(1, "bandpass", "kaiser_13.50", n_chaotic=434, beta=13.5),
+            ],
+        }
+
+    def test_consolidated_top_k(self):
+        path = self.root / "cons_top_k.tex"
+        export_consolidated_top_k_table(self._rows(), path, label="tab:cons", lang="en")
+        tex = path.read_text(encoding="utf-8")
+        self.assertIn("consolidated", tex)
+        self.assertIn(r"\label{tab:cons}", tex)
+        self.assertIn("Kaiser($\\beta=13.50$)", tex)
+        self.assertIn("980", tex)
+        self.assertEqual(_count_data_rows(tex), 4)
+
+    def test_consolidated_extended(self):
+        path = self.root / "cons_ext.tex"
+        export_consolidated_extended_table(self._rows(), path, lang="pt")
+        tex = path.read_text(encoding="utf-8")
+        self.assertIn(r"$\overline{\lambda}_{\max}$", tex)
+        self.assertIn("[0.14, 0.16]", tex)
+        self.assertEqual(_count_data_rows(tex), 4)
+
+    def test_consolidated_full_ranking(self):
+        ranking = [
+            _make_config_rank(i, "lowpass", f"kaiser_1{i}.00", n_chaotic=500 - i)
+            for i in range(1, 4)
+        ]
+        path = self.root / "cons_rank.tex"
+        export_consolidated_full_ranking(ranking, path, label="tab:crank", lang="en")
+        tex = path.read_text(encoding="utf-8")
+        self.assertIn(r"\begin{longtable}{lrrrrrrrr}", tex)
+        self.assertIn("fixed windows + best Kaiser per filter", tex)
+        self.assertIn(r"\label{tab:crank} \\", tex)
+        self.assertIn(r"\end{longtable}", tex)
+        self.assertNotIn(r"\begin{table}", tex)
+        self.assertEqual(_count_data_rows(tex), 3)
+
+    def test_kaiser_beta_optimal(self):
+        data = {
+            "lowpass": _make_kaiser_beta_optimal("lowpass"),
+            "bandpass": {**_make_kaiser_beta_optimal("bandpass"), "beta": 4.0, "n_chaotic": 60},
+        }
+        path = self.root / "kaiser_opt.tex"
+        export_kaiser_beta_optimal_table(data, path, lang="en")
+        tex = path.read_text(encoding="utf-8")
+        self.assertIn("Optimal Kaiser", tex)
+        self.assertIn("13.5", tex)
+        self.assertIn("4", tex)
+        self.assertIn("77.6\\%", tex)
+        self.assertEqual(_count_data_rows(tex), 2)
+
+    def test_filter_labels_are_translated(self):
+        for ft, pt in (
+            ("lowpass", "Passa-baixas"),
+            ("highpass", "Passa-altas"),
+            ("bandpass", "Passa-faixa"),
+            ("bandstop", "Rejeita-faixa"),
+        ):
+            path = self.root / f"{ft}.tex"
+            export_kaiser_beta_optimal_table({ft: _make_kaiser_beta_optimal(ft)}, path, lang="pt")
+            self.assertIn(pt, path.read_text(encoding="utf-8"))

@@ -11,6 +11,7 @@ from __future__ import annotations
 import unittest
 
 import numpy as np
+import pytest
 from scipy.signal import firwin
 
 from chaotic_pfc.comms.channel import fir_channel, ideal_channel
@@ -108,3 +109,50 @@ class TestCommDelayAlignment(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMetricEdgeCases(unittest.TestCase):
+    """Boundary behaviour of the delay and metric helpers."""
+
+    def _signal(self) -> tuple[np.ndarray, np.ndarray]:
+        n = np.arange(400)
+        m = np.where(n % 20 < 10, 1.0, -1.0)
+        delayed = np.roll(m, 3)
+        delayed[:3] = 0.0
+        return m, delayed
+
+    def test_estimate_delay_rejects_short_signals(self) -> None:
+        with pytest.raises(ValueError, match="too short"):
+            estimate_delay(np.ones(10), np.ones(10), transient=5, max_lag=20)
+
+    def test_estimate_delay_zero_lag(self) -> None:
+        m, _ = self._signal()
+        est = estimate_delay(m, m.copy(), transient=0, max_lag=0)
+        self.assertEqual(est["lag"], 0)
+        self.assertAlmostEqual(est["corr_at_lag"], 1.0, places=12)
+        self.assertAlmostEqual(est["corr_at_zero"], 1.0, places=12)
+
+    def test_estimate_delay_detects_lag_and_polarity(self) -> None:
+        m, delayed = self._signal()
+        est = estimate_delay(m, delayed, transient=0, max_lag=10)
+        self.assertEqual(est["lag"], 3)
+        self.assertGreater(est["corr_at_lag"], 0.9)
+
+        inverted = estimate_delay(m, -m, transient=0, max_lag=5)
+        self.assertEqual(inverted["lag"], 0)
+        self.assertAlmostEqual(inverted["corr_at_lag"], -1.0, places=12)
+
+    def test_comm_metrics_sample_count_and_correlation_sign(self) -> None:
+        m, delayed = self._signal()
+        met = comm_metrics(m, delayed, transient=0, bit_period=20, delay=3)
+        self.assertEqual(met["n_samples"], len(m) - 3)
+        self.assertLess(met["mse"], 1e-20)
+        self.assertGreater(met["correlation"], 0.99)
+
+        inverted = comm_metrics(m, -m, transient=0, bit_period=20, delay=0)
+        self.assertAlmostEqual(inverted["correlation"], -1.0, places=12)
+        self.assertLessEqual(inverted["ber"], 1.0)
+
+    def test_comm_metrics_single_sample_correlation_is_nan(self) -> None:
+        met = comm_metrics(np.ones(1), np.ones(1), transient=0, bit_period=1, delay=0)
+        self.assertTrue(np.isnan(met["correlation"]))

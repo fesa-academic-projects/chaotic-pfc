@@ -67,6 +67,7 @@ dev = [
     "mypy>=1.11",
     "pre-commit>=3.7",
     "semgrep>=1.100",
+    "mutmut>=3.2",
 ]
 test = [
     "mpmath>=1.3",
@@ -94,6 +95,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 addopts = "-v"
 strict_markers = true
 markers = [
@@ -220,3 +222,25 @@ ignore_missing_imports = true  # numba, scipy, etc. ship partial stubs
 [[tool.mypy.overrides]]
 module = ["numba.*", "scipy.*", "matplotlib.*"]
 ignore_errors = true
+
+# ───────────────────────────────────────────────────────────────────────────
+# mutmut — mutation testing for the error-prone modules
+# ───────────────────────────────────────────────────────────────────────────
+[tool.mutmut]
+source_paths = [
+    "src/chaotic_pfc/_validate.py",
+    "src/chaotic_pfc/comms/metrics.py",
+    "src/chaotic_pfc/analysis/stats/_ranking.py",
+    "src/chaotic_pfc/analysis/stats/_summary.py",
+    "src/chaotic_pfc/analysis/latex_export.py",
+]
+also_copy = ["src"]
+pytest_add_cli_args = ["-q", "-x"]
+pytest_add_cli_args_test_selection = [
+    "tests/test_validation.py",
+    "tests/test_comm_metrics.py",
+    "tests/test_channel.py",
+    "tests/test_analysis.py",
+    "tests/test_properties.py",
+    "tests/test_latex_export.py",
+]
