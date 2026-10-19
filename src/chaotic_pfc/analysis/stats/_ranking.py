@@ -245,7 +245,7 @@ def sweet_spot_per_filter(
                     best[ft] = {
                         "filter_type": ft,
                         "window": win,
-                        "n_z": int(num_taps_grid[i]),
+                        "n_z": int(num_taps_grid[i]) - 1,
                         "omega_c": round(float(cutoff_grid[j]), 4),
                         "lmax": round(float(val), 6),
                         "lmax_ci_95_low": ci_low,
@@ -361,7 +361,7 @@ def optimal_parameters(
                     {
                         "window": result.window,
                         "filter_type": result.filter_type,
-                        "order": int(num_taps_grid[i]),
+                        "order": int(num_taps_grid[i]) - 1,
                         "cutoff": round(float(cutoff_grid[j]), 4),
                         "lmax": round(float(val), 6),
                     }

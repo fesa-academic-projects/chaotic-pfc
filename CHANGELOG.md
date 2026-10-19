@@ -212,6 +212,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `sweet_spot_per_filter` and `optimal_parameters` now record the filter order
+  `N_z = N_s - 1` instead of the tap count `N_s` (`num_taps_grid[i]`).
 - The pure-Python Lyapunov wrappers (`chaotic_pfc.dynamics.lyapunov`) were
   reverted to their own NumPy Hénon step and fixed point. The single-formula refactor
   had swapped them for the Numba-compiled `_formulas` versions, which differ by

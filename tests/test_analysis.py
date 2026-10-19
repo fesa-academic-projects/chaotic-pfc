@@ -385,11 +385,36 @@ class TestAnalysis(unittest.TestCase):
         ss = sweet_spot_per_filter({("lowpass", "hamming"): result})
         self.assertIn("lowpass", ss)
         spot = ss["lowpass"]
-        self.assertEqual(spot["n_z"], 3)
+        self.assertEqual(spot["n_z"], 2)
         self.assertAlmostEqual(spot["omega_c"], 0.3, delta=0.01)
         self.assertAlmostEqual(spot["lmax"], 0.9, delta=0.001)
         self.assertIsNotNone(spot["lmax_ci_95_low"])
         self.assertIsNotNone(spot["lmax_ci_95_high"])
+
+    def test_sweet_spot_and_optimal_parameters_even_nz_for_odd_taps(self):
+        """Highpass and bandstop use odd num_taps, so N_z = N_s - 1 is always even."""
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            h = np.array([[0.1, 0.8], [0.4, 0.9]], dtype=float)
+            for ft in ("highpass", "bandstop"):
+                sr = SweepResult(
+                    h=h,
+                    h_std=np.full_like(h, 0.01),
+                    num_taps_grid=np.array([3, 7]),
+                    cutoff_grid=np.array([0.2, 0.6]),
+                    window="hamming",
+                    filter_type=ft,
+                    metadata={"n_initial": 25},
+                )
+                save_sweep(sr, root / f"Hamming ({ft})" / "variables_lyapunov.npz")
+            sweeps = load_all_sweeps(root)
+            ss = sweet_spot_per_filter(sweeps)
+            for ft in ("highpass", "bandstop"):
+                self.assertEqual(ss[ft]["n_z"], 6)
+                self.assertEqual(ss[ft]["n_z"] % 2, 0)
+            for entry in optimal_parameters(root, top_n=10):
+                self.assertIn(entry["order"], (2, 6))
+                self.assertEqual(entry["order"] % 2, 0)
 
     def test_sweet_spot_ci_none_when_no_metadata(self):
         """CI is None when n_initial is missing."""
