@@ -1,6 +1,6 @@
 """Transmission-channel models between the chaotic transmitter and receiver.
 
-Six channels are provided:
+Five channels are provided:
 
 * :func:`ideal_channel` — noiseless pass-through used to establish a
   best-case baseline for chaos synchronisation.

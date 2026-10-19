@@ -335,20 +335,20 @@ msgid "**PATCH**: backwards-compatible bug fixes."
 msgstr "**PATCH** — correções de bugs compatíveis com versões anteriores."
 
 #: ../../contributing.rst:232
-msgid "The version is stored in three places, which must stay in sync:"
-msgstr "A versão é armazenada em três lugares, que devem ficar em sincronia:"
+msgid "The version is stored in two places in code (plus ``CITATION.cff``), which must stay in sync:"
+msgstr "A versão é armazenada em dois lugares no código (além do ``CITATION.cff``), que devem ficar em sincronia:"
 
 #: ../../contributing.rst:234
 msgid "``pyproject.toml``: ``project.version`` field."
-msgstr "``pyproject.toml`` — campo ``project.version``."
+msgstr "``pyproject.toml``: campo ``project.version``."
 
 #: ../../contributing.rst:235
 msgid "``src/chaotic_pfc/_version.py``: ``__version__`` string."
-msgstr "``src/chaotic_pfc/_version.py`` — string ``__version__``."
+msgstr "``src/chaotic_pfc/_version.py``: string ``__version__``."
 
 #: ../../contributing.rst:236
-msgid "``docs/conf.py``: ``version`` and ``release`` strings."
-msgstr "``docs/conf.py`` — strings ``version`` e ``release``."
+msgid "``docs/conf.py`` reads ``_pkg_version`` from the package automatically and must not be edited by hand."
+msgstr "``docs/conf.py`` lê ``_pkg_version`` do pacote automaticamente e não deve ser editado à mão."
 
 #: ../../contributing.rst:238
 msgid ""

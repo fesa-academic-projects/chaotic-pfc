@@ -11,7 +11,7 @@
 - [ ] pt-BR catalogues refreshed for changed narrative pages
       (`cd docs && make gettext && make update-po`)
 - [ ] No versioned data changed unintentionally
-      (`data/sweeps/SHA256SUMS` refreshed by `tools/regenerate_sweeps.py` if so)
+      (`data/sweeps/SHA256SUMS` refreshed by `chaotic-pfc sweeps regenerate` if so)
 
 ## Notes for the reviewer
 

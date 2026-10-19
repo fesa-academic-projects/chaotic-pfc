@@ -89,7 +89,7 @@ chaotic-pfc run sweep compute --window hamming --filter lowpass
 # Teste rápido (~segundos)
 chaotic-pfc run sweep compute --window hamming --filter lowpass --quick
 
-# Gera as 3 figuras de classificação (PNG + SVG) a partir do .npz salvo
+# Gera as figuras de classificação (SVG) a partir do .npz salvo
 chaotic-pfc run sweep plot --window hamming --filter lowpass
 ```
 
@@ -126,7 +126,7 @@ chaotic-pfc/
 ├── data/
 │   ├── lyapunov/                  Tabelas CSV do protocolo ensemble
 │   └── sweeps/                    Checkpoints .npz versionados das varreduras
-├── figures/                       Figuras finais (SVG para o artigo, PNG para preview)
+├── figures/                       Figuras finais (SVG)
 └── benchmarks/
     └── standalone.py             Benchmarks de performance para operações principais
 ```

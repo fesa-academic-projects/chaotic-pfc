@@ -9,13 +9,14 @@ printed so the assumption is visible.
 
 Divergence rule, read from the kernel (``_kernel.py``): a cell becomes ``NaN``
 when at least one of the 25 initial conditions diverges during the ``Nitera``
-burn-in (an OR over the ensemble, :603-608 / :626-631). An IC that diverges
-later, inside the ``Nmap`` Lyapunov window, is dropped and the cell value is
-the mean over the remaining finite ICs (:290-293, :330-335).
+burn-in (an OR over the ensemble in ``_burn_in_n12`` and ``_burn_in_nN`` inside
+``_sweep_kernel``). An IC that diverges later, inside the ``Nmap`` Lyapunov
+window, is dropped and the cell value is the mean over the remaining finite ICs
+(``_lyap_online_core``, ``_lyap_online_core_v`` and ``_samples_summary``).
 
 Usage::
 
-    python tools/report_sweep_stats.py --sweep-dir data/sweeps \
+    chaotic-pfc sweeps stats --sweep-dir data/sweeps \
         --tex articles/jcis/article.tex --csv /tmp/sweep_stats.csv
 """
 

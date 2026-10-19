@@ -229,11 +229,11 @@ This project follows **Semantic Versioning** (SemVer):
 * **MINOR**: backwards-compatible new functionality.
 * **PATCH**: backwards-compatible bug fixes.
 
-The version is stored in three places, which must stay in sync:
+The version is stored in two places in code (plus ``CITATION.cff``), which must stay in sync:
 
 * ``pyproject.toml``: ``project.version`` field.
 * ``src/chaotic_pfc/_version.py``: ``__version__`` string.
-* ``docs/conf.py``: ``version`` and ``release`` strings.
+* ``docs/conf.py`` reads ``_pkg_version`` from the package automatically and must not be edited by hand.
 
 The ``[Unreleased]`` section of ``CHANGELOG.md`` is renamed to the
 version number and date on release. See ``RELEASING.md`` in the

@@ -149,7 +149,7 @@ Heavy or specialised dependencies (currently Plotly for 3-D visualisation) are d
   regenerate and update everything in the **same** PR:
 
   1. `chaotic-pfc sweeps regenerate --src data/sweeps --dst /tmp/regen`, then
-     `chaotic-pfc sweeps compare data/sweeps /tmp/regen` to review the diff.
+     `chaotic-pfc sweeps compare --old data/sweeps --new /tmp/regen` to review the diff.
   2. `chaotic-pfc paper numbers --sweeps /tmp/regen --json /tmp/new.json`, and
      compare against the previous JSON to see which manuscript numbers moved.
   3. Update `data/sweeps/` (with its `SHA256SUMS`), the affected manuscript

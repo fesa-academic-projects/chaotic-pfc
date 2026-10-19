@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
-- A `minimums` CI job installs the SPEC 0 floors (Python 3.13, NumPy 2.3,
+- A `minimums` CI job installs the SPEC 0 floors (Python 3.13, NumPy 2.2,
   SciPy 1.15, Matplotlib 3.11) and runs the whole suite; a `release-pypi` job
   publishes to PyPI with OIDC Trusted Publishing on `v*` tags, after
   `release-testpypi`.
@@ -308,6 +308,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   suite.
 
 ### Documentation
+- Updated `sweeps.report` usage and function references, `.github/pull_request_template.md`,
+  `CONTRIBUTING.md` (`sweeps compare --old/--new`), `comms.channel` channel count
+  (five), `docs/contributing.rst` (`_pkg_version`), and `README.md` /
+  `README_pt-BR.md` (SVG-only figure output).
 - The pt-BR catalogue check now fails on an entry whose `msgstr` still equals
   its `msgid` (unless it is listed in the new
   `docs/locale/pt_BR/translation-exceptions.txt`) and on forbidden glossary
