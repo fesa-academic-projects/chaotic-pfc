@@ -253,6 +253,25 @@ class TestDifficultyMap(unittest.TestCase):
         self.assertGreaterEqual(len(fig.axes), 2)
         fig.clear()
 
+    def test_with_extremes_matches_effective_colors(self):
+        import warnings
+
+        import matplotlib.colors as mcolors
+        from matplotlib.collections import QuadMesh
+
+        from chaotic_pfc.analysis.sweep_plotting._common import COLOR_UNBOUNDED
+
+        result = _adaptive_result()
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", PendingDeprecationWarning)
+            fig = plot_difficulty_map(result)
+        meshes = [c for c in fig.axes[0].collections if isinstance(c, QuadMesh)]
+        self.assertEqual(len(meshes), 1)
+        cmap = meshes[0].get_cmap()
+        np.testing.assert_allclose(cmap.get_bad(), mcolors.to_rgba(COLOR_UNBOUNDED))
+        np.testing.assert_allclose(cmap.get_under(), mcolors.to_rgba("white"))
+        fig.clear()
+
     def test_legacy_metadata_no_Nmap_bounds(self):
         """Difficulty map with legacy result missing Nmap_min/Nmap falls back
         to data range so it still produces a readable colour scale."""

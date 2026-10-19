@@ -107,8 +107,7 @@ def plot_chaotic_map(
     h_expanded = _interleaved_expand(binary, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
 
-    cmap_obj = mcolors.ListedColormap([color])
-    cmap_obj.set_bad("white")
+    cmap_obj = mcolors.ListedColormap([color]).with_extremes(bad="white")
 
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
@@ -199,15 +198,14 @@ def plot_chaotic_density(
     # Count how many sweeps are chaotic at each grid point
     count = _chaotic_count(loaded)
 
-    # Where count == 0 → white (NaN so set_bad kicks in)
+    # Where count == 0 → white (NaN so bad colour kicks in)
     density = np.where(count > 0, count, np.nan)
     max_density = float(np.nanmax(density))
 
     h_expanded = _interleaved_expand(density, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
 
-    cmap_obj = plt.get_cmap(cmap).copy()
-    cmap_obj.set_bad("white")
+    cmap_obj = plt.get_cmap(cmap).with_extremes(bad="white")
 
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
@@ -374,8 +372,7 @@ def plot_chaotic_density_norm(
     h_expanded = _interleaved_expand(percent, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])
 
-    cmap_obj = plt.get_cmap(cmap).copy()
-    cmap_obj.set_bad("white")
+    cmap_obj = plt.get_cmap(cmap).with_extremes(bad="white")
 
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")

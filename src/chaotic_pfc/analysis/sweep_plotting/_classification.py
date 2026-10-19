@@ -475,14 +475,12 @@ def plot_difficulty_map(
         vmax = float(Nmap)
 
     # Render diverged cells (NaN) in grey; gap columns get a sentinel
-    # below *vmin* so they render in white via ``set_under``.
+    # below *vmin* so they render in white via ``with_extremes``.
     sentinel = vmin - 1.0
     n_expanded = _interleaved_expand(n_iters, data_slots, gap_slots, fill_value=sentinel)
     x_exp = np.arange(n_expanded.shape[0])
 
-    cmap_obj = plt.get_cmap(cmap).copy()
-    cmap_obj.set_bad(COLOR_UNBOUNDED)
-    cmap_obj.set_under("white")
+    cmap_obj = plt.get_cmap(cmap).with_extremes(bad=COLOR_UNBOUNDED, under="white")
 
     fig, ax = plt.subplots(figsize=(12, 5))
     fig.patch.set_facecolor("white")

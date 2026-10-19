@@ -219,6 +219,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- Replaced deprecated `Colormap.set_bad` and `Colormap.set_under` calls in
+  `chaotic_pfc.analysis.sweep_plotting` with `cmap.with_extremes(bad=...,
+  under=...)`.
 - `chaotic_pfc.plotting.figures.latex_available` and `setup_rc` now run a lazy,
   cached render probe with `text.usetex=True` and the project `mathptmx`
   preamble instead of only checking `shutil.which("latex")`, falling back to
