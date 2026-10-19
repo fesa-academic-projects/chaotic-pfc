@@ -283,6 +283,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- The `main` ruleset now names the real job contexts
+  (`Compile every exported table`, `Analyze (python)`), and a repository test
+  fails when a required check has no matching `pull_request` job without
+  `paths` filters. `RELEASING.md` documents that the review-count rule needs
+  more than one active maintainer or explicit bypass actors.
 - The legacy checkpoint loader no longer reads `SHA256SUMS` at run time: the
   trusted digests are compiled into
   `analysis/sweep/_trusted_checkpoints.py`, so a forged manifest shipped next

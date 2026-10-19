@@ -178,6 +178,12 @@ release from this branch. Nothing here is automated.
   merging. Re-read the ruleset list with
   `gh api /repos/fesa-academic-projects/chaotic-pfc/rulesets` to confirm both
   are active.
+- The `main` ruleset requires `required_approving_review_count: 1` together
+  with `require_code_owner_review: true`. GitHub does not let an author approve
+  their own pull request, so the `maintainers` team must have **more than one
+  active member**, or an explicit `bypass_actors` entry must be added for the
+  release automation (and documented here). A single-maintainer team would
+  deadlock every pull request.
 - The pre-commit hooks `frozen-artifacts` and `artefact-manifests` reject
   staged edits under `data/sweeps/`, `articles/simac/` and
   `articles/jcis/Figures/` and verify the `SHA256SUMS` manifests. A deliberate

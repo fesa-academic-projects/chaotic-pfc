@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -90,3 +91,65 @@ def test_ruleset_files_are_valid_json_with_required_rules() -> None:
     tags = json.loads((REPO / ".github" / "rulesets" / "tags.json").read_text(encoding="utf-8"))
     assert tags["target"] == "tag"
     assert any(ref.startswith("refs/tags/v") for ref in tags["conditions"]["ref_name"]["include"])
+
+
+def _pull_request_without_paths(workflow: dict) -> bool:
+    triggers = workflow.get("on", workflow.get(True))
+    if triggers is None:
+        return False
+    if isinstance(triggers, str):
+        return triggers == "pull_request"
+    if isinstance(triggers, list):
+        return "pull_request" in triggers
+    if isinstance(triggers, dict):
+        if "pull_request" not in triggers:
+            return False
+        config = triggers["pull_request"]
+        return not (isinstance(config, dict) and ({"paths", "paths-ignore"} & set(config)))
+    return False
+
+
+def _expanded_job_names(workflow: dict) -> set[str]:
+    import itertools
+
+    names: set[str] = set()
+    for job_id, job in (workflow.get("jobs") or {}).items():
+        raw = job.get("name", job_id)
+        matrix = (job.get("strategy") or {}).get("matrix") or {}
+        slots = re.findall(r"\$\{\{\s*matrix\.([A-Za-z0-9_-]+)\s*\}\}", raw)
+        if not slots:
+            names.add(raw)
+            continue
+        values = [matrix.get(slot) for slot in slots]
+        if any(not isinstance(value, list) for value in values):
+            names.add(raw)
+            continue
+        for combo in itertools.product(*values):
+            name = raw
+            for slot, value in zip(slots, combo, strict=True):
+                name = name.replace(f"${{{{ matrix.{slot} }}}}", str(value))
+            names.add(name)
+    return names
+
+
+def test_every_required_check_matches_a_pull_request_job() -> None:
+    import json
+
+    import yaml
+
+    ruleset = json.loads((REPO / ".github" / "rulesets" / "main.json").read_text(encoding="utf-8"))
+    required = {
+        check["context"]
+        for check in next(
+            rule for rule in ruleset["rules"] if rule["type"] == "required_status_checks"
+        )["parameters"]["required_status_checks"]
+    }
+    available: set[str] = set()
+    for path in sorted((REPO / ".github" / "workflows").glob("*.yml")):
+        workflow = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if _pull_request_without_paths(workflow):
+            available |= _expanded_job_names(workflow)
+    missing = sorted(required - available)
+    assert not missing, (
+        f"required checks without a matching job on pull_request without paths filters: {missing}"
+    )
