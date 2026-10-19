@@ -18,6 +18,7 @@ from numpy.typing import NDArray
 from chaotic_pfc._figure_io import save_figure as _figures_save
 from chaotic_pfc._i18n import t
 from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+from chaotic_pfc.errors import InvalidParameterError
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Palette and discrete classification
@@ -107,11 +108,32 @@ def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
     --------
     >>> classify(np.array([np.nan, -0.5, 0.5])).tolist()
     [2, -1, 0]
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``h`` is not a non-empty real numeric array or contains ``+/-inf``.
     """
-    out = np.empty_like(h, dtype=np.int64)
-    mask_diverged = np.isnan(h)
-    mask_periodic = (~mask_diverged) & (h <= 0.0)
-    mask_chaotic = (~mask_diverged) & (h > 0.0)
+    if isinstance(h, (str, bytes, dict, set)):
+        raise InvalidParameterError(f"h must be a numeric array, got {type(h).__name__}")
+    try:
+        raw = np.asarray(h)
+    except Exception as exc:
+        raise InvalidParameterError(f"h could not be converted to an array: {exc}") from exc
+    if raw.dtype == bool or np.issubdtype(raw.dtype, np.complexfloating) or raw.dtype == object:
+        raise InvalidParameterError(f"h must be a real numeric array, got dtype {raw.dtype}")
+    try:
+        h_arr = raw.astype(np.float64, copy=False)
+    except (TypeError, ValueError) as exc:
+        raise InvalidParameterError(f"h must contain real numbers: {exc}") from exc
+    if h_arr.ndim == 0 or h_arr.size == 0:
+        raise InvalidParameterError(f"h must be a non-empty array, got shape {h_arr.shape}")
+    if np.any(np.isinf(h_arr)):
+        raise InvalidParameterError("h must not contain +/-inf (use NaN for divergent cells)")
+    out = np.empty_like(h_arr, dtype=np.int64)
+    mask_diverged = np.isnan(h_arr)
+    mask_periodic = (~mask_diverged) & (h_arr <= 0.0)
+    mask_chaotic = (~mask_diverged) & (h_arr > 0.0)
 
     out[mask_diverged] = int(OrbitClass.DIVERGENT)
     out[mask_periodic] = int(OrbitClass.PERIODIC)
@@ -382,11 +404,15 @@ def _unpack(
 ) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any]]:
     """Resolve the two accepted calling conventions into (h, Nz, cutoff_grid)."""
     if result is not None:
+        if not isinstance(result, SweepResult):
+            raise InvalidParameterError(
+                f"result must be a SweepResult, got {type(result).__name__}"
+            )
         h = result.h
         num_taps_grid = result.num_taps_grid
         cutoff_grid = result.cutoff_grid
     if h is None or num_taps_grid is None or cutoff_grid is None:
-        raise ValueError(
+        raise InvalidParameterError(
             "Provide either a SweepResult or the (h, num_taps_grid, cutoff_grid) triple."
         )
     Nz = np.asarray(num_taps_grid) - 1

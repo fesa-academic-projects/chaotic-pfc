@@ -61,6 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `chaotic_pfc.errors` (`ChaoticPFCError`, `InvalidParameterError`,
+  `UntrustedDataError`, `DivergenceError`, `DivergenceWarning`) and boundary
+  validation (`chaotic_pfc._validate`) across all public API functions in
+  `chaotic_pfc.__all__`.
 - A `minimums` CI job installs the SPEC 0 floors (Python 3.13, NumPy 2.2,
   SciPy 1.15, Matplotlib 3.11) and runs the whole suite; a `release-pypi` job
   publishes to PyPI with OIDC Trusted Publishing on `v*` tags, after

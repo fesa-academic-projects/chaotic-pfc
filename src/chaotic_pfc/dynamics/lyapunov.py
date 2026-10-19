@@ -41,6 +41,15 @@ from typing import Any, TypedDict
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._validate import (
+    require_1d_nonempty,
+    require_finite,
+    require_in_range,
+    require_positive_int,
+    require_seed,
+)
+from chaotic_pfc.errors import InvalidParameterError
+
 
 class FixedPointInfo(TypedDict):
     """Result of :func:`fixed_point_stability` — fixed point, eigenvalues, stability."""
@@ -70,12 +79,12 @@ def _fixed_point(
     G = np.sum(b)  # sum of b coeffs
 
     if abs(1.0 - H) < 1e-12:
-        raise ValueError(
+        raise InvalidParameterError(
             f"degenerate filter: 1 - sum(a[1:]) ≈ 0 (got {1.0 - H:.3e}); "
             f"pole on unit circle or near-DC integrator"
         )
     if abs(G) < 1e-12:
-        raise ValueError(
+        raise InvalidParameterError(
             f"degenerate gain: sum(b) ≈ 0 (got {G:.3e}); the filter output is identically zero"
         )
 
@@ -88,9 +97,22 @@ def _fixed_point(
     denom = ratio**2
 
     disc = (1.0 - beta) ** 2 + 4.0 * alpha * denom
-    xf = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
+    if not np.isfinite(disc) or disc < 0.0:
+        raise InvalidParameterError(
+            f"no real fixed point: discriminant={disc} for alpha={alpha}, beta={beta}"
+        )
+    denom_xf = (1.0 - beta) + np.sqrt(disc)
+    if abs(denom_xf) < 1e-300:
+        raise InvalidParameterError(
+            f"degenerate fixed point denominator for alpha={alpha}, beta={beta}"
+        )
+    xf = 2.0 * alpha / denom_xf
 
     vf = G * xf / (1.0 - H)
+    if not (np.isfinite(xf) and np.isfinite(vf)):
+        raise InvalidParameterError(
+            f"non-finite fixed point for alpha={alpha}, beta={beta}, Gz={G}"
+        )
     return np.array([xf, xf, vf, vf])
 
 
@@ -300,8 +322,29 @@ def lyapunov_spectrum(
     --------
     lyapunov_max : The largest exponent only.
     lyapunov_henon2d : Hénon wrapper using this estimator.
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``iterate``/``jacobian`` is not callable, ``x0`` is not a
+        non-empty finite 1-D array, ``jacobian(x0)`` does not have shape
+        ``(dim, dim)``, or ``Nitera``/``Ndiscard`` is out of range.
     """
-    return _lyapunov_spectrum(x0, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+    if not callable(iterate):
+        raise InvalidParameterError(f"iterate must be callable, got {iterate!r}")
+    if not callable(jacobian):
+        raise InvalidParameterError(f"jacobian must be callable, got {jacobian!r}")
+    x0_arr = require_1d_nonempty("x0", x0)
+    Nitera = require_positive_int("Nitera", Nitera, min_value=1)
+    Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    dim = x0_arr.size
+    try:
+        j0 = np.asarray(jacobian(x0_arr.copy()), dtype=np.float64)
+    except Exception as exc:
+        raise InvalidParameterError(f"jacobian(x0) evaluation failed: {exc}") from exc
+    if j0.shape != (dim, dim):
+        raise InvalidParameterError(f"jacobian(x0) must have shape ({dim}, {dim}), got {j0.shape}")
+    return _lyapunov_spectrum(x0_arr, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
 
 
 def lyapunov_max(
@@ -317,6 +360,11 @@ def lyapunov_max(
     Returns ``NaN`` if the state or the tangent product ``J @ W`` becomes
     non-finite during the burn-in or the QR loop.
 
+    Raises
+    ------
+    InvalidParameterError
+        If any argument violates the :func:`lyapunov_spectrum` contract.
+
     Examples
     --------
     >>> import numpy as np
@@ -328,7 +376,7 @@ def lyapunov_max(
     ... ) > 0.40)
     True
     """
-    exponents = _lyapunov_spectrum(x0, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+    exponents = lyapunov_spectrum(iterate, jacobian, x0, Nitera=Nitera, Ndiscard=Ndiscard)
     return float(np.max(exponents))
 
 
@@ -382,12 +430,26 @@ def lyapunov_max_pole_filtered(
     --------
     lyapunov_henon2d : Standard 2‑D Hénon (no filter).
     :doc:`/source/algorithms/lyapunov` : Algorithm overview and validation.
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is non-finite or out of its valid domain.
     """
     dim = 4
-    b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
-
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    Gz = require_finite("Gz", Gz)
+    pole_radius = require_in_range("pole_radius", pole_radius, 0.0, 1.0, closed="left")
+    w0 = require_finite("w0", w0)
+    Nitera = require_positive_int("Nitera", Nitera, min_value=1)
+    Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    perturbation = require_finite("perturbation", perturbation)
     if perturbation <= 0:
-        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+        raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
+    seed_val = require_seed("seed", seed)
+
+    b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
@@ -395,7 +457,7 @@ def lyapunov_max_pole_filtered(
     stable = bool(np.all(np.abs(eigs) < 1.0))
 
     # Perturbed initial condition
-    rng = np.random.default_rng(seed)
+    rng = np.random.default_rng(seed_val)
     x = xf * (1.0 + perturbation * (2.0 * rng.random(dim) - 1.0))
 
     exponents = _lyapunov_spectrum(
@@ -442,7 +504,17 @@ def fixed_point_stability(
     FixedPointInfo
         A dict with keys ``"fixed_point"``, ``"eigenvalues"``,
         ``"stable"``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is non-finite or out of its valid domain.
     """
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    Gz = require_finite("Gz", Gz)
+    pole_radius = require_in_range("pole_radius", pole_radius, 0.0, 1.0, closed="left")
+    w0 = require_finite("w0", w0)
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
     xf = _fixed_point(alpha, beta, b, a)
     J_fp = _jacobian(beta, b, a, xf)
@@ -475,7 +547,16 @@ def _henon2d_fixed_points(
     amplifies and would move the published single-seed validation value.
     """
     disc = (1.0 - beta) ** 2 + 4.0 * alpha
-    x_p = 2.0 * alpha / ((1.0 - beta) + np.sqrt(disc))
+    if not np.isfinite(disc) or disc < 0.0:
+        raise InvalidParameterError(
+            f"no real fixed point: discriminant={disc} for alpha={alpha}, beta={beta}"
+        )
+    denom_p = (1.0 - beta) + np.sqrt(disc)
+    if abs(denom_p) < 1e-300:
+        raise InvalidParameterError(
+            f"degenerate fixed point denominator for alpha={alpha}, beta={beta}"
+        )
+    x_p = 2.0 * alpha / denom_p
     x_n = ((beta - 1.0) - np.sqrt(disc)) / 2.0
     return np.array([x_p, x_p]), np.array([x_n, x_n])
 
@@ -555,11 +636,21 @@ def lyapunov_henon2d(
        Physica D, vol. 16, pp. 285–317, 1985.
     .. [Sprott03] J. C. Sprott. "Chaos and Time-Series Analysis."
        Oxford University Press, 2003.
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is non-finite or out of its valid domain.
     """
     dim = 2
-
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    Nitera = require_positive_int("Nitera", Nitera, min_value=1)
+    Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    perturbation = require_finite("perturbation", perturbation)
     if perturbation <= 0:
-        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+        raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
+    seed_val = require_seed("seed", seed)
 
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
@@ -572,7 +663,7 @@ def lyapunov_henon2d(
     stable_n = bool(np.all(np.abs(eigs_n) < 1.0))
 
     # IC perturbed around the positive fixed point
-    rng = np.random.default_rng(seed)
+    rng = np.random.default_rng(seed_val)
     x = xf_p * (1.0 + perturbation * (2.0 * rng.random(dim) - 1.0))
 
     exponents = _lyapunov_spectrum(
@@ -811,9 +902,24 @@ def lyapunov_max_ensemble(
     Returns
     -------
     EnsembleResult
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is non-finite or out of its valid domain.
     """
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    Gz = require_finite("Gz", Gz)
+    pole_radius = require_in_range("pole_radius", pole_radius, 0.0, 1.0, closed="left")
+    w0 = require_finite("w0", w0)
+    Nitera = require_positive_int("Nitera", Nitera, min_value=1)
+    Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    perturbation = require_finite("perturbation", perturbation)
     if perturbation <= 0:
-        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+        raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
+    n_initial = require_positive_int("n_initial", n_initial, min_value=1)
+    seed_val = require_seed("seed", seed)
 
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
@@ -832,7 +938,7 @@ def lyapunov_max_ensemble(
         Ndiscard=Ndiscard,
         perturbation=perturbation,
         n_initial=n_initial,
-        seed=seed,
+        seed=seed_val,
         metadata={
             "system": "henon4d_pole_filtered",
             "alpha": alpha,
@@ -844,7 +950,7 @@ def lyapunov_max_ensemble(
             "Ndiscard": Ndiscard,
             "perturbation": perturbation,
             "n_initial": n_initial,
-            "seed": seed,
+            "seed": seed_val,
         },
     )
 
@@ -889,9 +995,21 @@ def lyapunov_henon2d_ensemble(
     --------
     lyapunov_henon2d : Single‑IC version.
     :doc:`/source/algorithms/lyapunov` : Algorithm overview and ensemble motivation.
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is non-finite or out of its valid domain.
     """
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    Nitera = require_positive_int("Nitera", Nitera, min_value=1)
+    Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    perturbation = require_finite("perturbation", perturbation)
     if perturbation <= 0:
-        raise ValueError(f"perturbation must be > 0, got {perturbation}")
+        raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
+    n_initial = require_positive_int("n_initial", n_initial, min_value=1)
+    seed_val = require_seed("seed", seed)
 
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
@@ -909,7 +1027,7 @@ def lyapunov_henon2d_ensemble(
         Ndiscard=Ndiscard,
         perturbation=perturbation,
         n_initial=n_initial,
-        seed=seed,
+        seed=seed_val,
         metadata={
             "system": "henon2d_standard",
             "alpha": alpha,
@@ -918,7 +1036,7 @@ def lyapunov_henon2d_ensemble(
             "Ndiscard": Ndiscard,
             "perturbation": perturbation,
             "n_initial": n_initial,
-            "seed": seed,
+            "seed": seed_val,
             "fixed_point_n": xf_n.tolist(),  # negative fp, for reference
         },
     )

@@ -8,11 +8,23 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc.errors import InvalidParameterError
+
 from ._types import FILTER_TYPES, WINDOW_DISPLAY_NAMES, SweepResult
 
 
 def save_sweep(result: SweepResult, path: str | Path) -> Path:
-    """Save a :class:`~chaotic_pfc.analysis.sweep.SweepResult` to a compressed ``.npz``."""
+    """Save a :class:`~chaotic_pfc.analysis.sweep.SweepResult` to a compressed ``.npz``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *result* is not a :class:`SweepResult` or *path* is empty.
+    """
+    if not isinstance(result, SweepResult):
+        raise InvalidParameterError(f"result must be a SweepResult, got {type(result).__name__}")
+    if not isinstance(path, (str, Path)) or not str(path).strip():
+        raise InvalidParameterError("path must be a non-empty path")
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {

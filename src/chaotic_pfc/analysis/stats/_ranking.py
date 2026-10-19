@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc._validate import require_positive_int, require_seed
 from chaotic_pfc.analysis.stats._common import _discover_all, round_half_up
 from chaotic_pfc.analysis.stats._summary import (
     area_summary,
@@ -21,7 +22,8 @@ from chaotic_pfc.analysis.stats._types import (
     SummaryRow,
     SweetSpot,
 )
-from chaotic_pfc.analysis.sweep import FILTER_TYPES, SweepResult
+from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS, SweepResult
+from chaotic_pfc.errors import InvalidParameterError
 
 
 def rank_configurations(
@@ -42,7 +44,17 @@ def rank_configurations(
     -------
     list of ConfigRank
         Descending by ``n_chaotic``. Rank is 1-indexed.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_results* is not a dict or *bootstrap_seed* is invalid.
     """
+    if not isinstance(sweep_results, dict):
+        raise InvalidParameterError(
+            f"sweep_results must be a dict, got {type(sweep_results).__name__}"
+        )
+    require_seed("bootstrap_seed", bootstrap_seed)
     entries: list[ConfigRank] = []
     for (ft, win), result in sweep_results.items():
         area = area_summary(result)
@@ -98,7 +110,14 @@ def top_k_per_filter(
         Keys are filter types; values are lists of at most *k*
         :class:`ConfigRank` entries, ordered by descending
         ``n_chaotic``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *k* is not a positive integer, *sweep_results* is not a dict,
+        or *bootstrap_seed* is invalid.
     """
+    k = require_positive_int("k", k, min_value=1)
     ranking = rank_configurations(sweep_results, bootstrap_seed=bootstrap_seed)
     out: dict[str, list[ConfigRank]] = {}
     for entry in ranking:
@@ -131,7 +150,16 @@ def consolidate_kaiser(
     dict
         Same shape as *sweep_results*, but with at most one Kaiser
         entry per ``filter_type`` (the β with the most chaotic points).
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_results* is not a dict.
     """
+    if not isinstance(sweep_results, dict):
+        raise InvalidParameterError(
+            f"sweep_results must be a dict, got {type(sweep_results).__name__}"
+        )
     consolidated: dict[tuple[str, str], SweepResult] = {}
     best_kaiser: dict[str, tuple[str, int]] = {}
 
@@ -166,7 +194,17 @@ def kaiser_beta_optimal(
     Returns
     -------
     dict of str → KaiserBetaOptimal
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_results* is not a dict or *bootstrap_seed* is invalid.
     """
+    if not isinstance(sweep_results, dict):
+        raise InvalidParameterError(
+            f"sweep_results must be a dict, got {type(sweep_results).__name__}"
+        )
+    require_seed("bootstrap_seed", bootstrap_seed)
     out: dict[str, KaiserBetaOptimal] = {}
     for (ft, _win), result in sweep_results.items():
         if result.window != "kaiser":
@@ -209,9 +247,18 @@ def sweet_spot_per_filter(
     -------
     dict of str → SweetSpot
         One entry per filter type that has at least one finite point.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_results* is not a dict.
     """
     from scipy.stats import t as t_dist
 
+    if not isinstance(sweep_results, dict):
+        raise InvalidParameterError(
+            f"sweep_results must be a dict, got {type(sweep_results).__name__}"
+        )
     best: dict[str, SweetSpot] = {}
 
     for (ft, win), result in sweep_results.items():
@@ -273,7 +320,13 @@ def best_chaos_preserving(
     -------
     list[SummaryRow]
         The ``top_n`` sweeps with the highest chaotic coverage.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *top_n* is not a positive integer.
     """
+    top_n = require_positive_int("top_n", top_n, min_value=1)
     rows = summary_table(data_dir)
     rows.sort(key=lambda r: r["pct_chaotic"], reverse=True)
     return rows[:top_n]
@@ -349,7 +402,20 @@ def optimal_parameters(
     -------
     list[OptimalParams]
         The ``top_n`` points with the highest ``lambda_max``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *top_n* is not a positive integer or *window* / *filter_type*
+        is unknown.
     """
+    top_n = require_positive_int("top_n", top_n, min_value=1)
+    if window is not None and window not in WINDOWS:
+        raise InvalidParameterError(f"window must be one of {WINDOWS}, got {window!r}")
+    if filter_type is not None and filter_type not in FILTER_TYPES:
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     best: list[dict[str, Any]] = []
     for result in _discover_all(data_dir):
         if window is not None and result.window != window:

@@ -91,6 +91,13 @@ from chaotic_pfc.dynamics.maps import (
 )
 from chaotic_pfc.dynamics.signals import binary_message, sinusoidal_message, text_message
 from chaotic_pfc.dynamics.spectral import psd_normalised
+from chaotic_pfc.errors import (
+    ChaoticPFCError,
+    DivergenceError,
+    DivergenceWarning,
+    InvalidParameterError,
+    UntrustedDataError,
+)
 
 __all__ = [
     "FILTER_TYPES",
@@ -99,7 +106,11 @@ __all__ = [
     "AreaSummary",
     "BetaPoint",
     "Channel",
+    "ChaoticPFCError",
+    "DivergenceError",
+    "DivergenceWarning",
     "EnsembleResult",
+    "InvalidParameterError",
     "LyapunovResult",
     "OrbitClass",
     "QuickSweepConfig",
@@ -107,6 +118,7 @@ __all__ = [
     "Receiver",
     "SweepResult",
     "Transmitter",
+    "UntrustedDataError",
     "__version__",
     "area_summary",
     "awgn",

@@ -30,6 +30,9 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._validate import require_1d_nonempty, require_finite, require_seed
+from chaotic_pfc.errors import InvalidParameterError
+
 from ..dynamics.maps import _henon_n4_step_inplace
 
 
@@ -85,8 +88,20 @@ def transmit(
     >>> s = transmit(binary_message(4, period=4), x0=0.1, y0=0.1)
     >>> [round(float(v), 4) for v in s]
     [0.11, 1.4279, -0.6189, 1.4323]
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``message`` is not a non-empty 1-D finite array or any
+        scalar parameter is non-finite.
     """
-    N = len(message)
+    msg = require_1d_nonempty("message", message)
+    mu = require_finite("mu", mu)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    x0 = require_finite("x0", x0)
+    y0 = require_finite("y0", y0)
+    N = len(msg)
     x1 = np.empty(N + 1)
     x2 = np.empty(N + 1)
     x1[0], x2[0] = x0, y0
@@ -94,7 +109,7 @@ def transmit(
 
     with np.errstate(over="ignore", invalid="ignore"):
         for k in range(N):
-            s[k] = x1[k] + mu * message[k]
+            s[k] = x1[k] + mu * msg[k]
             x1[k + 1] = alpha - s[k] ** 2 + beta * x2[k]
             x2[k + 1] = x1[k]
     return s
@@ -149,21 +164,39 @@ def transmit_order_n(
     ``(signal, state)`` tuple instead of a single ndarray. Use
     :func:`transmit` (the 2-D variant) for code that types against the
     Transmitter protocol.
-    """
-    Nc = len(fir_coeffs)
-    if Nc < 3:
-        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
-    rng = np.random.default_rng(seed)
-    c = np.asarray(fir_coeffs, dtype=float)
 
-    N = len(message)
+    Raises
+    ------
+    InvalidParameterError
+        If ``message`` or ``fir_coeffs`` is not a non-empty 1-D finite
+        array, ``len(fir_coeffs) < 3``, ``x0`` has incompatible shape,
+        or any scalar parameter is non-finite.
+    """
+    msg = require_1d_nonempty("message", message)
+    c = require_1d_nonempty("fir_coeffs", fir_coeffs, min_length=3)
+    Nc = len(c)
+    mu = require_finite("mu", mu)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    seed_val = require_seed("seed", seed)
+    if x0 is not None:
+        x0_arr = require_1d_nonempty("x0", x0)
+        if len(x0_arr) != Nc:
+            raise InvalidParameterError(
+                f"x0 must have length {Nc} matching fir_coeffs, got {len(x0_arr)}"
+            )
+    else:
+        x0_arr = None
+    rng = np.random.default_rng(seed_val)
+
+    N = len(msg)
     state = np.zeros((Nc, N + 1))
-    state[:, 0] = x0 if x0 is not None else 0.5 * rng.random(Nc)
+    state[:, 0] = x0_arr if x0_arr is not None else 0.5 * rng.random(Nc)
     s = np.empty(N)
 
     with np.errstate(over="ignore", invalid="ignore"):
         for i in range(N):
             v = state[2, i]
-            s[i] = v + mu * message[i]
+            s[i] = v + mu * msg[i]
             _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], alpha, beta, c)
     return s, state

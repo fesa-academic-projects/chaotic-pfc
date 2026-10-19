@@ -8,6 +8,7 @@ from typing import Any
 
 import numpy as np
 
+from chaotic_pfc._validate import require_positive_int, require_seed
 from chaotic_pfc.analysis.stats._common import (
     _DEFAULT_N_BOOTSTRAP,
     _discover_all,
@@ -16,6 +17,7 @@ from chaotic_pfc.analysis.stats._common import (
 )
 from chaotic_pfc.analysis.stats._types import AreaSummary, LmaxStats, SummaryRow
 from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+from chaotic_pfc.errors import InvalidParameterError
 
 
 def summary_table(
@@ -87,8 +89,20 @@ def area_summary(sweep_result: SweepResult) -> AreaSummary:
     -------
     AreaSummary
         Counts and percentages for the three dynamical regimes.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_result* is not a :class:`~.sweep.SweepResult` or its
+        ``h`` array is not 2-D.
     """
-    h = sweep_result.h
+    if not isinstance(sweep_result, SweepResult):
+        raise InvalidParameterError(
+            f"sweep_result must be a SweepResult, got {type(sweep_result).__name__}"
+        )
+    h = np.asarray(sweep_result.h, dtype=np.float64)
+    if h.ndim != 2:
+        raise InvalidParameterError(f"sweep_result.h must be 2-D, got shape {h.shape}")
     finite = np.isfinite(h)
     chaotic = np.sum(finite & (h > 0))
     periodic = np.sum(finite & (h <= 0))
@@ -146,10 +160,23 @@ def lmax_statistics(
     cells are correlated, so the interval underestimates the true uncertainty and
     is best read as a description of the dispersion over the region, not as a
     hypothesis-test interval (see the article's statistical section).
+
+    Raises
+    ------
+    InvalidParameterError
+        If *sweep_result* is not a :class:`~.sweep.SweepResult`,
+        *region* is unknown, or *n_bootstrap* / *seed* is invalid.
     """
     from scipy.stats import bootstrap as scipy_bootstrap
 
-    h = sweep_result.h.ravel()
+    if not isinstance(sweep_result, SweepResult):
+        raise InvalidParameterError(
+            f"sweep_result must be a SweepResult, got {type(sweep_result).__name__}"
+        )
+    n_bootstrap = require_positive_int("n_bootstrap", n_bootstrap, min_value=1)
+    seed_val = require_seed("seed", seed)
+
+    h = np.asarray(sweep_result.h, dtype=np.float64).ravel()
     finite = np.isfinite(h)
 
     if region == "chaotic":
@@ -159,7 +186,7 @@ def lmax_statistics(
     elif region == "all_finite":
         mask = finite
     else:
-        raise ValueError(
+        raise InvalidParameterError(
             f"Unknown region {region!r}; expected 'chaotic', 'all_finite', or 'periodic'"
         )
 
@@ -183,7 +210,7 @@ def lmax_statistics(
         np.mean,
         n_resamples=n_bootstrap,
         confidence_level=0.95,
-        random_state=seed,
+        random_state=seed_val,
         method="BCa",
     )
 

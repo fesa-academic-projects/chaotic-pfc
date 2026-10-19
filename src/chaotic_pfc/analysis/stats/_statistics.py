@@ -8,6 +8,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._validate import require_positive_int, require_seed
 from chaotic_pfc.analysis.stats._common import (
     _discover_all,
     _safe_stats,
@@ -19,7 +20,8 @@ from chaotic_pfc.analysis.stats._types import (
     CorrelationMatrix,
     LmaxDistribution,
 )
-from chaotic_pfc.analysis.sweep import FILTER_TYPES, load_sweep
+from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS, load_sweep
+from chaotic_pfc.errors import InvalidParameterError
 
 
 def beta_summary(
@@ -82,7 +84,16 @@ def beta_curve(
     -------
     tuple[NDArray[np.float64], NDArray[np.float64]]
         ``(betas, pct_chaotic)``; empty arrays when absent.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *filter_type* is not in :data:`FILTER_TYPES`.
     """
+    if filter_type not in FILTER_TYPES:
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     summary = beta_summary(data_dir)
     if filter_type not in summary:
         return np.array([]), np.array([])
@@ -112,9 +123,15 @@ def lmax_distribution(
     dict
         ``{filter_type: {"hist": counts, "edges": bin_edges, "mean": float,
         "std": float, "skewness": float, "n": int}}``
+
+    Raises
+    ------
+    InvalidParameterError
+        If *bins* is not a positive integer.
     """
     from scipy.stats import skew
 
+    bins = require_positive_int("bins", bins, min_value=1)
     all_vals: dict[str, list[float]] = {ft: [] for ft in FILTER_TYPES}
     for result in _discover_all(data_dir):
         vals = result.h.ravel()
@@ -164,7 +181,18 @@ def transition_boundary(
         Filter num_taps_grid.
     cutoff_grid : ndarray
         First chaotic cutoff per order (NaN if never chaotic).
+
+    Raises
+    ------
+    InvalidParameterError
+        If *window* or *filter_type* is unknown.
     """
+    if window is not None and window not in WINDOWS:
+        raise InvalidParameterError(f"window must be one of {WINDOWS}, got {window!r}")
+    if filter_type not in FILTER_TYPES:
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     best: dict[int, tuple[float, float]] = {}
     for result in _discover_all(data_dir):
         if window is not None and result.window != window:
@@ -212,7 +240,18 @@ def chaos_margin(
     num_taps_grid : ndarray
     widths : ndarray
         Fraction of cutoff_grid where λ_max > 0 per order.
+
+    Raises
+    ------
+    InvalidParameterError
+        If *window* or *filter_type* is unknown.
     """
+    if window is not None and window not in WINDOWS:
+        raise InvalidParameterError(f"window must be one of {WINDOWS}, got {window!r}")
+    if filter_type not in FILTER_TYPES:
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     accum: dict[int, list[float]] = {}
     for result in _discover_all(data_dir):
         if window is not None and result.window != window:
@@ -300,8 +339,15 @@ def bootstrap_confidence(
     -------
     dict
         ``{filter_type: {"mean": float, "ci_low": float, "ci_high": float}}``
+
+    Raises
+    ------
+    InvalidParameterError
+        If *n_bootstrap* is not a positive integer or *seed* is invalid.
     """
-    rng = np.random.default_rng(seed)
+    n_bootstrap = require_positive_int("n_bootstrap", n_bootstrap, min_value=1)
+    seed_val = require_seed("seed", seed)
+    rng = np.random.default_rng(seed_val)
     all_vals: dict[str, list[float]] = {ft: [] for ft in FILTER_TYPES}
     for result in _discover_all(data_dir):
         vals = result.h.ravel()

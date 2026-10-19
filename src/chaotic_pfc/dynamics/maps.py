@@ -47,6 +47,15 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin
 
+from chaotic_pfc._validate import (
+    require_1d_nonempty,
+    require_finite,
+    require_in_range,
+    require_positive_int,
+    require_seed,
+)
+from chaotic_pfc.errors import InvalidParameterError
+
 # ── 2-D maps ────────────────────────────────────────────────────────────────
 
 
@@ -84,7 +93,17 @@ def henon_standard(
         Trajectories of ``x`` and ``y`` from ``n = 0`` (the initial
         condition) to ``n = steps``.
 
+    Raises
+    ------
+    InvalidParameterError
+        If ``steps`` is not a positive integer or any scalar parameter
+        is non-finite.
     """
+    steps = require_positive_int("steps", steps, min_value=1)
+    x0 = require_finite("x0", x0)
+    y0 = require_finite("y0", y0)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -128,7 +147,18 @@ def henon_generalised(
     -------
     X, Y : ndarray, shape (steps + 1,)
         Trajectories of ``x_1`` and ``x_2``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``steps`` is not a positive integer or any scalar parameter
+        is non-finite.
     """
+    steps = require_positive_int("steps", steps, min_value=1)
+    x0 = require_finite("x0", x0)
+    y0 = require_finite("y0", y0)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -179,7 +209,20 @@ def henon_filtered(
     -------
     X, Y : ndarray, shape (steps + 1,)
         Trajectories of ``x_1`` and ``x_2``.
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``steps`` is not a positive integer or any scalar parameter
+        is non-finite.
     """
+    steps = require_positive_int("steps", steps, min_value=1)
+    x0 = require_finite("x0", x0)
+    y0 = require_finite("y0", y0)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    c0 = require_finite("c0", c0)
+    c1 = require_finite("c1", c1)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -291,20 +334,45 @@ def henon_order_n(
     output : ndarray, shape (steps,)
         Carrier signal ``x[2][n]`` for ``n = 0, …, steps − 1``.
 
+    Raises
+    ------
+    InvalidParameterError
+        If ``steps < 1``, ``len(fir_coeffs) < 3``, ``x0`` or ``driving``
+        has incompatible shape or non-finite values, or ``alpha``/``beta``
+        is non-finite.
     """
-    Nc = len(fir_coeffs)
-    if Nc < 3:
-        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
+    steps = require_positive_int("steps", steps, min_value=1)
+    c = require_1d_nonempty("fir_coeffs", fir_coeffs, min_length=3)
+    Nc = len(c)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    seed = require_seed("seed", seed)
+    if x0 is not None:
+        x0_arr = require_1d_nonempty("x0", x0)
+        if len(x0_arr) != Nc:
+            raise InvalidParameterError(
+                f"x0 must have length {Nc} matching fir_coeffs, got {len(x0_arr)}"
+            )
+    else:
+        x0_arr = None
+    if driving is not None:
+        drv_arr = require_1d_nonempty("driving", driving)
+        if len(drv_arr) < steps:
+            raise InvalidParameterError(
+                f"driving must have at least {steps} samples, got {len(drv_arr)}"
+            )
+    else:
+        drv_arr = None
+
     rng = np.random.default_rng(seed)
-    c = np.asarray(fir_coeffs, dtype=float)
 
     state = np.zeros((Nc, steps + 1))
-    state[:, 0] = x0 if x0 is not None else 0.5 * rng.random(Nc)
+    state[:, 0] = x0_arr if x0_arr is not None else 0.5 * rng.random(Nc)
     output = np.empty(steps)
 
     with np.errstate(over="ignore", invalid="ignore"):
         for i in range(steps):
-            s_i = float(driving[i]) if driving is not None else state[2, i]
+            s_i = float(drv_arr[i]) if drv_arr is not None else state[2, i]
             output[i] = state[2, i]
             _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, alpha, beta, c)
     return state, output
@@ -348,6 +416,10 @@ def henon_fir_sequence(
 
     Raises
     ------
+    InvalidParameterError
+        If ``N`` or ``num_taps`` is not a positive integer, ``cutoff`` is
+        outside ``(0, 1)``, ``window`` is invalid, or ``alpha``/``beta``
+        is non-finite.
     ValueError
         If the trajectory diverges (\\|x\\| > 100) or produces NaN/Inf.
 
@@ -357,6 +429,13 @@ def henon_fir_sequence(
     chaotic sequences, prefer :func:`henon_order_n` with pre-computed
     FIR coefficients.
     """
+    N = require_positive_int("N", N, min_value=1)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    num_taps = require_positive_int("num_taps", num_taps, min_value=1)
+    cutoff = require_in_range("cutoff", cutoff, 0.0, 1.0, closed="neither")
+    if not isinstance(window, str):
+        raise InvalidParameterError(f"window must be a string, got {window!r}")
     warnings.warn(
         "henon_fir_sequence is deprecated and will be removed in a "
         "future version.  Use henon_order_n with pre-computed FIR "
@@ -364,7 +443,10 @@ def henon_fir_sequence(
         DeprecationWarning,
         stacklevel=2,
     )
-    h = firwin(num_taps, cutoff, window=window)
+    try:
+        h = firwin(num_taps, cutoff, window=window)
+    except Exception as exc:
+        raise InvalidParameterError(f"invalid FIR filter design parameters: {exc}") from exc
     buf = np.full(num_taps, 0.1)
     x_val, y_val = 0.1, 0.1
     seq = np.empty(N)

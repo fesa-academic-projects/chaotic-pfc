@@ -9,7 +9,16 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import firwin
 
+from chaotic_pfc._validate import (
+    require_1d_nonempty,
+    require_finite,
+    require_in_range,
+    require_int_grid,
+    require_positive_int,
+    require_seed,
+)
 from chaotic_pfc.config import DEFAULT_CONFIG
+from chaotic_pfc.errors import InvalidParameterError
 
 from ._kernel import _build_task_order, _sweep_kernel
 from ._types import _KAISER_BETA, FILTER_TYPES, WINDOWS, SweepResult
@@ -76,25 +85,35 @@ def precompute_fir_bank(
     >>> _, gains = precompute_fir_bank(np.array([3, 5]), np.array([0.3]), "lowpass", "hamming")
     >>> [round(float(g), 3) for g in gains[:, 0]]
     [1.0, 1.0]
+
+    Raises
+    ------
+    InvalidParameterError
+        If any grid or filter parameter is invalid.
     """
     if filter_type not in FILTER_TYPES:
-        raise ValueError(f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}")
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     if window not in WINDOWS:
-        raise ValueError(f"window must be one of {WINDOWS}, got {window!r}")
-    if window == "kaiser" and kaiser_beta < 0:
-        raise ValueError(f"kaiser_beta must be >= 0, got {kaiser_beta!r}")
+        raise InvalidParameterError(f"window must be one of {WINDOWS}, got {window!r}")
+    kaiser_beta = require_in_range("kaiser_beta", kaiser_beta, 0.0, 700.0, closed="both")
+    bandwidth = require_in_range("bandwidth", bandwidth, 0.0, 1.0, closed="neither")
 
-    orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
+    orders_arr = require_int_grid("num_taps_grid", num_taps_grid, min_value=1)
+    cutoffs_arr = require_1d_nonempty("cutoff_grid", cutoff_grid)
+    if np.any((cutoffs_arr <= 0.0) | (cutoffs_arr >= 1.0)):
+        raise InvalidParameterError("cutoff_grid values must be strictly in (0, 1)")
     if filter_type in ("highpass", "bandstop"):
         even = orders_arr[orders_arr % 2 == 0]
         if even.size:
-            raise ValueError(
+            raise InvalidParameterError(
                 f"{filter_type} requires an odd number of taps; got even values "
                 f"{even.tolist()}. Use np.arange(start|1, stop, 2) or "
                 "filter your num_taps_grid to odd integers."
             )
     Ncoef = len(orders_arr)
-    Ncut = len(cutoff_grid)
+    Ncut = len(cutoffs_arr)
     max_taps = int(orders_arr.max())
 
     fir_bank = np.zeros((Ncoef, Ncut, max_taps))
@@ -107,7 +126,7 @@ def precompute_fir_bank(
 
     for i, Nss in enumerate(orders_arr):
         numtaps = int(Nss)
-        for j, wc in enumerate(cutoff_grid):
+        for j, wc in enumerate(cutoffs_arr):
             if use_band:
                 low = max(1e-5, float(wc) - bw_half)
                 high = min(1.0 - 1e-5, float(wc) + bw_half)
@@ -175,7 +194,7 @@ def _resolve_fir_bank(
     ``fir_design`` callable. FIR only.
     """
     if fir_bank is not None and fir_design is not None:
-        raise ValueError("pass either fir_bank or fir_design, not both")
+        raise InvalidParameterError("pass either fir_bank or fir_design, not both")
 
     orders_arr = np.asarray(num_taps_grid, dtype=np.int64)
     cutoffs_arr = np.asarray(cutoff_grid, dtype=np.float64)
@@ -185,19 +204,21 @@ def _resolve_fir_bank(
         bank = np.asarray(fir_bank, dtype=np.float64)
         expected = (len(orders_arr), len(cutoffs_arr), n_taps_max)
         if bank.shape != expected:
-            raise ValueError(
+            raise InvalidParameterError(
                 f"fir_bank must have shape {expected} "
                 f"(num_taps_grid x cutoff_grid x max num_taps), got {bank.shape}"
             )
         return bank, bank.sum(axis=2)
 
     if fir_design is not None:
+        if not callable(fir_design):
+            raise InvalidParameterError(f"fir_design must be callable, got {fir_design!r}")
         bank = np.zeros((len(orders_arr), len(cutoffs_arr), n_taps_max))
         for i, num_taps in enumerate(orders_arr):
             for j, cutoff in enumerate(cutoffs_arr):
                 coeffs = np.asarray(fir_design(int(num_taps), float(cutoff)), dtype=np.float64)
                 if coeffs.shape != (int(num_taps),):
-                    raise ValueError(
+                    raise InvalidParameterError(
                         f"fir_design({int(num_taps)}, {float(cutoff)}) returned shape "
                         f"{coeffs.shape}, expected ({int(num_taps)},)"
                     )
@@ -218,16 +239,16 @@ def _resolve_adaptive_params(
     adaptive: bool, Nmap_min: int, Nmap: int, tol: float
 ) -> tuple[int, float]:
     """Validate the adaptive options and return ``(kernel_Nmap_min, kernel_tol)``."""
+    if not isinstance(adaptive, bool):
+        raise InvalidParameterError(f"adaptive must be a bool, got {adaptive!r}")
     if not adaptive:
         return Nmap, 0.0
-    if Nmap_min < 1:
-        raise ValueError(f"Nmap_min must be >= 1, got {Nmap_min}")
+    Nmap_min = require_positive_int("Nmap_min", Nmap_min, min_value=1)
     if Nmap_min > Nmap:
-        raise ValueError(f"Nmap_min ({Nmap_min}) must be <= Nmap ({Nmap})")
-    if tol <= 0:
-        raise ValueError(f"tol must be > 0, got {tol}")
+        raise InvalidParameterError(f"Nmap_min ({Nmap_min}) must be <= Nmap ({Nmap})")
+    tol = require_in_range("tol", tol, 0.0, 1e150, closed="neither")
     if Nmap_min == Nmap:
-        raise ValueError(
+        raise InvalidParameterError(
             "adaptive=True with Nmap_min == Nmap is a no-op; "
             "set Nmap_min < Nmap or pass adaptive=False."
         )
@@ -240,6 +261,10 @@ def _default_sweep_grid(
     filter_type: str,
 ) -> tuple[NDArray[Any], NDArray[Any]]:
     """Fill the default tap/cutoff grids and return them as int64/float64 arrays."""
+    if filter_type not in FILTER_TYPES:
+        raise InvalidParameterError(
+            f"filter_type must be one of {FILTER_TYPES}, got {filter_type!r}"
+        )
     if num_taps_grid is None:
         order_hi = DEFAULT_CONFIG.sweep.n_z_max + 2
         num_taps_grid = (
@@ -249,7 +274,11 @@ def _default_sweep_grid(
         )
     if cutoff_grid is None:
         cutoff_grid = np.linspace(1e-5, 1.0 - 1e-5, 100)
-    return np.asarray(num_taps_grid, dtype=np.int64), np.asarray(cutoff_grid, dtype=np.float64)
+    orders_arr = require_int_grid("num_taps_grid", num_taps_grid, min_value=1)
+    cutoffs_arr = require_1d_nonempty("cutoff_grid", cutoff_grid)
+    if np.any((cutoffs_arr <= 0.0) | (cutoffs_arr >= 1.0)):
+        raise InvalidParameterError("cutoff_grid values must be strictly in (0, 1)")
+    return orders_arr, cutoffs_arr
 
 
 def _warmup_kernel(
@@ -419,9 +448,24 @@ def run_sweep(
     (2, 2)
     >>> res.num_taps_grid.tolist()
     [3, 5]
+
+    Raises
+    ------
+    InvalidParameterError
+        If any simulation or filter parameter is invalid.
     """
-    if fallback_mode not in (0, 1, 2):
-        raise ValueError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
+    if isinstance(fallback_mode, bool) or fallback_mode not in (0, 1, 2):
+        raise InvalidParameterError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
+    if not isinstance(warmup, bool):
+        raise InvalidParameterError(f"warmup must be a bool, got {warmup!r}")
+    Nitera = require_positive_int("Nitera", Nitera, min_value=0)
+    Nmap = require_positive_int("Nmap", Nmap, min_value=1)
+    n_initial = require_positive_int("n_initial", n_initial, min_value=1)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    kaiser_beta = require_in_range("kaiser_beta", kaiser_beta, 0.0, 700.0, closed="both")
+    bandwidth = require_in_range("bandwidth", bandwidth, 0.0, 1.0, closed="neither")
+    seed = require_seed("seed", seed)
 
     kernel_Nmap_min, kernel_tol = _resolve_adaptive_params(adaptive, Nmap_min, Nmap, tol)
     orders_arr, cutoffs_arr = _default_sweep_grid(num_taps_grid, cutoff_grid, filter_type)

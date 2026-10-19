@@ -19,6 +19,9 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._validate import require_in_range, require_positive_int
+from chaotic_pfc.errors import InvalidParameterError, NonAsciiParameterError
+
 
 def binary_message(N: int, period: int = 20) -> NDArray[np.float64]:
     """Generate a periodic square-wave binary message.
@@ -42,16 +45,19 @@ def binary_message(N: int, period: int = 20) -> NDArray[np.float64]:
 
     Raises
     ------
-    ValueError
-        If ``period`` is not a positive even integer.
+    InvalidParameterError
+        If ``N`` is not a positive integer or ``period`` is not a
+        positive even integer.
 
     Examples
     --------
     >>> binary_message(8, period=4)
     array([ 1.,  1., -1., -1.,  1.,  1., -1., -1.])
     """
-    if period <= 0 or period % 2 != 0:
-        raise ValueError(f"period must be a positive even integer, got {period}")
+    N = require_positive_int("N", N, min_value=1)
+    period = require_positive_int("period", period, min_value=2)
+    if period % 2 != 0:
+        raise InvalidParameterError(f"period must be a positive even integer, got {period}")
     half = period // 2
     block = np.concatenate([np.ones(half), -np.ones(half)])
     num_blocks = int(np.ceil(N / period))
@@ -89,8 +95,9 @@ def text_message(text: str, N: int, *, bit_period: int = 20) -> NDArray[np.float
 
     Raises
     ------
-    ValueError
-        If ``bit_period`` is not a positive integer or ``text`` is empty.
+    InvalidParameterError
+        If ``N`` or ``bit_period`` is not a positive integer, or ``text``
+        is empty or not a string.
     UnicodeEncodeError
         If ``text`` contains characters outside the ASCII range.
 
@@ -101,12 +108,18 @@ def text_message(text: str, N: int, *, bit_period: int = 20) -> NDArray[np.float
     >>> text_message("A", 8, bit_period=1)
     array([-1.,  1., -1., -1., -1., -1., -1.,  1.])
     """
-    if bit_period <= 0:
-        raise ValueError(f"bit_period must be a positive integer, got {bit_period}")
-    if not text:
-        raise ValueError("text must be a non-empty string")
+    N = require_positive_int("N", N, min_value=1)
+    bit_period = require_positive_int("bit_period", bit_period, min_value=1)
+    if not isinstance(text, str) or not text:
+        raise InvalidParameterError("text must be a non-empty string")
 
-    byte_values = np.frombuffer(text.encode("ascii"), dtype=np.uint8)
+    try:
+        encoded = text.encode("ascii")
+    except UnicodeEncodeError as exc:
+        raise NonAsciiParameterError(
+            exc.encoding, exc.object, exc.start, exc.end, exc.reason
+        ) from exc
+    byte_values = np.frombuffer(encoded, dtype=np.uint8)
     bits = np.unpackbits(byte_values)
     symbols = np.where(bits == 1, 1.0, -1.0)
     block = np.repeat(symbols, bit_period)
@@ -138,10 +151,13 @@ def sinusoidal_message(N: int, normalised_freq: float = 0.1) -> NDArray[np.float
 
     Raises
     ------
-    ValueError
-        If *normalised_freq* is not strictly between 0 and 0.5.
+    InvalidParameterError
+        If ``N`` is not a positive integer or *normalised_freq* is not
+        strictly between 0 and 0.5.
     """
-    if not (0 < normalised_freq < 0.5):
-        raise ValueError(f"normalised_freq must be in (0, 0.5), got {normalised_freq}")
+    N = require_positive_int("N", N, min_value=1)
+    normalised_freq = require_in_range(
+        "normalised_freq", normalised_freq, 0.0, 0.5, closed="neither"
+    )
     n = np.arange(N)
     return np.sin(2.0 * np.pi * normalised_freq * n)

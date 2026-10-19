@@ -31,6 +31,9 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
+from chaotic_pfc._validate import require_1d_nonempty, require_finite, require_seed
+from chaotic_pfc.errors import InvalidParameterError
+
 from ..dynamics.maps import _henon_n4_step_inplace
 
 
@@ -92,13 +95,25 @@ def receive(
     >>> m_hat = receive(transmit(m, x0=0.1, y0=0.1), y0=0.1, z0=0.1)
     >>> np.allclose(m_hat, m)
     True
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``r`` is not a non-empty 1-D finite array, ``mu == 0``, or
+        any scalar parameter is non-finite.
     """
+    r_arr = require_1d_nonempty("r", r)
+    mu = require_finite("mu", mu)
     if mu == 0:
-        raise ValueError(
+        raise InvalidParameterError(
             "mu must be non-zero; received mu=0 which would cause "
             "division by zero in the demodulation step"
         )
-    N = len(r)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    y0 = require_finite("y0", y0)
+    z0 = require_finite("z0", z0)
+    N = len(r_arr)
     y1 = np.empty(N + 1)
     y2 = np.empty(N + 1)
     y1[0], y2[0] = y0, z0
@@ -106,9 +121,9 @@ def receive(
 
     with np.errstate(over="ignore", invalid="ignore"):
         for k in range(N):
-            y1[k + 1] = alpha - r[k] ** 2 + beta * y2[k]
+            y1[k + 1] = alpha - r_arr[k] ** 2 + beta * y2[k]
             y2[k + 1] = y1[k]
-            m_hat[k] = (r[k] - y1[k]) / mu
+            m_hat[k] = (r_arr[k] - y1[k]) / mu
     return m_hat
 
 
@@ -162,26 +177,44 @@ def receive_order_n(
     ``(recovered, state)`` tuple instead of a single ndarray. Use
     :func:`receive` (the 2-D variant) for code that types against the
     Receiver protocol.
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``r`` or ``fir_coeffs`` is not a non-empty 1-D finite array,
+        ``len(fir_coeffs) < 3``, ``mu == 0``, ``y0`` has incompatible
+        shape, or any scalar parameter is non-finite.
     """
+    r_arr = require_1d_nonempty("r", r)
+    c = require_1d_nonempty("fir_coeffs", fir_coeffs, min_length=3)
+    Nc = len(c)
+    mu = require_finite("mu", mu)
     if mu == 0:
-        raise ValueError(
+        raise InvalidParameterError(
             "mu must be non-zero; received mu=0 which would cause "
             "division by zero in the demodulation step"
         )
-    N = len(r)
-    Nc = len(fir_coeffs)
-    if Nc < 3:
-        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
-    rng = np.random.default_rng(seed)
-    c = np.asarray(fir_coeffs, dtype=float)
+    alpha = require_finite("alpha", alpha)
+    beta = require_finite("beta", beta)
+    seed_val = require_seed("seed", seed)
+    if y0 is not None:
+        y0_arr = require_1d_nonempty("y0", y0)
+        if len(y0_arr) != Nc:
+            raise InvalidParameterError(
+                f"y0 must have length {Nc} matching fir_coeffs, got {len(y0_arr)}"
+            )
+    else:
+        y0_arr = None
+    N = len(r_arr)
+    rng = np.random.default_rng(seed_val)
 
     state = np.zeros((Nc, N + 1))
-    state[:, 0] = y0 if y0 is not None else 0.5 * rng.random(Nc)
+    state[:, 0] = y0_arr if y0_arr is not None else 0.5 * rng.random(Nc)
     m_hat = np.empty(N)
 
     with np.errstate(over="ignore", invalid="ignore"):
         for i in range(N):
             v = state[2, i]
-            m_hat[i] = (r[i] - v) / mu
-            _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], alpha, beta, c)
+            m_hat[i] = (r_arr[i] - v) / mu
+            _henon_n4_step_inplace(state[:, i + 1], state[:, i], r_arr[i], alpha, beta, c)
     return m_hat, state

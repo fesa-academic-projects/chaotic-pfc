@@ -36,9 +36,13 @@ class TestIdealChannel(unittest.TestCase):
 
     def test_preserves_length(self):
         rng = np.random.default_rng(42)
-        for N in (0, 1, 10, 1000):
+        for N in (1, 10, 1000):
             s = rng.standard_normal(N)
             self.assertEqual(len(ideal_channel(s)), N)
+
+    def test_empty_input_raises(self):
+        with self.assertRaises(ValueError):
+            ideal_channel(np.array([]))
 
 
 class TestFirChannel(unittest.TestCase):

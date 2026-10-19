@@ -46,8 +46,8 @@ class TestReceiveStandard(unittest.TestCase):
         np.testing.assert_allclose(m_hat, m, rtol=1e-10, atol=1e-12)
 
     def test_empty_input(self):
-        m_hat = receive(np.array([]), mu=0.01, y0=0.1, z0=0.2)
-        self.assertEqual(m_hat.shape, (0,))
+        with self.assertRaises(ValueError):
+            receive(np.array([]), mu=0.01, y0=0.1, z0=0.2)
 
     def test_mismatched_state_still_converges(self):
         """Chaos synchronisation: mismatched ICs should produce wrong
@@ -138,7 +138,7 @@ class TestReceiveOrderN(unittest.TestCase):
         c = np.array([10.0, 10.0, 10.0])
         with warnings.catch_warnings():
             warnings.simplefilter("error", RuntimeWarning)
-            m_hat, _ = receive_order_n(np.full(100, 1e160), c, mu=0.01)
+            m_hat, _ = receive_order_n(np.full(100, 1e80), c, mu=0.01)
         self.assertEqual(len(m_hat), 100)
 
 

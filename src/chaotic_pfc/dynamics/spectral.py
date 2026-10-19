@@ -12,6 +12,9 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import welch, windows
 
+from chaotic_pfc._validate import require_1d_nonempty, require_in_range, require_positive_int
+from chaotic_pfc.errors import InvalidParameterError
+
 _WINDOWS = {
     "hamming": windows.hamming,
     "hann": windows.hann,
@@ -82,19 +85,33 @@ def psd_normalised(
 
     Segment overlap is left at the scipy default of 50 %
     (``noverlap = nperseg // 2``).
+
+    Raises
+    ------
+    InvalidParameterError
+        If ``x`` is empty or non-finite, ``nfft``/``window_length``/``fs``
+        are out of range, ``window``/``kaiser_beta`` is invalid, or the
+        signal has zero power.
     """
+    x_arr = require_1d_nonempty("x", x)
+    window_length = require_positive_int("window_length", window_length, min_value=1)
+    nfft = require_positive_int("nfft", nfft, min_value=window_length)
+    fs = require_in_range("fs", fs, 0.0, 1e150, closed="neither")
+    if not isinstance(remove_dc, bool):
+        raise InvalidParameterError(f"remove_dc must be a bool, got {remove_dc!r}")
     if remove_dc:
-        x = x - np.mean(x)
-    if window not in _WINDOWS and window != "kaiser":
-        raise ValueError(f"window must be one of {[*sorted(_WINDOWS), 'kaiser']}, got {window!r}")
+        x_arr = x_arr - np.mean(x_arr)
+    if not isinstance(window, str) or (window not in _WINDOWS and window != "kaiser"):
+        raise InvalidParameterError(
+            f"window must be one of {[*sorted(_WINDOWS), 'kaiser']}, got {window!r}"
+        )
     if window == "kaiser":
-        if kaiser_beta < 0:
-            raise ValueError(f"kaiser_beta must be >= 0, got {kaiser_beta!r}")
+        kaiser_beta = require_in_range("kaiser_beta", kaiser_beta, 0.0, 700.0, closed="both")
         win = windows.kaiser(window_length, beta=kaiser_beta)
     else:
         win = _WINDOWS[window](window_length)
     f, Pxx = welch(
-        x,
+        x_arr,
         fs=fs,
         window=win,
         nperseg=window_length,
@@ -103,12 +120,12 @@ def psd_normalised(
         detrend=False,
         return_onesided=True,
     )
-    peak = Pxx.max()
-    if peak > 0:
+    peak = float(Pxx.max())
+    if np.isfinite(peak) and peak > 0:
         Pxx = Pxx / peak
     else:
-        raise ValueError(
-            f"input signal has zero power (peak={peak}); cannot normalise PSD to max=1"
+        raise InvalidParameterError(
+            f"input signal has zero or non-finite power (peak={peak}); cannot normalise PSD to max=1"
         )
     omega_norm = 2.0 * f / fs  # Convert Welch f (cycles/sample) to ω/π: ω = 2πf, so ω/π = 2f/fs
     return omega_norm, Pxx
