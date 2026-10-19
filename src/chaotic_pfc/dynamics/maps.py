@@ -62,6 +62,36 @@ from chaotic_pfc.errors import InvalidParameterError
 # ── 2-D maps ────────────────────────────────────────────────────────────────
 
 
+def _resolve_legacy_henon_params(
+    alpha: float,
+    beta: float,
+    a: float | None,
+    b: float | None,
+) -> tuple[float, float]:
+    """Resolve the deprecated ``a``/``b`` aliases into ``alpha``/``beta``."""
+    if a is not None:
+        if alpha != 1.4:
+            raise InvalidParameterError("pass either alpha or its deprecated alias a, not both")
+        warnings.warn(
+            "henon_standard(a=..., b=...) is deprecated; use alpha=... and beta=... "
+            "instead (removal in 1.0).",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        alpha = a
+    if b is not None:
+        if beta != 0.3:
+            raise InvalidParameterError("pass either beta or its deprecated alias b, not both")
+        warnings.warn(
+            "henon_standard(a=..., b=...) is deprecated; use alpha=... and beta=... "
+            "instead (removal in 1.0).",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        beta = b
+    return require_finite("alpha", alpha), require_finite("beta", beta)
+
+
 def henon_standard(
     steps: int,
     *,
@@ -70,6 +100,8 @@ def henon_standard(
     alpha: float = 1.4,
     beta: float = 0.3,
     on_divergence: DivergencePolicy = "nan",
+    a: float | None = None,
+    b: float | None = None,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Iterate the standard 2-D Hénon map.
 
@@ -80,10 +112,15 @@ def henon_standard(
         ``steps + 1`` (initial condition included).
     x0, y0
         Initial conditions of the two state variables.
-    alpha, beta
+    alpha
         Hénon parameters. The canonical chaotic regime is
         ``(alpha, beta) = (1.4, 0.3)``; smaller ``alpha`` yields periodic
         orbits, larger ``alpha`` yields unbounded trajectories for most ICs.
+    a, b
+        Deprecated aliases of ``alpha`` and ``beta`` kept for the 0.8 API.
+        Passing both an alias and its replacement raises
+        :class:`~chaotic_pfc.errors.InvalidParameterError`. They will be
+        removed in 1.0.
 
     Examples
     --------
@@ -108,8 +145,7 @@ def henon_standard(
     steps = require_positive_int("steps", steps, min_value=1)
     x0 = require_finite("x0", x0)
     y0 = require_finite("y0", y0)
-    alpha = require_finite("alpha", alpha)
-    beta = require_finite("beta", beta)
+    alpha, beta = _resolve_legacy_henon_params(alpha, beta, a, b)
     policy = require_divergence_policy(on_divergence)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)

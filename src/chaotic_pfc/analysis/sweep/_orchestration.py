@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable, Sequence
 from typing import Any, NamedTuple, TypedDict
 
@@ -397,6 +398,8 @@ def run_sweep(
     fir_bank: NDArray[np.float64] | None = None,
     fir_design: Callable[[int, float], NDArray[np.float64]] | None = None,
     on_divergence: DivergencePolicy = "nan",
+    orders: Sequence[int] | NDArray[np.int64] | None = None,
+    cutoffs: NDArray[np.float64] | None = None,
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 
@@ -458,6 +461,10 @@ def run_sweep(
         ``"warn"`` emits :class:`~chaotic_pfc.errors.DivergenceWarning`, and
         ``"raise"`` raises :class:`~chaotic_pfc.errors.DivergenceError`.
         Individual divergent cells are normal and never trigger the policy.
+    orders, cutoffs
+        Deprecated aliases of ``num_taps_grid`` and ``cutoff_grid`` kept for
+        the 0.8 API (removal in 1.0). Passing both an alias and its
+        replacement raises :class:`~chaotic_pfc.errors.InvalidParameterError`.
 
     Returns
     -------
@@ -505,6 +512,26 @@ def run_sweep(
         raise InvalidParameterError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
     if not isinstance(warmup, bool):
         raise InvalidParameterError(f"warmup must be a bool, got {warmup!r}")
+    if orders is not None:
+        if num_taps_grid is not None:
+            raise InvalidParameterError("pass either num_taps_grid or its deprecated alias orders")
+        warnings.warn(
+            "run_sweep(orders=..., cutoffs=...) is deprecated; use "
+            "num_taps_grid=... and cutoff_grid=... (removal in 1.0).",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        num_taps_grid = orders
+    if cutoffs is not None:
+        if cutoff_grid is not None:
+            raise InvalidParameterError("pass either cutoff_grid or its deprecated alias cutoffs")
+        warnings.warn(
+            "run_sweep(orders=..., cutoffs=...) is deprecated; use "
+            "num_taps_grid=... and cutoff_grid=... (removal in 1.0).",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        cutoff_grid = cutoffs
     Nitera = require_positive_int("Nitera", Nitera, min_value=0)
     Nmap = require_positive_int("Nmap", Nmap, min_value=1)
     n_initial = require_positive_int("n_initial", n_initial, min_value=1)

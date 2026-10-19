@@ -14,6 +14,7 @@ from chaotic_pfc.dynamics.maps import (
     henon_standard,
 )
 from chaotic_pfc.dynamics.signals import binary_message
+from chaotic_pfc.errors import InvalidParameterError
 
 
 class TestHenonStandard(unittest.TestCase):
@@ -109,3 +110,22 @@ class TestPipeline(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestLegacyParameterAliases(unittest.TestCase):
+    """The 0.8 ``a``/``b`` aliases warn and behave exactly like ``alpha``/``beta``."""
+
+    def test_alias_warns_and_matches_new_names(self):
+        with self.assertWarns(DeprecationWarning):
+            X_old, Y_old = henon_standard(20, a=1.2, b=0.2, x0=0.1, y0=0.1)
+        X_new, Y_new = henon_standard(20, alpha=1.2, beta=0.2, x0=0.1, y0=0.1)
+        np.testing.assert_array_equal(X_old, X_new)
+        np.testing.assert_array_equal(Y_old, Y_new)
+
+    def test_alias_conflict_raises(self):
+        with self.assertRaises(InvalidParameterError) as ctx:
+            henon_standard(10, alpha=1.3, a=1.2)
+        self.assertIn("not both", str(ctx.exception))
+        with self.assertRaises(InvalidParameterError) as ctx:
+            henon_standard(10, beta=0.2, b=0.4)
+        self.assertIn("not both", str(ctx.exception))

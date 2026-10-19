@@ -183,6 +183,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- Deprecated keyword aliases `henon_standard(a=, b=)` and `run_sweep(orders=,
+  cutoffs=)` emit `DeprecationWarning`, reject a simultaneous old/new pair, and
+  are scheduled for removal in 1.0; the policy is documented in
+  `CONTRIBUTING.md`.
 - `save_sweep` now serialises `metadata` as a JSON string (`dtype='<U'`) rather
   than a pickled `object` array, and `load_sweep` opens archives with
   `allow_pickle=False` ("verified integrity before trust"): legacy pickled

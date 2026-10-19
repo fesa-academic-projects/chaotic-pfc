@@ -57,6 +57,25 @@ For multi-step tasks, write a brief plan with explicit checks:
 
 Strong success criteria let work proceed independently. Weak criteria ("make it work") require constant clarification and lead to wasted effort.
 
+### Deprecation policy
+
+Renamed parameters keep a keyword-only alias for one minor cycle, emit a
+`DeprecationWarning`, and are removed at the next major release (1.0). Passing
+both the old and the new name raises `InvalidParameterError` instead of
+silently picking one.
+
+Current aliases (0.9, removal in 1.0):
+
+| Function | Deprecated | Replacement |
+|---|---|---|
+| `henon_standard` | `a=`, `b=` | `alpha=`, `beta=` |
+| `run_sweep` | `orders=`, `cutoffs=` | `num_taps_grid=`, `cutoff_grid=` |
+
+`lyapunov_max` is **not** aliased: its meaning changed from the 4-D
+pole-filtered estimator to the generic map estimator, so a keyword shim would
+silently compute something different. Use `lyapunov_max_pole_filtered` for the
+4-D system.
+
 ## 2. Tooling and code generation
 
 Parts of this codebase were developed with LLM assistance, primarily for porting numerical routines from MATLAB and Jupyter notebooks into a packaged Python library, and for accelerating prototyping during structural refactors. All generated code was reviewed, tested, and integrated by the human authors listed in `AUTHORS`.

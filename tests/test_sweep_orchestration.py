@@ -19,6 +19,7 @@ from chaotic_pfc.analysis.sweep import (
     run_sweep,
     save_sweep,
 )
+from chaotic_pfc.errors import InvalidParameterError
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Catalogue sanity checks
@@ -369,3 +370,39 @@ class TestThreadDeterminism(unittest.TestCase):
             np.testing.assert_array_equal(np.isnan(one), np.isnan(many), err_msg=name)
             finite = ~np.isnan(one)
             np.testing.assert_array_equal(one[finite], many[finite], err_msg=name)
+
+
+class TestLegacySweepAliases(unittest.TestCase):
+    """The 0.8 ``orders``/``cutoffs`` aliases warn and behave like the new names."""
+
+    def test_alias_warns_and_matches_new_names(self):
+        kwargs = dict(
+            window="hamming",
+            filter_type="lowpass",
+            Nitera=20,
+            Nmap=80,
+            n_initial=2,
+            seed=42,
+            warmup=False,
+        )
+        with self.assertWarns(DeprecationWarning):
+            old = run_sweep(orders=np.array([2, 3]), cutoffs=np.array([0.2, 0.5]), **kwargs)
+        new = run_sweep(num_taps_grid=np.array([2, 3]), cutoff_grid=np.array([0.2, 0.5]), **kwargs)
+        np.testing.assert_array_equal(old.h, new.h)
+        np.testing.assert_array_equal(old.num_taps_grid, new.num_taps_grid)
+
+    def test_alias_conflict_raises(self):
+        with self.assertRaises(InvalidParameterError):
+            run_sweep(
+                num_taps_grid=[2, 3],
+                orders=[2, 3],
+                cutoff_grid=np.array([0.2, 0.5]),
+                warmup=False,
+            )
+        with self.assertRaises(InvalidParameterError):
+            run_sweep(
+                num_taps_grid=[2, 3],
+                cutoff_grid=np.array([0.2, 0.5]),
+                cutoffs=np.array([0.2, 0.5]),
+                warmup=False,
+            )
