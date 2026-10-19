@@ -1,19 +1,27 @@
 """Sweep I/O: save, load, and path-inference helpers.
 
 Security design ("verified integrity before trust"):
-New checkpoints written by :func:`save_sweep` serialise ``metadata`` as a JSON
-string array (``dtype='<U'``) and are loaded with ``allow_pickle=False``.
-Legacy checkpoints that stored ``metadata`` as a pickled ``dtype=object`` array
-are only deserialised when their SHA-256 digest matches a trusted repository
-``SHA256SUMS`` manifest (or when the caller explicitly passes
-``trust_legacy_pickle=True``). Any other pickled ``.npz`` raises
-:class:`~chaotic_pfc.errors.UntrustedDataError`.
+
+* New checkpoints written by :func:`save_sweep` serialise ``metadata`` as a JSON
+  string array (``dtype='<U'``) and are loaded with ``allow_pickle=False``.
+* Legacy checkpoints that stored ``metadata`` as a pickled ``dtype=object``
+  array are deserialised only when their SHA-256 digest is listed in
+  :data:`chaotic_pfc.analysis.sweep._trusted_checkpoints.TRUSTED_CHECKPOINT_SHA256`,
+  a set compiled into the package. No ``SHA256SUMS`` file is read at run time:
+  a manifest delivered next to the data lives in the same trust domain as the
+  data and could be forged. The caller can still opt out explicitly with
+  ``trust_legacy_pickle=True``.
+* The file is read once into memory, the digest is computed over those bytes,
+  and every ``np.load`` call reads a ``BytesIO`` view of the same bytes. This
+  removes the time-of-check/time-of-use gap between hashing and loading.
+* Any other pickled ``.npz`` raises
+  :class:`~chaotic_pfc.errors.UntrustedDataError`.
 """
 
 from __future__ import annotations
 
-import functools
 import hashlib
+import io
 import json
 import warnings
 from pathlib import Path
@@ -23,46 +31,13 @@ import numpy as np
 
 from chaotic_pfc.errors import InvalidParameterError, UntrustedDataError
 
+from ._trusted_checkpoints import TRUSTED_CHECKPOINT_SHA256
 from ._types import FILTER_TYPES, WINDOW_DISPLAY_NAMES, SweepResult
 
-_REPO_ROOT = Path(__file__).resolve().parents[4]
 
-
-@functools.cache
-def _trusted_manifest_hashes() -> frozenset[str]:
-    """Return the SHA-256 digests listed in the repository SHA256SUMS manifests."""
-    hashes: set[str] = set()
-    candidates = (
-        _REPO_ROOT / "data" / "sweeps" / "SHA256SUMS",
-        _REPO_ROOT / "articles" / "simac" / "SHA256SUMS",
-        Path("data/sweeps/SHA256SUMS"),
-        Path("articles/simac/SHA256SUMS"),
-    )
-    for manifest in candidates:
-        if not manifest.is_file():
-            continue
-        try:
-            for line in manifest.read_text(encoding="utf-8").splitlines():
-                parts = line.strip().split()
-                if parts and len(parts[0]) == 64:
-                    hashes.add(parts[0].lower())
-        except OSError:
-            continue
-    return frozenset(hashes)
-
-
-def _is_trusted_legacy_checkpoint(path: Path) -> bool:
-    """Return True if *path*'s SHA-256 digest is pinned in a trusted manifest."""
-    try:
-        digest = hashlib.sha256(path.read_bytes()).hexdigest().lower()
-    except OSError:
-        return False
-    return digest in _trusted_manifest_hashes()
-
-
-def _load_legacy_pickled_metadata(path: Path) -> dict[str, Any]:
-    """Read legacy object-array metadata after SHA-256 manifest verification."""
-    with np.load(path, allow_pickle=True) as data:
+def _load_legacy_pickled_metadata(blob: bytes, path: Path) -> dict[str, Any]:
+    """Read legacy object-array metadata from already verified bytes."""
+    with np.load(io.BytesIO(blob), allow_pickle=True) as data:
         raw = data["metadata"]
     try:
         return dict(raw.tolist())
@@ -110,11 +85,13 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
 def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepResult:
     """Load a sweep from ``.npz`` produced by :func:`save_sweep`.
 
-    Follows the "verified integrity before trust" rule: archives are opened with
-    ``allow_pickle=False``. If ``metadata`` is a legacy pickled object array, it
-    is only deserialised when the file's SHA-256 digest matches a trusted
-    ``SHA256SUMS`` manifest or when ``trust_legacy_pickle=True`` is explicitly
-    passed.
+    Follows the "verified integrity before trust" rule: the file is read once
+    into memory, the digest is computed over those bytes, and every archive
+    read uses a ``BytesIO`` view of the same bytes. If ``metadata`` is a legacy
+    pickled object array, it is deserialised only when the digest is listed in
+    the compiled trust anchor
+    :data:`~chaotic_pfc.analysis.sweep._trusted_checkpoints.TRUSTED_CHECKPOINT_SHA256`
+    or when ``trust_legacy_pickle=True`` is explicitly passed.
 
     Parameters
     ----------
@@ -122,16 +99,16 @@ def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepR
         Path to the ``.npz`` checkpoint.
     trust_legacy_pickle
         When ``True``, allow deserialising legacy pickled ``metadata`` from a
-        file not listed in ``SHA256SUMS`` (emits a :class:`UserWarning`).
+        file whose digest is not in the compiled trust anchor (emits a
+        :class:`UserWarning`).
 
     Raises
     ------
     InvalidParameterError
         If *path* or *trust_legacy_pickle* has an invalid type.
     UntrustedDataError
-        If the archive contains pickled object arrays and is neither in a
-        trusted ``SHA256SUMS`` manifest nor loaded with
-        ``trust_legacy_pickle=True``.
+        If the archive contains pickled object arrays and is neither in the
+        compiled trust anchor nor loaded with ``trust_legacy_pickle=True``.
     ValueError
         If the archive is unreadable or missing required fields.
 
@@ -159,7 +136,16 @@ def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepR
         )
     path = Path(path)
     try:
-        data = np.load(path, allow_pickle=False)
+        blob = path.read_bytes()
+    except OSError as exc:
+        raise ValueError(
+            f"invalid or corrupted checkpoint: {path} "
+            f"(regenerate it with `chaotic-pfc sweeps regenerate`): {exc}"
+        ) from exc
+    digest = hashlib.sha256(blob).hexdigest().lower()
+
+    try:
+        data = np.load(io.BytesIO(blob), allow_pickle=False)
         files = data.files
     except Exception as exc:  # unreadable or not an .npz archive
         raise ValueError(
@@ -223,19 +209,19 @@ def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepR
                     )
 
     if need_legacy_pickle:
-        if _is_trusted_legacy_checkpoint(path):
-            metadata = _load_legacy_pickled_metadata(path)
+        if digest in TRUSTED_CHECKPOINT_SHA256:
+            metadata = _load_legacy_pickled_metadata(blob, path)
         elif trust_legacy_pickle:
             warnings.warn(
                 f"Loading untrusted pickled metadata from {path} with trust_legacy_pickle=True",
                 UserWarning,
                 stacklevel=2,
             )
-            metadata = _load_legacy_pickled_metadata(path)
+            metadata = _load_legacy_pickled_metadata(blob, path)
         else:
             raise UntrustedDataError(
                 f"Refusing to deserialise pickled object array in {path}: "
-                "file SHA-256 is not in a trusted SHA256SUMS manifest. "
+                "file SHA-256 is not in the compiled trust anchor. "
                 "Re-save with save_sweep() or pass trust_legacy_pickle=True if you trust the source."
             )
 

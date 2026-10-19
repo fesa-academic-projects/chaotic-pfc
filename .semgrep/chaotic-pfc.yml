@@ -69,6 +69,30 @@ rules:
       include:
         - "/src/**"
 
+
+  # ── Incident: F1 (forged SHA256SUMS bypassed the legacy loader) ───────────
+  # A manifest delivered next to the data shares the attacker's trust domain and
+  # can list the hash of a hostile .npz. The trust anchor must be compiled into
+  # the package (_trusted_checkpoints.py), never read at run time.
+  - id: chaotic-pfc-read-sha256sums
+    languages: [python]
+    message: >-
+      Do not read SHA256SUMS at run time inside the package. Incident: a forged
+      manifest in the working directory authorised arbitrary pickle execution
+      (fixed by compiling the trusted digests into _trusted_checkpoints.py).
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: open($PATH, ...)
+          - pattern: Path($PATH).read_text(...)
+          - pattern: Path($PATH).read_bytes(...)
+      - metavariable-regex:
+          metavariable: $PATH
+          regex: (?i).*sha256sums.*
+    paths:
+      include:
+        - "/src/**"
+
   # ── Incident: silent failure handling ────────────────────────────────────
   - id: chaotic-pfc-except-pass
     languages: [python]

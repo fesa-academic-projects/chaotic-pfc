@@ -62,9 +62,18 @@ Threats and mitigations
      - Mitigation
    * - Malicious pickle in a checkpoint (code execution)
      - New saves store metadata as JSON. Legacy pickled files are opened only
-       when their SHA-256 digest is listed in a repository ``SHA256SUMS``
-       manifest, or when the caller explicitly passes
-       ``trust_legacy_pickle=True``.
+       when their SHA-256 digest is listed in a frozenset compiled into
+       ``analysis/sweep/_trusted_checkpoints.py``, or when the caller explicitly
+       passes ``trust_legacy_pickle=True``.
+   * - Forged manifest shipped with the data
+     - The trusted digests are compiled into the package. No ``SHA256SUMS``
+       file is read at run time, so a manifest delivered next to a hostile
+       checkpoint cannot authorise it. A Semgrep rule fails the build on any
+       run-time read of ``SHA256SUMS`` inside ``src/``.
+   * - Time of check versus time of use (TOCTOU) in the loader
+     - The file is read once into memory, the digest is computed over those
+       bytes, and every archive read uses a ``BytesIO`` view of the same bytes.
+       Replacing the path after hashing has no effect.
    * - Invalid parameter producing ``NaN`` or a cryptic exception
      - Every public function validates its arguments and raises
        ``InvalidParameterError`` (a ``ValueError`` subclass) with the parameter
@@ -106,7 +115,8 @@ Security layers, in order of defence
 1. **Validate at the boundary** (:mod:`chaotic_pfc.errors` and
    :mod:`chaotic_pfc._validate`).
 2. **State the divergence policy** explicitly (``on_divergence``).
-3. **Verify integrity before trust** (JSON metadata, SHA-256 manifests).
+3. **Verify integrity before trust** (JSON metadata, a compiled SHA-256 trust
+   anchor, one read of the bytes for hashing and loading).
 4. **Fuzz the contract** (``tests/test_contract.py``, short and deep profiles).
 5. **Pin numerical references** (metamorphic identities, ``mpmath``).
 6. **Prove determinism** across Numba thread counts.

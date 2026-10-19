@@ -283,6 +283,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- The legacy checkpoint loader no longer reads `SHA256SUMS` at run time: the
+  trusted digests are compiled into
+  `analysis/sweep/_trusted_checkpoints.py`, so a forged manifest shipped next
+  to a hostile `.npz` cannot authorise pickle execution. The file is read once,
+  hashed and loaded from the same bytes, closing the TOCTOU gap. A Semgrep rule
+  forbids run-time manifest reads in `src/`.
 - `lmax_statistics` short-circuits constant samples (zero variance) instead of
   letting scipy's BCa emit an invalid-divide `RuntimeWarning`, and wraps the
   remaining BCa arithmetic in `np.errstate`.

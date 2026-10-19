@@ -1,10 +1,12 @@
 """Sweep I/O, path inference and helpers."""
 
+import hashlib
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import numpy as np
+import pytest
 
 from chaotic_pfc.analysis.sweep import (
     FILTER_TYPES,
@@ -292,3 +294,68 @@ class TestHelpers(unittest.TestCase):
 # ═══════════════════════════════════════════════════════════════════════════
 # Kernel function tests (Numba-JIT helpers)
 # ═══════════════════════════════════════════════════════════════════════════
+
+
+def _manifest_npz_digests() -> set[str]:
+    repo = Path(__file__).resolve().parents[1]
+    digests: set[str] = set()
+    for manifest in (
+        repo / "data" / "sweeps" / "SHA256SUMS",
+        repo / "articles" / "simac" / "SHA256SUMS",
+    ):
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            parts = line.strip().split(maxsplit=1)
+            if len(parts) == 2 and parts[1].endswith(".npz"):
+                digests.add(parts[0].lower())
+    return digests
+
+
+def test_trusted_digest_set_matches_manifests() -> None:
+    """The compiled trust anchor must equal the versioned .npz digests."""
+    from chaotic_pfc.analysis.sweep._trusted_checkpoints import (
+        TRUSTED_CHECKPOINT_SHA256,
+    )
+
+    assert set(TRUSTED_CHECKPOINT_SHA256) == _manifest_npz_digests()
+
+
+class _SentinelPayload:
+    def __init__(self, target: Path) -> None:
+        self.target = target
+
+    def __reduce__(self):
+        return (Path.write_text, (self.target, "pwned"))
+
+
+def test_manifest_in_cwd_does_not_enable_pickle(tmp_path: Path, monkeypatch) -> None:
+    """A forged SHA256SUMS next to the data must not authorise the payload.
+
+    Regression test for the trust-bypass defect: the manifest used to be read
+    from the current working directory, so an attacker could ship the
+    checkpoint and a manifest listing its own hash.
+    """
+    from chaotic_pfc.errors import UntrustedDataError
+
+    sentinel = tmp_path / "sentinel.txt"
+    evil = tmp_path / "Hamming (lowpass)" / "variables_lyapunov.npz"
+    evil.parent.mkdir(parents=True)
+    np.savez(
+        evil,
+        h=np.zeros((1, 1)),
+        h_desvio=np.zeros((1, 1)),
+        num_taps_grid=np.array([3]),
+        cutoff_grid=np.array([0.5]),
+        window=np.array("hamming"),
+        filter_type=np.array("lowpass"),
+        metadata=np.array([_SentinelPayload(sentinel)], dtype=object),
+    )
+
+    forged = tmp_path / "data" / "sweeps" / "SHA256SUMS"
+    forged.parent.mkdir(parents=True)
+    digest = hashlib.sha256(evil.read_bytes()).hexdigest()
+    forged.write_text(f"{digest}  Hamming (lowpass)/variables_lyapunov.npz\n", encoding="utf-8")
+
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(UntrustedDataError):
+        load_sweep(evil)
+    assert not sentinel.exists(), "pickled payload was executed via a forged manifest"

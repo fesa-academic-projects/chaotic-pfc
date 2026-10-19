@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: chaotic-pfc 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 18:49-0300\n"
+"POT-Creation-Date: 2026-10-19 19:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -33,7 +33,12 @@ msgid ""
 " occurrence (O) and detection (D) are scored from 1 (best) to 10 (worst),"
 " and the risk priority number is ``RPN = S x O x D`` before the "
 "mitigation."
-msgstr "Esta página registra os modos de falha relevantes para o ``chaotic-pfc`` e as camadas que os detectam. Ela segue a estrutura FMEA: severidade (S), ocorrência (O) e detecção (D) recebem notas de 1 (melhor) a 10 (pior), e o número de prioridade de risco é ``RPN = S x O x D`` antes da mitigação."
+msgstr ""
+"Esta página registra os modos de falha relevantes para o ``chaotic-pfc`` "
+"e as camadas que os detectam. Ela segue a estrutura FMEA: severidade (S),"
+" ocorrência (O) e detecção (D) recebem notas de 1 (melhor) a 10 (pior), e"
+" o número de prioridade de risco é ``RPN = S x O x D`` antes da "
+"mitigação."
 
 #: ../../reliability.rst:12
 msgid "FMEA"
@@ -88,12 +93,12 @@ msgid "3"
 msgstr "3"
 
 #: ../../reliability.rst:30 ../../reliability.rst:48 ../../reliability.rst:56
-#: ../../reliability.rst:64 ../../reliability.rst:72 ../../reliability.rst:94
-#: ../../reliability.rst:104 ../../reliability.rst:112
+#: ../../reliability.rst:64 ../../reliability.rst:72 ../../reliability.rst:96
+#: ../../reliability.rst:106 ../../reliability.rst:114
 msgid "8"
 msgstr "8"
 
-#: ../../reliability.rst:31 ../../reliability.rst:121
+#: ../../reliability.rst:31 ../../reliability.rst:123
 msgid "216"
 msgstr "216"
 
@@ -101,13 +106,17 @@ msgstr "216"
 msgid ""
 "Bounds derived from ``len(cutoff_grid)``; warmup uses the same dtype and "
 "slice"
-msgstr "Limites derivados de ``len(cutoff_grid)``; o warmup usa o mesmo dtype e o mesmo recorte"
+msgstr ""
+"Limites derivados de ``len(cutoff_grid)``; o warmup usa o mesmo dtype e o"
+" mesmo recorte"
 
 #: ../../reliability.rst:34
 msgid ""
 "``test_contract.py`` and ``test_kernel_paths.py`` with "
 "``NUMBA_DISABLE_JIT=1``; ``test_sweep_orchestration`` warmup spy"
-msgstr "``test_contract.py`` e ``test_kernel_paths.py`` com ``NUMBA_DISABLE_JIT=1``; espião de warmup em ``test_sweep_orchestration``"
+msgstr ""
+"``test_contract.py`` e ``test_kernel_paths.py`` com "
+"``NUMBA_DISABLE_JIT=1``; espião de warmup em ``test_sweep_orchestration``"
 
 #: ../../reliability.rst:36
 msgid "Silent type conversion (``3.7`` to ``3``)"
@@ -117,15 +126,15 @@ msgstr "Conversão silenciosa de tipo (``3.7`` para ``3``)"
 msgid "A different filter is computed than requested"
 msgstr "Um filtro diferente do solicitado é calculado"
 
-#: ../../reliability.rst:38 ../../reliability.rst:40 ../../reliability.rst:88
-#: ../../reliability.rst:96 ../../reliability.rst:102 ../../reliability.rst:110
+#: ../../reliability.rst:38 ../../reliability.rst:40 ../../reliability.rst:90
+#: ../../reliability.rst:98 ../../reliability.rst:104 ../../reliability.rst:112
 msgid "7"
 msgstr "7"
 
 #: ../../reliability.rst:39 ../../reliability.rst:47 ../../reliability.rst:54
 #: ../../reliability.rst:55 ../../reliability.rst:62 ../../reliability.rst:71
-#: ../../reliability.rst:87 ../../reliability.rst:118 ../../reliability.rst:119
-#: ../../reliability.rst:120
+#: ../../reliability.rst:89 ../../reliability.rst:120 ../../reliability.rst:121
+#: ../../reliability.rst:122
 msgid "6"
 msgstr "6"
 
@@ -189,8 +198,8 @@ msgstr "Constantes divergindo entre módulos"
 msgid "Different correlation or percentage in two reports"
 msgstr "Correlação ou percentual diferente em dois relatórios"
 
-#: ../../reliability.rst:63 ../../reliability.rst:70 ../../reliability.rst:86
-#: ../../reliability.rst:95 ../../reliability.rst:111
+#: ../../reliability.rst:63 ../../reliability.rst:70 ../../reliability.rst:88
+#: ../../reliability.rst:97 ../../reliability.rst:113
 msgid "5"
 msgstr "5"
 
@@ -234,7 +243,7 @@ msgstr "Execução de código arbitrário na máquina do usuário"
 msgid "10"
 msgstr "10"
 
-#: ../../reliability.rst:79 ../../reliability.rst:103
+#: ../../reliability.rst:79 ../../reliability.rst:105
 msgid "4"
 msgstr "4"
 
@@ -243,246 +252,291 @@ msgid "360"
 msgstr "360"
 
 #: ../../reliability.rst:82
-msgid "JSON metadata; SHA-256 manifest before legacy pickle"
-msgstr "Metadados JSON; manifesto SHA-256 antes do pickle legado"
-
-#: ../../reliability.rst:83
-msgid "``test_sweep_io.py`` malicious-payload test; Semgrep ``allow-pickle``"
-msgstr "Teste de carga maliciosa em ``test_sweep_io.py``; Semgrep ``allow-pickle``"
+msgid ""
+"JSON metadata; digest checked against a compiled trust anchor; the same "
+"bytes are hashed and loaded (no TOCTOU)"
+msgstr "Metadados JSON; digest conferido com uma âncora de confiança compilada; os mesmos bytes são usados no hash e no carregamento (sem TOCTOU)"
 
 #: ../../reliability.rst:84
+msgid ""
+"``test_sweep_io.py`` forged-manifest and malicious-payload tests; Semgrep"
+" ``allow-pickle`` and ``read-sha256sums``"
+msgstr "Testes de manifesto forjado e carga maliciosa em ``test_sweep_io.py``; Semgrep ``allow-pickle`` e ``read-sha256sums``"
+
+#: ../../reliability.rst:86
 msgid "Partial LaTeX installation"
 msgstr "Instalação parcial do LaTeX"
 
-#: ../../reliability.rst:85
+#: ../../reliability.rst:87
 msgid "Figure generation fails or falls back silently"
 msgstr "A geração de figuras falha ou cai para o fallback em silêncio"
 
-#: ../../reliability.rst:89
+#: ../../reliability.rst:91
 msgid "210"
 msgstr "210"
 
-#: ../../reliability.rst:90
+#: ../../reliability.rst:92
 msgid "Cached render probe with the project preamble"
 msgstr "Sonda de renderização cacheada com o preâmbulo do projeto"
 
-#: ../../reliability.rst:91
+#: ../../reliability.rst:93
 msgid "``test_latex_probe_failure_falls_back_to_mathtext``"
 msgstr "``test_latex_probe_failure_falls_back_to_mathtext``"
 
-#: ../../reliability.rst:92
+#: ../../reliability.rst:94
 msgid "Incompatible dependency version"
 msgstr "Versão de dependência incompatível"
 
-#: ../../reliability.rst:93
+#: ../../reliability.rst:95
 msgid "Import or numerical failure on a supported Python"
 msgstr "Falha de importação ou numérica em um Python suportado"
 
-#: ../../reliability.rst:97 ../../reliability.rst:113
+#: ../../reliability.rst:99 ../../reliability.rst:115
 msgid "280"
 msgstr "280"
 
-#: ../../reliability.rst:98
+#: ../../reliability.rst:100
 msgid "Declared floors, lock file, minimum-version CI job"
 msgstr "Pisos declarados, lock file, job de versões mínimas no CI"
 
-#: ../../reliability.rst:99
+#: ../../reliability.rst:101
 msgid "``minimums`` job; ``pip-audit``; ``test_sweep_environment.py``"
 msgstr "Job ``minimums``; ``pip-audit``; ``test_sweep_environment.py``"
 
-#: ../../reliability.rst:100
+#: ../../reliability.rst:102
 msgid "Non-determinism across thread counts"
 msgstr "Não determinismo entre contagens de threads"
 
-#: ../../reliability.rst:101
+#: ../../reliability.rst:103
 msgid "Published result cannot be reproduced"
 msgstr "Resultado publicado não pode ser reproduzido"
 
-#: ../../reliability.rst:105
+#: ../../reliability.rst:107
 msgid "224"
 msgstr "224"
 
-#: ../../reliability.rst:106
+#: ../../reliability.rst:108
 msgid "Pre-drawn perturbations; per-cell independent kernels"
 msgstr "Perturbações pré-sorteadas; kernels independentes por célula"
 
-#: ../../reliability.rst:107
+#: ../../reliability.rst:109
 msgid "``TestThreadDeterminism``"
 msgstr "``TestThreadDeterminism``"
 
-#: ../../reliability.rst:108
+#: ../../reliability.rst:110
 msgid "Invalid generated artefact"
 msgstr "Artefato gerado inválido"
 
-#: ../../reliability.rst:109
+#: ../../reliability.rst:111
 msgid "Broken manuscript tables shipped to a reviewer"
 msgstr "Tabelas quebradas do manuscrito enviadas a um revisor"
 
-#: ../../reliability.rst:114
+#: ../../reliability.rst:116
 msgid "Golden files plus LaTeX compilation in the pinned image"
 msgstr "Golden files mais compilação LaTeX na imagem fixada"
 
-#: ../../reliability.rst:115
+#: ../../reliability.rst:117
 msgid "``test_golden_tables.py``; *Manuscript tables (LaTeX)* job"
 msgstr "``test_golden_tables.py``; job *Manuscript tables (LaTeX)*"
 
-#: ../../reliability.rst:116
+#: ../../reliability.rst:118
 msgid "Regression from a rename"
 msgstr "Regressão por renomeação"
 
-#: ../../reliability.rst:117
+#: ../../reliability.rst:119
 msgid "Silent ``TypeError`` in examples or benchmarks"
 msgstr "``TypeError`` silencioso em exemplos ou benchmarks"
 
-#: ../../reliability.rst:122
+#: ../../reliability.rst:124
 msgid "Keyword aliases with warnings; contract fuzzing over ``__all__``"
 msgstr "Aliases de palavra-chave com avisos; fuzzing de contrato sobre ``__all__``"
 
-#: ../../reliability.rst:123
+#: ../../reliability.rst:125
 msgid ""
 "``test_contract.py``; ``test_maps``/``test_sweep_orchestration`` alias "
 "tests"
-msgstr "``test_contract.py``; testes de alias em ``test_maps``/``test_sweep_orchestration``"
+msgstr ""
+"``test_contract.py``; testes de alias em "
+"``test_maps``/``test_sweep_orchestration``"
 
-#: ../../reliability.rst:127
+#: ../../reliability.rst:129
 msgid "Lessons from Therac-25 and Ariane 501"
 msgstr "Lições do Therac-25 e do Ariane 501"
 
-#: ../../reliability.rst:129
+#: ../../reliability.rst:131
 msgid ""
 "Therac-25 (Leveson and Turner, *IEEE Computer*, 1993) and Ariane 501 "
 "(Lions et al., *Inquiry Board Report*, 1996) are the reference incidents "
 "for this project."
-msgstr "O Therac-25 (Leveson e Turner, *IEEE Computer*, 1993) e o Ariane 501 (Lions et al., *Inquiry Board Report*, 1996) são os incidentes de referência deste projeto."
+msgstr ""
+"O Therac-25 (Leveson e Turner, *IEEE Computer*, 1993) e o Ariane 501 "
+"(Lions et al., *Inquiry Board Report*, 1996) são os incidentes de "
+"referência deste projeto."
 
-#: ../../reliability.rst:137
+#: ../../reliability.rst:139
 msgid "Lesson"
 msgstr "Lição"
 
-#: ../../reliability.rst:138
+#: ../../reliability.rst:140
 msgid "Incident"
 msgstr "Incidente"
 
-#: ../../reliability.rst:139
+#: ../../reliability.rst:141
 msgid "Layer in this repository"
 msgstr "Camada neste repositório"
 
-#: ../../reliability.rst:140
+#: ../../reliability.rst:142
 msgid "Reused code out of its validated domain"
 msgstr "Código reutilizado fora de seu domínio validado"
 
-#: ../../reliability.rst:141
+#: ../../reliability.rst:143
 msgid ""
 "Ariane 501 converted a 64-bit horizontal bias with a 16-bit routine "
 "designed for a different range and then reused the value."
-msgstr "O Ariane 501 converteu um viés horizontal de 64 bits com uma rotina de 16 bits projetada para outra faixa e depois reutilizou o valor."
+msgstr ""
+"O Ariane 501 converteu um viés horizontal de 64 bits com uma rotina de 16"
+" bits projetada para outra faixa e depois reutilizou o valor."
 
-#: ../../reliability.rst:143
+#: ../../reliability.rst:145
 msgid ""
 "Domain checks (:mod:`chaotic_pfc._validate`), explicit ``on_divergence``,"
 " and the metamorphic tests that pin each estimator's assumptions."
-msgstr "Verificações de domínio (:mod:`chaotic_pfc._validate`), ``on_divergence`` explícito e testes metamórficos que fixam as premissas de cada estimador."
+msgstr ""
+"Verificações de domínio (:mod:`chaotic_pfc._validate`), ``on_divergence``"
+" explícito e testes metamórficos que fixam as premissas de cada "
+"estimador."
 
-#: ../../reliability.rst:146
+#: ../../reliability.rst:148
 msgid "No independent check of a computed value"
 msgstr "Nenhuma verificação independente de um valor calculado"
 
-#: ../../reliability.rst:147
+#: ../../reliability.rst:149
 msgid ""
 "Ariane trusted a value without a second check. Therac trusted a flag "
 "without verifying the machine state."
-msgstr "O Ariane confiou em um valor sem uma segunda checagem. O Therac confiou em um sinalizador sem verificar o estado da máquina."
+msgstr ""
+"O Ariane confiou em um valor sem uma segunda checagem. O Therac confiou "
+"em um sinalizador sem verificar o estado da máquina."
 
-#: ../../reliability.rst:149
+#: ../../reliability.rst:151
 msgid ""
 "Metamorphic identities (spectrum sum equals ``mean(log|det J|)``), the "
 "analytical ``ln|beta|`` identity, and ``mpmath`` at 50 digits."
-msgstr "Identidades metamórficas (a soma do espectro é igual a ``mean(log|det J|)``), a identidade analítica ``ln|beta|`` e ``mpmath`` com 50 dígitos."
+msgstr ""
+"Identidades metamórficas (a soma do espectro é igual a ``mean(log|det "
+"J|)``), a identidade analítica ``ln|beta|`` e ``mpmath`` com 50 dígitos."
 
-#: ../../reliability.rst:151
+#: ../../reliability.rst:153
 msgid "Silent recovery hid a fault"
 msgstr "A recuperação silenciosa escondeu uma falha"
 
-#: ../../reliability.rst:152
+#: ../../reliability.rst:154
 msgid ""
 "Therac displayed \"Malfunction 54\" and continued; Ariane's exception "
 "handler was not exercised in flight."
-msgstr "O Therac exibiu \"Malfunction 54\" e continuou; o tratador de exceções do Ariane não foi exercitado em voo."
+msgstr ""
+"O Therac exibiu \"Malfunction 54\" e continuou; o tratador de exceções do"
+" Ariane não foi exercitado em voo."
 
-#: ../../reliability.rst:154
+#: ../../reliability.rst:156
 msgid ""
 "``InvalidParameterError``, ``DivergenceError`` and ``UntrustedDataError``"
 " are explicit; ``-W error::RuntimeWarning`` makes silent NaNs fail the "
 "build."
-msgstr "``InvalidParameterError``, ``DivergenceError`` e ``UntrustedDataError`` são explícitos; ``-W error::RuntimeWarning`` faz NaNs silenciosos falharem o build."
+msgstr ""
+"``InvalidParameterError``, ``DivergenceError`` e ``UntrustedDataError`` "
+"são explícitos; ``-W error::RuntimeWarning`` faz NaNs silenciosos "
+"falharem o build."
 
-#: ../../reliability.rst:157
+#: ../../reliability.rst:159
 msgid "Inadequate testing of boundary states"
 msgstr "Testes inadequados de estados de fronteira"
 
-#: ../../reliability.rst:158
+#: ../../reliability.rst:160
 msgid ""
 "Both systems were tested for nominal inputs, not for out-of-range or "
 "concurrent states."
-msgstr "Ambos os sistemas foram testados com entradas nominais, não com estados fora de faixa ou concorrentes."
+msgstr ""
+"Ambos os sistemas foram testados com entradas nominais, não com estados "
+"fora de faixa ou concorrentes."
 
-#: ../../reliability.rst:160
+#: ../../reliability.rst:162
 msgid ""
 "Hypothesis contract fuzzing (single and paired mutations) and the "
 "``NUMBA_DISABLE_JIT=1`` job."
-msgstr "Fuzzing de contrato com Hypothesis (mutações simples e pareadas) e o job ``NUMBA_DISABLE_JIT=1``."
+msgstr ""
+"Fuzzing de contrato com Hypothesis (mutações simples e pareadas) e o job "
+"``NUMBA_DISABLE_JIT=1``."
 
-#: ../../reliability.rst:162
+#: ../../reliability.rst:164
 msgid "Configuration and documentation drift"
 msgstr "Deriva de configuração e documentação"
 
-#: ../../reliability.rst:163
-msgid "Therac's hardware and software changed without a matching safety analysis."
-msgstr "O hardware e o software do Therac mudaram sem uma análise de segurança correspondente."
-
 #: ../../reliability.rst:165
+msgid "Therac's hardware and software changed without a matching safety analysis."
+msgstr ""
+"O hardware e o software do Therac mudaram sem uma análise de segurança "
+"correspondente."
+
+#: ../../reliability.rst:167
 msgid ""
 "Golden files, the manuscript audit, Semgrep rules per incident, and "
 "literal ``CHANGELOG`` entries."
-msgstr "Golden files, a auditoria do manuscrito, regras do Semgrep por incidente e entradas literais no ``CHANGELOG``."
+msgstr ""
+"Golden files, a auditoria do manuscrito, regras do Semgrep por incidente "
+"e entradas literais no ``CHANGELOG``."
 
-#: ../../reliability.rst:167
+#: ../../reliability.rst:169
 msgid "No traceability from requirement to code"
 msgstr "Sem rastreabilidade do requisito ao código"
 
-#: ../../reliability.rst:168
+#: ../../reliability.rst:170
 msgid "Reviewers could not map a requirement to the line that implemented it."
-msgstr "Os revisores não conseguiam mapear um requisito para a linha que o implementava."
+msgstr ""
+"Os revisores não conseguiam mapear um requisito para a linha que o "
+"implementava."
 
-#: ../../reliability.rst:169
+#: ../../reliability.rst:171
 msgid ""
 "Each FMEA row points to the test or job that detects it; each Semgrep "
 "rule names its incident."
-msgstr "Cada linha da FMEA aponta para o teste ou job que a detecta; cada regra do Semgrep nomeia seu incidente."
+msgstr ""
+"Cada linha da FMEA aponta para o teste ou job que a detecta; cada regra "
+"do Semgrep nomeia seu incidente."
 
-#: ../../reliability.rst:171
+#: ../../reliability.rst:173
 msgid "Single point of failure in the process"
 msgstr "Ponto único de falha no processo"
 
-#: ../../reliability.rst:172
+#: ../../reliability.rst:174
 msgid "One team, one toolchain, one assumption."
 msgstr "Uma equipe, uma cadeia de ferramentas, uma premissa."
 
-#: ../../reliability.rst:173
+#: ../../reliability.rst:175
 msgid ""
 "Independent layers: unit, contract, metamorphic, mutation, static "
 "analysis, artefact compilation and supply-chain audit."
-msgstr "Camadas independentes: unitários, contrato, metamórficos, mutação, análise estática, compilação de artefatos e auditoria da cadeia de suprimentos."
+msgstr ""
+"Camadas independentes: unitários, contrato, metamórficos, mutação, "
+"análise estática, compilação de artefatos e auditoria da cadeia de "
+"suprimentos."
 
-#: ../../reliability.rst:177
+#: ../../reliability.rst:179
 msgid "How to use this page"
 msgstr "Como usar esta página"
 
-#: ../../reliability.rst:179
+#: ../../reliability.rst:181
 msgid ""
 "When adding a new numerical module, add a row to the FMEA table with at "
 "least one detection mechanism, and a contract baseline in "
 "``tests/test_contract.py``. When fixing a defect, add a Semgrep rule that"
 " remembers the failure mode."
-msgstr "Ao adicionar um novo módulo numérico, inclua uma linha na tabela FMEA com pelo menos um mecanismo de detecção e um baseline de contrato em ``tests/test_contract.py``. Ao corrigir um defeito, adicione uma regra do Semgrep que lembre o modo de falha."
+msgstr ""
+"Ao adicionar um novo módulo numérico, inclua uma linha na tabela FMEA com"
+" pelo menos um mecanismo de detecção e um baseline de contrato em "
+"``tests/test_contract.py``. Ao corrigir um defeito, adicione uma regra do"
+" Semgrep que lembre o modo de falha."
+
+#~ msgid "JSON metadata; SHA-256 manifest before legacy pickle"
+#~ msgstr "Metadados JSON; manifesto SHA-256 antes do pickle legado"
 

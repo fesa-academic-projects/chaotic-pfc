@@ -79,8 +79,10 @@ FMEA
      - 4
      - 9
      - 360
-     - JSON metadata; SHA-256 manifest before legacy pickle
-     - ``test_sweep_io.py`` malicious-payload test; Semgrep ``allow-pickle``
+     - JSON metadata; digest checked against a compiled trust anchor; the same
+       bytes are hashed and loaded (no TOCTOU)
+     - ``test_sweep_io.py`` forged-manifest and malicious-payload tests; Semgrep
+       ``allow-pickle`` and ``read-sha256sums``
    * - Partial LaTeX installation
      - Figure generation fails or falls back silently
      - 5
