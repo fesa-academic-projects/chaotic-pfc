@@ -1,4 +1,4 @@
-.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -58,7 +58,10 @@ format-check: check-venv  ## Check formatting without changing files
 typecheck: check-venv  ## Run mypy static type checker
 	$(PYTHON) -m mypy --strict src/chaotic_pfc
 
-check-all: lint format-check typecheck test-fast  ## Run all quality checks (lint + format + typecheck + fast tests)
+notebook: check-venv  ## Execute the tutorial notebook (catches API drift in examples/)
+	$(PYTHON) -m jupyter nbconvert --to notebook --execute examples/tour.ipynb --output /tmp/tour_executed.ipynb
+
+check-all: lint format-check typecheck test-fast notebook  ## Run all quality checks (lint + format + typecheck + fast tests + notebook)
 
 PAPER_DIR ?= articles/jcis
 # Pre-articles/ path, kept for the history- and BASE-dependent targets.
