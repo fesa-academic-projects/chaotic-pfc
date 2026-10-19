@@ -13,6 +13,7 @@ from chaotic_pfc.analysis.stats._common import (
     _discover_all,
     _safe_stats,
     pct_round,
+    round_half_up,
 )
 from chaotic_pfc.analysis.stats._types import (
     BetaPoint,
@@ -58,8 +59,8 @@ def beta_summary(
             mn, mx = _safe_stats(h)
             out[ft][beta] = {
                 "pct_chaotic": pct_round(int(chaotic), total, 1),
-                "mean_lmax": round(mn, 4),
-                "max_lmax": round(mx, 4),
+                "mean_lmax": round_half_up(mn, 4),
+                "max_lmax": round_half_up(mx, 4),
             }
     return out
 
@@ -148,9 +149,9 @@ def lmax_distribution(
         out[ft] = {
             "hist": hist.tolist(),
             "edges": edges.tolist(),
-            "mean": round(float(np.mean(arr)), 4),
-            "std": round(float(np.std(arr)), 4),
-            "skewness": round(float(skew(arr)), 4),
+            "mean": round_half_up(float(np.mean(arr)), 4),
+            "std": round_half_up(float(np.std(arr)), 4),
+            "skewness": round_half_up(float(skew(arr)), 4),
             "n": len(arr),
         }
     return out
@@ -313,8 +314,8 @@ def correlation_matrix(
     rho_o, _ = spearmanr(orders_all, lmax_all)
     rho_c, _ = spearmanr(cutoffs_all, lmax_all)
     return {
-        "order_vs_lmax": round(float(rho_o), 4),
-        "cutoff_vs_lmax": round(float(rho_c), 4),
+        "order_vs_lmax": round_half_up(float(rho_o), 4),
+        "cutoff_vs_lmax": round_half_up(float(rho_c), 4),
         "n": len(lmax_all),
     }
 
@@ -364,9 +365,9 @@ def bootstrap_confidence(
             [np.mean(rng.choice(arr, size=len(arr), replace=True)) for _ in range(n_bootstrap)]
         )
         out[ft] = {
-            "mean": round(float(np.mean(arr)), 4),
-            "ci_low": round(float(np.percentile(means, 2.5)), 4),
-            "ci_high": round(float(np.percentile(means, 97.5)), 4),
+            "mean": round_half_up(float(np.mean(arr)), 4),
+            "ci_low": round_half_up(float(np.percentile(means, 2.5)), 4),
+            "ci_high": round_half_up(float(np.percentile(means, 97.5)), 4),
             "n": len(arr),
         }
     return out  # type: ignore[return-value]  # dict[str, BootstrapConfidence]

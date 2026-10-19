@@ -61,6 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `.semgrep/chaotic-pfc.yml` with one rule per past incident (unsafe
+  `allow_pickle`, `_sweep_kernel` float cast, NumPy `round` over percentages,
+  `N_s` stored as `N_z`, swallowed exceptions, global `np.seterr`), a CI
+  *Static analysis (Semgrep)* job, and the `S`, `NPY`, `PERF` and `PT` Ruff
+  rule families.
 - `tests/test_golden_tables.py` and the *Manuscript tables (LaTeX)* CI job:
   regenerate every `data/analysis_output/tables/**/*.tex` from the versioned
   `.npz` files and compare byte for byte, then compile each table inside the

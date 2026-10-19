@@ -53,10 +53,9 @@ def plot_chaotic_all(
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    paths: list[Path] = []
-
-    for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME):
-        paths.append(out_dir / f"{stem}.svg")
+    paths: list[Path] = [
+        out_dir / f"{stem}.svg" for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME)
+    ]
 
     fig = plot_chaotic_map(sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang)
     if close_figures:

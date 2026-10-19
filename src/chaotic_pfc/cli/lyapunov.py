@@ -129,7 +129,8 @@ def run(args: argparse.Namespace) -> int:
     print(f"     Fixed point (+): {res2d.fixed_point_p}")
     print(f"     Fixed point (-): {res2d.fixed_point_n}")
     for label, eigs in [("(+)", res2d.eigenvalues_p), ("(-)", res2d.eigenvalues_n)]:
-        assert eigs is not None
+        if eigs is None:  # lyapunov_henon2d always populates both fixed points
+            raise RuntimeError(f"missing eigenvalues for the {label} fixed point")
         print(f"     Eigenvalues {label}: {eigs}")
         print(f"     |lambda| {label}:     {np.abs(eigs)}")
     print(f"     Stable (+): {res2d.stable_p}   (-): {res2d.stable_n}")
@@ -159,7 +160,8 @@ def run(args: argparse.Namespace) -> int:
 
     print(f"     Fixed point:  {res4d.fixed_point}")
     print(f"     Eigenvalues:  {res4d.eigenvalues}")
-    assert res4d.eigenvalues is not None
+    if res4d.eigenvalues is None:  # lyapunov_max_pole_filtered always populates it
+        raise RuntimeError("missing eigenvalues for the 4-D fixed point")
     print(f"     |lambda|:     {np.abs(res4d.eigenvalues)}")
     print(f"     Stable:       {res4d.stable}")
     print(f"     Lyapunov exponents: {res4d.all_exponents}")

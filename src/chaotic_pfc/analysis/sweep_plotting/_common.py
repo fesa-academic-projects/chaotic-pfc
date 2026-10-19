@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable
 from enum import IntEnum
 from pathlib import Path
@@ -291,8 +292,12 @@ def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray[Any], 
     for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         try:
             raw.append(load_sweep(npz_path))
-        except Exception:
-            continue
+        except Exception as exc:  # a bad sibling must not abort the whole figure
+            warnings.warn(
+                f"skipping unreadable checkpoint {npz_path}: {exc}",
+                RuntimeWarning,
+                stacklevel=2,
+            )
     if not raw:
         raise FileNotFoundError(
             f"No sweeps found under {sweep_dir}. "

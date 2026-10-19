@@ -38,10 +38,7 @@ def round_half_up(val: float, places: int = 1) -> float:
 
 def _discover_all(data_dir: str | Path = "data/sweeps") -> list[SweepResult]:
     """Load every ``variables_lyapunov.npz`` under *data_dir*."""
-    results: list[SweepResult] = []
-    for path in sorted(Path(data_dir).rglob("variables_lyapunov.npz")):
-        results.append(load_sweep(path))
-    return results
+    return [load_sweep(path) for path in sorted(Path(data_dir).rglob("variables_lyapunov.npz"))]
 
 
 def _safe_stats(h: NDArray[Any]) -> tuple[float, float]:

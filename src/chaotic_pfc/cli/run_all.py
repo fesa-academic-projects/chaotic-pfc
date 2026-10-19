@@ -186,12 +186,9 @@ def _run_all_sweeps(
     sweeps: list[tuple[str, str, float | None]] = []
     for window in WINDOWS:
         if window == "kaiser":
-            for ft in FILTER_TYPES:
-                for b in betas:
-                    sweeps.append((window, ft, b))
+            sweeps.extend((window, ft, b) for ft in FILTER_TYPES for b in betas)
         else:
-            for ft in FILTER_TYPES:
-                sweeps.append((window, ft, None))
+            sweeps.extend((window, ft, None) for ft in FILTER_TYPES)
 
     total = len(sweeps)
     for idx, (window, filter_type, beta) in enumerate(sweeps, start=1):

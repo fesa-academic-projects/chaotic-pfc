@@ -60,7 +60,7 @@ def rank_configurations(
         area = area_summary(result)
         lmax = lmax_statistics(result, region="chaotic", seed=bootstrap_seed)
         beta_raw = result.metadata.get("kaiser_beta")
-        beta = round(float(beta_raw), 2) if beta_raw is not None else None
+        beta = round_half_up(float(beta_raw), 2) if beta_raw is not None else None
         entries.append(
             {
                 "rank": 0,
@@ -284,8 +284,8 @@ def sweet_spot_per_filter(
                     ):
                         se = std_val / np.sqrt(n_initial)
                         t_crit = t_dist.ppf(0.975, n_initial - 1)
-                        ci_low = round(float(val - t_crit * se), 6)
-                        ci_high = round(float(val + t_crit * se), 6)
+                        ci_low = round_half_up(float(val - t_crit * se), 6)
+                        ci_high = round_half_up(float(val + t_crit * se), 6)
                     else:
                         ci_low = None
                         ci_high = None
@@ -293,8 +293,8 @@ def sweet_spot_per_filter(
                         "filter_type": ft,
                         "window": win,
                         "n_z": int(num_taps_grid[i]) - 1,
-                        "omega_c": round(float(cutoff_grid[j]), 4),
-                        "lmax": round(float(val), 6),
+                        "omega_c": round_half_up(float(cutoff_grid[j]), 4),
+                        "lmax": round_half_up(float(val), 6),
                         "lmax_ci_95_low": ci_low,
                         "lmax_ci_95_high": ci_high,
                     }
@@ -372,7 +372,7 @@ def compare_filter_types(
             "mean_pct_divergent": round_half_up(
                 float(np.mean([e["pct_divergent"] for e in entries])), 1
             ),
-            "mean_lmax": round(float(np.mean([e["mean_lmax"] for e in entries])), 4),
+            "mean_lmax": round_half_up(float(np.mean([e["mean_lmax"] for e in entries])), 4),
         }
     return out
 
@@ -434,8 +434,8 @@ def optimal_parameters(
                         "window": result.window,
                         "filter_type": result.filter_type,
                         "order": int(num_taps_grid[i]) - 1,
-                        "cutoff": round(float(cutoff_grid[j]), 4),
-                        "lmax": round(float(val), 6),
+                        "cutoff": round_half_up(float(cutoff_grid[j]), 4),
+                        "lmax": round_half_up(float(val), 6),
                     }
                 )
 

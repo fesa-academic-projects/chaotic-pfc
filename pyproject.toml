@@ -66,6 +66,7 @@ dev = [
     "ruff>=0.6",
     "mypy>=1.11",
     "pre-commit>=3.7",
+    "semgrep>=1.100",
 ]
 test = [
     "mpmath>=1.3",
@@ -145,6 +146,10 @@ select = [
     "F",   # pyflakes
     "I",   # isort
     "B",   # flake8-bugbear (likely bugs)
+    "S",   # flake8-bandit (security)
+    "NPY", # NumPy-specific rules
+    "PERF",# performance anti-patterns
+    "PT",  # flake8-pytest-style
     "UP",  # pyupgrade (modernise syntax)
     "SIM", # flake8-simplify (readability)
     "D",   # pydocstyle (NumPy docstring convention)
@@ -161,11 +166,34 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Tests can use longer lines, unused imports (fixtures), and magic constants
-"tests/**" = ["E501", "F401", "B011", "D"]
-# Command-line tools and benchmarks are scripts: no NumPy docstring convention
+# Tests can use longer lines, unused imports (fixtures), and magic constants.
+# PT rules are disabled because the suite is unittest-based by design; S101
+# (assert) is the standard way to express test expectations; PERF401 keeps the
+# explicit loops used to build contract/sweep fixtures readable; S106/S607 are
+# false positives for a keyword named `pass_zero` and for a pdflatex lookup that
+# already guards on shutil.which.
+"tests/**" = [
+    "E501",
+    "F401",
+    "B011",
+    "D",
+    "S101",
+    "S106",
+    "S311",
+    "S607",
+    "PERF401",
+    "PT",
+]
+# Command-line tools and benchmarks are scripts: no NumPy docstring convention.
+# Benchmarks use bare asserts as pytest assertions.
 "tools/**" = ["D"]
-"benchmarks/**" = ["D"]
+"benchmarks/**" = ["D", "S101", "PT"]
+# Table exporters and the manuscript audit build rows element by element inside
+# nested loops with conditional formatting; a comprehension would hide the
+# table schema. Reviewed manually during the A2/A4 fixes.
+"src/chaotic_pfc/analysis/latex_export.py" = ["PERF401"]
+"src/chaotic_pfc/paper/audit.py" = ["PERF401"]
+"src/chaotic_pfc/paper/numbers.py" = ["PERF401"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["chaotic_pfc"]

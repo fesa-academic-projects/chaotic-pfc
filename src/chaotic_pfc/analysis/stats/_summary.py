@@ -14,6 +14,7 @@ from chaotic_pfc.analysis.stats._common import (
     _discover_all,
     _safe_stats,
     pct_round,
+    round_half_up,
 )
 from chaotic_pfc.analysis.stats._types import AreaSummary, LmaxStats, SummaryRow
 from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
@@ -60,8 +61,8 @@ def summary_table(
             "pct_chaotic": pct_round(int(chaotic), total, 1),
             "pct_periodic": pct_round(int(periodic), total, 1),
             "pct_divergent": pct_round(int(divergent), total, 1),
-            "mean_lmax": round(mean_lmax, 4),
-            "max_lmax": round(max_lmax, 4),
+            "mean_lmax": round_half_up(mean_lmax, 4),
+            "max_lmax": round_half_up(max_lmax, 4),
             "beta": result.metadata.get("kaiser_beta"),
         }
         rows.append(row)
@@ -211,13 +212,13 @@ def lmax_statistics(
         # constant sample is the constant itself.
         ci_low = ci_high = float(vals[0])
         return {
-            "mean": round(float(vals[0]), 6),
-            "median": round(float(vals[0]), 6),
+            "mean": round_half_up(float(vals[0]), 6),
+            "median": round_half_up(float(vals[0]), 6),
             "std": 0.0,
-            "min": round(float(vals[0]), 6),
-            "max": round(float(vals[0]), 6),
-            "ci_95_low": round(ci_low, 6),
-            "ci_95_high": round(ci_high, 6),
+            "min": round_half_up(float(vals[0]), 6),
+            "max": round_half_up(float(vals[0]), 6),
+            "ci_95_low": round_half_up(ci_low, 6),
+            "ci_95_high": round_half_up(ci_high, 6),
             "n_used": n_used,
         }
 
@@ -236,13 +237,13 @@ def lmax_statistics(
         )
 
     return {
-        "mean": round(float(np.mean(vals)), 6),
-        "median": round(float(np.median(vals)), 6),
-        "std": round(float(np.std(vals, ddof=1)), 6),
-        "min": round(float(np.min(vals)), 6),
-        "max": round(float(np.max(vals)), 6),
-        "ci_95_low": round(float(ci_result.confidence_interval.low), 6),
-        "ci_95_high": round(float(ci_result.confidence_interval.high), 6),
+        "mean": round_half_up(float(np.mean(vals)), 6),
+        "median": round_half_up(float(np.median(vals)), 6),
+        "std": round_half_up(float(np.std(vals, ddof=1)), 6),
+        "min": round_half_up(float(np.min(vals)), 6),
+        "max": round_half_up(float(np.max(vals)), 6),
+        "ci_95_low": round_half_up(float(ci_result.confidence_interval.low), 6),
+        "ci_95_high": round_half_up(float(ci_result.confidence_interval.high), 6),
         "n_used": n_used,
     }
 

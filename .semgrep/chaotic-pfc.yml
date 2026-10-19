@@ -1,0 +1,91 @@
+rules:
+  # ── Incident: E3 (unsafe checkpoint deserialisation) ──────────────────────
+  # np.load(..., allow_pickle=True) on a third-party .npz executes arbitrary
+  # Python while unpickling. Only the legacy loader, after SHA-256 manifest
+  # verification, may enable pickle.
+  - id: chaotic-pfc-allow-pickle
+    languages: [python]
+    message: >-
+      allow_pickle=True can execute arbitrary code from an untrusted .npz file.
+      Incident: the checkpoint loader used to unpickle metadata without
+      integrity verification (fixed in E3). Use allow_pickle=False, or route
+      legacy files through _load_legacy_pickled_metadata after SHA-256
+      verification.
+    severity: ERROR
+    patterns:
+      - pattern: np.load(..., allow_pickle=True, ...)
+      - pattern-not-inside: |
+          def _load_legacy_pickled_metadata(...):
+              ...
+    paths:
+      include:
+        - "/src/**"
+
+  # ── Incident: B2 (warmup compiled the wrong Numba signature) ──────────────
+  # Casting the tap-count grid to float64 in the warmup made Numba compile a
+  # second, unused signature. The real call must be the one that is compiled.
+  - id: chaotic-pfc-sweep-kernel-float-orders
+    languages: [python]
+    message: >-
+      Do not cast the tap-count grid to float64 when calling _sweep_kernel.
+      Incident: _warmup_kernel compiled a float64 signature, so the real int64
+      call was JIT-compiled a second time (fixed in B2).
+    severity: ERROR
+    pattern: _sweep_kernel(..., $GRID.astype(np.float64), ...)
+
+  # ── Incident: A4 (NumPy round-half-to-even in the analysis tables) ────────
+  # round() on a NumPy scalar uses rint (half-to-even) and also inherits the
+  # binary representation error (10.85 -> 10.8499...). Percentages must come
+  # from the Decimal ROUND_HALF_UP helpers in analysis.stats._common.
+  - id: chaotic-pfc-numpy-round-percentage
+    languages: [python]
+    message: >-
+      Use the Decimal ROUND_HALF_UP helpers in analysis.stats._common instead
+      of round() over NumPy values. Incident: 434/4000 and 149/2000 rounded
+      differently from the manuscript tables (fixed in A4).
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: round($X, $Y)
+          - pattern: round($X)
+      - pattern-not: round(float(...), ...)
+    paths:
+      include:
+        - "/src/chaotic_pfc/analysis/stats/**"
+
+  # ── Incident: A1 (N_s recorded as N_z) ───────────────────────────────────
+  # num_taps_grid stores the number of coefficients N_s; the filter order is
+  # N_z = N_s - 1. Assigning the raw tap count to an n_z/order field silently
+  # published odd orders for highpass and bandstop.
+  - id: chaotic-pfc-ns-as-nz
+    languages: [python]
+    message: >-
+      num_taps_grid holds N_s, not the filter order N_z = N_s - 1.
+      Incident: sweet_spot_per_filter and optimal_parameters published N_s as
+      n_z/order (fixed in A1).
+    severity: ERROR
+    pattern-regex: '(?m)^[ \t]*"(n_z|order)"[ \t]*:[ \t]*(int\()?[ \t]*([A-Za-z_][A-Za-z0-9_]*\.)?num_taps_grid[ \t]*\[[^\]]*\][ \t]*\)?[ \t]*,?[ \t]*$'
+    paths:
+      include:
+        - "/src/**"
+
+  # ── Incident: silent failure handling ────────────────────────────────────
+  - id: chaotic-pfc-except-pass
+    languages: [python]
+    message: >-
+      Swallowing every exception hides data corruption and programming errors.
+      Incident class: several review items were only visible because an
+      exception was silently discarded.
+    severity: ERROR
+    pattern-regex: '(?m)^[ \t]*except( +Exception)?[ \t]*:[ \t]*\n[ \t]*(pass|continue)[ \t]*$'
+
+  # ── Incident: global NumPy error state ───────────────────────────────────
+  # np.seterr changes the process-wide floating-point policy and can hide NaN
+  # generation in unrelated code. Use a local np.errstate block with a comment.
+  - id: chaotic-pfc-global-seterr
+    languages: [python]
+    message: >-
+      np.seterr changes the global floating-point policy. Use a local
+      np.errstate block instead. Incident: silent NaN/overflow gates (E7).
+    severity: ERROR
+    pattern: np.seterr(...)
