@@ -55,7 +55,7 @@ def _environment() -> dict:
 def _lock_versions() -> dict[str, str]:
     versions: dict[str, str] = {}
     for line in LOCK.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^([A-Za-z0-9_.\-]+)==(.+)$", line)
+        match = re.match(r"^([A-Za-z0-9_.\-]+)==([^\\\s]+)", line)
         if match:
             versions[re.sub(r"[-_.]+", "-", match.group(1)).lower()] = match.group(2).strip()
     return versions

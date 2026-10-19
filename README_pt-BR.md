@@ -60,7 +60,7 @@ Para uma reprodução byte-exata do ambiente testado no CI (útil ao
 investigar regressões), instale a partir do lock file:
 
 ```bash
-pip install -r requirements-lock.txt
+pip install --require-hashes -r requirements-lock.txt
 ```
 
 ## Uso

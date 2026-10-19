@@ -62,7 +62,7 @@ For a byte-exact reproduction of the environment tested in CI (useful
 when bisecting a regression), install from the lock file instead:
 
 ```bash
-pip install -r requirements-lock.txt
+pip install --require-hashes -r requirements-lock.txt
 ```
 
 Building the JCIS manuscript PDF with `make paper-pdf` additionally needs a TeX

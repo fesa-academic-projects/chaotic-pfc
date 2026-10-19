@@ -193,6 +193,18 @@ Register a pending publisher on both indexes (no API token is stored): project
 workflow `ci.yml`, environment empty. The `release-testpypi` and `release-pypi`
 jobs use OIDC `id-token: write` and publish on `v*` tags, in that order.
 
+### Supply chain
+
+The CI enforces a hashed lock (`pip install --require-hashes`), `pip-audit`,
+`zizmor` and `gitleaks`. The build job emits a CycloneDX SBOM and a
+`actions/attest-build-provenance` attestation for `dist/*`; both are attached
+to the workflow run alongside the distributions.
+
+`gitleaks-action` is free for public repositories owned by individuals; an
+organisation may need a licence. If the `gitleaks` job reports a missing
+licence, add the `GITLEAKS_LICENSE` repository secret (it is already wired into
+the workflow) or keep the job advisory for your organisation.
+
 ### Zenodo and DOI
 
 Enable the GitHub–Zenodo integration for the repository and keep `main` in the

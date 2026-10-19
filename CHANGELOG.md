@@ -183,6 +183,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- `requirements-lock.txt` now pins every distribution with SHA-256 hashes
+  (`pip-compile --generate-hashes`) and is installed with
+  `pip install --require-hashes`. The scientific-core versions still match
+  `data/sweeps/ENVIRONMENT.json`.
+- Added supply-chain checks: a `--require-hashes` lock-install job,
+  `pip-audit` over the lock, `zizmor` over the workflows (checkout credentials
+  are no longer persisted and caches are read-only), and `gitleaks` over the
+  history. The release build now emits a CycloneDX SBOM and an
+  `actions/attest-build-provenance` attestation for the wheel and sdist.
 - Deprecated keyword aliases `henon_standard(a=, b=)` and `run_sweep(orders=,
   cutoffs=)` emit `DeprecationWarning`, reject a simultaneous old/new pair, and
   are scheduled for removal in 1.0; the policy is documented in
