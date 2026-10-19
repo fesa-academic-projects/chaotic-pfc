@@ -151,6 +151,8 @@ def transmit_order_n(
     Transmitter protocol.
     """
     Nc = len(fir_coeffs)
+    if Nc < 3:
+        raise ValueError(f"fir_coeffs must have at least 3 entries, got {Nc}")
     rng = np.random.default_rng(seed)
     c = np.asarray(fir_coeffs, dtype=float)
 
@@ -159,8 +161,9 @@ def transmit_order_n(
     state[:, 0] = x0 if x0 is not None else 0.5 * rng.random(Nc)
     s = np.empty(N)
 
-    for i in range(N):
-        v = state[2, i]
-        s[i] = v + mu * message[i]
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], alpha, beta, c)
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(N):
+            v = state[2, i]
+            s[i] = v + mu * message[i]
+            _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], alpha, beta, c)
     return s, state

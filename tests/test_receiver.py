@@ -132,6 +132,15 @@ class TestReceiveOrderN(unittest.TestCase):
         with self.assertRaises(ValueError):
             receive_order_n(np.zeros(10), c, mu=0)
 
+    def test_order_n_silences_overflow_warnings(self):
+        import warnings
+
+        c = np.array([10.0, 10.0, 10.0])
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            m_hat, _ = receive_order_n(np.full(100, 1e160), c, mu=0.01)
+        self.assertEqual(len(m_hat), 100)
+
 
 if __name__ == "__main__":
     unittest.main()

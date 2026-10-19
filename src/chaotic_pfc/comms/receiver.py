@@ -179,8 +179,9 @@ def receive_order_n(
     state[:, 0] = y0 if y0 is not None else 0.5 * rng.random(Nc)
     m_hat = np.empty(N)
 
-    for i in range(N):
-        v = state[2, i]
-        m_hat[i] = (r[i] - v) / mu
-        _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], alpha, beta, c)
+    with np.errstate(over="ignore", invalid="ignore"):
+        for i in range(N):
+            v = state[2, i]
+            m_hat[i] = (r[i] - v) / mu
+            _henon_n4_step_inplace(state[:, i + 1], state[:, i], r[i], alpha, beta, c)
     return m_hat, state

@@ -136,6 +136,20 @@ class TestTransmitOrderN(unittest.TestCase):
         s, _ = transmit_order_n(np.ones(50), c, seed=None)
         self.assertEqual(len(s), 50)
 
+    def test_order_n_rejects_fewer_than_3_coeffs(self):
+        for n in (0, 1, 2):
+            with self.assertRaisesRegex(ValueError, "fir_coeffs must have at least 3 entries"):
+                transmit_order_n(np.ones(10), np.ones(n))
+
+    def test_order_n_silences_overflow_warnings(self):
+        import warnings
+
+        c = np.array([10.0, 10.0, 10.0])
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            s, _ = transmit_order_n(np.ones(100), c, mu=10.0)
+        self.assertEqual(len(s), 100)
+
 
 if __name__ == "__main__":
     unittest.main()
