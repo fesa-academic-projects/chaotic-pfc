@@ -7,7 +7,7 @@ import numpy as np
 from chaotic_pfc.dynamics.lyapunov import (
     lyapunov_henon2d,
     lyapunov_henon2d_ensemble,
-    lyapunov_max,
+    lyapunov_max_pole_filtered,
 )
 
 
@@ -42,7 +42,7 @@ def test_lyapunov_ensemble_25_ics(benchmark):
 def test_lyapunov_max_4d_2000_iters(benchmark):
     """4-D pole-filtered Lyapunov, 2000 iterations."""
     result = benchmark(
-        lyapunov_max,
+        lyapunov_max_pole_filtered,
         alpha=1.4,
         beta=0.3,
         Nitera=2000,

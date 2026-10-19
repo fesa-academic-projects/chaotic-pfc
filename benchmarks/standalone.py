@@ -16,7 +16,7 @@ from chaotic_pfc._compat import HAS_NUMBA
 from chaotic_pfc.analysis.sweep import precompute_fir_bank
 
 # ── Imports ──────────────────────────────────────────────────────────────
-from chaotic_pfc.dynamics.lyapunov import lyapunov_henon2d, lyapunov_max
+from chaotic_pfc.dynamics.lyapunov import lyapunov_henon2d, lyapunov_max_pole_filtered
 from chaotic_pfc.dynamics.maps import (
     henon_filtered,
     henon_generalised,
@@ -70,8 +70,18 @@ def main() -> None:
     # ── Lyapunov ─────────────────────────────────────────────────────────
     print("\nLyapunov exponents:")
     _timeit("lyapunov_henon2d (Nitera=2000)", lyapunov_henon2d, Nitera=2000, Ndiscard=500)
-    _timeit("lyapunov_max 4-D (Nitera=2000)", lyapunov_max, Nitera=2000, Ndiscard=500)
-    _timeit("lyapunov_max 4-D (Nitera=10000)", lyapunov_max, Nitera=10000, Ndiscard=1000)
+    _timeit(
+        "lyapunov_max 4-D (Nitera=2000)",
+        lyapunov_max_pole_filtered,
+        Nitera=2000,
+        Ndiscard=500,
+    )
+    _timeit(
+        "lyapunov_max 4-D (Nitera=10000)",
+        lyapunov_max_pole_filtered,
+        Nitera=10000,
+        Ndiscard=1000,
+    )
 
     print()
 

@@ -216,6 +216,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- Updated `benchmarks/` (`standalone.py`, `test_henon_bench.py`,
+  `test_lyapunov_bench.py`, `test_sweep_bench.py`) to the 0.9 public API names
+  (`alpha`/`beta`, `lyapunov_max_pole_filtered`, `num_taps_grid`/`cutoff_grid`)
+  and added a `pytest benchmarks --benchmark-disable -q` smoke step to the CI
+  `test` job.
 - `chaotic_pfc.analysis.stats` now uses `Decimal` with `ROUND_HALF_UP` from
   exact integer counts (shared with `paper.numbers`) instead of NumPy
   round-half-to-even, so half-way percentages (such as `434/4000 = 10.9%` and
