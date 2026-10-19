@@ -134,12 +134,18 @@ def precompute_fir_bank(
     for i, Nss in enumerate(orders_arr):
         numtaps = int(Nss)
         for j, wc in enumerate(cutoffs_arr):
-            if use_band:
-                low = max(1e-5, float(wc) - bw_half)
-                high = min(1.0 - 1e-5, float(wc) + bw_half)
-                c = firwin(numtaps, [low, high], pass_zero=filter_type, window=win_arg)
-            else:
-                c = firwin(numtaps, wc, pass_zero=filter_type, window=win_arg)
+            # For symmetric Hann/Bartlett windows with two taps both
+            # coefficients are zero and scipy's gain normalisation divides by
+            # zero. Those cells are classified as divergent on purpose (see the
+            # article), so the expected invalid-divide is silenced at the source
+            # rather than leaking a RuntimeWarning to the caller.
+            with np.errstate(invalid="ignore", divide="ignore"):
+                if use_band:
+                    low = max(1e-5, float(wc) - bw_half)
+                    high = min(1.0 - 1e-5, float(wc) + bw_half)
+                    c = firwin(numtaps, [low, high], pass_zero=filter_type, window=win_arg)
+                else:
+                    c = firwin(numtaps, wc, pass_zero=filter_type, window=win_arg)
             fir_bank[i, j, :numtaps] = c.astype(np.float64)
             gains[i, j] = float(np.sum(c))
 

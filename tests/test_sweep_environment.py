@@ -133,7 +133,10 @@ def test_firwin_reproduces_stored_taps() -> None:
         else:
             cutoff = 0.3
         for n_taps in (int(num_taps_grid.min()), int(num_taps_grid.max())):
-            coeffs = firwin(n_taps, cutoff, pass_zero=result.filter_type, window=win_arg)
+            # Hann/Bartlett with two taps divide by a zero gain on purpose (the
+            # cell is classified as divergent); silence only that arithmetic.
+            with np.errstate(invalid="ignore", divide="ignore"):
+                coeffs = firwin(n_taps, cutoff, pass_zero=result.filter_type, window=win_arg)
             if coeffs.size != n_taps:
                 mismatches.append((path.parent.name, n_taps, int(coeffs.size)))
     assert not mismatches, (

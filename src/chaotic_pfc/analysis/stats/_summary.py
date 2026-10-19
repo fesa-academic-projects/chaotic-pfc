@@ -205,14 +205,35 @@ def lmax_statistics(
             "n_used": n_used,
         }
 
-    ci_result = scipy_bootstrap(
-        (vals,),
-        np.mean,
-        n_resamples=n_bootstrap,
-        confidence_level=0.95,
-        random_state=seed_val,
-        method="BCa",
-    )
+    if np.all(vals == vals[0]):
+        # A constant sample has zero variance: BCa's acceleration term is 0/0
+        # and scipy emits a RuntimeWarning. The confidence interval of a
+        # constant sample is the constant itself.
+        ci_low = ci_high = float(vals[0])
+        return {
+            "mean": round(float(vals[0]), 6),
+            "median": round(float(vals[0]), 6),
+            "std": 0.0,
+            "min": round(float(vals[0]), 6),
+            "max": round(float(vals[0]), 6),
+            "ci_95_low": round(ci_low, 6),
+            "ci_95_high": round(ci_high, 6),
+            "n_used": n_used,
+        }
+
+    # scipy's BCa implementation computes a skewness correction that can emit
+    # an invalid-divide RuntimeWarning for near-degenerate resamples; the
+    # interval itself is still well defined, so only that internal arithmetic
+    # is silenced here.
+    with np.errstate(invalid="ignore", divide="ignore"):
+        ci_result = scipy_bootstrap(
+            (vals,),
+            np.mean,
+            n_resamples=n_bootstrap,
+            confidence_level=0.95,
+            random_state=seed_val,
+            method="BCa",
+        )
 
     return {
         "mean": round(float(np.mean(vals)), 6),

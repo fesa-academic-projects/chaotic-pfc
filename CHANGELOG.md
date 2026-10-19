@@ -247,6 +247,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `lmax_statistics` short-circuits constant samples (zero variance) instead of
+  letting scipy's BCa emit an invalid-divide `RuntimeWarning`, and wraps the
+  remaining BCa arithmetic in `np.errstate`.
+- `precompute_fir_bank`, `fir_channel` and `henon_fir_sequence` silence the
+  expected `firwin` invalid-divide for two-tap Hann/Bartlett windows at the
+  source (those cells are classified as divergent on purpose).
+- The sweep-plotting tests close every pyplot figure, eliminating the
+  "more than 20 figures" `RuntimeWarning`. A CI job now runs the fast suite
+  with `-W error::RuntimeWarning`.
 - `chaotic-pfc run analysis plot-chaotic-map` and `plot-chaotic-density` no
   longer print a `.png` output line when only the `.svg` figure is written.
 - `load_all_sweeps` now keys its in-memory cache by `(resolved_dir, ((name,

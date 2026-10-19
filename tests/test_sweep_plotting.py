@@ -8,7 +8,9 @@ import matplotlib
 
 matplotlib.use("Agg")  # must come before pyplot is imported anywhere
 
+import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 from matplotlib.collections import PolyCollection, QuadMesh
 from matplotlib.colors import to_rgba
 from matplotlib.image import AxesImage
@@ -32,6 +34,18 @@ from chaotic_pfc.analysis.sweep_plotting import (
     plot_difficulty_map,
     plot_heatmap_continuous,
 )
+
+
+@pytest.fixture(autouse=True)
+def _close_open_figures():
+    """Close every pyplot figure after each test.
+
+    Several tests build figures and only clear them; leaving them registered in
+    pyplot triggers matplotlib's "more than 20 figures" RuntimeWarning, which
+    the reliability gate (-W error::RuntimeWarning) treats as a failure.
+    """
+    yield
+    plt.close("all")
 
 
 def _dummy_result(ncoef: int = 4, ncut: int = 6) -> SweepResult:

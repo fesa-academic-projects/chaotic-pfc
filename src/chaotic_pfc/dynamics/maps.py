@@ -483,7 +483,10 @@ def henon_fir_sequence(
         stacklevel=2,
     )
     try:
-        h = firwin(num_taps, cutoff, window=window)
+        # Two-tap Hann/Bartlett windows produce an all-zero filter and scipy
+        # divides by a zero gain; the non-finite coefficients are rejected below.
+        with np.errstate(invalid="ignore", divide="ignore"):
+            h = firwin(num_taps, cutoff, window=window)
     except Exception as exc:
         raise InvalidParameterError(f"invalid FIR filter design parameters: {exc}") from exc
     if not np.all(np.isfinite(h)):

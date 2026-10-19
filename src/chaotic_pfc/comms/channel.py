@@ -122,7 +122,10 @@ def fir_channel(
     if not isinstance(window, str):
         raise InvalidParameterError(f"window must be a string, got {window!r}")
     try:
-        h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
+        # Symmetric all-zero windows (Hann/Bartlett with two taps) make scipy
+        # divide by a zero gain; the non-finite result is rejected below.
+        with np.errstate(invalid="ignore", divide="ignore"):
+            h = firwin(numtaps=num_taps, cutoff=cutoff, window=window, pass_zero=True, fs=2.0)
     except Exception as exc:
         raise InvalidParameterError(f"invalid FIR channel parameters: {exc}") from exc
     if not np.all(np.isfinite(h)):
