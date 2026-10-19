@@ -222,6 +222,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `chaotic-pfc run analysis plot-chaotic-map` and `plot-chaotic-density` no
+  longer print a `.png` output line when only the `.svg` figure is written.
 - `load_all_sweeps` now keys its in-memory cache by `(resolved_dir, ((name,
   mtime_ns, size), ...))` and returns a shallow copy of the cached mapping so
   caller mutations or new `.npz` files do not serve stale entries.

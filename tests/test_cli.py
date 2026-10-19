@@ -247,6 +247,48 @@ class TestExportTablesSmokeTest(unittest.TestCase):
             )
             self.assertEqual(code, 1)
 
+    def test_chaotic_plot_cli_prints_only_svg(self):
+        from pathlib import Path
+
+        import numpy as np
+
+        from chaotic_pfc.analysis.sweep import SweepResult, save_sweep
+
+        with tempfile.TemporaryDirectory() as sweep_tmp, tempfile.TemporaryDirectory() as out_tmp:
+            result = SweepResult(
+                h=np.array([[0.1, -0.2], [0.3, 0.4]]),
+                h_std=np.zeros((2, 2)),
+                num_taps_grid=np.array([2, 3]),
+                cutoff_grid=np.array([0.2, 0.8]),
+                window="hamming",
+                filter_type="lowpass",
+            )
+            save_sweep(result, Path(sweep_tmp) / "Hamming (lowpass)" / "variables_lyapunov.npz")
+            for subcmd, stem_name in (
+                ("plot-chaotic-map", "fig_chaotic_map"),
+                ("plot-chaotic-density", "fig_chaotic_density"),
+            ):
+                buf = io.StringIO()
+                out_stem = Path(out_tmp) / stem_name
+                with redirect_stdout(buf):
+                    code = main(
+                        [
+                            "run",
+                            "analysis",
+                            subcmd,
+                            "--sweep-dir",
+                            sweep_tmp,
+                            "--output",
+                            str(out_stem),
+                        ]
+                    )
+                self.assertEqual(code, 0)
+                output = buf.getvalue()
+                self.assertIn(".svg", output)
+                self.assertNotIn(".png", output)
+                self.assertTrue(out_stem.with_suffix(".svg").is_file())
+                self.assertFalse(out_stem.with_suffix(".png").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

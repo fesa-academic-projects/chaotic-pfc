@@ -221,7 +221,6 @@ def _run_chaotic_map(args: argparse.Namespace) -> int:
     plt.close(fig)
     stem = Path(args.output)
     print(f"  Saved → {stem.with_suffix('.svg')}")
-    print(f"  Saved → {stem.with_suffix('.png')}")
     return 0
 
 
@@ -240,7 +239,6 @@ def _run_chaotic_density(args: argparse.Namespace) -> int:
     plt.close(fig)
     stem = Path(args.output)
     print(f"  Saved → {stem.with_suffix('.svg')}")
-    print(f"  Saved → {stem.with_suffix('.png')}")
     return 0
 
 
