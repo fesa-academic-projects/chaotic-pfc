@@ -99,7 +99,7 @@ msgid ""
 ":doc:`/changelog` for the full old→new table):"
 msgstr ""
 "A API pública da 0.9 renomeia vários parâmetros e uma função (veja "
-"/changelog para a tabela completa antigo→novo):"
+":doc:`/changelog` para a tabela completa antigo→novo):"
 
 #: ../../usage.rst:34
 msgid ""

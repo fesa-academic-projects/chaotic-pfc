@@ -1,0 +1,392 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Kauê de Souza Silva, Roger Freitas Pereira, Marcos
+# Felipe Correa Soares, Guilherme Rodrigues dos Santos, and Vinícius da
+# Silva Borges and contributors
+# This file is distributed under the same license as the chaotic-pfc
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: chaotic-pfc 0.8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-19 18:49-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../security.rst:4
+msgid "Security model"
+msgstr "Modelo de segurança"
+
+#: ../../security.rst:6
+msgid ""
+"This page describes the threat model of the ``chaotic-pfc`` library. It "
+"covers what the library protects, where untrusted input can enter, and "
+"which controls exist. It also states what the library does **not** "
+"protect."
+msgstr "Esta página descreve o modelo de ameaças da biblioteca ``chaotic-pfc``. Ela cobre o que a biblioteca protege, onde entradas não confiáveis podem entrar e quais controles existem. Também declara o que a biblioteca **não** protege."
+
+#: ../../security.rst:11
+msgid "Assets"
+msgstr "Ativos"
+
+#: ../../security.rst:13
+msgid ""
+"**Integrity of the scientific results.** The 124 versioned sweep "
+"checkpoints, the exported tables and the manuscript numbers are "
+"canonical. A silently corrupted input must never be published as a "
+"result."
+msgstr "**Integridade dos resultados científicos.** Os 124 checkpoints versionados das varreduras, as tabelas exportadas e os números do manuscrito são canônicos. Uma entrada corrompida em silêncio nunca pode ser publicada como resultado."
+
+#: ../../security.rst:16
+msgid ""
+"**Integrity of the user's machine.** Opening a checkpoint must not "
+"execute code, and importing or calling the library must not run external "
+"programs with attacker-controlled arguments."
+msgstr "**Integridade da máquina do usuário.** Abrir um checkpoint não pode executar código, e importar ou chamar a biblioteca não pode rodar programas externos com argumentos controlados pelo atacante."
+
+#: ../../security.rst:19
+msgid ""
+"**Reproducibility.** A run must be bit-identical for the same seed and "
+"thread count, so that a third party can verify a published number."
+msgstr "**Reprodutibilidade.** Uma execução deve ser idêntica bit a bit para a mesma semente e o mesmo número de threads, para que terceiros possam verificar um número publicado."
+
+#: ../../security.rst:23
+msgid "Trust boundaries and attack surfaces"
+msgstr "Fronteiras de confiança e superfícies de ataque"
+
+#: ../../security.rst:29
+msgid "Surface"
+msgstr "Superfície"
+
+#: ../../security.rst:30
+msgid "Untrusted input"
+msgstr "Entrada não confiável"
+
+#: ../../security.rst:31
+msgid "Control"
+msgstr "Controle"
+
+#: ../../security.rst:32
+msgid "Public API parameters"
+msgstr "Parâmetros da API pública"
+
+#: ../../security.rst:33
+msgid "Scalars, arrays and strings passed by callers"
+msgstr "Escalares, arrays e strings passados pelos chamadores"
+
+#: ../../security.rst:34
+msgid ""
+"Boundary validation (:mod:`chaotic_pfc._validate`) raising "
+":class:`~chaotic_pfc.errors.InvalidParameterError`"
+msgstr "Validação na fronteira (:mod:`chaotic_pfc._validate`) que levanta :class:`~chaotic_pfc.errors.InvalidParameterError`"
+
+#: ../../security.rst:36
+msgid "``.npz`` checkpoints"
+msgstr "Checkpoints ``.npz``"
+
+#: ../../security.rst:37
+msgid "A file produced by a third party"
+msgstr "Um arquivo produzido por terceiros"
+
+#: ../../security.rst:38
+msgid ""
+"``allow_pickle=False`` plus SHA-256 manifest verification "
+"(:class:`~chaotic_pfc.errors.UntrustedDataError`)"
+msgstr "``allow_pickle=False`` mais verificação do manifesto SHA-256 (:class:`~chaotic_pfc.errors.UntrustedDataError`)"
+
+#: ../../security.rst:40
+msgid "Manuscript and table files"
+msgstr "Arquivos de manuscrito e tabelas"
+
+#: ../../security.rst:41
+msgid "``.tex``, ``.bib`` and SVG sources"
+msgstr "Fontes ``.tex``, ``.bib`` e SVG"
+
+#: ../../security.rst:42
+msgid "Deterministic audit, golden files and LaTeX compilation in CI"
+msgstr "Auditoria determinística, golden files e compilação LaTeX no CI"
+
+#: ../../security.rst:43
+msgid "Environment"
+msgstr "Ambiente"
+
+#: ../../security.rst:44
+msgid "``CHAOTIC_PFC_*`` variables, ``DISPLAY``, ``NO_COLOR``"
+msgstr "Variáveis ``CHAOTIC_PFC_*``, ``DISPLAY``, ``NO_COLOR``"
+
+#: ../../security.rst:45
+msgid "Documented variables only; no command execution from them"
+msgstr "Somente variáveis documentadas; nenhuma execução de comando a partir delas"
+
+#: ../../security.rst:46
+msgid "Dependencies"
+msgstr "Dependências"
+
+#: ../../security.rst:47
+msgid "NumPy, SciPy, Matplotlib, Numba, optional Plotly"
+msgstr "NumPy, SciPy, Matplotlib, Numba e Plotly opcional"
+
+#: ../../security.rst:48
+msgid "Version floors, lock file, ``pip-audit``, Dependabot"
+msgstr "Pisos de versão, lock file, ``pip-audit`` e Dependabot"
+
+#: ../../security.rst:49
+msgid "CI and releases"
+msgstr "CI e releases"
+
+#: ../../security.rst:50
+msgid "Workflows, tags, artefacts"
+msgstr "Workflows, tags e artefatos"
+
+#: ../../security.rst:51
+msgid ""
+"SHA-pinned actions, least privilege, ``zizmor``, ``gitleaks``, build "
+"provenance and SBOM"
+msgstr "Actions fixadas por SHA, privilégio mínimo, ``zizmor``, ``gitleaks``, proveniência de build e SBOM"
+
+#: ../../security.rst:55
+msgid "Threats and mitigations"
+msgstr "Ameaças e mitigações"
+
+#: ../../security.rst:61
+msgid "Threat"
+msgstr "Ameaça"
+
+#: ../../security.rst:62
+msgid "Mitigation"
+msgstr "Mitigação"
+
+#: ../../security.rst:63
+msgid "Malicious pickle in a checkpoint (code execution)"
+msgstr "Pickle malicioso em um checkpoint (execução de código)"
+
+#: ../../security.rst:64
+msgid ""
+"New saves store metadata as JSON. Legacy pickled files are opened only "
+"when their SHA-256 digest is listed in a repository ``SHA256SUMS`` "
+"manifest, or when the caller explicitly passes "
+"``trust_legacy_pickle=True``."
+msgstr "Novos salvamentos gravam os metadados como JSON. Arquivos legados com pickle só são abertos quando o digest SHA-256 consta em um manifesto ``SHA256SUMS`` do repositório, ou quando o chamador passa explicitamente ``trust_legacy_pickle=True``."
+
+#: ../../security.rst:68
+msgid "Invalid parameter producing ``NaN`` or a cryptic exception"
+msgstr "Parâmetro inválido produzindo ``NaN`` ou uma exceção obscura"
+
+#: ../../security.rst:69
+msgid ""
+"Every public function validates its arguments and raises "
+"``InvalidParameterError`` (a ``ValueError`` subclass) with the parameter "
+"name and the violated domain."
+msgstr "Toda função pública valida seus argumentos e levanta ``InvalidParameterError`` (subclasse de ``ValueError``) com o nome do parâmetro e o domínio violado."
+
+#: ../../security.rst:72
+msgid "Silent divergence published as a result"
+msgstr "Divergência silenciosa publicada como resultado"
+
+#: ../../security.rst:73
+msgid ""
+"``on_divergence`` selects ``\"nan\"`` (default), ``\"warn\"`` "
+"(``DivergenceWarning``) or ``\"raise\"`` (``DivergenceError``)."
+msgstr "``on_divergence`` seleciona ``\"nan\"`` (padrão), ``\"warn\"`` (``DivergenceWarning``) ou ``\"raise\"`` (``DivergenceError``)."
+
+#: ../../security.rst:75
+msgid "Silent floating-point warnings"
+msgstr "Avisos silenciosos de ponto flutuante"
+
+#: ../../security.rst:76
+msgid ""
+"CI runs the suite with ``-W error::RuntimeWarning``; expected warnings "
+"are handled with a local ``np.errstate`` at the source."
+msgstr "O CI roda a suíte com ``-W error::RuntimeWarning``; avisos esperados são tratados com um ``np.errstate`` local na origem."
+
+#: ../../security.rst:78
+msgid "Unsafe deserialisation added later"
+msgstr "Desserialização insegura adicionada depois"
+
+#: ../../security.rst:79
+msgid ""
+"A Semgrep rule fails the build on ``np.load(..., allow_pickle=True)`` "
+"outside the verified legacy loader."
+msgstr "Uma regra do Semgrep falha o build em ``np.load(..., allow_pickle=True)`` fora do carregador legado verificado."
+
+#: ../../security.rst:81
+msgid "Out-of-bounds access in a Numba kernel"
+msgstr "Acesso fora dos limites em um kernel Numba"
+
+#: ../../security.rst:82
+msgid ""
+"The contract suite and the kernel tests also run with "
+"``NUMBA_DISABLE_JIT=1``, where an out-of-bounds index raises "
+"``IndexError``."
+msgstr "A suíte de contrato e os testes de kernel também rodam com ``NUMBA_DISABLE_JIT=1``, onde um índice fora dos limites levanta ``IndexError``."
+
+#: ../../security.rst:85
+msgid "Database drift between modules (sidelobes, percentages, orders)"
+msgstr "Divergência de constantes entre módulos (lóbulos laterais, percentuais, ordens)"
+
+#: ../../security.rst:86
+msgid ""
+"Single shared constants and helpers (``WINDOW_SIDELOBE_DB``, "
+"``pct``/``round_half_up``) with unit and golden-file tests."
+msgstr "Constantes e helpers compartilhados (``WINDOW_SIDELOBE_DB``, ``pct``/``round_half_up``) com testes unitários e golden files."
+
+#: ../../security.rst:88
+msgid "Invalid generated artefact"
+msgstr "Artefato gerado inválido"
+
+#: ../../security.rst:89
+msgid ""
+"Every exported table is regenerated from the checkpoints and compiled in "
+"the pinned TeX Live image."
+msgstr "Toda tabela exportada é regerada a partir dos checkpoints e compilada na imagem fixada do TeX Live."
+
+#: ../../security.rst:91
+msgid "Tampering with the canonical data"
+msgstr "Adulteração dos dados canônicos"
+
+#: ../../security.rst:92
+msgid ""
+"Pre-commit hooks reject staged edits under ``data/sweeps/``, "
+"``articles/simac/`` and ``articles/jcis/Figures/`` unless "
+"``CHAOTIC_PFC_ALLOW_FROZEN=1``, and verify both ``SHA256SUMS``."
+msgstr "Hooks de pre-commit recusam edições preparadas em ``data/sweeps/``, ``articles/simac/`` e ``articles/jcis/Figures/``, a menos que ``CHAOTIC_PFC_ALLOW_FROZEN=1``, e verificam os dois ``SHA256SUMS``."
+
+#: ../../security.rst:95
+msgid "Supply-chain compromise"
+msgstr "Comprometimento da cadeia de suprimentos"
+
+#: ../../security.rst:96
+msgid ""
+"Actions pinned by SHA, least-privilege permissions, hashed lock file, "
+"``pip-audit``, ``zizmor``, ``gitleaks``, CycloneDX SBOM and build "
+"provenance attestations."
+msgstr "Actions fixadas por SHA, permissões de privilégio mínimo, lock file com hashes, ``pip-audit``, ``zizmor``, ``gitleaks``, SBOM CycloneDX e atestações de proveniência de build."
+
+#: ../../security.rst:99
+msgid "Renamed API used with old keywords"
+msgstr "API renomeada usada com palavras-chave antigas"
+
+#: ../../security.rst:100
+msgid ""
+"Deprecated aliases warn and reject ambiguous combinations. They are "
+"removed at 1.0."
+msgstr "Aliases obsoletos emitem aviso e recusam combinações ambíguas. Eles serão removidos na 1.0."
+
+#: ../../security.rst:104
+msgid "Security layers, in order of defence"
+msgstr "Camadas de segurança, em ordem de defesa"
+
+#: ../../security.rst:106
+msgid ""
+"**Validate at the boundary** (:mod:`chaotic_pfc.errors` and "
+":mod:`chaotic_pfc._validate`)."
+msgstr "**Validar na fronteira** (:mod:`chaotic_pfc.errors` e :mod:`chaotic_pfc._validate`)."
+
+#: ../../security.rst:108
+msgid "**State the divergence policy** explicitly (``on_divergence``)."
+msgstr "**Declarar a política de divergência** explicitamente (``on_divergence``)."
+
+#: ../../security.rst:109
+msgid "**Verify integrity before trust** (JSON metadata, SHA-256 manifests)."
+msgstr "**Verificar a integridade antes de confiar** (metadados JSON, manifestos SHA-256)."
+
+#: ../../security.rst:110
+msgid ""
+"**Fuzz the contract** (``tests/test_contract.py``, short and deep "
+"profiles)."
+msgstr "**Fuzzear o contrato** (``tests/test_contract.py``, perfis curto e profundo)."
+
+#: ../../security.rst:111
+msgid "**Pin numerical references** (metamorphic identities, ``mpmath``)."
+msgstr "**Fixar referências numéricas** (identidades metamórficas, ``mpmath``)."
+
+#: ../../security.rst:112
+msgid "**Prove determinism** across Numba thread counts."
+msgstr "**Provar o determinismo** entre contagens de threads do Numba."
+
+#: ../../security.rst:113
+msgid "**Fail on silent warnings** (``RuntimeWarning`` gate)."
+msgstr "**Falhar em avisos silenciosos** (portão ``RuntimeWarning``)."
+
+#: ../../security.rst:114
+msgid "**Compile the artefacts** inside the pinned TeX Live image."
+msgstr "**Compilar os artefatos** dentro da imagem fixada do TeX Live."
+
+#: ../../security.rst:115
+msgid "**Remember the incidents** (Semgrep rules and Ruff rule families)."
+msgstr "**Lembrar os incidentes** (regras do Semgrep e famílias de regras do Ruff)."
+
+#: ../../security.rst:116
+msgid ""
+"**Audit the supply chain** (hashes, ``pip-audit``, ``zizmor``, "
+"``gitleaks``, SBOM, provenance)."
+msgstr "**Auditar a cadeia de suprimentos** (hashes, ``pip-audit``, ``zizmor``, ``gitleaks``, SBOM, proveniência)."
+
+#: ../../security.rst:118
+msgid "**Guard the repository** (pre-commit hooks and importable rulesets)."
+msgstr "**Proteger o repositório** (hooks de pre-commit e rulesets importáveis)."
+
+#: ../../security.rst:121
+msgid "Non-goals"
+msgstr "Não-objetivos"
+
+#: ../../security.rst:123
+msgid ""
+"The Pecora-Carroll chaos-based scheme implemented here is **not "
+"cryptographically secure**. Its security relies on synchronous chaotic "
+"dynamics, and several attacks against such schemes are known in the "
+"literature; see G. Alvarez and S. Li, \"Some basic cryptographic "
+"requirements for chaos-based cryptosystems\", *International Journal of "
+"Bifurcation and Chaos*, vol. 16, no. 8, pp. 2129-2151, 2006, "
+"doi:10.1142/S0218127406015970."
+msgstr "O esquema caótico de Pecora-Carroll implementado aqui **não é criptograficamente seguro**. Sua segurança depende de dinâmica caótica síncrona, e vários ataques contra esquemas assim são conhecidos na literatura; veja G. Alvarez e S. Li, \"Some basic cryptographic requirements for chaos-based cryptosystems\", *International Journal of Bifurcation and Chaos*, vol. 16, no. 8, pp. 2129-2151, 2006, doi:10.1142/S0218127406015970."
+
+#: ../../security.rst:130
+msgid "In particular:"
+msgstr "Em particular:"
+
+#: ../../security.rst:132
+msgid ""
+"the library does not provide confidentiality, authentication or key "
+"management;"
+msgstr "a biblioteca não fornece confidencialidade, autenticação nem gestão de chaves;"
+
+#: ../../security.rst:134
+msgid ""
+"the chaotic carrier must not be used as a replacement for a standard "
+"authenticated cipher;"
+msgstr "a portadora caótica não deve ser usada como substituta de uma cifra autenticada padrão;"
+
+#: ../../security.rst:136
+msgid ""
+"any deployment that needs confidentiality must put standard cryptography "
+"(for example TLS or a modern AEAD construction) in the layers above this "
+"library."
+msgstr "qualquer implantação que precise de confidencialidade deve colocar criptografia padrão (por exemplo TLS ou uma construção AEAD moderna) nas camadas acima desta biblioteca."
+
+#: ../../security.rst:140
+msgid ""
+"``chaotic-pfc`` is a research tool for the numerical study of the "
+"filtered Hénon map and of chaos-based communication. It is not a security"
+" product."
+msgstr "``chaotic-pfc`` é uma ferramenta de pesquisa para o estudo numérico do mapa de Hénon filtrado e da comunicação baseada em caos. Não é um produto de segurança."
+
+#: ../../security.rst:144
+msgid "Reporting a vulnerability"
+msgstr "Relatar uma vulnerabilidade"
+
+#: ../../security.rst:146
+msgid ""
+"See the repository ``SECURITY.md`` for the private reporting channel and "
+"the supported versions."
+msgstr "Consulte o ``SECURITY.md`` do repositório para o canal privado de relato e as versões suportadas."
+

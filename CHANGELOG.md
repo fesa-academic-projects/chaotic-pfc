@@ -367,6 +367,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   suite.
 
 ### Documentation
+- New `docs/security.rst` threat model (assets, trust boundaries, threats and
+  mitigations, the eleven security layers, explicit non-goals citing Alvarez
+  and Li 2006) and `docs/reliability.rst` FMEA with severity/occurrence/
+  detection/RPN, a detection test or job per row, and lessons from Therac-25
+  and Ariane 501. Both pages have complete pt-BR catalogues and `SECURITY.md`
+  now lists 0.9.x support, the threat-model link and response targets.
 - Updated `sweeps.report` usage and function references, `.github/pull_request_template.md`,
   `CONTRIBUTING.md` (`sweeps compare --old/--new`), `comms.channel` channel count
   (five), `docs/contributing.rst` (`_pkg_version`), and `README.md` /

@@ -2,12 +2,29 @@
 
 ## Supported versions
 
-Only the latest released version receives security fixes.
+Only the latest minor release receives security fixes.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.8.x   | :white_check_mark: |
+| 0.9.x   | :white_check_mark: |
+| 0.8.x   | :x:                |
 | < 0.8   | :x:                |
+
+## Threat model
+
+The library's assets, trust boundaries, threats, mitigations and explicit
+non-goals are documented in
+[`docs/security.rst`](docs/security.rst). The main points for a user of the
+API:
+
+- public parameters are validated at the boundary and raise
+  `InvalidParameterError` (a `ValueError` subclass);
+- divergence is explicit: `on_divergence="nan" | "warn" | "raise"`;
+- checkpoints are opened with `allow_pickle=False`; legacy pickled metadata is
+  only read after SHA-256 verification against a repository manifest, or with
+  `trust_legacy_pickle=True`;
+- the Pecora-Carroll chaotic scheme is **not** a replacement for standard
+  cryptography.
 
 ## Reporting a vulnerability
 
@@ -24,6 +41,14 @@ Include, as far as possible:
 - a minimal reproduction;
 - any suggested fix or mitigation.
 
-We aim to acknowledge a report within a few days, keep you informed while we
-investigate, and publish a fix together with an advisory (crediting the reporter
-unless you prefer otherwise) once it is available.
+## Response times
+
+| Stage | Target |
+| ----- | ------ |
+| Acknowledge the report | 3 business days |
+| Initial assessment and severity | 10 business days |
+| Fix or documented mitigation for critical and high issues | 30 days |
+| Coordinated advisory | with the fix, crediting the reporter unless they prefer otherwise |
+
+Critical issues are handled in a private branch, released as a patch on the
+supported minor line, and published together with a GitHub security advisory.

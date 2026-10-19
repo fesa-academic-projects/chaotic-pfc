@@ -261,3 +261,32 @@ Sprott (2003) [2]_
 :math:`(\alpha = 1.0, \; \beta = 0.5)` — non-chaotic (periodic)
 A. Wolf, J. B. Swift, H. L. Swinney, and J. A. Vastano, "Determining Lyapunov exponents from a time series," *Physica D: Nonlinear Phenomena*, vol. 16, no. 3, pp. 285–317, 1985. DOI: `10.1016/0167-2789(85)90011-9 <https://doi.org/10.1016/0167-2789(85)90011-9>`_
 Fuzzing
+
+# reliability.rst: FMEA column headers and scores are identifiers/numbers, and
+# the test names are literal code references.
+FMEA
+S
+O
+D
+RPN
+9
+3
+8
+216
+7
+6
+294
+432
+288
+5
+240
+10
+4
+360
+210
+280
+224
+``test_analysis.py``; Semgrep ``ns-as-nz``
+``test_round_half_up_percentages``; Semgrep ``numpy-round``
+``test_latex_probe_failure_falls_back_to_mathtext``
+``TestThreadDeterminism``
