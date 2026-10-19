@@ -37,6 +37,10 @@ def _precompute_perturbations(
 
     Returns an array of shape ``(Ncoef, n_cutoffs, n_initial, max_Ns)``
     filled with uniform ``[0, 1)`` samples, where ``max_Ns = num_taps_grid.max()``.
+
+    The draw is positional: slice ``[i, j]`` belongs to the grid cell at row
+    ``i`` and cutoff position ``j``, so permuting ``cutoff_grid`` while keeping
+    the seed changes which random values that cutoff receives.
     """
     Ncoef = len(num_taps_grid)
     max_Ns = int(num_taps_grid.max()) if Ncoef > 0 else 0
@@ -480,6 +484,16 @@ def run_sweep(
         If any simulation or filter parameter is invalid.
     DivergenceError
         If all grid cells diverge and ``on_divergence='raise'``.
+
+    Notes
+    -----
+    The initial-condition perturbations are drawn as a positional tensor of
+    shape ``(num_taps, cutoffs, n_initial, max_taps)``. The same ``seed``
+    therefore binds the draw to the *position* in ``cutoff_grid``: permuting
+    cutoffs yields a different, statistically equivalent draw per cell. The
+    positional invariance guaranteed by the kernel is that permuting cutoffs,
+    FIR coefficients and perturbations together permutes the ``h`` columns
+    bit for bit (pinned by ``tests/test_metamorphic.py``).
     """
     if isinstance(fallback_mode, bool) or fallback_mode not in (0, 1, 2):
         raise InvalidParameterError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")

@@ -178,7 +178,7 @@ jobs:
       - name: Install the package and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --find-links dist "chaotic-pfc[dev,fast,viz3d]"
+          pip install --find-links dist "chaotic-pfc[dev,fast,viz3d,test]"
 
       - name: Cache Numba JIT artefacts
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

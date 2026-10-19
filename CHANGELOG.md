@@ -61,6 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `tests/test_metamorphic.py`: spectrum-sum identity (`sum(lambda) = mean
+  log|det J|`) for the 2-D and expanded filtered Hénon maps, a 50-digit
+  `mpmath` reference for `_fixed_point_positive` (4 ulp), and the positional
+  invariance of the sweep kernel under a consistent cutoff/FIR/perturbation
+  permutation.
 - `tests/test_contract.py`: Hypothesis-based contract fuzzing that discovers
   every function in `chaotic_pfc.__all__` and checks that each call with valid
   or mutated arguments ends in a coherent return or a domain error. Markers

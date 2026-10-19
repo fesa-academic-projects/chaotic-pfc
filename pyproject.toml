@@ -67,6 +67,9 @@ dev = [
     "mypy>=1.11",
     "pre-commit>=3.7",
 ]
+test = [
+    "mpmath>=1.3",
+]
 docs = [
     "sphinx>=7.0",
     "furo>=2024.0",
