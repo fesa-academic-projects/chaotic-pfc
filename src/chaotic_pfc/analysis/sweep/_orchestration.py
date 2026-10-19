@@ -204,13 +204,18 @@ def _resolve_fir_bank(
     n_taps_max = int(orders_arr.max())
 
     if fir_bank is not None:
-        bank = np.asarray(fir_bank, dtype=np.float64)
+        try:
+            bank = np.asarray(fir_bank, dtype=np.float64)
+        except (TypeError, ValueError) as exc:
+            raise InvalidParameterError(f"fir_bank must be a real numeric array: {exc}") from exc
         expected = (len(orders_arr), len(cutoffs_arr), n_taps_max)
         if bank.shape != expected:
             raise InvalidParameterError(
                 f"fir_bank must have shape {expected} "
                 f"(num_taps_grid x cutoff_grid x max num_taps), got {bank.shape}"
             )
+        if not np.all(np.isfinite(bank)):
+            raise InvalidParameterError("fir_bank must contain only finite coefficients")
         return bank, bank.sum(axis=2)
 
     if fir_design is not None:
@@ -219,11 +224,21 @@ def _resolve_fir_bank(
         bank = np.zeros((len(orders_arr), len(cutoffs_arr), n_taps_max))
         for i, num_taps in enumerate(orders_arr):
             for j, cutoff in enumerate(cutoffs_arr):
-                coeffs = np.asarray(fir_design(int(num_taps), float(cutoff)), dtype=np.float64)
+                try:
+                    coeffs = np.asarray(fir_design(int(num_taps), float(cutoff)), dtype=np.float64)
+                except (TypeError, ValueError) as exc:
+                    raise InvalidParameterError(
+                        f"fir_design({int(num_taps)}, {float(cutoff)}) returned a "
+                        f"non-numeric result: {exc}"
+                    ) from exc
                 if coeffs.shape != (int(num_taps),):
                     raise InvalidParameterError(
                         f"fir_design({int(num_taps)}, {float(cutoff)}) returned shape "
                         f"{coeffs.shape}, expected ({int(num_taps)},)"
+                    )
+                if not np.all(np.isfinite(coeffs)):
+                    raise InvalidParameterError(
+                        f"fir_design({int(num_taps)}, {float(cutoff)}) returned non-finite coefficients"
                     )
                 bank[i, j, : int(num_taps)] = coeffs
         return bank, bank.sum(axis=2)

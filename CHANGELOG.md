@@ -61,6 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `tests/test_contract.py`: Hypothesis-based contract fuzzing that discovers
+  every function in `chaotic_pfc.__all__` and checks that each call with valid
+  or mutated arguments ends in a coherent return or a domain error. Markers
+  `contract` (normal CI) and `contract_deep` (weekly workflow), plus a CI job
+  that runs the contract and kernel suites with `NUMBA_DISABLE_JIT=1`.
 - `on_divergence: Literal["nan", "warn", "raise"] = "nan"` keyword-only policy
   across `henon_*`, `lyapunov_*`, `transmit*`, `receive*` and `run_sweep` (where
   `"warn"` and `"raise"` apply only when all grid cells diverge).

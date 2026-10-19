@@ -251,6 +251,53 @@ jobs:
         run: pytest -q
 
   # ───────────────────────────────────────────────────────────────────────
+  # Contract fuzzing with Numba JIT disabled. The contract suite checks that
+  # every public function either returns a coherent value or raises a domain
+  # error. Running it in pure Python matters because an out-of-bounds access
+  # inside a Numba ``prange`` is NOT reported by NUMBA_BOUNDSCHECK=1 (verified),
+  # while the interpreted kernel raises IndexError and fails the test.
+  # ───────────────────────────────────────────────────────────────────────
+  contract:
+    name: Contract fuzzing (pure Python)
+    needs: [build, lint, typecheck]
+    if: github.ref_type != 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Download the package distribution
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: dist
+          path: dist
+
+      - name: Install the package and dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --find-links dist "chaotic-pfc[dev,fast]"
+
+      - name: Run the contract and kernel suites without JIT
+        env:
+          NUMBA_DISABLE_JIT: "1"
+          CHAOTIC_PFC_FORCE_LATEX: "0"
+        run: |
+          pytest -q \
+            tests/test_contract.py \
+            tests/test_kernel_paths.py \
+            tests/test_sweep_kernel.py \
+            tests/test_compat.py
+
+  # ───────────────────────────────────────────────────────────────────────
   # Numba baseline regression: the versioned .npz checkpoints must be
   # reproduced bit for bit by the current kernel. This requires Numba, so it
   # is a separate job with the [fast] extra.

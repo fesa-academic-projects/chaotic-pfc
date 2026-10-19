@@ -94,6 +94,8 @@ addopts = "-v"
 strict_markers = true
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "contract: public-API contract fuzzing (short profile in the normal CI run)",
+    "contract_deep: long contract fuzzing (scheduled weekly workflow)",
 ]
 
 [tool.pytest-benchmark]
