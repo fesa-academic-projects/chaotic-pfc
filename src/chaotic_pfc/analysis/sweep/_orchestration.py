@@ -263,13 +263,14 @@ def _warmup_kernel(
 ) -> None:
     """Run a tiny sweep to trigger the Numba JIT compilation."""
     warmup_orders = orders_arr[:2]
-    warmup_perturbations = _precompute_perturbations(warmup_orders, 3, 2, seed=None)
-    warmup_order = _build_task_order(warmup_orders, 3)
+    ncut_w = min(3, len(cutoffs_arr))
+    warmup_perturbations = _precompute_perturbations(warmup_orders, ncut_w, 2, seed=None)
+    warmup_order = _build_task_order(warmup_orders, ncut_w)
     _sweep_kernel(
-        warmup_orders.astype(np.float64),
-        cutoffs_arr[:3],
-        fir_bank[:2, :3, :],
-        gains[:2, :3],
+        warmup_orders,
+        cutoffs_arr[:ncut_w],
+        fir_bank[:2, :ncut_w, :],
+        gains[:2, :ncut_w],
         warmup_perturbations,
         warmup_order,
         10,

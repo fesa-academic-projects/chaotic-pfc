@@ -216,6 +216,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `_warmup_kernel` now passes `int64` tap counts (matching `run_sweep` so Numba
+  compiles `_sweep_kernel` once) and bounds the warmup cutoff count with
+  `min(3, len(cutoffs_arr))` so grids with fewer than 3 cutoffs do not index
+  out of bounds.
 - Updated `benchmarks/` (`standalone.py`, `test_henon_bench.py`,
   `test_lyapunov_bench.py`, `test_sweep_bench.py`) to the 0.9 public API names
   (`alpha`/`beta`, `lyapunov_max_pole_filtered`, `num_taps_grid`/`cutoff_grid`)

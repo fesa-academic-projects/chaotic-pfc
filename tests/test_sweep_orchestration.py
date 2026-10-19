@@ -265,6 +265,69 @@ class TestAdaptive(unittest.TestCase):
             run_sweep(adaptive=True, Nmap_min=50, tol=0.0, **kw)
 
 
+class TestWarmupKernel(unittest.TestCase):
+    def test_run_sweep_with_1_and_2_cutoffs_and_warmup(self):
+        for ncut in (1, 2):
+            cutoffs = np.linspace(0.25, 0.5, ncut)
+            res_warm = run_sweep(
+                "hamming",
+                "lowpass",
+                num_taps_grid=np.array([2, 3]),
+                cutoff_grid=cutoffs,
+                Nitera=20,
+                Nmap=50,
+                n_initial=2,
+                seed=42,
+                warmup=True,
+            )
+            res_no_warm = run_sweep(
+                "hamming",
+                "lowpass",
+                num_taps_grid=np.array([2, 3]),
+                cutoff_grid=cutoffs,
+                Nitera=20,
+                Nmap=50,
+                n_initial=2,
+                seed=42,
+                warmup=False,
+            )
+            self.assertEqual(res_warm.h.shape, (2, ncut))
+            np.testing.assert_array_equal(res_warm.h, res_no_warm.h)
+
+    def test_warmup_passes_int64_and_inbounds_task_order(self):
+        from unittest.mock import patch
+
+        import chaotic_pfc.analysis.sweep._orchestration as orch
+
+        captured: list[tuple[np.ndarray, np.ndarray, np.ndarray]] = []
+        real_kernel = orch._sweep_kernel
+
+        def spy_kernel(num_taps_grid, cutoff_grid, *args):
+            task_order = args[3]
+            captured.append((num_taps_grid.copy(), cutoff_grid.copy(), task_order.copy()))
+            return real_kernel(num_taps_grid, cutoff_grid, *args)
+
+        with patch.object(orch, "_sweep_kernel", side_effect=spy_kernel):
+            run_sweep(
+                "hamming",
+                "lowpass",
+                num_taps_grid=np.array([2, 3, 4]),
+                cutoff_grid=np.array([0.25, 0.5]),
+                Nitera=10,
+                Nmap=50,
+                n_initial=2,
+                seed=42,
+                warmup=True,
+            )
+
+        self.assertEqual(len(captured), 2)
+        warm_orders, warm_cutoffs, warm_task_order = captured[0]
+        self.assertEqual(warm_orders.dtype, np.int64)
+        self.assertEqual(len(warm_cutoffs), 2)
+        self.assertTrue(np.all(warm_task_order >= 0))
+        self.assertTrue(np.all(warm_task_order < len(warm_orders) * len(warm_cutoffs)))
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Helpers and edge cases
 # ═══════════════════════════════════════════════════════════════════════════
