@@ -56,3 +56,21 @@ def test_generic_matches_the_henon_wrapper() -> None:
     generic = lyapunov_max(iterate, jacobian, np.array([0.1, 0.1]), Nitera=5000, Ndiscard=1000)
     wrapped = lyapunov_henon2d(Nitera=5000, Ndiscard=1000, seed=42)
     assert abs(generic - wrapped.lyapunov_max) < 0.05
+
+
+def test_generic_diverging_map_returns_nan_without_warning() -> None:
+    import warnings
+
+    iterate, jacobian = _henon(alpha=1.4, beta=0.3)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        spec_burnin = lyapunov_spectrum(
+            iterate, jacobian, np.array([10.0, 10.0]), Nitera=100, Ndiscard=100
+        )
+        spec_loop = lyapunov_spectrum(
+            iterate, jacobian, np.array([10.0, 10.0]), Nitera=100, Ndiscard=0
+        )
+        lam_div = lyapunov_max(iterate, jacobian, np.array([10.0, 10.0]), Nitera=100, Ndiscard=100)
+    assert np.all(np.isnan(spec_burnin))
+    assert np.all(np.isnan(spec_loop))
+    assert math.isnan(lam_div)

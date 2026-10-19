@@ -219,6 +219,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `_lyapunov_spectrum` now runs inside `np.errstate(over="ignore",
+  invalid="ignore")`, returns `np.full(dim, np.nan)` immediately when the state
+  or `J @ W` becomes non-finite, and documents the QR column ordering in
+  `lyapunov_spectrum` and `lyapunov_max`.
 - Replaced deprecated `Colormap.set_bad` and `Colormap.set_under` calls in
   `chaotic_pfc.analysis.sweep_plotting` with `cmap.with_extremes(bad=...,
   under=...)`.

@@ -220,18 +220,28 @@ def _lyapunov_spectrum(
     dim = x.size
     x = x.copy()
 
-    for _ in range(Ndiscard):
-        x = iterate(x)
+    with np.errstate(over="ignore", invalid="ignore"):
+        if not np.all(np.isfinite(x)):
+            return np.full(dim, np.nan)
 
-    W = np.eye(dim)
-    log_r = np.zeros((dim, Nitera))
+        for _ in range(Ndiscard):
+            x = iterate(x)
+            if not np.all(np.isfinite(x)):
+                return np.full(dim, np.nan)
 
-    for i in range(Nitera):
-        Z = jacobian(x) @ W
-        W, norms = _gram_schmidt(Z)
-        for k in range(dim):
-            log_r[k, i] = np.log(max(norms[k], 1e-300))
-        x = iterate(x)
+        W = np.eye(dim)
+        log_r = np.zeros((dim, Nitera))
+
+        for i in range(Nitera):
+            Z = jacobian(x) @ W
+            if not np.all(np.isfinite(Z)):
+                return np.full(dim, np.nan)
+            W, norms = _gram_schmidt(Z)
+            for k in range(dim):
+                log_r[k, i] = np.log(max(norms[k], 1e-300))
+            x = iterate(x)
+            if not np.all(np.isfinite(x)):
+                return np.full(dim, np.nan)
 
     return np.array([np.mean(log_r[k, :]) for k in range(dim)])
 
@@ -266,7 +276,10 @@ def lyapunov_spectrum(
     Returns
     -------
     ndarray, shape (dim,)
-        Lyapunov exponents in decreasing order of their finite-time estimate.
+        Estimated Lyapunov exponents in the order of the QR columns
+        (typically decreasing, though not guaranteed at finite horizon).
+        Returns an array of ``NaN`` if the state or the tangent product
+        ``J @ W`` becomes non-finite during the burn-in or the QR loop.
 
     Examples
     --------
@@ -300,6 +313,9 @@ def lyapunov_max(
     Ndiscard: int = 1000,
 ) -> float:
     """Largest Lyapunov exponent of an arbitrary map (see :func:`lyapunov_spectrum`).
+
+    Returns ``NaN`` if the state or the tangent product ``J @ W`` becomes
+    non-finite during the burn-in or the QR loop.
 
     Examples
     --------
