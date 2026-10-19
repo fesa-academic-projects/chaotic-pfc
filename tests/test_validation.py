@@ -221,5 +221,95 @@ class TestBoundaryValidation(unittest.TestCase):
             ideal_channel(np.array([1.0, float("nan")]))
 
 
+class TestOnDivergencePolicy(unittest.TestCase):
+    def test_invalid_policy_raises(self):
+        with self.assertRaises(InvalidParameterError):
+            henon_standard(10, on_divergence="invalid")  # type: ignore[arg-type]
+
+    def test_maps_on_divergence(self):
+        for fn in (henon_standard, henon_generalised, henon_filtered):
+            X, _ = fn(50, alpha=10.0, on_divergence="nan")
+            self.assertTrue(np.any(np.isnan(X)))
+            with self.assertWarns(DivergenceWarning):
+                fn(50, alpha=10.0, on_divergence="warn")
+            with self.assertRaises(DivergenceError):
+                fn(50, alpha=10.0, on_divergence="raise")
+
+        c = np.array([5.0, 5.0, 5.0])
+        state, _ = henon_order_n(50, fir_coeffs=c, alpha=10.0, seed=0, on_divergence="nan")
+        self.assertTrue(np.any(~np.isfinite(state)))
+        with self.assertWarns(DivergenceWarning):
+            henon_order_n(50, fir_coeffs=c, alpha=10.0, seed=0, on_divergence="warn")
+        with self.assertRaises(DivergenceError):
+            henon_order_n(50, fir_coeffs=c, alpha=10.0, seed=0, on_divergence="raise")
+
+    def test_lyapunov_on_divergence(self):
+        res = lyapunov_henon2d(alpha=10.0, Nitera=50, Ndiscard=20, on_divergence="nan")
+        self.assertTrue(np.isnan(res.lyapunov_max))
+        with self.assertWarns(DivergenceWarning):
+            lyapunov_henon2d(alpha=10.0, Nitera=50, Ndiscard=20, on_divergence="warn")
+        with self.assertRaises(DivergenceError):
+            lyapunov_henon2d(alpha=10.0, Nitera=50, Ndiscard=20, on_divergence="raise")
+
+        with self.assertRaises(DivergenceError):
+            lyapunov_max_pole_filtered(alpha=10.0, Nitera=50, Ndiscard=20, on_divergence="raise")
+        with self.assertRaises(DivergenceError):
+            lyapunov_henon2d_ensemble(
+                alpha=10.0, Nitera=50, Ndiscard=20, n_initial=2, on_divergence="raise"
+            )
+        with self.assertRaises(DivergenceError):
+            lyapunov_max_ensemble(
+                alpha=10.0, Nitera=50, Ndiscard=20, n_initial=2, on_divergence="raise"
+            )
+        with self.assertRaises(DivergenceError):
+            lyapunov_max(
+                iterate=lambda x: np.array([10.0 - x[0] ** 2, x[0]]),
+                jacobian=lambda x: np.array([[-2.0 * x[0], 0.0], [1.0, 0.0]]),
+                x0=np.array([10.0, 10.0]),
+                Nitera=20,
+                Ndiscard=10,
+                on_divergence="raise",
+            )
+
+    def test_comms_on_divergence(self):
+        msg = np.ones(100)
+        with self.assertWarns(DivergenceWarning):
+            transmit(msg, mu=10.0, on_divergence="warn")
+        with self.assertRaises(DivergenceError):
+            transmit(msg, mu=10.0, on_divergence="raise")
+
+        c = np.array([5.0, 5.0, 5.0])
+        with self.assertRaises(DivergenceError):
+            transmit_order_n(msg, c, mu=10.0, on_divergence="raise")
+        with self.assertRaises(DivergenceError):
+            receive(np.full(50, 1e150), mu=0.01, beta=1e100, on_divergence="raise")
+        with self.assertRaises(DivergenceError):
+            receive_order_n(np.full(50, 1e150), c, mu=0.01, beta=1e100, on_divergence="raise")
+
+    def test_run_sweep_on_divergence_only_when_all_cells_diverge(self):
+        with self.assertWarns(DivergenceWarning):
+            run_sweep(
+                num_taps_grid=[3],
+                cutoff_grid=np.array([0.5]),
+                alpha=10.0,
+                Nitera=20,
+                Nmap=50,
+                n_initial=2,
+                warmup=False,
+                on_divergence="warn",
+            )
+        with self.assertRaises(DivergenceError):
+            run_sweep(
+                num_taps_grid=[3],
+                cutoff_grid=np.array([0.5]),
+                alpha=10.0,
+                Nitera=20,
+                Nmap=50,
+                n_initial=2,
+                warmup=False,
+                on_divergence="raise",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -61,6 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `on_divergence: Literal["nan", "warn", "raise"] = "nan"` keyword-only policy
+  across `henon_*`, `lyapunov_*`, `transmit*`, `receive*` and `run_sweep` (where
+  `"warn"` and `"raise"` apply only when all grid cells diverge).
 - `chaotic_pfc.errors` (`ChaoticPFCError`, `InvalidParameterError`,
   `UntrustedDataError`, `DivergenceError`, `DivergenceWarning`) and boundary
   validation (`chaotic_pfc._validate`) across all public API functions in

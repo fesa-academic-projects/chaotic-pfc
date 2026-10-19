@@ -48,7 +48,10 @@ from numpy.typing import NDArray
 from scipy.signal import firwin
 
 from chaotic_pfc._validate import (
+    DivergencePolicy,
+    handle_divergence,
     require_1d_nonempty,
+    require_divergence_policy,
     require_finite,
     require_in_range,
     require_positive_int,
@@ -66,6 +69,7 @@ def henon_standard(
     y0: float = 0.0,
     alpha: float = 1.4,
     beta: float = 0.3,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Iterate the standard 2-D Hénon map.
 
@@ -98,12 +102,15 @@ def henon_standard(
     InvalidParameterError
         If ``steps`` is not a positive integer or any scalar parameter
         is non-finite.
+    DivergenceError
+        If the trajectory diverges and ``on_divergence='raise'``.
     """
     steps = require_positive_int("steps", steps, min_value=1)
     x0 = require_finite("x0", x0)
     y0 = require_finite("y0", y0)
     alpha = require_finite("alpha", alpha)
     beta = require_finite("beta", beta)
+    policy = require_divergence_policy(on_divergence)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -114,6 +121,10 @@ def henon_standard(
             if not (np.isfinite(xn) and np.isfinite(yn)):
                 X[i + 1 :] = np.nan
                 Y[i + 1 :] = np.nan
+                handle_divergence(
+                    policy,
+                    f"henon_standard(alpha={alpha}, beta={beta}) diverged at step {i + 1}",
+                )
                 break
             X[i + 1] = xn
             Y[i + 1] = yn
@@ -127,6 +138,7 @@ def henon_generalised(
     y0: float = 0.0,
     alpha: float = 1.4,
     beta: float = 0.3,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Iterate the generalised 2-D Hénon map.
 
@@ -153,12 +165,15 @@ def henon_generalised(
     InvalidParameterError
         If ``steps`` is not a positive integer or any scalar parameter
         is non-finite.
+    DivergenceError
+        If the trajectory diverges and ``on_divergence='raise'``.
     """
     steps = require_positive_int("steps", steps, min_value=1)
     x0 = require_finite("x0", x0)
     y0 = require_finite("y0", y0)
     alpha = require_finite("alpha", alpha)
     beta = require_finite("beta", beta)
+    policy = require_divergence_policy(on_divergence)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -169,6 +184,10 @@ def henon_generalised(
             if not (np.isfinite(xn) and np.isfinite(yn)):
                 X[i + 1 :] = np.nan
                 Y[i + 1 :] = np.nan
+                handle_divergence(
+                    policy,
+                    f"henon_generalised(alpha={alpha}, beta={beta}) diverged at step {i + 1}",
+                )
                 break
             X[i + 1] = xn
             Y[i + 1] = yn
@@ -184,6 +203,7 @@ def henon_filtered(
     beta: float = 0.3,
     c0: float = 0.7,
     c1: float = 0.3,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Iterate the 2-tap filtered Hénon map.
 
@@ -215,6 +235,8 @@ def henon_filtered(
     InvalidParameterError
         If ``steps`` is not a positive integer or any scalar parameter
         is non-finite.
+    DivergenceError
+        If the trajectory diverges and ``on_divergence='raise'``.
     """
     steps = require_positive_int("steps", steps, min_value=1)
     x0 = require_finite("x0", x0)
@@ -223,6 +245,7 @@ def henon_filtered(
     beta = require_finite("beta", beta)
     c0 = require_finite("c0", c0)
     c1 = require_finite("c1", c1)
+    policy = require_divergence_policy(on_divergence)
     X = np.empty(steps + 1)
     Y = np.empty(steps + 1)
     X[0], Y[0] = x0, y0
@@ -234,6 +257,11 @@ def henon_filtered(
             if not (np.isfinite(xn) and np.isfinite(yn)):
                 X[i + 1 :] = np.nan
                 Y[i + 1 :] = np.nan
+                handle_divergence(
+                    policy,
+                    f"henon_filtered(alpha={alpha}, beta={beta}, c0={c0}, c1={c1}) "
+                    f"diverged at step {i + 1}",
+                )
                 break
             X[i + 1] = xn
             Y[i + 1] = yn
@@ -294,6 +322,7 @@ def henon_order_n(
     beta: float = 0.3,
     driving: NDArray[np.float64] | None = None,
     seed: int | None = None,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Iterate the N-th order Hénon map with an internal FIR filter.
 
@@ -347,6 +376,7 @@ def henon_order_n(
     alpha = require_finite("alpha", alpha)
     beta = require_finite("beta", beta)
     seed = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
     if x0 is not None:
         x0_arr = require_1d_nonempty("x0", x0)
         if len(x0_arr) != Nc:
@@ -375,6 +405,13 @@ def henon_order_n(
             s_i = float(drv_arr[i]) if drv_arr is not None else state[2, i]
             output[i] = state[2, i]
             _henon_n4_step_inplace(state[:, i + 1], state[:, i], s_i, alpha, beta, c)
+    if policy != "nan" and not (np.all(np.isfinite(state)) and np.all(np.isfinite(output))):
+        bad_cols = np.flatnonzero(~np.all(np.isfinite(state), axis=0))
+        first_step = int(bad_cols[0]) if bad_cols.size else steps
+        handle_divergence(
+            policy,
+            f"henon_order_n(Nc={Nc}, alpha={alpha}, beta={beta}) diverged at step {first_step}",
+        )
     return state, output
 
 
@@ -389,6 +426,7 @@ def henon_fir_sequence(
     num_taps: int = 5,
     cutoff: float = 0.9091,
     window: str = "hamming",
+    on_divergence: DivergencePolicy = "nan",
 ) -> NDArray[np.float64]:
     r"""Generate a chaotic sequence from the FIR-filtered Hénon map.
 
@@ -434,6 +472,7 @@ def henon_fir_sequence(
     beta = require_finite("beta", beta)
     num_taps = require_positive_int("num_taps", num_taps, min_value=1)
     cutoff = require_in_range("cutoff", cutoff, 0.0, 1.0, closed="neither")
+    policy = require_divergence_policy(on_divergence)
     if not isinstance(window, str):
         raise InvalidParameterError(f"window must be a string, got {window!r}")
     warnings.warn(
@@ -447,22 +486,32 @@ def henon_fir_sequence(
         h = firwin(num_taps, cutoff, window=window)
     except Exception as exc:
         raise InvalidParameterError(f"invalid FIR filter design parameters: {exc}") from exc
+    if not np.all(np.isfinite(h)):
+        raise InvalidParameterError(
+            f"firwin produced non-finite coefficients for num_taps={num_taps}, window={window!r}"
+        )
     buf = np.full(num_taps, 0.1)
     x_val, y_val = 0.1, 0.1
     seq = np.empty(N)
 
     write_idx = 0
-    for n in range(N):
-        xf = 0.0
-        for k in range(num_taps):
-            xf += h[k] * buf[(write_idx - 1 - k) % num_taps]
-        xn = alpha - xf * xf + beta * y_val
-        yn = x_val
-        if not np.isfinite(xn) or abs(xn) > 100:
-            raise ValueError(f"henon_fir_sequence diverged at n={n}")
-        buf[write_idx] = xn
-        write_idx = (write_idx + 1) % num_taps
-        x_val, y_val = xn, yn
-        seq[n] = xn
+    with np.errstate(over="ignore", invalid="ignore"):
+        for n in range(N):
+            xf = 0.0
+            for k in range(num_taps):
+                xf += h[k] * buf[(write_idx - 1 - k) % num_taps]
+            xn = alpha - xf * xf + beta * y_val
+            yn = x_val
+            if not np.isfinite(xn) or abs(xn) > 100:
+                seq[n:] = np.nan
+                handle_divergence(
+                    policy,
+                    f"henon_fir_sequence(alpha={alpha}, beta={beta}) diverged at n={n}",
+                )
+                break
+            buf[write_idx] = xn
+            write_idx = (write_idx + 1) % num_taps
+            x_val, y_val = xn, yn
+            seq[n] = xn
 
     return seq

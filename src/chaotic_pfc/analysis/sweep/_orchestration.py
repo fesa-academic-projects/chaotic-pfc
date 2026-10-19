@@ -10,7 +10,10 @@ from numpy.typing import NDArray
 from scipy.signal import firwin
 
 from chaotic_pfc._validate import (
+    DivergencePolicy,
+    handle_divergence,
     require_1d_nonempty,
+    require_divergence_policy,
     require_finite,
     require_in_range,
     require_int_grid,
@@ -368,6 +371,7 @@ def run_sweep(
     fallback_mode: int = 1,
     fir_bank: NDArray[np.float64] | None = None,
     fir_design: Callable[[int, float], NDArray[np.float64]] | None = None,
+    on_divergence: DivergencePolicy = "nan",
 ) -> SweepResult:
     """Run a full Lyapunov sweep for one (window, filter) combination.
 
@@ -423,6 +427,12 @@ def run_sweep(
         to build the bank one cell at a time (also allowed instead of the
         catalogue). Only FIR designs are supported. Mutually exclusive with
         *fir_bank*.
+    on_divergence
+        Policy when the entire sweep degenerates (all grid cells diverge to
+        ``NaN``): ``"nan"`` (default) returns the ``NaN`` grid unchanged,
+        ``"warn"`` emits :class:`~chaotic_pfc.errors.DivergenceWarning`, and
+        ``"raise"`` raises :class:`~chaotic_pfc.errors.DivergenceError`.
+        Individual divergent cells are normal and never trigger the policy.
 
     Returns
     -------
@@ -453,6 +463,8 @@ def run_sweep(
     ------
     InvalidParameterError
         If any simulation or filter parameter is invalid.
+    DivergenceError
+        If all grid cells diverge and ``on_divergence='raise'``.
     """
     if isinstance(fallback_mode, bool) or fallback_mode not in (0, 1, 2):
         raise InvalidParameterError(f"fallback_mode must be 0, 1 or 2, got {fallback_mode!r}")
@@ -466,6 +478,7 @@ def run_sweep(
     kaiser_beta = require_in_range("kaiser_beta", kaiser_beta, 0.0, 700.0, closed="both")
     bandwidth = require_in_range("bandwidth", bandwidth, 0.0, 1.0, closed="neither")
     seed = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
 
     kernel_Nmap_min, kernel_tol = _resolve_adaptive_params(adaptive, Nmap_min, Nmap, tol)
     orders_arr, cutoffs_arr = _default_sweep_grid(num_taps_grid, cutoff_grid, filter_type)
@@ -509,6 +522,12 @@ def run_sweep(
         beta,
         fallback_mode,
     )
+    if policy != "nan" and np.all(np.isnan(h)):
+        handle_divergence(
+            policy,
+            f"run_sweep(window={window!r}, filter_type={filter_type!r}, alpha={alpha}, "
+            f"beta={beta}) diverged on all {h.size}/{h.size} grid cells",
+        )
 
     return SweepResult(
         h=h,

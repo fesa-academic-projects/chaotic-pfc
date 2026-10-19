@@ -30,7 +30,14 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
-from chaotic_pfc._validate import require_1d_nonempty, require_finite, require_seed
+from chaotic_pfc._validate import (
+    DivergencePolicy,
+    handle_divergence,
+    require_1d_nonempty,
+    require_divergence_policy,
+    require_finite,
+    require_seed,
+)
 from chaotic_pfc.errors import InvalidParameterError
 
 from ..dynamics.maps import _henon_n4_step_inplace
@@ -44,6 +51,7 @@ def transmit(
     beta: float = 0.3,
     x0: float = 0.0,
     y0: float = 0.0,
+    on_divergence: DivergencePolicy = "nan",
 ) -> NDArray[np.float64]:
     r"""Modulate a message onto a 2-D Hénon carrier.
 
@@ -94,6 +102,8 @@ def transmit(
     InvalidParameterError
         If ``message`` is not a non-empty 1-D finite array or any
         scalar parameter is non-finite.
+    DivergenceError
+        If the carrier diverges and ``on_divergence='raise'``.
     """
     msg = require_1d_nonempty("message", message)
     mu = require_finite("mu", mu)
@@ -101,6 +111,7 @@ def transmit(
     beta = require_finite("beta", beta)
     x0 = require_finite("x0", x0)
     y0 = require_finite("y0", y0)
+    policy = require_divergence_policy(on_divergence)
     N = len(msg)
     x1 = np.empty(N + 1)
     x2 = np.empty(N + 1)
@@ -112,6 +123,12 @@ def transmit(
             s[k] = x1[k] + mu * msg[k]
             x1[k + 1] = alpha - s[k] ** 2 + beta * x2[k]
             x2[k + 1] = x1[k]
+    if policy != "nan" and not np.all(np.isfinite(s)):
+        bad_idx = int(np.flatnonzero(~np.isfinite(s))[0])
+        handle_divergence(
+            policy,
+            f"transmit(mu={mu}, alpha={alpha}, beta={beta}) diverged at sample {bad_idx}",
+        )
     return s
 
 
@@ -124,6 +141,7 @@ def transmit_order_n(
     beta: float = 0.3,
     x0: NDArray[np.float64] | None = None,
     seed: int | None = None,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Modulate a message onto an N-th order filtered Hénon carrier.
 
@@ -179,6 +197,7 @@ def transmit_order_n(
     alpha = require_finite("alpha", alpha)
     beta = require_finite("beta", beta)
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
     if x0 is not None:
         x0_arr = require_1d_nonempty("x0", x0)
         if len(x0_arr) != Nc:
@@ -199,4 +218,11 @@ def transmit_order_n(
             v = state[2, i]
             s[i] = v + mu * msg[i]
             _henon_n4_step_inplace(state[:, i + 1], state[:, i], s[i], alpha, beta, c)
+    if policy != "nan" and not (np.all(np.isfinite(s)) and np.all(np.isfinite(state))):
+        bad_cols = np.flatnonzero(~np.all(np.isfinite(state), axis=0))
+        first_step = int(bad_cols[0]) if bad_cols.size else N
+        handle_divergence(
+            policy,
+            f"transmit_order_n(Nc={Nc}, mu={mu}, alpha={alpha}, beta={beta}) diverged at step {first_step}",
+        )
     return s, state

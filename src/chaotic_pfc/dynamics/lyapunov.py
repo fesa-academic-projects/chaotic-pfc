@@ -42,7 +42,10 @@ import numpy as np
 from numpy.typing import NDArray
 
 from chaotic_pfc._validate import (
+    DivergencePolicy,
+    handle_divergence,
     require_1d_nonempty,
+    require_divergence_policy,
     require_finite,
     require_in_range,
     require_positive_int,
@@ -275,6 +278,7 @@ def lyapunov_spectrum(
     *,
     Nitera: int = 2000,
     Ndiscard: int = 1000,
+    on_divergence: DivergencePolicy = "nan",
 ) -> NDArray[np.float64]:
     """Estimate the full Lyapunov spectrum of an arbitrary discrete-time map.
 
@@ -329,6 +333,8 @@ def lyapunov_spectrum(
         If ``iterate``/``jacobian`` is not callable, ``x0`` is not a
         non-empty finite 1-D array, ``jacobian(x0)`` does not have shape
         ``(dim, dim)``, or ``Nitera``/``Ndiscard`` is out of range.
+    DivergenceError
+        If the trajectory diverges and ``on_divergence='raise'``.
     """
     if not callable(iterate):
         raise InvalidParameterError(f"iterate must be callable, got {iterate!r}")
@@ -337,6 +343,7 @@ def lyapunov_spectrum(
     x0_arr = require_1d_nonempty("x0", x0)
     Nitera = require_positive_int("Nitera", Nitera, min_value=1)
     Ndiscard = require_positive_int("Ndiscard", Ndiscard, min_value=0)
+    policy = require_divergence_policy(on_divergence)
     dim = x0_arr.size
     try:
         j0 = np.asarray(jacobian(x0_arr.copy()), dtype=np.float64)
@@ -344,7 +351,13 @@ def lyapunov_spectrum(
         raise InvalidParameterError(f"jacobian(x0) evaluation failed: {exc}") from exc
     if j0.shape != (dim, dim):
         raise InvalidParameterError(f"jacobian(x0) must have shape ({dim}, {dim}), got {j0.shape}")
-    return _lyapunov_spectrum(x0_arr, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+    exps = _lyapunov_spectrum(x0_arr, iterate, jacobian, Nitera=Nitera, Ndiscard=Ndiscard)
+    if policy != "nan" and not np.all(np.isfinite(exps)):
+        handle_divergence(
+            policy,
+            f"lyapunov_spectrum(dim={dim}, Nitera={Nitera}, Ndiscard={Ndiscard}) diverged",
+        )
+    return exps
 
 
 def lyapunov_max(
@@ -354,6 +367,7 @@ def lyapunov_max(
     *,
     Nitera: int = 2000,
     Ndiscard: int = 1000,
+    on_divergence: DivergencePolicy = "nan",
 ) -> float:
     """Largest Lyapunov exponent of an arbitrary map (see :func:`lyapunov_spectrum`).
 
@@ -364,6 +378,8 @@ def lyapunov_max(
     ------
     InvalidParameterError
         If any argument violates the :func:`lyapunov_spectrum` contract.
+    DivergenceError
+        If the trajectory diverges and ``on_divergence='raise'``.
 
     Examples
     --------
@@ -376,7 +392,14 @@ def lyapunov_max(
     ... ) > 0.40)
     True
     """
-    exponents = lyapunov_spectrum(iterate, jacobian, x0, Nitera=Nitera, Ndiscard=Ndiscard)
+    exponents = lyapunov_spectrum(
+        iterate,
+        jacobian,
+        x0,
+        Nitera=Nitera,
+        Ndiscard=Ndiscard,
+        on_divergence=on_divergence,
+    )
     return float(np.max(exponents))
 
 
@@ -390,6 +413,8 @@ def lyapunov_max_pole_filtered(
     Ndiscard: int = 1000,
     perturbation: float = 0.1,
     seed: int = 42,
+    *,
+    on_divergence: DivergencePolicy = "nan",
 ) -> LyapunovResult:
     r"""
     Compute the maximum Lyapunov exponent of the 4-D pole-filtered Hénon map.
@@ -448,6 +473,7 @@ def lyapunov_max_pole_filtered(
     if perturbation <= 0:
         raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
 
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
@@ -467,6 +493,11 @@ def lyapunov_max_pole_filtered(
         Nitera=Nitera,
         Ndiscard=Ndiscard,
     )
+    if policy != "nan" and not np.all(np.isfinite(exponents)):
+        handle_divergence(
+            policy,
+            f"lyapunov_max_pole_filtered(alpha={alpha}, beta={beta}, pole_radius={pole_radius}) diverged",
+        )
 
     return LyapunovResult(
         lyapunov_max=float(np.max(exponents)),
@@ -595,6 +626,8 @@ def lyapunov_henon2d(
     Ndiscard: int = 1000,
     perturbation: float = 0.1,
     seed: int = 42,
+    *,
+    on_divergence: DivergencePolicy = "nan",
 ) -> LyapunovResult:
     r"""Compute Lyapunov exponents for the standard 2-D Hénon map.
 
@@ -651,6 +684,7 @@ def lyapunov_henon2d(
     if perturbation <= 0:
         raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
 
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
@@ -673,6 +707,11 @@ def lyapunov_henon2d(
         Nitera=Nitera,
         Ndiscard=Ndiscard,
     )
+    if policy != "nan" and not np.all(np.isfinite(exponents)):
+        handle_divergence(
+            policy,
+            f"lyapunov_henon2d(alpha={alpha}, beta={beta}) diverged",
+        )
 
     return LyapunovResult(
         lyapunov_max=float(np.max(exponents)),
@@ -872,6 +911,8 @@ def lyapunov_max_ensemble(
     perturbation: float = 0.1,
     n_initial: int = 20,
     seed: int | None = 42,
+    *,
+    on_divergence: DivergencePolicy = "nan",
 ) -> EnsembleResult:
     r"""Ensemble Lyapunov protocol for the 4-D pole-filtered Hénon map.
 
@@ -920,6 +961,7 @@ def lyapunov_max_ensemble(
         raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
     n_initial = require_positive_int("n_initial", n_initial, min_value=1)
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
 
     b, a = _pole_filter_coeffs(Gz, pole_radius, w0)
 
@@ -928,7 +970,7 @@ def lyapunov_max_ensemble(
     eigs = np.linalg.eigvals(J_fp)
     stable = bool(np.all(np.abs(eigs) < 1.0))
 
-    return _run_ensemble(
+    res = _run_ensemble(
         fixed_point=xf,
         eigenvalues=eigs,
         stable=stable,
@@ -953,6 +995,14 @@ def lyapunov_max_ensemble(
             "seed": seed_val,
         },
     )
+    if policy != "nan":
+        n_div = int(np.sum(~np.isfinite(res.lmax_per_ci)))
+        if n_div > 0:
+            handle_divergence(
+                policy,
+                f"lyapunov_max_ensemble(alpha={alpha}, beta={beta}) had {n_div}/{n_initial} divergent ICs",
+            )
+    return res
 
 
 # ── 2-D ensemble (positive fixed point) ──
@@ -966,6 +1016,8 @@ def lyapunov_henon2d_ensemble(
     perturbation: float = 0.1,
     n_initial: int = 20,
     seed: int | None = 42,
+    *,
+    on_divergence: DivergencePolicy = "nan",
 ) -> EnsembleResult:
     r"""Ensemble Lyapunov protocol for the standard 2-D Hénon map.
 
@@ -1010,6 +1062,7 @@ def lyapunov_henon2d_ensemble(
         raise InvalidParameterError(f"perturbation must be > 0, got {perturbation}")
     n_initial = require_positive_int("n_initial", n_initial, min_value=1)
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
 
     xf_p, xf_n = _henon2d_fixed_points(alpha, beta)
 
@@ -1017,7 +1070,7 @@ def lyapunov_henon2d_ensemble(
     eigs_p = np.linalg.eigvals(J_p)
     stable_p = bool(np.all(np.abs(eigs_p) < 1.0))
 
-    return _run_ensemble(
+    res = _run_ensemble(
         fixed_point=xf_p,
         eigenvalues=eigs_p,
         stable=stable_p,
@@ -1040,3 +1093,11 @@ def lyapunov_henon2d_ensemble(
             "fixed_point_n": xf_n.tolist(),  # negative fp, for reference
         },
     )
+    if policy != "nan":
+        n_div = int(np.sum(~np.isfinite(res.lmax_per_ci)))
+        if n_div > 0:
+            handle_divergence(
+                policy,
+                f"lyapunov_henon2d_ensemble(alpha={alpha}, beta={beta}) had {n_div}/{n_initial} divergent ICs",
+            )
+    return res

@@ -31,7 +31,14 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
-from chaotic_pfc._validate import require_1d_nonempty, require_finite, require_seed
+from chaotic_pfc._validate import (
+    DivergencePolicy,
+    handle_divergence,
+    require_1d_nonempty,
+    require_divergence_policy,
+    require_finite,
+    require_seed,
+)
 from chaotic_pfc.errors import InvalidParameterError
 
 from ..dynamics.maps import _henon_n4_step_inplace
@@ -45,6 +52,7 @@ def receive(
     beta: float = 0.3,
     y0: float = 0.0,
     z0: float = 0.0,
+    on_divergence: DivergencePolicy = "nan",
 ) -> NDArray[np.float64]:
     r"""Demodulate the carrier ``r`` via 2-D Hénon synchronisation.
 
@@ -113,6 +121,7 @@ def receive(
     beta = require_finite("beta", beta)
     y0 = require_finite("y0", y0)
     z0 = require_finite("z0", z0)
+    policy = require_divergence_policy(on_divergence)
     N = len(r_arr)
     y1 = np.empty(N + 1)
     y2 = np.empty(N + 1)
@@ -124,6 +133,12 @@ def receive(
             y1[k + 1] = alpha - r_arr[k] ** 2 + beta * y2[k]
             y2[k + 1] = y1[k]
             m_hat[k] = (r_arr[k] - y1[k]) / mu
+    if policy != "nan" and not np.all(np.isfinite(m_hat)):
+        bad_idx = int(np.flatnonzero(~np.isfinite(m_hat))[0])
+        handle_divergence(
+            policy,
+            f"receive(mu={mu}, alpha={alpha}, beta={beta}) diverged at sample {bad_idx}",
+        )
     return m_hat
 
 
@@ -136,6 +151,7 @@ def receive_order_n(
     beta: float = 0.3,
     y0: NDArray[np.float64] | None = None,
     seed: int | None = None,
+    on_divergence: DivergencePolicy = "nan",
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     r"""Demodulate the carrier ``r`` via N-th order Hénon synchronisation.
 
@@ -197,6 +213,7 @@ def receive_order_n(
     alpha = require_finite("alpha", alpha)
     beta = require_finite("beta", beta)
     seed_val = require_seed("seed", seed)
+    policy = require_divergence_policy(on_divergence)
     if y0 is not None:
         y0_arr = require_1d_nonempty("y0", y0)
         if len(y0_arr) != Nc:
@@ -217,4 +234,11 @@ def receive_order_n(
             v = state[2, i]
             m_hat[i] = (r_arr[i] - v) / mu
             _henon_n4_step_inplace(state[:, i + 1], state[:, i], r_arr[i], alpha, beta, c)
+    if policy != "nan" and not (np.all(np.isfinite(m_hat)) and np.all(np.isfinite(state))):
+        bad_cols = np.flatnonzero(~np.all(np.isfinite(state), axis=0))
+        first_step = int(bad_cols[0]) if bad_cols.size else N
+        handle_divergence(
+            policy,
+            f"receive_order_n(Nc={Nc}, mu={mu}, alpha={alpha}, beta={beta}) diverged at step {first_step}",
+        )
     return m_hat, state

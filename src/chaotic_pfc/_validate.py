@@ -3,12 +3,36 @@
 from __future__ import annotations
 
 import math
+import warnings
 from typing import Any, Literal
 
 import numpy as np
 from numpy.typing import NDArray
 
-from chaotic_pfc.errors import InvalidParameterError
+from chaotic_pfc.errors import DivergenceError, DivergenceWarning, InvalidParameterError
+
+DivergencePolicy = Literal["nan", "warn", "raise"]
+
+
+def require_divergence_policy(policy: Any) -> DivergencePolicy:
+    """Validate that *policy* is one of ``'nan'``, ``'warn'``, or ``'raise'``."""
+    if policy == "nan":
+        return "nan"
+    if policy == "warn":
+        return "warn"
+    if policy == "raise":
+        return "raise"
+    raise InvalidParameterError(f"on_divergence must be 'nan', 'warn', or 'raise', got {policy!r}")
+
+
+def handle_divergence(policy: DivergencePolicy, message: str) -> None:
+    """Apply the configured divergence policy (``'nan'``, ``'warn'``, or ``'raise'``)."""
+    if policy == "nan":
+        return
+    if policy == "warn":
+        warnings.warn(message, DivergenceWarning, stacklevel=3)
+        return
+    raise DivergenceError(message)
 
 
 def require_finite(name: str, value: Any, *, max_abs: float = 1e150) -> float:
