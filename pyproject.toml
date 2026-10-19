@@ -223,7 +223,7 @@ module = ["numba.*", "scipy.*", "matplotlib.*"]
 ignore_errors = true
 
 # ───────────────────────────────────────────────────────────────────────────
-# mutmut — mutation testing for the error-prone modules
+# mutmut: mutation testing for the error-prone modules
 # ───────────────────────────────────────────────────────────────────────────
 [tool.mutmut]
 source_paths = [

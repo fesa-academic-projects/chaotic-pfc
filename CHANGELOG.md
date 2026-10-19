@@ -394,6 +394,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   suite.
 
 ### Documentation
+- Replaced the em dash in the `mutmut` section comment of `pyproject.toml`,
+  keeping the repository free of the character.
 - New `docs/security.rst` threat model (assets, trust boundaries, threats and
   mitigations, the eleven security layers, explicit non-goals citing Alvarez
   and Li 2006) and `docs/reliability.rst` FMEA with severity/occurrence/
