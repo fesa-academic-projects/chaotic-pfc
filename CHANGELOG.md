@@ -143,6 +143,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- Regenerated the reference LaTeX analysis tables under
+  `data/analysis_output/tables/{pt,en}/` with `chaotic-pfc run analysis
+  export-tables`, adding the previously missing `en/` directory and reflecting
+  the `N_z = N_s - 1`, `longtable` and `ROUND_HALF_UP` fixes.
 - Dependencies updated to the latest stable compatible with the SPEC 0 floors:
   NumPy 2.5.4, SciPy 1.18.1, Numba 0.68.0, llvmlite 0.50.0, Matplotlib 3.11.2
   (plus the dev/docs stacks); `requirements-lock.txt` was regenerated from the
