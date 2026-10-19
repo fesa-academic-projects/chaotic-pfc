@@ -1,0 +1,60 @@
+name: Manuscript tables (LaTeX)
+
+# Compiles every versioned analysis table inside the same pinned TeX Live image
+# used for the manuscript PDF. This would have caught the invalid longtable
+# fragment (missing column specification and caption outside the environment).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile-tables:
+    name: Compile every exported table
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: texlive/texlive@sha256:acd65bd2c60671fe1537e35440b5d6374ccdcbe3e7fa8a8d7a285fc045c78ed4
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Compile each table in a minimal document
+        run: |
+          set -eu
+          work=$(mktemp -d)
+          trap 'rm -rf "$work"' EXIT
+          count=0
+          for tex in $(find data/analysis_output/tables -name '*.tex' | sort); do
+            count=$((count + 1))
+            out="$work/$(echo "$tex" | tr '/' '_')"
+            mkdir -p "$out"
+            cp "$tex" "$out/table.tex"
+            cat > "$out/doc.tex" <<'EOF'
+          \documentclass{article}
+          \usepackage{booktabs}
+          \usepackage{longtable}
+          \usepackage{amsmath}
+          \usepackage{graphicx}
+          \begin{document}
+          \input{table.tex}
+          \end{document}
+          EOF
+            echo "== $tex =="
+            (cd "$out" && pdflatex -interaction=nonstopmode -halt-on-error doc.tex > build.log 2>&1) || {
+              tail -n 60 "$out/build.log"
+              echo "::error::table failed to compile: $tex"
+              exit 1
+            }
+          done
+          echo "compiled $count table(s)"
