@@ -89,6 +89,22 @@ class TestCommDelayAlignment(unittest.TestCase):
         self.assertEqual(estimate_delay(self.m, self.mhat_ideal, transient=self.tr)["lag"], 0)
         self.assertEqual(estimate_delay(self.m, self.mhat_order, transient=self.tr)["lag"], GDELAY)
 
+    def test_estimate_delay_constant_signal_no_warning(self) -> None:
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            est = estimate_delay(np.ones(100), np.ones(100), transient=10, max_lag=20)
+        self.assertEqual(est["lag"], 0)
+        self.assertEqual(est["corr_at_lag"], 0.0)
+        self.assertEqual(est["corr_at_zero"], 0.0)
+
+    def test_comm_metrics_rejects_negative_delay_and_short_signal(self) -> None:
+        with self.assertRaisesRegex(ValueError, "delay must be >= 0"):
+            comm_metrics(np.ones(100), np.ones(100), transient=10, bit_period=20, delay=-1)
+        with self.assertRaisesRegex(ValueError, "fewer samples"):
+            comm_metrics(np.ones(25), np.ones(25), transient=10, bit_period=20, delay=0)
+
 
 if __name__ == "__main__":
     unittest.main()

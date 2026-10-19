@@ -84,16 +84,17 @@ def estimate_delay(
 
     best_lag = 0
     best_corr = 0.0
+    corr0 = 0.0
     for lag in range(max_lag + 1):
         seg = m_hat[transient + lag : transient + lag + length]
         seg = seg - seg.mean()
         denom = ref_norm * float(np.linalg.norm(seg))
         corr = float(np.dot(ref, seg) / denom) if denom else 0.0
+        if lag == 0:
+            corr0 = corr
         if abs(corr) > abs(best_corr):
             best_corr, best_lag = corr, lag
 
-    seg0 = m_hat[transient : transient + length]
-    corr0 = float(np.corrcoef(ref, seg0)[0, 1])
     return {"lag": best_lag, "corr_at_lag": best_corr, "corr_at_zero": corr0}
 
 
@@ -132,17 +133,24 @@ def comm_metrics(
     m = np.asarray(m, dtype=float)
     m_hat = np.asarray(m_hat, dtype=float)
     d = int(delay)
+    if d < 0:
+        raise ValueError(f"delay must be >= 0, got {d}")
     stop = m.size - d
     ref = m[transient:stop]
     got = m_hat[transient + d : stop + d]
     if ref.size == 0:
         raise ValueError("no samples left after applying the delay")
 
+    n_bit = ref.size // bit_period
+    if n_bit == 0:
+        raise ValueError(
+            f"fewer samples ({ref.size}) than bit_period ({bit_period}) after applying the delay"
+        )
+
     mse = float(np.mean((ref - got) ** 2))
     per_sample = float(np.mean(np.sign(got) != np.sign(ref)))
     corr = float(np.corrcoef(ref, got)[0, 1]) if ref.size > 1 else float("nan")
 
-    n_bit = ref.size // bit_period
     bits_ref = ref[: n_bit * bit_period].reshape(n_bit, bit_period).mean(axis=1)
     bits_got = got[: n_bit * bit_period].reshape(n_bit, bit_period).mean(axis=1)
     ber = float(np.mean(np.sign(bits_got) != np.sign(bits_ref)))

@@ -219,6 +219,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `estimate_delay` now reuses the zero-lag dot-product correlation (with the
+  zero-norm guard) for `corr_at_zero` instead of calling `np.corrcoef`, and
+  `comm_metrics` raises `ValueError` when `delay < 0` or fewer than
+  `bit_period` samples remain.
 - `transmit_order_n` now validates `len(fir_coeffs) >= 3` with `ValueError`
   (matching `henon_order_n` and `receive_order_n`) and both `transmit_order_n`
   and `receive_order_n` silence overflow/invalid `RuntimeWarning`s on diverging
