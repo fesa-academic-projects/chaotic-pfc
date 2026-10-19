@@ -66,6 +66,25 @@ repos:
         pass_filenames: false
         types: [python]
 
+  # ── Repository guard rails ───────────────────────────────────────────────
+  # Frozen artefact trees (versioned sweeps, SIMAC record, JCIS figures) and
+  # their SHA-256 manifests. Override the first hook with
+  # CHAOTIC_PFC_ALLOW_FROZEN=1 only for a deliberate regeneration.
+  - repo: local
+    hooks:
+      - id: frozen-artifacts
+        name: frozen artefact trees are read-only
+        entry: tools/check_frozen_artifacts.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: artefact-manifests
+        name: SHA256SUMS manifests match the frozen artefacts
+        entry: tools/check_sweeps_manifest.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+
   # ── pyproject.toml validation ──────────────────────────────────────────
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: v0.25

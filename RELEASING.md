@@ -154,10 +154,34 @@ release from this branch. Nothing here is automated.
 ### Repository protection (GitHub)
 
 - Branch protection on `main`: require a pull request and at least one approval,
-  require the status checks `Lint (Ruff)`, `Type check (mypy)`,
-  `Unit tests (pytest …)`, `Minimum versions (SPEC 0)`,
-  `Manuscript audit (check-paper)`, `REUSE compliance` and `CodeQL`, and
+  require the status checks `Build distribution`, `Lint (Ruff)`,
+  `Type check (mypy)`, `Unit tests (pytest …)`, `Minimum versions (SPEC 0)`,
+  `Numba baseline regression`, `Pure-Python fallback (no Numba)`,
+  `Contract fuzzing (pure Python)`, `RuntimeWarning gate`,
+  `Static analysis (Semgrep)`, `Manuscript audit (check-paper)`,
+  `Manuscript tables (LaTeX)`, `REUSE compliance` and `CodeQL`, and
   disallow force pushes.
+- Import the versioned rulesets instead of configuring the rules by hand:
+  `.github/rulesets/main.json` protects the default branch (signed commits,
+  linear history, no deletion or force push, required checks) and
+  `.github/rulesets/tags.json` protects the `v*` release tags. Apply them with
+  the GitHub CLI:
+
+  ```bash
+  gh api --method POST /repos/fesa-academic-projects/chaotic-pfc/rulesets \
+    --input .github/rulesets/main.json
+  gh api --method POST /repos/fesa-academic-projects/chaotic-pfc/rulesets \
+    --input .github/rulesets/tags.json
+  ```
+
+  The import requires repository-admin rights, so it is a manual step after
+  merging. Re-read the ruleset list with
+  `gh api /repos/fesa-academic-projects/chaotic-pfc/rulesets` to confirm both
+  are active.
+- The pre-commit hooks `frozen-artifacts` and `artefact-manifests` reject
+  staged edits under `data/sweeps/`, `articles/simac/` and
+  `articles/jcis/Figures/` and verify the `SHA256SUMS` manifests. A deliberate
+  regeneration must be committed with `CHAOTIC_PFC_ALLOW_FROZEN=1`.
 - Confirm the `CODEOWNERS` team (`@fesa-academic-projects/maintainers`) exists
   and matches `.github/CODEOWNERS`.
 - Enable Dependabot alerts and security updates.

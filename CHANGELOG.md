@@ -61,6 +61,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- Repository guard rails: pre-commit hooks that reject staged edits under
+  `data/sweeps/`, `articles/simac/` and `articles/jcis/Figures/` (override with
+  `CHAOTIC_PFC_ALLOW_FROZEN=1`) and verify both `SHA256SUMS` manifests, plus
+  importable GitHub rulesets (`.github/rulesets/main.json` and `tags.json`)
+  documenting signed commits, linear history, force-push/deletion blocking and
+  the required status checks.
 - `.semgrep/chaotic-pfc.yml` with one rule per past incident (unsafe
   `allow_pickle`, `_sweep_kernel` float cast, NumPy `round` over percentages,
   `N_s` stored as `N_z`, swallowed exceptions, global `np.seterr`), a CI
