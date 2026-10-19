@@ -7,7 +7,7 @@ from typing import Any
 
 import numpy as np
 
-from chaotic_pfc.analysis.stats._common import _discover_all
+from chaotic_pfc.analysis.stats._common import _discover_all, round_half_up
 from chaotic_pfc.analysis.stats._summary import (
     area_summary,
     lmax_statistics,
@@ -310,9 +310,15 @@ def compare_filter_types(
             continue
         out[ft] = {
             "n_sweeps": len(entries),
-            "mean_pct_chaotic": round(float(np.mean([e["pct_chaotic"] for e in entries])), 1),
-            "mean_pct_periodic": round(float(np.mean([e["pct_periodic"] for e in entries])), 1),
-            "mean_pct_divergent": round(float(np.mean([e["pct_divergent"] for e in entries])), 1),
+            "mean_pct_chaotic": round_half_up(
+                float(np.mean([e["pct_chaotic"] for e in entries])), 1
+            ),
+            "mean_pct_periodic": round_half_up(
+                float(np.mean([e["pct_periodic"] for e in entries])), 1
+            ),
+            "mean_pct_divergent": round_half_up(
+                float(np.mean([e["pct_divergent"] for e in entries])), 1
+            ),
             "mean_lmax": round(float(np.mean([e["mean_lmax"] for e in entries])), 4),
         }
     return out

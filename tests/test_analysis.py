@@ -441,6 +441,39 @@ class TestAnalysis(unittest.TestCase):
                 self.assertIn(ft, ci)
                 self.assertEqual(ci[ft], {})
 
+    def test_round_half_up_percentages(self):
+        """434/4000 (10.85%) rounds to 10.9 and 149/2000 (7.45%) rounds to 7.5."""
+        from chaotic_pfc.analysis.stats._common import pct_round
+
+        self.assertEqual(pct_round(434, 4000, 1), 10.9)
+        self.assertEqual(pct_round(149, 2000, 1), 7.5)
+
+        h_bp = np.full((40, 100), -0.1)
+        h_bp.ravel()[:434] = 0.2
+        sr_bp = SweepResult(
+            h=h_bp,
+            h_std=np.zeros_like(h_bp),
+            num_taps_grid=np.arange(2, 42),
+            cutoff_grid=np.linspace(0.01, 0.99, 100),
+            window="kaiser",
+            filter_type="bandpass",
+            metadata={"kaiser_beta": 13.5},
+        )
+        self.assertEqual(area_summary(sr_bp)["pct_chaotic"], 10.9)
+
+        h_hp = np.full((20, 100), -0.1)
+        h_hp.ravel()[:149] = 0.2
+        sr_hp = SweepResult(
+            h=h_hp,
+            h_std=np.zeros_like(h_hp),
+            num_taps_grid=np.arange(3, 43, 2),
+            cutoff_grid=np.linspace(0.01, 0.99, 100),
+            window="kaiser",
+            filter_type="highpass",
+            metadata={"kaiser_beta": 11.5},
+        )
+        self.assertEqual(area_summary(sr_hp)["pct_chaotic"], 7.5)
+
 
 if __name__ == "__main__":
     unittest.main()

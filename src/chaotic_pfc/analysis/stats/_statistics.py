@@ -11,6 +11,7 @@ from numpy.typing import NDArray
 from chaotic_pfc.analysis.stats._common import (
     _discover_all,
     _safe_stats,
+    pct_round,
 )
 from chaotic_pfc.analysis.stats._types import (
     BetaPoint,
@@ -54,7 +55,7 @@ def beta_summary(
             total = h.size
             mn, mx = _safe_stats(h)
             out[ft][beta] = {
-                "pct_chaotic": round(100 * chaotic / total, 1),
+                "pct_chaotic": pct_round(int(chaotic), total, 1),
                 "mean_lmax": round(mn, 4),
                 "max_lmax": round(mx, 4),
             }

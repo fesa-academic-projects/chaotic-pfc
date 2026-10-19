@@ -13,7 +13,6 @@ is omitted, so two runs produce identical files.
 from __future__ import annotations
 
 import argparse
-from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -21,6 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import firwin
 
+from chaotic_pfc.analysis.stats._common import pct as pct
 from chaotic_pfc.analysis.sweep import load_sweep, run_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
     chaotic_density_norm_table,
@@ -80,12 +80,6 @@ JCIS_FIGURES: tuple[tuple[str, str], ...] = (
     ("kaiser/bandpass/beta_13.50", "kaiser_b13p5_bandpass_classification_interleaved"),
     ("Rectangular (bandstop)", "rectangular_bandstop_classification_interleaved"),
 )
-
-
-def pct(count: int, total: int, places: int) -> str:
-    """Percentage from integers, quantized once with ROUND_HALF_UP."""
-    q = Decimal(1).scaleb(-places)
-    return str((Decimal(100 * count) / Decimal(total)).quantize(q, rounding=ROUND_HALF_UP))
 
 
 def _save(fig: Any, path: Path) -> None:

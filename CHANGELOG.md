@@ -212,6 +212,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `chaotic_pfc.analysis.stats` now uses `Decimal` with `ROUND_HALF_UP` from
+  exact integer counts (shared with `paper.numbers`) instead of NumPy
+  round-half-to-even, so half-way percentages (such as `434/4000 = 10.9%` and
+  `149/2000 = 7.5%`) match the manuscript tables.
 - `chaotic_pfc.sweeps.report` and `chaotic_pfc.paper.numbers` now share a single
   `WINDOW_SIDELOBE_DB` table (13/27/32/43/58/92 dB, Harris sidelobe levels),
   fixing the inverted Hann/Hamming rank order in `chaotic-pfc sweeps stats`.

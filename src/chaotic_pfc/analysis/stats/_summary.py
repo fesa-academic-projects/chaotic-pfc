@@ -12,6 +12,7 @@ from chaotic_pfc.analysis.stats._common import (
     _DEFAULT_N_BOOTSTRAP,
     _discover_all,
     _safe_stats,
+    pct_round,
 )
 from chaotic_pfc.analysis.stats._types import AreaSummary, LmaxStats, SummaryRow
 from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
@@ -54,9 +55,9 @@ def summary_table(
             "filter_type": result.filter_type,
             "n_orders": len(result.num_taps_grid),
             "n_cutoffs": len(result.cutoff_grid),
-            "pct_chaotic": round(100 * chaotic / total, 1),
-            "pct_periodic": round(100 * periodic / total, 1),
-            "pct_divergent": round(100 * divergent / total, 1),
+            "pct_chaotic": pct_round(int(chaotic), total, 1),
+            "pct_periodic": pct_round(int(periodic), total, 1),
+            "pct_divergent": pct_round(int(divergent), total, 1),
             "mean_lmax": round(mean_lmax, 4),
             "max_lmax": round(max_lmax, 4),
             "beta": result.metadata.get("kaiser_beta"),
@@ -94,9 +95,9 @@ def area_summary(sweep_result: SweepResult) -> AreaSummary:
     divergent = np.sum(~finite)
     total = h.size
 
-    pct_chaotic = round(100 * chaotic / total, 1) if total > 0 else 0.0
-    n_finite = total - divergent
-    pct_chaotic_finite = round(100 * chaotic / n_finite, 1) if n_finite > 0 else 0.0
+    pct_chaotic = pct_round(int(chaotic), total, 1)
+    n_finite = total - int(divergent)
+    pct_chaotic_finite = pct_round(int(chaotic), n_finite, 1)
 
     return {
         "n_chaotic": int(chaotic),

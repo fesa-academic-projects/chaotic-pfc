@@ -31,6 +31,7 @@ import numpy as np
 
 from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.stats import lmax_statistics
+from chaotic_pfc.analysis.stats._common import pct as pct
 from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank
 from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 
@@ -62,14 +63,6 @@ def fmt(x: Any, places: int) -> str:
     """Round a float with ROUND_HALF_UP to *places* decimals."""
     q = Decimal(1).scaleb(-places)
     return str(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
-
-
-def pct(n: int, d: int, places: int) -> str:
-    """Percentage computed from integers, rounded half up."""
-    if d == 0:
-        return "n/a"
-    q = Decimal(1).scaleb(-places)
-    return str((Decimal(100 * n) / Decimal(d)).quantize(q, rounding=ROUND_HALF_UP))
 
 
 # ── loading and counts ──────────────────────────────────────────────────────
