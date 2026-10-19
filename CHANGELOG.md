@@ -143,6 +143,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- Raised the `[fast]` extra floor from `numba>=0.59` to `numba>=0.61.2` (the
+  first Numba release with both Python 3.13 wheels and `numpy<2.3,>=1.24`
+  support) and pinned `numba==0.61.2` in the `minimums` CI job.
 - Regenerated the reference LaTeX analysis tables under
   `data/analysis_output/tables/{pt,en}/` with `chaotic-pfc run analysis
   export-tables`, adding the previously missing `en/` directory and reflecting

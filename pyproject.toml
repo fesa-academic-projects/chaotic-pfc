@@ -56,7 +56,7 @@ Issues = "https://github.com/fesa-academic-projects/chaotic-pfc/issues"
 
 [project.optional-dependencies]
 fast = [
-    "numba>=0.59",
+    "numba>=0.61.2",
 ]
 dev = [
     "pytest>=8.0",
