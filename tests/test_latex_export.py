@@ -164,14 +164,38 @@ class TestLatexExport(unittest.TestCase):
             _make_config_rank(i, "lowpass", f"w{i}", n_chaotic=300 - i * 10) for i in range(1, 6)
         ]
         path = self.root / "full_ranking.tex"
-        export_full_ranking_table(rank_data, path, lang="en")
+        export_full_ranking_table(rank_data, path, label="tab:full", lang="en")
         tex = self._read_tex(path)
-        self.assertIn(r"\begin{longtable}", tex)
+        self.assertIn(r"\begin{longtable}{lrrrrrrrr}", tex)
         self.assertIn(r"\end{longtable}", tex)
         self.assertNotIn(r"\begin{table}", tex)
+        self.assertLess(tex.index(r"\begin{longtable}"), tex.index(r"\caption{"))
+        self.assertLess(tex.index(r"\label{tab:full} \\"), tex.index(r"\toprule"))
         self.assertIn("Full ranking", tex)
         num_datarows = _count_data_rows(tex)
         self.assertEqual(num_datarows, 5)
+
+        import shutil
+        import subprocess
+
+        if shutil.which("pdflatex"):
+            doc = (
+                "\\documentclass{article}\n"
+                "\\usepackage[utf8]{inputenc}\n"
+                "\\usepackage{booktabs}\n"
+                "\\usepackage{longtable}\n"
+                "\\begin{document}\n" + tex + "\\end{document}\n"
+            )
+            doc_path = self.root / "doc.tex"
+            doc_path.write_text(doc, encoding="utf-8")
+            proc = subprocess.run(
+                ["pdflatex", "-interaction=nonstopmode", "doc.tex"],
+                cwd=self.root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, msg=proc.stdout)
 
     # ── Sweet spots (Categoria C.2) ────────────────────────────────────
 

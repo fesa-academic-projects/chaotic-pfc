@@ -212,6 +212,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Jacobian.
 
 ### Fixed
+- `export_full_ranking_table` and `export_consolidated_full_ranking` now emit
+  valid LaTeX `longtable` syntax with the column specification `{col_spec}` and
+  place `\caption` and `\label` followed by `\\` inside `\begin{longtable}`.
 - `sweet_spot_per_filter` and `optimal_parameters` now record the filter order
   `N_z = N_s - 1` instead of the tap count `N_s` (`num_taps_grid[i]`).
 - The pure-Python Lyapunov wrappers (`chaotic_pfc.dynamics.lyapunov`) were

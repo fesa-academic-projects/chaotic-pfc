@@ -84,17 +84,23 @@ def _render_tex(
     col_spec = "l" + "r" * (n_cols - 1)
 
     lines: list[str] = []
-    if not use_longtable:
+    if use_longtable:
+        lines.append(f"  \\begin{{longtable}}{{{col_spec}}}")
+        if label:
+            lines.append(f"    \\caption{{{caption}}}")
+            lines.append(f"    \\label{{{label}}} \\\\")
+        else:
+            lines.append(f"    \\caption{{{caption}}} \\\\")
+    else:
         lines.append("\\begin{table}[htbp]")
         lines.append("  \\centering")
-    lines.append(f"  \\caption{{{caption}}}")
-    if label:
-        lines.append(f"  \\label{{{label}}}")
-    if not use_longtable:
+        lines.append(f"  \\caption{{{caption}}}")
+        if label:
+            lines.append(f"  \\label{{{label}}}")
         lines.append("  \\footnotesize")
         lines.append("  \\setlength{\\tabcolsep}{4pt}")
         lines.append("  \\resizebox{\\textwidth}{!}{%")
-    lines.append("  \\begin{longtable}" if use_longtable else f"  \\begin{{tabular}}{{{col_spec}}}")
+        lines.append(f"  \\begin{{tabular}}{{{col_spec}}}")
     lines.append("    \\toprule")
     header = " & ".join(f"{c}" for c in columns) + " \\\\"
     lines.append(f"    {header}")
