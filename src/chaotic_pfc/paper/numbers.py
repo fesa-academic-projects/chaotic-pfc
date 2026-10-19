@@ -37,8 +37,8 @@ from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 LOW_GAIN = 0.1
-# Width of the pass/stop band used by the versioned sweeps (bandpass/bandstop);
-# it is not stored in the metadata.
+# Default pass/stop bandwidth for the versioned sweeps (bandpass/bandstop),
+# which predate the ``bandwidth`` metadata entry.
 BANDWIDTH = 0.05
 FIXED = (
     ("boxcar", "Rectangular", WINDOW_SIDELOBE_DB["boxcar"]),
@@ -480,13 +480,14 @@ def section_cost(recs: Any, out: dict[str, Any]) -> None:
 def _abs_gain(sr: Any) -> np.ndarray:
     """|G| per grid point, G = sum of the FIR coefficients (DC gain)."""
     beta = float(sr.metadata.get("kaiser_beta", 5.0))
+    bw = float(sr.metadata.get("bandwidth", BANDWIDTH))
     _, gains = precompute_fir_bank(
         np.asarray(sr.num_taps_grid),
         np.asarray(sr.cutoff_grid),
         sr.filter_type,
         sr.window,
         kaiser_beta=beta,
-        bandwidth=BANDWIDTH,
+        bandwidth=bw,
     )
     return np.abs(gains)
 
@@ -603,7 +604,7 @@ def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
                     kaiser_beta=float(m["kaiser_beta"]),
                     num_taps_grid=sr.num_taps_grid,
                     cutoff_grid=sr.cutoff_grid,
-                    bandwidth=0.05,
+                    bandwidth=float(m.get("bandwidth", BANDWIDTH)),
                     Nitera=int(m["Nitera"]),
                     Nmap=int(m["Nmap"]),
                     n_initial=int(m["n_initial"]),

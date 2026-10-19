@@ -55,6 +55,7 @@ class TestRunSweep(unittest.TestCase):
         self.assertEqual(meta["Nmap"], 150)
         self.assertEqual(meta["n_initial"], 3)
         self.assertEqual(meta["seed"], 42)
+        self.assertEqual(meta["bandwidth"], 0.05)
 
     def test_display_name(self):
         self.assertEqual(self.result.display_name, "Hamming (lowpass)")

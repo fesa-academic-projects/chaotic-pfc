@@ -143,6 +143,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- `run_sweep` now records `bandwidth` in `SweepResult.metadata` for newly
+  generated sweeps, and `chaotic_pfc.paper.numbers` reads `bandwidth` from
+  metadata with a `0.05` fallback for the existing checkpoints.
 - Raised the `[fast]` extra floor from `numba>=0.59` to `numba>=0.61.2` (the
   first Numba release with both Python 3.13 wheels and `numpy<2.3,>=1.24`
   support) and pinned `numba==0.61.2` in the `minimums` CI job.

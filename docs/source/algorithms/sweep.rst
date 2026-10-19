@@ -221,10 +221,11 @@ Checkpoint format
 
 Each ``.npz`` stores ``h`` (the :math:`\lambda_{\max}` grid), ``h_desvio`` (its
 standard deviation), ``num_taps_grid`` and ``cutoff_grid`` (the swept axes),
-``window``, ``filter_type``, ``metadata`` and, for adaptive sweeps,
-``n_iters_used``.  :func:`~chaotic_pfc.analysis.sweep.load_sweep` also accepts
-the pre-0.9 key names ``coef`` and ``wcorte`` (still used by the frozen SIMAC
-state ``f517e0a``), so those files keep loading.
+``window``, ``filter_type``, ``metadata`` (including ``bandwidth`` for newly
+generated sweeps) and, for adaptive sweeps, ``n_iters_used``.
+:func:`~chaotic_pfc.analysis.sweep.load_sweep` also accepts the pre-0.9 key
+names ``coef`` and ``wcorte`` (still used by the frozen SIMAC state
+``f517e0a``), so those files keep loading.
 
 .. _backend-dependence:
 
