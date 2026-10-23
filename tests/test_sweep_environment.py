@@ -3,8 +3,9 @@
 Two independent guarantees are encoded here:
 
 * ``data/sweeps/ENVIRONMENT.json`` records the Python/NumPy/SciPy/Numba stack
-  that regenerated the 172 checkpoints, and this stack must stay aligned with
-  ``requirements-lock.txt`` so the lock reproduces the generation environment.
+  that regenerated the versioned checkpoints, and this stack must stay aligned
+  with ``requirements-lock.txt`` so the lock reproduces the generation
+  environment.
 
 * The FIR coefficients are not stored in the ``.npz`` files — the ``num_taps_grid``
   field holds the number of taps :math:`N_s` of each swept order. This module
@@ -18,17 +19,23 @@ Set ``CHAOTIC_PFC_SWEEPS_DIR`` to point the checks at a copy of the tree.
 from __future__ import annotations
 
 import hashlib
+import importlib.metadata
 import json
 import os
+import platform
 import re
+import subprocess
+from datetime import date
 from pathlib import Path
 
 import numpy as np
 from scipy.signal import firwin
 
 from chaotic_pfc import load_sweep
+from chaotic_pfc._version import __version__
 from chaotic_pfc.analysis.sweep._orchestration import precompute_fir_bank
 from chaotic_pfc.analysis.sweep._types import FILTER_TYPES, WINDOWS
+from chaotic_pfc.sweeps.regenerate import _git_metadata, write_environment
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SWEEPS_DIR = Path(os.environ.get("CHAOTIC_PFC_SWEEPS_DIR", REPO_ROOT / "data" / "sweeps")).resolve()
@@ -109,6 +116,77 @@ def test_environment_records_the_key_fields() -> None:
     ):
         assert key in env, f"ENVIRONMENT.json is missing {key!r}"
     assert env["checkpoints"] == len(_checkpoint_paths())
+
+
+def test_write_environment_records_stack_and_git(tmp_path, monkeypatch) -> None:
+    """The writer emits the stack, package version, platform and git state."""
+    for name in ("run-a", "run-b"):
+        directory = tmp_path / name
+        directory.mkdir()
+        (directory / "variables_lyapunov.npz").write_bytes(b"checkpoint")
+    monkeypatch.setattr(
+        "chaotic_pfc.sweeps.regenerate._git_metadata",
+        lambda: ("0123456789abcdef0123456789abcdef01234567", True),
+    )
+    path = write_environment(tmp_path, elapsed_seconds=1.25)
+    env = json.loads(path.read_text(encoding="utf-8"))
+
+    assert path == tmp_path / "ENVIRONMENT.json"
+    assert env["checkpoints"] == 2
+    assert env["package_version"] == __version__
+    assert env["python"] == platform.python_version()
+    assert env["platform"] == platform.platform()
+    assert env["regeneration_date"] == date.today().isoformat()
+    assert env["regeneration_wall_seconds"] == 1.25
+    assert env["git_commit"] == "0123456789abcdef0123456789abcdef01234567"
+    assert env["git_dirty"] is True
+    for package in _LOCKED_PACKAGES:
+        assert env[package] == importlib.metadata.version(package)
+
+
+def test_git_metadata_ignores_untracked_and_data_tree(tmp_path, monkeypatch) -> None:
+    """Only tracked changes outside data/sweeps make the checkout dirty."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+
+    def git(*args: str) -> None:
+        subprocess.run(
+            ["git", "-C", str(repo), *args],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+    git("init")
+    git("config", "user.email", "tests@example.invalid")
+    git("config", "user.name", "Tests")
+    sweeps = repo / "data" / "sweeps"
+    sweeps.mkdir(parents=True)
+    (sweeps / "tracked.txt").write_text("tracked\n", encoding="utf-8")
+    source = repo / "src" / "tracked.py"
+    source.parent.mkdir()
+    source.write_text("VALUE = 1\n", encoding="utf-8")
+    git("add", ".")
+    git("-c", "commit.gpgsign=false", "commit", "-m", "initial")
+
+    monkeypatch.setattr("chaotic_pfc.sweeps.regenerate._REPO_ROOT", repo)
+
+    commit, dirty = _git_metadata()
+    assert commit
+    assert dirty is False
+
+    new_npz = sweeps / "kaiser" / "lowpass" / "beta_0.50" / "variables_lyapunov.npz"
+    new_npz.parent.mkdir(parents=True)
+    new_npz.write_bytes(b"new checkpoint")
+    (sweeps / "tracked.txt").write_text("changed\n", encoding="utf-8")
+    commit_after_data, dirty_after_data = _git_metadata()
+    assert commit_after_data == commit
+    assert dirty_after_data is False
+
+    source.write_text("VALUE = 2\n", encoding="utf-8")
+    commit_after_source, dirty_after_source = _git_metadata()
+    assert commit_after_source == commit
+    assert dirty_after_source is True
 
 
 def test_firwin_reproduces_stored_taps() -> None:
