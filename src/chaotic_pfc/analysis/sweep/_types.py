@@ -77,12 +77,18 @@ if _ADAPTIVE_CHECKPOINT_EVERY % _BENETTIN_K:
         f"_ADAPTIVE_CHECKPOINT_EVERY={_ADAPTIVE_CHECKPOINT_EVERY}"
     )
 
-# Marginal-zone threshold for the hybrid estimator. Cells whose single-vector
-# mean satisfies |lambda| < _VONLY_MARGIN are recomputed with the full-spectrum
-# kernel (fallback_mode 1 or 2). The margin is a heuristic guard against the
-# finite-horizon difference between the two estimators (see
-# _lyap_online_core_v). It is not a bound: it does not guarantee that the sign
-# of the mean is preserved.
+# Chaos boundary. A bounded orbit is classified as chaotic when the largest
+# Lyapunov exponent exceeds this value, and as non-chaotic otherwise. The same
+# constant centres the hybrid fallback band below, so the estimator guards the
+# classification boundary rather than an arbitrary zero.
+LAMBDA_CHAOS_THRESHOLD: float = 5e-3
+
+# Half-width of the hybrid fallback band. Cells whose single-vector mean
+# satisfies |lambda - LAMBDA_CHAOS_THRESHOLD| < _VONLY_MARGIN are recomputed
+# with the full-spectrum kernel (fallback_mode 1 or 2). The margin is a
+# heuristic guard against the finite-horizon difference between the two
+# estimators (see _lyap_online_core_v). It is not a bound: it does not
+# guarantee that the sign of the mean difference is preserved.
 _VONLY_MARGIN: float = 5e-3
 
 
@@ -112,6 +118,10 @@ class SweepResult:
         ``Nmap_min`` to ``Nmap``, providing a "difficulty map" of the
         parameter space. ``None`` when loaded from a legacy ``.npz``
         without this field.
+    v_mean : ndarray, shape (Ncoef, Ncut), optional
+        Single-vector ensemble mean before the hybrid fallback. Used to
+        reconstruct which cells triggered the fallback without re-running the
+        sweep. ``None`` when not recorded.
     metadata : dict[str, Any]
         Free-form metadata (simulation parameters, timing, etc.).
     """
@@ -123,6 +133,7 @@ class SweepResult:
     window: str
     filter_type: str
     n_iters_used: NDArray[np.float64] | None = None
+    v_mean: NDArray[np.float64] | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property

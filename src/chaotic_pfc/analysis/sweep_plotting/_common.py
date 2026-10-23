@@ -18,7 +18,7 @@ from numpy.typing import NDArray
 # Pull in global RC params (STIX fonts, vector SVG, etc.)
 from chaotic_pfc._figure_io import save_figure as _figures_save
 from chaotic_pfc._i18n import t
-from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, SweepResult, load_sweep
 from chaotic_pfc.errors import InvalidParameterError
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -85,7 +85,7 @@ class OrbitClass(IntEnum):
 
 
 def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
-    """Map raw λ_max values to discrete classes.
+    r"""Map raw λ_max values to discrete classes.
 
     Parameters
     ----------
@@ -98,9 +98,11 @@ def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
         Array of the same shape as ``h`` where each entry is an
         :class:`OrbitClass` value:
 
-        * :attr:`OrbitClass.PERIODIC` — periodic orbit (λ_max ≤ 0)
-        * :attr:`OrbitClass.CHAOTIC` — chaotic orbit (λ_max > 0)
-        * :attr:`OrbitClass.DIVERGENT` — unbounded / divergent (NaN in ``h``)
+        * :attr:`OrbitClass.PERIODIC`: non-chaotic orbit
+          (:math:`\lambda_{max} \le` ``LAMBDA_CHAOS_THRESHOLD``)
+        * :attr:`OrbitClass.CHAOTIC`: chaotic orbit
+          (:math:`\lambda_{max} >` ``LAMBDA_CHAOS_THRESHOLD``)
+        * :attr:`OrbitClass.DIVERGENT`: unbounded / divergent (NaN in ``h``)
 
     The integer values match the :class:`matplotlib.colors.BoundaryNorm` bins
     used below.
@@ -133,8 +135,8 @@ def classify(h: NDArray[np.float64]) -> NDArray[np.int64]:
         raise InvalidParameterError("h must not contain +/-inf (use NaN for divergent cells)")
     out = np.empty_like(h_arr, dtype=np.int64)
     mask_diverged = np.isnan(h_arr)
-    mask_periodic = (~mask_diverged) & (h_arr <= 0.0)
-    mask_chaotic = (~mask_diverged) & (h_arr > 0.0)
+    mask_periodic = (~mask_diverged) & (h_arr <= LAMBDA_CHAOS_THRESHOLD)
+    mask_chaotic = (~mask_diverged) & (h_arr > LAMBDA_CHAOS_THRESHOLD)
 
     out[mask_diverged] = int(OrbitClass.DIVERGENT)
     out[mask_periodic] = int(OrbitClass.PERIODIC)

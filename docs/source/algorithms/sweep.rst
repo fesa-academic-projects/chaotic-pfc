@@ -37,7 +37,8 @@ For each grid point :math:`(N_z, \omega_c)`:
 
 The sweep uses a **hybrid estimator**: the default single-vector path
 (described below) runs at :math:`O(N_s)` per iteration; cells whose
-:math:`\lambda_{\max}` is close to zero (:math:`|\lambda| < 5 \times 10^{-3}`)
+:math:`\lambda_{\max}` is close to the classification threshold
+:math:`\theta = 5 \times 10^{-3}` (:math:`|\lambda - \theta| < 5 \times 10^{-3}`)
 are transparently recomputed with the full spectrum at :math:`O(N_s^2)` per
 iteration.  This eliminates classification flips near the chaotic/periodic
 transition while keeping the common-case cost low.
@@ -167,8 +168,9 @@ To eliminate the tiny probability of a classification flip near the
 transition boundary, the sweep kernel applies a **hybrid strategy**:
 
 1. Run the fast :math:`_v` path for all ICs.
-2. If the cell's mean :math:`|\lambda| < 5 \times 10^{-3}` (the
-   ``_VONLY_MARGIN`` threshold),
+2. If the cell's mean :math:`|\lambda - \theta| < 5 \times 10^{-3}` (the
+   ``_VONLY_MARGIN`` half-width around ``LAMBDA_CHAOS_THRESHOLD``,
+   :math:`\theta = 5 \times 10^{-3}`),
    re-run *all* ICs for that cell with the full-spectrum kernel.
 3. The decision is atomic per cell: no cell mixes estimates from
    different estimators.
@@ -202,8 +204,8 @@ Table II configurations, comparing ``fallback_mode`` 0, 1 and 2 changes the clas
 of **2 cells** for the highpass configuration and **2** for the bandpass one (all
 periodic to chaotic); on the reduced grid used by
 ``tests/test_fallback_class_changes.py`` no cell changes class. The direction is
-the expected one: the full-spectrum recomputation can promote a marginal
-periodic cell to chaotic, never the other way.
+the expected one: the full-spectrum recomputation can move a marginal cell
+across the threshold, never by more than the measured finite-horizon gap.
 
 Versioned checkpoint policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

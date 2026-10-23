@@ -17,7 +17,7 @@ from chaotic_pfc.analysis.stats._common import (
     round_half_up,
 )
 from chaotic_pfc.analysis.stats._types import AreaSummary, LmaxStats, SummaryRow
-from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, SweepResult, load_sweep
 from chaotic_pfc.errors import InvalidParameterError
 
 
@@ -27,8 +27,8 @@ def summary_table(
     """Return one row per sweep with key statistics.
 
     Each row is a :class:`SummaryRow` with: ``window``, ``filter_type``,
-    ``n_orders``, ``n_cutoffs``, ``pct_chaotic``, ``pct_periodic``,
-    ``pct_divergent``, ``mean_lmax``, ``max_lmax``, ``beta`` (Kaiser only).
+    ``n_orders``, ``n_cutoffs``, ``pct_chaotic``, ``pct_periodic`` (the
+    non-chaotic fraction), ``pct_divergent``, ``mean_lmax``, ``max_lmax``, ``beta`` (Kaiser only).
 
     This is the foundation of all downstream analyses — every other
     public function in this module either calls or derives from this table.
@@ -46,8 +46,8 @@ def summary_table(
     rows: list[dict[str, Any]] = []
     for result in _discover_all(data_dir):
         h = result.h
-        chaotic = np.sum((~np.isnan(h)) & (h > 0))
-        periodic = np.sum((~np.isnan(h)) & (h <= 0))
+        chaotic = np.sum((~np.isnan(h)) & (h > LAMBDA_CHAOS_THRESHOLD))
+        periodic = np.sum((~np.isnan(h)) & (h <= LAMBDA_CHAOS_THRESHOLD))
         divergent = np.sum(np.isnan(h))
         total = h.size
 
@@ -105,8 +105,8 @@ def area_summary(sweep_result: SweepResult) -> AreaSummary:
     if h.ndim != 2:
         raise InvalidParameterError(f"sweep_result.h must be 2-D, got shape {h.shape}")
     finite = np.isfinite(h)
-    chaotic = np.sum(finite & (h > 0))
-    periodic = np.sum(finite & (h <= 0))
+    chaotic = np.sum(finite & (h > LAMBDA_CHAOS_THRESHOLD))
+    periodic = np.sum(finite & (h <= LAMBDA_CHAOS_THRESHOLD))
     divergent = np.sum(~finite)
     total = h.size
 
@@ -181,9 +181,9 @@ def lmax_statistics(
     finite = np.isfinite(h)
 
     if region == "chaotic":
-        mask = finite & (h > 0)
+        mask = finite & (h > LAMBDA_CHAOS_THRESHOLD)
     elif region == "periodic":
-        mask = finite & (h <= 0)
+        mask = finite & (h <= LAMBDA_CHAOS_THRESHOLD)
     elif region == "all_finite":
         mask = finite
     else:

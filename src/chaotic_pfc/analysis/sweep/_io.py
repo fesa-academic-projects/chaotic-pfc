@@ -78,6 +78,8 @@ def save_sweep(result: SweepResult, path: str | Path) -> Path:
     }
     if result.n_iters_used is not None:
         payload["n_iters_used"] = result.n_iters_used
+    if result.v_mean is not None:
+        payload["v_mean"] = result.v_mean
     np.savez(path, **payload)  # type: ignore[arg-type]  # kwargs are arrays/scalars by construction
     return path
 
@@ -170,6 +172,7 @@ def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepR
                     ) from None
 
             n_iters_used = data["n_iters_used"] if "n_iters_used" in files else None
+            v_mean = data["v_mean"] if "v_mean" in files else None
             num_taps_grid = data["num_taps_grid"] if "num_taps_grid" in files else data["coef"]
             cutoff_grid = data["cutoff_grid"] if "cutoff_grid" in files else data["wcorte"]
             h = data["h"]
@@ -233,6 +236,7 @@ def load_sweep(path: str | Path, *, trust_legacy_pickle: bool = False) -> SweepR
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,
+        v_mean=v_mean,
         metadata=metadata,
     )
 

@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixed-key `TypedDict` would over-constrain them.
 
 ### Added
+- `SweepResult.v_mean` records the per-cell single-vector mean, and every new
+  checkpoint stores `chaos_threshold` and `vonly_margin` in its metadata. The
+  diagnostic array lets the Wave 1 golden comparison reconstruct the fallback
+  trigger without re-running the estimator.
+- A production-path validation test for the unfiltered Hénon map with 25
+  initial conditions, adaptive early stopping and seed 42, plus threshold
+  regression tests for `classify`, `area_summary` and the checkpoint metadata.
 - Mutation testing with `mutmut` for `_validate.py`, `comms/metrics.py`,
   `analysis/stats/_ranking.py`, `analysis/stats/_summary.py` and
   `analysis/latex_export.py`, plus a weekly advisory workflow. New exporter
@@ -183,6 +190,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python code.
 
 ### Changed
+- Chaos classification now uses the named boundary
+  `LAMBDA_CHAOS_THRESHOLD = 5e-3` instead of zero. The hybrid full-spectrum
+  fallback is centred on that boundary (`|lambda - theta| < _VONLY_MARGIN`),
+  and every user-facing class label now reads non-chaotic or divergent.
+- The default Kaiser grid runs from beta 2.0 to 20.0 in steps of 0.5, so
+  `chaotic-pfc run all` and `chaotic-pfc run sweep beta-sweep` cover the 172
+  canonical configurations. `chaotic-pfc run all --dry-run` lists them.
+- Window-agreement statistics exclude grid points whose FIR coefficients are
+  non-finite (two-tap Hann and Bartlett), while maps and counts keep those
+  points as divergent.
 - Supply-chain tools no longer share the development environment: `semgrep`
   was removed from the `dev` extra and from the hashed lock (run with
   `uvx semgrep==1.181.0` in CI), `pip-audit` is clean without exceptions, and

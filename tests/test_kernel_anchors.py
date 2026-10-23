@@ -61,3 +61,30 @@ def test_kernel_analytic_quadratic_map_is_ln2() -> None:
     """``alpha = 2``, ``beta = 0`` is conjugate to the r=4 logistic map: ln 2."""
     lam = _single_tap_sweep(alpha=2.0, beta=0.0)
     assert abs(lam - math.log(2)) < 1e-3, f"lambda_1 = {lam}, expected ln 2 = {math.log(2)}"
+
+
+def test_production_path_adaptive_single_vector() -> None:
+    """Production estimator on the unfiltered map: adaptive, 25 ICs, seed 42.
+
+    The reference values are 0.4185 (full-spectrum estimate already quoted in
+    the manuscript) and the literature value 0.42.
+    """
+    result = run_sweep(
+        window="hamming",
+        filter_type="lowpass",
+        num_taps_grid=[1],
+        cutoff_grid=[0.5],
+        Nitera=500,
+        Nmap=3000,
+        n_initial=25,
+        adaptive=True,
+        Nmap_min=500,
+        tol=1e-3,
+        seed=42,
+    )
+    mean = float(result.h[0, 0])
+    assert abs(mean - 0.4185) / 0.4185 < 0.01, f"mean = {mean:.12f}"
+    assert abs(mean - 0.42) / 0.42 < 0.01, f"mean = {mean:.12f}"
+    assert result.metadata["n_fallback"] == 0
+    assert result.n_iters_used is not None
+    assert float(result.n_iters_used[0, 0]) < 3000.0

@@ -3,7 +3,7 @@
 Two independent guarantees are encoded here:
 
 * ``data/sweeps/ENVIRONMENT.json`` records the Python/NumPy/SciPy/Numba stack
-  that regenerated the 124 checkpoints, and this stack must stay aligned with
+  that regenerated the 172 checkpoints, and this stack must stay aligned with
   ``requirements-lock.txt`` so the lock reproduces the generation environment.
 
 * The FIR coefficients are not stored in the ``.npz`` files — the ``num_taps_grid``

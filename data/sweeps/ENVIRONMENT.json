@@ -1,5 +1,5 @@
 {
-    "description": "Environment that regenerated the 124 versioned sweep checkpoints in data/sweeps/ and reproduces data/sweeps/SHA256SUMS bit for bit.",
+    "description": "Environment that regenerated the 172 versioned sweep checkpoints in data/sweeps/ and reproduces data/sweeps/SHA256SUMS bit for bit.",
     "python": "3.14.8",
     "numpy": "2.5.4",
     "scipy": "1.18.1",
@@ -8,9 +8,9 @@
     "matplotlib": "3.11.2",
     "platform": "Linux-7.2.9_1-x86_64-with-glibc2.41",
     "package_version": "0.9.0",
-    "regeneration_date": "2026-10-14",
-    "checkpoints": 124,
+    "regeneration_date": "2026-10-19",
+    "checkpoints": 172,
     "verification": "CHAOTIC_PFC_RUN_BASELINE=1 pytest tests/test_sweep_regressions.py reproduces the checkpoints bit for bit in this environment, and requirements-lock.txt is aligned to these versions.",
-    "regeneration_wall_seconds": 509.7,
+    "regeneration_wall_seconds": 563.199,
     "machine": "Linux void 7.2.9_1 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux"
 }

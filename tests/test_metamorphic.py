@@ -139,10 +139,10 @@ def test_cutoff_grid_permutation_permutes_kernel_columns() -> None:
     task_order = _build_task_order(orders, len(cutoffs))
     args = (20, 100, 100, 0.0, 2, 1.4, 0.3, 1)
 
-    h, h_std, n_iters, _ = _sweep_kernel(
+    h, h_std, n_iters, _, _ = _sweep_kernel(
         orders, cutoffs, bank, gains, perturbations, task_order, *args
     )
-    h_p, h_std_p, n_iters_p, _ = _sweep_kernel(
+    h_p, h_std_p, n_iters_p, _, _ = _sweep_kernel(
         orders,
         cutoffs[perm],
         bank[:, perm, :],

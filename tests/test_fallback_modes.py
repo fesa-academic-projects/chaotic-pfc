@@ -99,11 +99,12 @@ def _seq_mean(values):
     return total / count
 
 
-# Marginal cell used by the hybrid-fallback tests (order 10, hamming lowpass).
+# Marginal cell used by the hybrid-fallback tests. Its single-vector mean is
+# 8.7e-3, inside the band (0, 1e-2) centred on LAMBDA_CHAOS_THRESHOLD.
 def _marginal_cell():
-    num_taps_grid = np.array([10], dtype=np.int64)
-    cutoff_grid = np.array([0.212127])
-    bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+    num_taps_grid = np.array([5], dtype=np.int64)
+    cutoff_grid = np.array([0.8181754545454546])
+    bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "bartlett")
     pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
     return num_taps_grid, cutoff_grid, bank, gains, pert
 
@@ -202,15 +203,15 @@ def test_column0_equals_single_vector(Ns):
 
 
 def test_default_fallback_mode_is_one():
-    h_default, _, _, n_default = _marginal_sweep()
-    h_one, _, _, n_one = _marginal_sweep(1)
+    h_default, _, _, n_default, _ = _marginal_sweep()
+    h_one, _, _, n_one, _ = _marginal_sweep(1)
     assert n_default[0, 0] == 1
     assert n_one[0, 0] == 1
     assert h_default[0, 0] == h_one[0, 0]
 
 
 def test_mode0_skips_recomputation_and_returns_single_vector_mean():
-    h0, _, _, n0 = _marginal_sweep(0)
+    h0, _, _, n0, _ = _marginal_sweep(0)
     assert n0.sum() == 0
 
     Ns, c, states = _marginal_states()
@@ -219,7 +220,7 @@ def test_mode0_skips_recomputation_and_returns_single_vector_mean():
 
 
 def test_mode2_recomputes_and_returns_column0_mean():
-    h2, _, _, n2 = _marginal_sweep(2)
+    h2, _, _, n2, _ = _marginal_sweep(2)
     assert n2[0, 0] == 1
 
     Ns, c, states = _marginal_states()

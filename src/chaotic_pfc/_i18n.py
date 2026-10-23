@@ -63,16 +63,16 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": r"Normalised PSD (Welch)",
     },
     "sweep.legend.periodic": {
-        "pt": "Órbitas periódicas",
-        "en": "Periodic orbits",
+        "pt": "Não-caóticas",
+        "en": "Non-chaotic",
     },
     "sweep.legend.chaotic": {
-        "pt": "Órbitas caóticas",
-        "en": "Chaotic orbits",
+        "pt": "Caóticas",
+        "en": "Chaotic",
     },
     "sweep.legend.unbounded": {
-        "pt": "Órbitas não-limitadas",
-        "en": "Unbounded orbits",
+        "pt": "Divergentes",
+        "en": "Divergent",
     },
     "sweep.chaotic_map.title": {
         "pt": "Mapa de Regiões Caóticas — União entre Todas as Configurações",

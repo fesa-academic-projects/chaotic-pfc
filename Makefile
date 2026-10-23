@@ -1,4 +1,4 @@
-.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper regen-sweeps jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -64,6 +64,7 @@ notebook: check-venv  ## Execute the tutorial notebook (catches API drift in exa
 check-all: lint format-check typecheck test-fast notebook  ## Run all quality checks (lint + format + typecheck + fast tests + notebook)
 
 PAPER_DIR ?= articles/jcis
+PAPER_FIGURES_OUT ?= $(PAPER_DIR)/Figures
 # Pre-articles/ path, kept for the history- and BASE-dependent targets.
 PAPER_DIR_OLD ?= jcis
 PAPER_TEX ?= $(PAPER_DIR)/article.tex
@@ -83,8 +84,14 @@ PAPER_EPOCH = $(shell git log -1 --format=%ct --diff-filter=CMT -- $(PAPER_SOURC
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
 	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures $(PAPER_DIR)/Figures --all-figures --sweeps data/sweeps
 
+SWEEP_SCRATCH ?= /tmp/chaotic-pfc-sweeps
+regen-sweeps: check-venv  ## Recompute data/sweeps in a scratch tree and compare it
+	rm -rf $(SWEEP_SCRATCH)
+	$(PYTHON) -m chaotic_pfc sweeps regenerate --src data/sweeps --dst $(SWEEP_SCRATCH)
+	$(PYTHON) -m chaotic_pfc sweeps compare --old data/sweeps --new $(SWEEP_SCRATCH)
+
 jcis-figures: check-venv  ## Regenerate the JCIS figures not produced by other commands
-	$(PYTHON) -m chaotic_pfc paper figures --out-dir $(PAPER_DIR)/Figures
+	$(PYTHON) -m chaotic_pfc paper figures --out-dir $(PAPER_FIGURES_OUT)
 
 # Canonical manuscript build: the PDF is compiled inside the pinned TeX Live
 # image, so the versioned artefact is reproducible and matches the CI job. Other

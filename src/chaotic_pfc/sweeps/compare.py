@@ -1,7 +1,7 @@
 """Compare two sets of Lyapunov sweep checkpoints, file by file.
 
 For each checkpoint present in both directories this prints the counts of
-chaotic (Nc), periodic (Nper), bounded (Nb = Nc + Nper) and divergent points,
+chaotic (Nc), non-chaotic (Nnc), bounded (Nb = Nc + Nnc) and divergent points,
 the number of grid points that changed class and in which direction, and the
 mean and maximum |delta lambda| over points that are chaotic in both sets.
 A summary over all files closes the report.
@@ -16,15 +16,15 @@ from typing import Any
 
 import numpy as np
 
-from chaotic_pfc.analysis.sweep import load_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep
 
 
 def classes(h: np.ndarray) -> np.ndarray:
     """Return the discrete class label for each cell."""
-    out = np.empty(h.shape, dtype="<U10")
+    out = np.empty(h.shape, dtype="<U12")
     out[np.isnan(h)] = "divergent"
-    out[~np.isnan(h) & (h > 0)] = "chaotic"
-    out[~np.isnan(h) & (h <= 0)] = "periodic"
+    out[~np.isnan(h) & (h > LAMBDA_CHAOS_THRESHOLD)] = "chaotic"
+    out[~np.isnan(h) & (h <= LAMBDA_CHAOS_THRESHOLD)] = "non-chaotic"
     return out
 
 
@@ -35,7 +35,7 @@ def compare(old_dir: Path, new_dir: Path) -> None:
     directions: Counter[str] = Counter[str]()
     max_abs = 0.0
     print(
-        f"{'checkpoint':<60} {'Nc o->n':>12} {'Nper o->n':>12} {'Ndiv o->n':>12} "
+        f"{'checkpoint':<60} {'Nc o->n':>12} {'Nnc o->n':>12} {'Ndiv o->n':>12} "
         f"{'changed':>8} {'mean|dl|':>10} {'max|dl|':>10} {'nfb o->n':>12}"
     )
     for rel in rel_paths:
@@ -48,7 +48,7 @@ def compare(old_dir: Path, new_dir: Path) -> None:
         co, cn = classes(np.asarray(old.h)), classes(np.asarray(new.h))
         n = co.size
         nc_o, nc_n = int((co == "chaotic").sum()), int((cn == "chaotic").sum())
-        np_o, np_n = int((co == "periodic").sum()), int((cn == "periodic").sum())
+        np_o, np_n = int((co == "non-chaotic").sum()), int((cn == "non-chaotic").sum())
         nd_o, nd_n = int((co == "divergent").sum()), int((cn == "divergent").sum())
         changed = co != cn
         for a, b in zip(co[changed], cn[changed], strict=True):

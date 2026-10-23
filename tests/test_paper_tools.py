@@ -57,7 +57,7 @@ def test_compute_covers_every_section(sweeps_tree: Path) -> None:
     # (``.cache/paper/regen_seconds.txt``) is present — a clean clone has none.
     assert len(set(out) - {"COST.regen_wall_seconds"}) == 193
     assert len(out) in (193, 194)
-    assert len(load_all(sweeps_tree)) == 124
+    assert len(load_all(sweeps_tree)) == 172
 
 
 def test_compute_cli_writes_json(sweeps_tree: Path, tmp_path: Path) -> None:
@@ -130,5 +130,36 @@ def test_run_paper_figures_cli(sweeps_tree: Path, tmp_path: Path) -> None:
     assert rc == 0
     assert (tmp_path / "simac" / "simac_fig1a_hamming_highpass.svg").is_file()
     assert (tmp_path / "simac" / "simac_fig1_legenda.svg").is_file()
-    assert (tmp_path / "jcis" / "kaiser_b13p5_lowpass_classification_interleaved.svg").is_file()
+    assert (tmp_path / "jcis" / "kaiser_b17p0_lowpass_classification_interleaved.svg").is_file()
     assert (tmp_path / "jcis" / "fig_chaotic_density.svg").is_file()
+
+
+def test_concordance_excludes_non_finite_filter_coefficients(sweeps_tree: Path) -> None:
+    """[30] Hann and Bartlett with two taps cannot enter the six-window vote."""
+    import numpy as np
+
+    from chaotic_pfc.analysis.stats._common import pct
+    from chaotic_pfc.analysis.sweep import precompute_fir_bank
+    from chaotic_pfc.paper.numbers import FIXED, fixed_of, section_concordance
+
+    recs = load_all(sweeps_tree)
+    out: dict[str, object] = {}
+    section_concordance(recs, out)
+    for ft in ("lowpass", "highpass", "bandpass", "bandstop"):
+        fx = fixed_of(recs, ft)
+        orders = np.asarray(fx["boxcar"].num_taps_grid, dtype=np.int64)
+        cutoffs = np.asarray(fx["boxcar"].cutoff_grid, dtype=np.float64)
+        arrays = [np.asarray(fx[w].h, dtype=np.float64) for w, _, _ in FIXED]
+        classes = np.stack([np.where(np.isnan(a), -1, np.where(a > 5e-3, 1, 0)) for a in arrays])
+        agree = np.all(classes == classes[0], axis=0)
+        valid = np.ones_like(agree, dtype=bool)
+        for window, _, _ in FIXED:
+            bank, _ = precompute_fir_bank(orders, cutoffs, ft, window)
+            valid &= np.isfinite(bank).all(axis=2)
+        if ft in ("lowpass", "bandpass"):
+            assert not valid[0].any(), "the two-tap Hann/Bartlett row must be excluded"
+        nz = orders - 1
+        le10 = (nz <= 10)[:, None] & valid
+        gt20 = (nz > 20)[:, None] & valid
+        assert out[f"CON.{ft}.pooled_Nz_le10"] == pct(int(agree[le10].sum()), int(le10.sum()), 1)
+        assert out[f"CON.{ft}.pooled_Nz_gt20"] == pct(int(agree[gt20].sum()), int(gt20.sum()), 1)

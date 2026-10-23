@@ -21,7 +21,12 @@ from chaotic_pfc.analysis.stats._types import (
     CorrelationMatrix,
     LmaxDistribution,
 )
-from chaotic_pfc.analysis.sweep import FILTER_TYPES, WINDOWS, load_sweep
+from chaotic_pfc.analysis.sweep import (
+    FILTER_TYPES,
+    LAMBDA_CHAOS_THRESHOLD,
+    WINDOWS,
+    load_sweep,
+)
 from chaotic_pfc.errors import InvalidParameterError
 
 
@@ -54,7 +59,7 @@ def beta_summary(
             if np.isnan(beta):
                 continue
             h = result.h
-            chaotic = np.sum((~np.isnan(h)) & (h > 0))
+            chaotic = np.sum((~np.isnan(h)) & (h > LAMBDA_CHAOS_THRESHOLD))
             total = h.size
             mn, mx = _safe_stats(h)
             out[ft][beta] = {
@@ -264,7 +269,7 @@ def chaos_margin(
         for i in range(len(num_taps_grid)):
             order = int(num_taps_grid[i])
             row = h[i, :]
-            chaotic_count = int(np.sum(np.isfinite(row) & (row > 0)))
+            chaotic_count = int(np.sum(np.isfinite(row) & (row > LAMBDA_CHAOS_THRESHOLD)))
             total = int(np.sum(np.isfinite(row)))
             if total > 0:
                 accum.setdefault(order, []).append(chaotic_count / total)

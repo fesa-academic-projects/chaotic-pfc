@@ -198,6 +198,25 @@ def test_sweeps_compare_bad_checkpoint_fails(
 
 
 def test_sweeps_stats_success(tmp_path: Path) -> None:
+    """The stats command does not require tables in the manuscript."""
+    tex = tmp_path / "empty.tex"
+    tex.write_text("\\documentclass{article}\n\\begin{document}\n\\end{document}\n")
+    argv = [
+        "sweeps",
+        "stats",
+        "--sweep-dir",
+        str(REPO / "data" / "sweeps"),
+        "--tex",
+        str(tex),
+        "--csv",
+        str(tmp_path / "stats.csv"),
+    ]
+    assert main(argv) == 0
+    assert (tmp_path / "stats.csv").is_file()
+
+
+def test_sweeps_stats_detects_stale_article_tables(tmp_path: Path) -> None:
+    """Canonical tables still use the old threshold until Wave 3."""
     argv = [
         "sweeps",
         "stats",
@@ -208,7 +227,7 @@ def test_sweeps_stats_success(tmp_path: Path) -> None:
         "--csv",
         str(tmp_path / "stats.csv"),
     ]
-    assert main(argv) == 0
+    assert main(argv) == 1
     assert (tmp_path / "stats.csv").is_file()
 
 

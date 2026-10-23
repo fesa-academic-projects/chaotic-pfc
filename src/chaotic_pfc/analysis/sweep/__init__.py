@@ -31,6 +31,7 @@ from ._orchestration import (
 )
 from ._types import (
     FILTER_TYPES,
+    LAMBDA_CHAOS_THRESHOLD,
     WINDOW_DISPLAY_NAMES,
     WINDOWS,
     SweepResult,
@@ -38,6 +39,7 @@ from ._types import (
 
 __all__ = [
     "FILTER_TYPES",
+    "LAMBDA_CHAOS_THRESHOLD",
     "WINDOWS",
     "WINDOW_DISPLAY_NAMES",
     "QuickSweepConfig",

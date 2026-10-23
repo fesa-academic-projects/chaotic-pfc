@@ -20,6 +20,7 @@ from ._types import (
     _ADAPTIVE_STREAK,
     _BENETTIN_K,
     _VONLY_MARGIN,
+    LAMBDA_CHAOS_THRESHOLD,
 )
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -663,11 +664,14 @@ def _sweep_kernel(
     alpha: float,
     beta: float,
     fallback_mode: int = 1,
-) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
-    """Parallel inner sweep. Returns (h, h_std, n_iters_mean, n_fallback), all (Ncoef, Ncut).
+) -> tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any]]:
+    """Parallel inner sweep.
+
+    Returns ``(h, h_std, n_iters_mean, n_fallback, v_mean)``, all of shape
+    ``(Ncoef, Ncut)``.
 
     ``fallback_mode`` selects the recomputation policy for marginal cells
-    (|mean| < ``_VONLY_MARGIN``):
+    (``|mean - LAMBDA_CHAOS_THRESHOLD| < _VONLY_MARGIN``):
 
     * ``0`` — no recomputation (``n_fallback`` stays 0 everywhere).
     * ``1`` — recompute with the full-spectrum kernel and return the maximum
@@ -688,6 +692,7 @@ def _sweep_kernel(
     h_std = np.full((Ncoef, Ncut), np.nan)
     n_iters_mean = np.full((Ncoef, Ncut), np.nan)
     n_fallback = np.zeros((Ncoef, Ncut), dtype=np.int64)
+    v_mean = np.full((Ncoef, Ncut), np.nan)
 
     for tk in prange(Ntot):
         flat = task_order[tk]
@@ -766,9 +771,10 @@ def _sweep_kernel(
                 h[i, j] = mean
                 h_std[i, j] = std
                 n_iters_mean[i, j] = iters_mean
+                v_mean[i, j] = mean
 
                 # Hybrid fallback: recompute marginal cells with full spectrum
-                if fallback_mode != 0 and abs(mean) < _VONLY_MARGIN:
+                if fallback_mode != 0 and abs(mean - LAMBDA_CHAOS_THRESHOLD) < _VONLY_MARGIN:
                     ww = np.empty((2, dim, dim))
                     lyap_sum_full = np.empty(dim)
                     full_samples = np.full(n_initial, np.nan)
@@ -836,4 +842,4 @@ def _sweep_kernel(
 
                     n_fallback[i, j] = 1
 
-    return h, h_std, n_iters_mean, n_fallback
+    return h, h_std, n_iters_mean, n_fallback, v_mean

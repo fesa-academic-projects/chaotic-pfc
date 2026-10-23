@@ -144,6 +144,9 @@ mutants/
 audit_output.txt
 checkall_output.txt
 *.diff
+review_patches/
+data/review_wave2_kaiser_ext/
+build/review/
 
 # Intermediate outputs of the paper tooling
 .cache/

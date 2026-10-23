@@ -13,7 +13,7 @@ from matplotlib.figure import Figure
 from numpy.typing import NDArray
 
 from chaotic_pfc._i18n import t
-from chaotic_pfc.analysis.sweep import SweepResult, load_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, SweepResult, load_sweep
 from chaotic_pfc.analysis.sweep_plotting._common import (
     COLOR_CHAOTIC,
     _discover_sweeps,
@@ -29,7 +29,7 @@ def _binary_union(loaded: Any) -> NDArray[Any]:
     """Binary union over sweeps: 1 where any sweep is chaotic, NaN elsewhere."""
     binary = np.zeros_like(loaded[0].h, dtype=np.float64)
     for sr in loaded:
-        binary = np.where(np.asarray(sr.h, dtype=np.float64) > 0.0, 1.0, binary)
+        binary = np.where(np.asarray(sr.h, dtype=np.float64) > LAMBDA_CHAOS_THRESHOLD, 1.0, binary)
     return np.where(binary > 0.0, binary, np.nan)
 
 
@@ -37,7 +37,7 @@ def _chaotic_count(loaded: Any) -> NDArray[Any]:
     """Count the sweeps that are chaotic at each grid point."""
     count = np.zeros_like(loaded[0].h, dtype=np.float64)
     for sr in loaded:
-        count += (np.asarray(sr.h, dtype=np.float64) > 0.0).astype(np.float64)
+        count += (np.asarray(sr.h, dtype=np.float64) > LAMBDA_CHAOS_THRESHOLD).astype(np.float64)
     return count
 
 
@@ -314,7 +314,7 @@ def chaotic_density_norm_table(
         for i, order in enumerate(np.asarray(sr.num_taps_grid)):
             k = index[int(order) - 1]
             n_containing[k] += 1.0
-            n_chaotic[k] += h[i] > 0.0
+            n_chaotic[k] += h[i] > LAMBDA_CHAOS_THRESHOLD
 
     percent = np.full_like(n_chaotic, np.nan)
     has = n_containing > 0

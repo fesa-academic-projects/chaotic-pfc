@@ -255,6 +255,7 @@ CLI:
 | `chaotic-pfc paper audit` | Cross-check `articles/jcis/article.tex` against the bibliography, figures and identity tables (`make check-paper`). |
 | `chaotic-pfc paper figures` | Generate the JCIS figures not produced elsewhere (`make jcis-figures`). |
 | `chaotic-pfc sweeps regenerate` | Recompute the versioned `data/sweeps/` checkpoints and rewrite the `SHA256SUMS` manifest. |
+| `make regen-sweeps` | Recompute `data/sweeps/` in `/tmp/chaotic-pfc-sweeps` and compare it with the canonical tree. |
 | `chaotic-pfc sweeps compare` | Compare two sweep directories file by file (bit-exactness after a refactor). |
 | `chaotic-pfc sweeps stats` | Per-configuration statistics read from the `.npz` checkpoints (CSV). |
 | `tools/check_pt_br_translations.sh` | Verify the pt-BR narrative documentation catalogues (documentation tooling). |

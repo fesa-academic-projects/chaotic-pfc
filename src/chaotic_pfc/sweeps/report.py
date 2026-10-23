@@ -3,7 +3,8 @@
 
 Reads only the checkpoints (no recomputation). The classification is NOT
 stored in the files, so it is reconstructed from ``h``: ``NaN`` is a diverged
-orbit, ``h > 0`` is chaotic and ``h <= 0`` is periodic. That reconstruction is
+orbit, ``h > LAMBDA_CHAOS_THRESHOLD`` is chaotic and
+``h <= LAMBDA_CHAOS_THRESHOLD`` is non-chaotic. That reconstruction is
 a caveat, not a measurement, and the ``NaN`` count per configuration is
 printed so the assumption is visible.
 
@@ -29,7 +30,7 @@ from typing import Any
 
 import numpy as np
 
-from chaotic_pfc.analysis.sweep import load_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep
 from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 from chaotic_pfc.paper import audit as audit_paper
 
@@ -39,7 +40,7 @@ CSV_FIELDS = [
     "kaiser_beta",
     "N_grid",
     "N_chaotic",
-    "N_periodic",
+    "N_non_chaotic",
     "N_divergent",
     "N_bounded",
     "rho_fin_pct",
@@ -67,12 +68,12 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
         md = sr.metadata
         h = np.asarray(sr.h, dtype=float)
         finite = np.isfinite(h)
-        chaotic = finite & (h > 0.0)
-        periodic = finite & (h <= 0.0)
+        chaotic = finite & (h > LAMBDA_CHAOS_THRESHOLD)
+        non_chaotic = finite & (h <= LAMBDA_CHAOS_THRESHOLD)
         divergent = ~finite
         n_grid = int(h.size)
         n_chaotic = int(np.count_nonzero(chaotic))
-        n_periodic = int(np.count_nonzero(periodic))
+        n_non_chaotic = int(np.count_nonzero(non_chaotic))
         n_divergent = int(np.count_nonzero(divergent))
         n_bounded = n_grid - n_divergent
         n_fallback = int(md.get("n_fallback", 0))
@@ -93,7 +94,7 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
                 "kaiser_beta": md.get("kaiser_beta"),
                 "N_grid": n_grid,
                 "N_chaotic": n_chaotic,
-                "N_periodic": n_periodic,
+                "N_non_chaotic": n_non_chaotic,
                 "N_divergent": n_divergent,
                 "N_bounded": n_bounded,
                 "rho_fin_pct": 100.0 * n_chaotic / n_bounded if n_bounded else float("nan"),
@@ -120,7 +121,7 @@ def print_table(configs: list[dict[str, Any]]) -> None:
     """Print the per-configuration statistics table."""
     header = (
         f"{'filter':<9} {'window':<15} {'beta':>5} {'N_grid':>6} {'N_chaotic':>9} "
-        f"{'N_periodic':>10} {'N_divergent':>11} {'rho_fin%':>8} {'rho_abs%':>8} "
+        f"{'N_non_chaotic':>13} {'N_divergent':>11} {'rho_fin%':>8} {'rho_abs%':>8} "
         f"{'n_fb':>5} {'fb_frac':>8}"
     )
     print(header)
@@ -129,7 +130,7 @@ def print_table(configs: list[dict[str, Any]]) -> None:
         beta = "-" if cfg["kaiser_beta"] is None else f"{float(cfg['kaiser_beta']):.1f}"
         print(
             f"{cfg['filter_type']:<9} {cfg['window']:<15} {beta:>5} {cfg['N_grid']:>6} "
-            f"{cfg['N_chaotic']:>9} {cfg['N_periodic']:>10} {cfg['N_divergent']:>11} "
+            f"{cfg['N_chaotic']:>9} {cfg['N_non_chaotic']:>13} {cfg['N_divergent']:>11} "
             f"{cfg['rho_fin_pct']:>8.2f} {cfg['rho_abs_pct']:>8.2f} "
             f"{cfg['n_fallback']:>5} {cfg['n_fallback_frac']:>8.4f}"
         )
@@ -186,7 +187,7 @@ def print_by_filter(configs: list[dict[str, Any]]) -> None:
     """Print the per-filter-type aggregation."""
     print("\naggregate divergent fraction by filter type (G ~ 1 vs G ~ 0 groups):")
     header = (
-        f"{'filter':<9} {'N_grid':>7} {'N_chaotic':>9} {'N_periodic':>10} "
+        f"{'filter':<9} {'N_grid':>7} {'N_chaotic':>9} {'N_non_chaotic':>13} "
         f"{'N_divergent':>11} {'div_frac%':>9} {'rho_fin%':>8} {'rho_abs%':>8}"
     )
     print(header)
@@ -195,14 +196,14 @@ def print_by_filter(configs: list[dict[str, Any]]) -> None:
         subset = [cfg for cfg in configs if cfg["filter_type"] == filter_type]
         n_grid = sum(cfg["N_grid"] for cfg in subset)
         n_chaotic = sum(cfg["N_chaotic"] for cfg in subset)
-        n_periodic = sum(cfg["N_periodic"] for cfg in subset)
+        n_non_chaotic = sum(cfg["N_non_chaotic"] for cfg in subset)
         n_divergent = sum(cfg["N_divergent"] for cfg in subset)
         n_bounded = n_grid - n_divergent
         div_frac = 100.0 * n_divergent / n_grid if n_grid else float("nan")
         rho_fin = 100.0 * n_chaotic / n_bounded if n_bounded else float("nan")
         rho_abs = 100.0 * n_chaotic / n_grid if n_grid else float("nan")
         print(
-            f"{filter_type:<9} {n_grid:>7} {n_chaotic:>9} {n_periodic:>10} "
+            f"{filter_type:<9} {n_grid:>7} {n_chaotic:>9} {n_non_chaotic:>13} "
             f"{n_divergent:>11} {div_frac:>9.2f} {rho_fin:>8.2f} {rho_abs:>8.2f}"
         )
 

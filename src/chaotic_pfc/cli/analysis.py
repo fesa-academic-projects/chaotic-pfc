@@ -278,7 +278,7 @@ def run(args: argparse.Namespace) -> int:
     # ── 2. Filter type comparison ──────────────────────────────────────
     _hr("FILTER TYPE COMPARISON")
     print(
-        f"  {'Filter':<12} {'%Chaotic':>8} {'%Periodic':>10} {'%Divergent':>10}  {'λ_max mean':>10}  {'λ_max max':>10}"
+        f"  {'Filter':<12} {'%Chaotic':>8} {'%Non-chaotic':>12} {'%Divergent':>10}  {'λ_max mean':>10}  {'λ_max max':>10}"
     )
     print("  " + "-" * 62)
     from chaotic_pfc.analysis.stats import summary_table
@@ -297,7 +297,7 @@ def run(args: argparse.Namespace) -> int:
         mn_l = round(float(sum(e["mean_lmax"] for e in entries) / len(entries)), 4)
         mx_l = round(float(max(e["max_lmax"] for e in entries)), 4)
         print(
-            f"  {ft:<12} {pct_c:>7.1f}% {pct_p:>9.1f}% {pct_d:>9.1f}%  {mn_l:>10.4f}  {mx_l:>10.4f}"
+            f"  {ft:<12} {pct_c:>7.1f}% {pct_p:>11.1f}% {pct_d:>9.1f}%  {mn_l:>10.4f}  {mx_l:>10.4f}"
         )
 
     # ── 3. Distribution ────────────────────────────────────────────────

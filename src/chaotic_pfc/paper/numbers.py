@@ -32,7 +32,11 @@ import numpy as np
 from chaotic_pfc._output import progress
 from chaotic_pfc.analysis.stats import lmax_statistics
 from chaotic_pfc.analysis.stats._common import pct as pct
-from chaotic_pfc.analysis.sweep import load_sweep, precompute_fir_bank
+from chaotic_pfc.analysis.sweep import (
+    LAMBDA_CHAOS_THRESHOLD,
+    load_sweep,
+    precompute_fir_bank,
+)
 from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
@@ -83,8 +87,8 @@ def load_all(root: Path, args: Any = None) -> list[Any]:
 def counts(sr: Any) -> dict[str, Any]:
     """Return the chaotic/periodic/divergent counts of a sweep."""
     h = np.asarray(sr.h, dtype=np.float64)
-    nc = int(np.count_nonzero(h > 0))
-    nper = int(np.count_nonzero((h <= 0) & ~np.isnan(h)))
+    nc = int(np.count_nonzero(h > LAMBDA_CHAOS_THRESHOLD))
+    nper = int(np.count_nonzero((h <= LAMBDA_CHAOS_THRESHOLD) & ~np.isnan(h)))
     ndiv = int(np.count_nonzero(np.isnan(h)))
     return {"nc": nc, "nper": nper, "nb": nc + nper, "ndiv": ndiv, "n": h.size}
 
@@ -92,7 +96,7 @@ def counts(sr: Any) -> dict[str, Any]:
 def chaotic_values(sr: Any) -> np.ndarray:
     """Return the λ_max values of the chaotic grid points."""
     h = np.asarray(sr.h, dtype=np.float64)
-    return h[h > 0]
+    return h[h > LAMBDA_CHAOS_THRESHOLD]
 
 
 def is_kaiser(sr: Any) -> bool:
@@ -114,8 +118,8 @@ def fixed_of(recs: Any, ft: str) -> dict[str, Any]:
 def best_kaiser(recs: Any, ft: str) -> Any:
     """Return the best Kaiser-β sweep for a filter type."""
     cands = [r for r in recs if r.filter_type == ft and is_kaiser(r)]
-    if len(cands) != 25:
-        raise ValueError(f"expected 25 Kaiser sweeps for {ft}, found {len(cands)}")
+    if len(cands) != 37:
+        raise ValueError(f"expected 37 Kaiser sweeps for {ft}, found {len(cands)}")
     return max(cands, key=lambda r: (counts(r)["nc"], -float(r.metadata["kaiser_beta"])))
 
 
@@ -300,13 +304,13 @@ def section_maps(best: dict[str, Any], out: dict[str, Any]) -> None:
     ge6 = []
     for i, z in enumerate(nz):
         if z >= 6:
-            mask = h[i] > 0
+            mask = h[i] > LAMBDA_CHAOS_THRESHOLD
             ge6.append(
                 f"{z}:{fmt(wc[np.flatnonzero(mask).max()], 2)}" if mask.any() else f"{z}:none"
             )
     out["MAP.highpass.max_wc_Nz_ge6"] = ", ".join(ge6)
     i4 = int(np.flatnonzero(nz == 4)[0])
-    cols4 = np.flatnonzero(h[i4] > 0)
+    cols4 = np.flatnonzero(h[i4] > LAMBDA_CHAOS_THRESHOLD)
     out["MAP.highpass.Nz4_band"] = (
         f"[{fmt(wc[cols4.min()], 2)}, {fmt(wc[cols4.max()], 2)}]" if cols4.size else "none"
     )
@@ -368,17 +372,39 @@ def section_concordance(recs: Any, out: dict[str, Any]) -> None:
     for ft in TYPES:
         fx = fixed_of(recs, ft)
         arrs = [np.asarray(fx[w].h, dtype=np.float64) for w, _, _ in FIXED]
-        cls = np.stack([np.where(np.isnan(a), -1, np.where(a > 0, 1, 0)) for a in arrs])
+        cls = np.stack(
+            [
+                np.where(
+                    np.isnan(a),
+                    -1,
+                    np.where(a > LAMBDA_CHAOS_THRESHOLD, 1, 0),
+                )
+                for a in arrs
+            ]
+        )
         agree = np.all(cls == cls[0], axis=0)
-        nz = np.asarray(fx["boxcar"].num_taps_grid, dtype=np.int64) - 1
-        le10 = nz <= 10
-        gt20 = nz > 20
-        out[f"CON.{ft}.pooled_Nz_le10"] = pct(int(agree[le10].sum()), int(agree[le10].size), 1)
-        out[f"CON.{ft}.pooled_Nz_gt20"] = pct(int(agree[gt20].sum()), int(agree[gt20].size), 1)
+        orders = np.asarray(fx["boxcar"].num_taps_grid, dtype=np.int64)
+        cutoffs = np.asarray(fx["boxcar"].cutoff_grid, dtype=np.float64)
+        # [30] Hann and Bartlett have non-finite FIR coefficients for two taps.
+        # Those cells stay divergent in maps and counts, but cannot participate
+        # in a comparison whose other windows have a finite filter there.
+        valid = np.ones_like(agree, dtype=bool)
+        for w, _name, _sidelobe in FIXED:
+            bank, _gains = precompute_fir_bank(orders, cutoffs, ft, w)
+            valid &= np.isfinite(bank).all(axis=2)
+        nz = orders - 1
+        le10 = (nz <= 10)[:, None] & valid
+        gt20 = (nz > 20)[:, None] & valid
+        out[f"CON.{ft}.pooled_Nz_le10"] = pct(int(agree[le10].sum()), int(le10.sum()), 1)
+        out[f"CON.{ft}.pooled_Nz_gt20"] = pct(int(agree[gt20].sum()), int(gt20.sum()), 1)
         if ft == "lowpass":
-            ncut = agree.shape[1]
-            out["CON.lowpass.max_disagreement_per_Nz"] = pct(
-                ncut - int(agree.sum(axis=1).min()), ncut, 1
+            agreement_pct = [
+                100.0 * int(agree[i][valid[i]].sum()) / int(valid[i].sum())
+                for i in range(agree.shape[0])
+                if valid[i].any()
+            ]
+            out["CON.lowpass.max_disagreement_per_Nz"] = (
+                round(100.0 - min(agreement_pct), 1) if agreement_pct else 0.0
             )
 
 
@@ -409,7 +435,7 @@ def section_kaiser(recs: Any, out: dict[str, Any]) -> None:
     out["KAI.lowpass.plateau_10_14"] = span("lowpass", 10.0, 14.0)
     out["KAI.bandpass.plateau_10_14"] = span("bandpass", 10.0, 14.0)
     out["KAI.highpass.plateau_12_14"] = span("highpass", 12.0, 14.0)
-    out["KAI.bandstop.all"] = span("bandstop", 2.0, 14.0)
+    out["KAI.bandstop.all"] = span("bandstop", 2.0, 20.0)
     lp = dict(_kaiser_pairs(recs, "lowpass"))
     out["KAI.lowpass.Nc_13.0"] = str(counts(lp[13.0])["nc"])
     out["KAI.lowpass.Nc_13.5"] = str(counts(lp[13.5])["nc"])
@@ -427,7 +453,7 @@ def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> 
     def frac(sr: Any, fn: Any) -> tuple[int, int]:
         h = np.asarray(sr.h, dtype=np.float64)
         s = np.asarray(sr.h_std, dtype=np.float64)
-        ch = h > 0
+        ch = h > LAMBDA_CHAOS_THRESHOLD
         if not ch.any():
             return 0, 0
         return int(np.count_nonzero(fn(h, s)[ch])), int(ch.sum())
@@ -457,7 +483,7 @@ def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> 
             t2.append(float(pct(a, b, 1)))
             a1, _ = frac(row["sr"], lambda h, s: h > 1e-3)
             a5, _ = frac(row["sr"], lambda h, s: h > 5e-3)
-            _, bb = frac(row["sr"], lambda h, s: h > 0)
+            _, bb = frac(row["sr"], lambda h, s: h > LAMBDA_CHAOS_THRESHOLD)
             t2_1.append(float(pct(a1, bb, 1)))
             t2_5.append(float(pct(a5, bb, 1)))
     out["ROB.tableII.pct_mean_above_2se"] = f"[{fmt(min(t2), 1)}, {fmt(max(t2), 1)}]"
@@ -533,8 +559,8 @@ def section_gain(recs: Any, out: dict[str, Any]) -> None:
         h = np.asarray(r.h, dtype=np.float64)
         low = gain < LOW_GAIN
         nan = np.isnan(h)
-        chaotic = h > 0
-        periodic = (~nan) & (h <= 0)
+        chaotic = h > LAMBDA_CHAOS_THRESHOLD
+        periodic = (~nan) & (h <= LAMBDA_CHAOS_THRESHOLD)
 
         n_low += int(low.sum())
         n_per_low += int((low & periodic).sum())
@@ -617,7 +643,7 @@ def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
                     fallback_mode=1,
                     warmup=True,
                 )
-                nc = int(np.count_nonzero(np.asarray(res.h) > 0))
+                nc = int(np.count_nonzero(np.asarray(res.h) > LAMBDA_CHAOS_THRESHOLD))
                 ncs[seed] = nc
                 f.write_text(json.dumps({"nc": nc, "seed": seed}))
             results[key] = {"ft": ft, "label": row["name"], "ncs": ncs, "kaiser": is_kaiser(sr)}

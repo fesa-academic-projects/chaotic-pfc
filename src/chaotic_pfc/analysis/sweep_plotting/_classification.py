@@ -39,7 +39,7 @@ def make_classification_legend(
     fontsize: float = 9.0,
     ncol: int = 1,
 ) -> Figure:
-    """Render the periodic/chaotic/unbounded legend as a standalone figure.
+    """Render the non-chaotic/chaotic/divergent legend as a standalone figure.
 
     Used when several classification panels are composed into a single
     LaTeX float and share one legend, so the colour key is not repeated
@@ -267,7 +267,7 @@ def plot_classification_interleaved(
     save_path
         If provided, the figure is saved to this path via ``_save()``.
     data_slots
-        Number of colormap quantisation levels for chaotic/periodic.
+        Number of colormap quantisation levels for chaotic/non-chaotic.
     gap_slots
         Number of white/yellow slots interleaved between classes.
     lang
@@ -407,7 +407,7 @@ def plot_difficulty_map(
     stable points), high values mean the running estimate stayed within
     the convergence tolerance only after many iterations (typically
     fronteira points where \\|λ_max\\| ≈ 0). Diverged grid points are shown
-    in the same light grey used for unbounded orbits in the
+    in the same light grey used for divergent orbits in the
     classification figures, so the two layers can be visually overlaid.
 
     Uses the same interleaved-column layout as

@@ -1,10 +1,11 @@
 """Generate the JCIS figures that the repository did not produce before.
 
-Writes ``fig_henon_signals``, ``fig_comm_bandlimited``, ``fig_kaiser_beta``
-and ``fig_chaotic_density_norm`` as SVG files in ``--out-dir`` (default
-``articles/jcis/Figures``). Every number is computed from the ``chaotic_pfc`` package
-and the versioned sweeps in ``data/sweeps``; the numbers quoted in the paper
-are printed so that they can be checked against the text.
+Writes ``fig_henon_signals``, the four classification maps,
+``fig_kaiser_beta`` and ``fig_chaotic_density_norm`` as SVG files in
+``--out-dir`` (default ``articles/jcis/Figures``). Every number is computed
+from the ``chaotic_pfc`` package and the versioned sweeps in ``data/sweeps``;
+the numbers quoted in the paper are printed so that they can be checked
+against the text.
 
 Output is deterministic: the SVG hash salt is fixed and the ``Date`` metadata
 is omitted, so two runs produce identical files.
@@ -21,7 +22,7 @@ import numpy as np
 from scipy.signal import firwin
 
 from chaotic_pfc.analysis.stats._common import pct as pct
-from chaotic_pfc.analysis.sweep import load_sweep, run_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep, run_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
     chaotic_density_norm_table,
     plot_chaotic_density_norm,
@@ -75,15 +76,16 @@ JCIS_FIG: _PanelOptions = dict(
 )
 
 JCIS_FIGURES: tuple[tuple[str, str], ...] = (
-    ("kaiser/lowpass/beta_13.50", "kaiser_b13p5_lowpass_classification_interleaved"),
-    ("kaiser/highpass/beta_11.50", "kaiser_b11p5_highpass_classification_interleaved"),
-    ("kaiser/bandpass/beta_13.50", "kaiser_b13p5_bandpass_classification_interleaved"),
+    ("kaiser/lowpass/beta_17.00", "kaiser_b17p0_lowpass_classification_interleaved"),
+    ("kaiser/highpass/beta_15.50", "kaiser_b15p5_highpass_classification_interleaved"),
+    ("kaiser/bandpass/beta_15.50", "kaiser_b15p5_bandpass_classification_interleaved"),
     ("Rectangular (bandstop)", "rectangular_bandstop_classification_interleaved"),
 )
 
 
 def _save(fig: Any, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    plt.rcParams["svg.hashsalt"] = SVG_SALT
     fig.savefig(
         path,
         format="svg",
@@ -92,6 +94,8 @@ def _save(fig: Any, path: Path) -> None:
         metadata={"Date": None, "Creator": None},
     )
     plt.close(fig)
+    text = path.read_text(encoding="utf-8")
+    path.write_text("\n".join(line.rstrip() for line in text.splitlines()) + "\n", encoding="utf-8")
 
 
 def _first_index(mask: np.ndarray) -> int | None:
@@ -265,26 +269,29 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
 
 def fig_kaiser_beta(out_dir: Path) -> None:
     """Write the Kaiser-β Lyapunov curve."""
-    fig, ax = plt.subplots(figsize=(JCIS_W, 2.6))
-    markers = {"lowpass": "o", "highpass": "s", "bandpass": "^", "bandstop": "D"}
+    fig, ax = plt.subplots(figsize=(JCIS_W, 2.30))
+    markers = {"lowpass": "o", "highpass": "o", "bandpass": "o", "bandstop": "o"}
     for ft in FILTER_TYPES:
         rows = []
         for path in sorted((DATA_DIR / "kaiser" / ft).glob("beta_*/variables_lyapunov.npz")):
             sr = load_sweep(path)
             beta = float(sr.metadata["kaiser_beta"])
             h = np.asarray(sr.h)
-            rows.append((beta, pct(int(np.count_nonzero(h > 0.0)), int(h.size), 1)))
+            nc = int(np.count_nonzero(h > LAMBDA_CHAOS_THRESHOLD))
+            rows.append((beta, 100.0 * nc / h.size, pct(nc, h.size, 1)))
         rows.sort()
         betas = np.array([r[0] for r in rows])
         rho = np.array([float(r[1]) for r in rows])
-        ax.plot(betas, rho, marker=markers[ft], ms=3.0, lw=0.9, label=ft)
-        print(f"[fig_kaiser_beta] {ft}: " + " ".join(f"{b:g}:{r}" for b, r in rows))
+        ax.plot(betas, rho, marker=markers[ft], ms=2.0, lw=0.8, label=ft)
+        print(f"[fig_kaiser_beta] {ft}: " + " ".join(f"{b:g}:{printed}" for b, _, printed in rows))
         best = int(np.argmax(rho))
-        print(f"[fig_kaiser_beta] {ft}: max rho_abs={rows[best][1]}% at beta_K={betas[best]:g}")
-    ax.set_xlabel(r"$\beta_K$", fontsize=JCIS_LABEL)
-    ax.set_ylabel(r"$\rho_c^{\mathrm{abs}}$ (\%)", fontsize=JCIS_LABEL)
-    ax.tick_params(labelsize=JCIS_TICK)
-    ax.legend(fontsize=JCIS_LEGEND, frameon=False)
+        print(f"[fig_kaiser_beta] {ft}: max rho_abs={rows[best][2]}% at beta_K={betas[best]:g}")
+    ax.set_xlabel(r"$\beta_K$", fontsize=9.0)
+    ax.set_ylabel(r"$\rho_c^{\mathrm{abs}}$ (\%)", fontsize=9.0)
+    ax.set_xlim(2.0, 20.0)
+    ax.tick_params(labelsize=8.0)
+    ax.grid(alpha=0.25, lw=0.4)
+    ax.legend(fontsize=6.5, frameon=False)
     fig.tight_layout()
     _save(fig, out_dir / "fig_kaiser_beta.svg")
 
@@ -307,11 +314,9 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
         figsize=(JCIS_W, 2.30),
         label_fontsize=9.0,
         tick_fontsize=8.0,
-        cbar_fontsize=8.0,
+        title_fontsize=9.0,
+        cbar_fontsize=7.5,
         show_title=False,
-        marker_size=6.0,
-        data_slots=1,
-        gap_slots=0,
         ytick_step=0.2,
         xtick_step=10,
     )
@@ -392,8 +397,6 @@ def fig_classification(out_dir: Path) -> None:
 
 GENERATORS = {
     "henon": fig_henon_signals,
-    "comm": fig_comm_bandlimited,
-    "ideal": fig_comm_ideal,
     "classification": fig_classification,
     "kaiser": fig_kaiser_beta,
     "density": fig_chaotic_density_norm,

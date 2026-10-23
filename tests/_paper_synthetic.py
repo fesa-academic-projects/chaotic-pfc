@@ -1,8 +1,8 @@
 """Build a small but structurally complete sweep tree for the paper-tooling tests.
 
 The manuscript tooling (``chaotic_pfc.paper``) assumes the canonical layout of
-the versioned sweeps: six fixed windows plus the 25 Kaiser ``beta_K`` values for
-each of the four filter types (124 configurations), all sharing one cutoff
+the versioned sweeps: six fixed windows plus the 37 Kaiser ``beta_K`` values for
+each of the four filter types (172 configurations), all sharing one cutoff
 grid. The checkpoints here are synthetic (seeded), with a reduced grid so the
 tests run in seconds, but the *structure* is exact, which is what exercises the
 section code paths of ``paper.numbers`` and the figure generators.
@@ -27,7 +27,7 @@ FIXED_WINDOWS = (
     ("blackman", "Blackman"),
     ("blackmanharris", "Blackman--Harris"),
 )
-KAISER_BETAS = tuple(round(2.0 + 0.5 * i, 1) for i in range(25))
+KAISER_BETAS = tuple(round(2.0 + 0.5 * i, 1) for i in range(37))
 CUTOFFS = np.round(np.linspace(0.01, 0.99, 10), 6)
 # Orders spanning the Nz ranges the sections rely on (Nz <= 10 and Nz > 20, and
 # Nz = 4 for the highpass map). Highpass and bandstop require odd tap counts.
@@ -76,7 +76,7 @@ def _make_result(
 
 
 def build_synthetic_sweeps(root: Path) -> Path:
-    """Write the 124 synthetic checkpoints under ``root`` and return ``root``."""
+    """Write the 172 synthetic checkpoints under ``root`` and return ``root``."""
     rng = np.random.default_rng(20261012)
     for filter_type in FILTER_TYPES:
         taps = _taps(filter_type)

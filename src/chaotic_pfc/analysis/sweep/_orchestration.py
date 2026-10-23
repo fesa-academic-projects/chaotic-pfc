@@ -25,7 +25,14 @@ from chaotic_pfc.config import DEFAULT_CONFIG
 from chaotic_pfc.errors import InvalidParameterError
 
 from ._kernel import _build_task_order, _sweep_kernel
-from ._types import _KAISER_BETA, FILTER_TYPES, WINDOWS, SweepResult
+from ._types import (
+    _KAISER_BETA,
+    _VONLY_MARGIN,
+    FILTER_TYPES,
+    LAMBDA_CHAOS_THRESHOLD,
+    WINDOWS,
+    SweepResult,
+)
 
 
 def _precompute_perturbations(
@@ -373,6 +380,8 @@ def _sweep_metadata(
         "tol": tol if adaptive else None,
         "fallback_mode": fallback_mode,
         "n_fallback": int(np.sum(n_fallback)),
+        "chaos_threshold": LAMBDA_CHAOS_THRESHOLD,
+        "vonly_margin": _VONLY_MARGIN,
     }
 
 
@@ -441,7 +450,8 @@ def run_sweep(
     tol
         Convergence tolerance for the adaptive criterion.
     fallback_mode
-        Policy for recomputing marginal cells (``|λ| < _VONLY_MARGIN``):
+        Policy for recomputing marginal cells
+        (``|λ - LAMBDA_CHAOS_THRESHOLD| < _VONLY_MARGIN``):
         ``0`` disables recomputation, ``1`` (default) recomputes with the
         full spectrum and returns its maximum, ``2`` recomputes with the
         full spectrum but returns and adapts on column 0 only.
@@ -568,7 +578,7 @@ def run_sweep(
     if warmup:
         _warmup_kernel(orders_arr, cutoffs_arr, fir_bank, gains, alpha, beta, fallback_mode)
 
-    h, h_std, n_iters_used, n_fallback = _sweep_kernel(
+    h, h_std, n_iters_used, n_fallback, v_mean = _sweep_kernel(
         orders_arr,
         cutoffs_arr,
         fir_bank,
@@ -599,6 +609,7 @@ def run_sweep(
         window=window,
         filter_type=filter_type,
         n_iters_used=n_iters_used,
+        v_mean=v_mean,
         metadata=_sweep_metadata(
             Nitera=Nitera,
             Nmap=Nmap,

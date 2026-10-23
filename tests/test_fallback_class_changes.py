@@ -1,7 +1,7 @@
 """Class stability across the ``fallback_mode`` policy.
 
 The hybrid estimator can (``1``, ``2``) or cannot (``0``) recompute marginal
-cells (``|lambda_1| < 5e-3``) with the full spectrum. This module runs the four
+cells (``|lambda_1 - LAMBDA_CHAOS_THRESHOLD| < 5e-3``) with the full spectrum. This module runs the four
 baseline configurations of the manuscript under all three modes on a reduced
 grid and records how many grid cells change class (chaotic / periodic /
 divergent). The counts are quoted in the documentation as evidence
@@ -18,7 +18,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from chaotic_pfc.analysis.sweep import run_sweep
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, run_sweep
 
 # The four baseline configurations (the best Kaiser beta per filter type).
 BASELINE_CONFIGS = (
@@ -34,7 +34,7 @@ ORDERS_PLAIN = np.array([2, 5, 8, 11])
 
 def _classes(h: np.ndarray) -> np.ndarray:
     h = np.asarray(h, dtype=np.float64)
-    return np.where(np.isnan(h), -1, np.where(h > 0, 1, 0))
+    return np.where(np.isnan(h), -1, np.where(h > LAMBDA_CHAOS_THRESHOLD, 1, 0))
 
 
 def _sweep(filter_type: str, kaiser_beta: float, fallback_mode: int):

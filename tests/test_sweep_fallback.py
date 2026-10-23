@@ -26,18 +26,21 @@ from chaotic_pfc.analysis.sweep import (
 
 class TestHybridFallback(unittest.TestCase):
     """Validate the hybrid estimator: v-only for strong cells, full-spectrum
-    fallback for marginal cells (|λ| < 5e-3)."""
+    fallback for cells near ``LAMBDA_CHAOS_THRESHOLD``."""
 
     def _marginal_cell_setup(self):
-        """Return (num_taps_grid, cutoff_grid, bank, gains, pert, Ns, c, alpha, beta, p1, p2, p3)
-        for the known marginal cell (order=10, ωc=0.212127, hamming lowpass)."""
+        """Return the known marginal cell (Ns=5, ωc=0.8182, Bartlett lowpass).
+
+        Its single-vector mean is about 8.7e-3, inside the band centred on
+        ``LAMBDA_CHAOS_THRESHOLD``.
+        """
         from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
-        num_taps_grid = np.array([10], dtype=np.int64)
-        cutoff_grid = np.array([0.212127])
-        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+        num_taps_grid = np.array([5], dtype=np.int64)
+        cutoff_grid = np.array([0.8181754545454546])
+        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "bartlett")
         pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
-        Ns = 10
+        Ns = 5
         c = bank[0, 0, :Ns]
         gain = gains[0, 0]
         alpha, beta = 1.4, 0.3
@@ -58,7 +61,7 @@ class TestHybridFallback(unittest.TestCase):
         )
         p2 = p1
         Nmap, Nitera = 3000, 500
-        dim = 10
+        dim = Ns
 
         # Direct full-spectrum: average over 25 ICs
         lam_f_samples = np.full(25, np.nan)
@@ -97,7 +100,7 @@ class TestHybridFallback(unittest.TestCase):
 
         # Hybrid sweep kernel
         task = np.zeros(1, dtype=np.int64)
-        h, _, _, n_fallback = _sweep_kernel(
+        h, _, _, n_fallback, _ = _sweep_kernel(
             num_taps_grid.astype(np.float64),
             cutoff_grid,
             bank,
@@ -120,8 +123,37 @@ class TestHybridFallback(unittest.TestCase):
             f"Hybrid output {h[0, 0]:.20e} must match full spectrum {mean_f:.20e}",
         )
 
+    def test_near_zero_negative_cell_does_not_fall_back(self):
+        """The old band centred on zero no longer triggers near zero."""
+        from chaotic_pfc.analysis.sweep._kernel import _sweep_kernel
+        from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
+
+        num_taps_grid = np.array([10], dtype=np.int64)
+        cutoff_grid = np.array([0.212127])
+        bank, gains = precompute_fir_bank(num_taps_grid, cutoff_grid, "lowpass", "hamming")
+        pert = _precompute_perturbations(num_taps_grid, 1, 25, 42)
+        task = np.array([0], dtype=np.int64)
+        h, _, _, n_fallback, v_mean = _sweep_kernel(
+            num_taps_grid.astype(np.float64),
+            cutoff_grid,
+            bank,
+            gains,
+            pert,
+            task,
+            500,
+            3000,
+            3000,
+            0.0,
+            25,
+            1.4,
+            0.3,
+        )
+        self.assertEqual(n_fallback[0, 0], 0)
+        self.assertEqual(h[0, 0], v_mean[0, 0])
+        self.assertLess(h[0, 0], 0.0)
+
     def test_no_fallback_on_non_marginal_cell(self):
-        """A cell with |λ| > 5e-3 uses the v-only result directly."""
+        """A cell far from the threshold uses the v-only result directly."""
         from chaotic_pfc.analysis.sweep._kernel import _sweep_kernel
         from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
@@ -131,7 +163,7 @@ class TestHybridFallback(unittest.TestCase):
         pert = _precompute_perturbations(num_taps_grid, 1, 4, 42)
         task = np.array([0], dtype=np.int64)
 
-        _, _, _, n_fallback = _sweep_kernel(
+        _, _, _, n_fallback, _ = _sweep_kernel(
             num_taps_grid.astype(np.float64),
             cutoff_grid,
             bank,
@@ -146,7 +178,7 @@ class TestHybridFallback(unittest.TestCase):
             1.4,
             0.3,
         )
-        # |λ| for Ns=3, ωc=0.5 is well above 5e-3; no fallback
+        # lambda_1 for Ns=3, wc=0.5 is well above the threshold; no fallback
         self.assertEqual(n_fallback[0, 0], 0)
 
 
