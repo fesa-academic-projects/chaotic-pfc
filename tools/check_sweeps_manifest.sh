@@ -2,7 +2,7 @@
 #
 # Verify the SHA-256 manifests of the frozen artefacts.
 #
-# data/sweeps/SHA256SUMS pins the 172 versioned sweep checkpoints;
+# data/sweeps/SHA256SUMS pins the 184 versioned sweep checkpoints;
 # articles/simac/SHA256SUMS pins the frozen SIMAC PDFs and DOCX files.
 set -euo pipefail
 

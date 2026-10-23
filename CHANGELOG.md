@@ -194,8 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `LAMBDA_CHAOS_THRESHOLD = 5e-3` instead of zero. The hybrid full-spectrum
   fallback is centred on that boundary (`|lambda - theta| < _VONLY_MARGIN`),
   and every user-facing class label now reads non-chaotic or divergent.
-- The default Kaiser grid runs from beta 2.0 to 20.0 in steps of 0.5, so
-  `chaotic-pfc run all` and `chaotic-pfc run sweep beta-sweep` cover the 172
+- The default Kaiser grid runs from beta 0.5 to 20.0 in steps of 0.5, so
+  `chaotic-pfc run all` and `chaotic-pfc run sweep beta-sweep` cover the 184
   canonical configurations. `chaotic-pfc run all --dry-run` lists them.
 - Window-agreement statistics exclude grid points whose FIR coefficients are
   non-finite (two-tap Hann and Bartlett), while maps and counts keep those

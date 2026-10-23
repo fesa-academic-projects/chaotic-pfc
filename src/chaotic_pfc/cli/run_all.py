@@ -153,7 +153,7 @@ def _common_args(no_display: bool, save: bool) -> dict[str, bool]:
 
 def _sweep_output_paths() -> list[Path]:
     """Return the canonical checkpoint paths written by ``run all``."""
-    betas = beta_values(2.0, 20.0, 0.5)
+    betas = beta_values(0.5, 20.0, 0.5)
     paths: list[Path] = []
     for window in WINDOWS:
         if window == "kaiser":
@@ -186,8 +186,8 @@ def _run_all_sweeps(
     """Run every (window, filter) combination.
 
     Non-Kaiser windows produce one ``.npz`` per filter type (24 total).
-    Kaiser expands into a β-sweep (β ∈ [2, 20] step 0.5) per filter type
-    (148 total), for 172 checkpoints overall.
+    Kaiser expands into a β-sweep (β ∈ [0.5, 20] step 0.5) per filter type
+    (160 total), for 184 checkpoints overall.
 
     When ``adaptive`` is True, every sweep enables the Lyapunov
     early-stop with the supplied ``Nmap_min`` and ``tol`` parameters.
@@ -211,7 +211,7 @@ def _run_all_sweeps(
     total_start = time.perf_counter()
 
     # Build the full sweep list: (window, filter_type, beta_or_None)
-    betas = beta_values(2.0, 20.0, 0.5)
+    betas = beta_values(0.5, 20.0, 0.5)
     kaiser_dir = Path("data/sweeps/kaiser")
     sweeps: list[tuple[str, str, float | None]] = []
     for window in WINDOWS:

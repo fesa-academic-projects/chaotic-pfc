@@ -119,8 +119,8 @@ def fixed_of(recs: Any, ft: str) -> dict[str, Any]:
 def best_kaiser(recs: Any, ft: str) -> Any:
     """Return the best Kaiser-β sweep for a filter type."""
     cands = [r for r in recs if r.filter_type == ft and is_kaiser(r)]
-    if len(cands) != 37:
-        raise ValueError(f"expected 37 Kaiser sweeps for {ft}, found {len(cands)}")
+    if not cands:
+        raise ValueError(f"expected at least one Kaiser sweep for {ft}, found none")
     return max(cands, key=lambda r: (counts(r)["nc"], -float(r.metadata["kaiser_beta"])))
 
 

@@ -22,7 +22,7 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         description=(
             "For each β in [beta_min, beta_max] step beta_step, run a full "
             "(order, cutoff) sweep with window=kaiser and save the result. "
-            "Defaults: β in [2, 20] step 0.5 (37 values)."
+            "Defaults: β in [0.5, 20] step 0.5 (40 values)."
         ),
     )
     p.add_argument(
@@ -35,9 +35,9 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
     p.add_argument(
         "--beta-min",
         type=float,
-        default=2.0,
+        default=0.5,
         dest="beta_min",
-        help="Inclusive lower bound of β range (default: 2.0)",
+        help="Inclusive lower bound of β range (default: 0.5)",
     )
     p.add_argument(
         "--beta-max",
@@ -51,7 +51,7 @@ def _add_beta_sweep_parser(subparsers: argparse._SubParsersAction[Any]) -> None:
         type=float,
         default=0.5,
         dest="beta_step",
-        help="Step between consecutive β values (default: 0.5 → 37 values)",
+        help="Step between consecutive β values (default: 0.5 → 40 values)",
     )
     p.add_argument(
         "--quick",
