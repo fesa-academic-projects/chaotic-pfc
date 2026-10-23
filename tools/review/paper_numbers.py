@@ -310,8 +310,11 @@ def _write(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def run(out_dir: Path) -> None:
     recs = _records()
-    if len(recs) != 172:
-        raise RuntimeError(f"expected 172 configurations, found {len(recs)}")
+    n_fixed = sum(1 for r in recs if r.window != "kaiser")
+    betas = {round(float(r.metadata["kaiser_beta"]), 10) for r in recs if r.window == "kaiser"}
+    expected = n_fixed + len(TYPES) * len(betas)
+    if len(recs) != expected:
+        raise RuntimeError(f"expected {expected} configurations, found {len(recs)}")
     out_dir.mkdir(parents=True, exist_ok=True)
     table = _table28(recs)
     _write(out_dir / "wave3_table28.csv", table)

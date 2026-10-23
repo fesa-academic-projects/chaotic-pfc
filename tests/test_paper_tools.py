@@ -134,6 +134,85 @@ def test_run_paper_figures_cli(sweeps_tree: Path, tmp_path: Path) -> None:
     assert (tmp_path / "jcis" / "fig_chaotic_density.svg").is_file()
 
 
+def test_seed_cache_key_invalidates_when_npz_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Changing the canonical .npz must force a fresh seed run."""
+    import numpy as np
+
+    from chaotic_pfc.analysis import sweep as sweep_pkg
+    from chaotic_pfc.analysis.sweep import SweepResult, load_sweep, save_sweep
+    from chaotic_pfc.paper import numbers as paper_numbers
+
+    tree = tmp_path / "sweeps"
+    metadata = {
+        "Nitera": 1,
+        "Nmap": 2,
+        "n_initial": 1,
+        "kaiser_beta": 5.0,
+        "bandwidth": 0.05,
+        "alpha": 1.4,
+        "beta": 0.3,
+        "adaptive": False,
+        "Nmap_min": 1,
+        "tol": 1e-3,
+    }
+    best: dict[str, list[dict[str, object]]] = {}
+    for ft in paper_numbers.TYPES:
+        result = SweepResult(
+            h=np.array([[0.01, 0.02]]),
+            h_std=np.zeros((1, 2)),
+            num_taps_grid=np.array([3]),
+            cutoff_grid=np.array([0.25, 0.5]),
+            window="boxcar",
+            filter_type=ft,
+            n_iters_used=np.array([[2.0, 2.0]]),
+            v_mean=np.array([[0.01, 0.02]]),
+            metadata=dict(metadata),
+        )
+        path = tree / f"Rectangular ({ft})" / "variables_lyapunov.npz"
+        save_sweep(result, path)
+        best[ft] = [{"name": "Rectangular", "sr": load_sweep(path), "db": 13, "nc": 1}]
+
+    calls: list[int] = []
+
+    def fake_run_sweep(**kwargs: object) -> SweepResult:
+        calls.append(int(kwargs["seed"]))
+        return SweepResult(
+            h=np.array([[0.01]]),
+            h_std=np.zeros((1, 1)),
+            num_taps_grid=np.array([3]),
+            cutoff_grid=np.array([0.25]),
+            window=str(kwargs["window"]),
+            filter_type=str(kwargs["filter_type"]),
+            metadata={},
+        )
+
+    monkeypatch.setattr(sweep_pkg, "run_sweep", fake_run_sweep)
+    monkeypatch.setattr(paper_numbers, "CACHE", tmp_path / "cache")
+
+    paper_numbers.seed_runs(tree, best)
+    cache = tmp_path / "cache" / "seeds"
+    assert len(calls) == len(paper_numbers.TYPES) * len(paper_numbers.SEED_LIST)
+    first_cache = {p.name for p in cache.glob("*.json")}
+    assert len(first_cache) == len(calls)
+
+    changed = tree / "Rectangular (lowpass)" / "variables_lyapunov.npz"
+    result = load_sweep(changed)
+    result.h[0, 0] = 0.02
+    save_sweep(result, changed)
+
+    calls.clear()
+    paper_numbers.seed_runs(tree, best)
+    assert len(calls) == len(paper_numbers.SEED_LIST)
+    assert {p.name for p in cache.glob("*.json")} > first_cache
+
+    lowpass = sorted(cache.glob("*.json"))
+    payloads = [json.loads(p.read_text()) for p in lowpass if p.name.startswith("lowpass.boxcar")]
+    assert payloads
+    assert all(len(str(p["sha256"])) == 64 for p in payloads)
+
+
 def test_concordance_excludes_non_finite_filter_coefficients(sweeps_tree: Path) -> None:
     """[30] Hann and Bartlett with two taps cannot enter the six-window vote."""
     import numpy as np

@@ -17,6 +17,7 @@ them when they are present.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import math
@@ -37,7 +38,7 @@ from chaotic_pfc.analysis.sweep import (
     load_sweep,
     precompute_fir_bank,
 )
-from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
+from chaotic_pfc.analysis.sweep._types import WINDOW_DISPLAY_NAMES, WINDOW_SIDELOBE_DB
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 LOW_GAIN = 0.1
@@ -594,6 +595,62 @@ def section_gain(recs: Any, out: dict[str, Any]) -> None:
 # ── slow quantities (extras) ────────────────────────────────────────────────
 
 
+def _sweep_source_path(root: Path, sr: Any) -> Path | None:
+    """Return the canonical ``.npz`` path of *sr* under *root*, if present."""
+    if sr.window == "kaiser":
+        beta = float(sr.metadata.get("kaiser_beta", 0.0))
+        path = root / "kaiser" / sr.filter_type / f"beta_{beta:.2f}" / "variables_lyapunov.npz"
+    else:
+        name = WINDOW_DISPLAY_NAMES.get(sr.window, sr.window)
+        path = root / f"{name} ({sr.filter_type})" / "variables_lyapunov.npz"
+    return path if path.is_file() else None
+
+
+def _sweep_content_sha256(sr: Any) -> str:
+    """Hash the in-memory sweep when no canonical file can be located."""
+    digest = hashlib.sha256()
+    for label, value in (
+        ("window", sr.window),
+        ("filter_type", sr.filter_type),
+        ("metadata", json.dumps(sr.metadata, sort_keys=True, default=str)),
+    ):
+        digest.update(label.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(str(value).encode("utf-8"))
+        digest.update(b"\0")
+    for label, value in (
+        ("h", sr.h),
+        ("h_std", sr.h_std),
+        ("num_taps_grid", sr.num_taps_grid),
+        ("cutoff_grid", sr.cutoff_grid),
+        ("n_iters_used", sr.n_iters_used),
+        ("v_mean", sr.v_mean),
+    ):
+        digest.update(label.encode("utf-8"))
+        digest.update(b"\0")
+        if value is None:
+            digest.update(b"none")
+        else:
+            array = np.ascontiguousarray(value)
+            digest.update(str(array.dtype).encode("utf-8"))
+            digest.update(str(array.shape).encode("utf-8"))
+            digest.update(array.tobytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def _seed_cache_identity(root: Path, sr: Any) -> tuple[str, str, Path | None]:
+    """Return the provenance-keyed cache stem, digest and source path."""
+    source = _sweep_source_path(root, sr)
+    if source is not None:
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    else:
+        digest = _sweep_content_sha256(sr)
+    beta = float(sr.metadata.get("kaiser_beta", 0.0))
+    stem = f"{sr.filter_type}.{sr.window}.{beta:g}.{digest}"
+    return stem, digest, source
+
+
 def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
     """Fill the ``SEED.*`` labels by rerunning with several seeds."""
     from chaotic_pfc.analysis.sweep import run_sweep
@@ -617,9 +674,10 @@ def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
         for row in rows:
             sr = row["sr"]
             key = f"{ft}.{sr.window}.{float(sr.metadata.get('kaiser_beta', 0)):g}"
+            cache_stem, digest, source = _seed_cache_identity(root, sr)
             ncs = {}
             for seed in SEED_LIST:
-                f = cache / f"{key}.seed{seed}.json"
+                f = cache / f"{cache_stem}.seed{seed}.json"
                 if f.exists():
                     ncs[seed] = json.loads(f.read_text())["nc"]
                     continue
@@ -645,8 +703,17 @@ def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
                 )
                 nc = int(np.count_nonzero(np.asarray(res.h) > LAMBDA_CHAOS_THRESHOLD))
                 ncs[seed] = nc
-                f.write_text(json.dumps({"nc": nc, "seed": seed}))
-            results[key] = {"ft": ft, "label": row["name"], "ncs": ncs, "kaiser": is_kaiser(sr)}
+                payload: dict[str, Any] = {"nc": nc, "seed": seed, "sha256": digest}
+                if source is not None:
+                    payload["source"] = str(source)
+                f.write_text(json.dumps(payload))
+            results[key] = {
+                "ft": ft,
+                "label": row["name"],
+                "ncs": ncs,
+                "kaiser": is_kaiser(sr),
+                "sha256": digest,
+            }
     return results
 
 
