@@ -215,8 +215,8 @@ def test_sweeps_stats_success(tmp_path: Path) -> None:
     assert (tmp_path / "stats.csv").is_file()
 
 
-def test_sweeps_stats_detects_stale_article_tables(tmp_path: Path) -> None:
-    """Canonical tables still use the old threshold until Wave 3."""
+def test_sweeps_stats_accepts_updated_article_tables(tmp_path: Path) -> None:
+    """The versioned article tables now use the new threshold and grid."""
     argv = [
         "sweeps",
         "stats",
@@ -227,7 +227,7 @@ def test_sweeps_stats_detects_stale_article_tables(tmp_path: Path) -> None:
         "--csv",
         str(tmp_path / "stats.csv"),
     ]
-    assert main(argv) == 1
+    assert main(argv) == 0
     assert (tmp_path / "stats.csv").is_file()
 
 
