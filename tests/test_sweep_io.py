@@ -282,10 +282,10 @@ class TestHelpers(unittest.TestCase):
                 load_sweep(evil_h, trust_legacy_pickle=True)
             self.assertFalse(sentinel.exists(), "Pickled h payload was executed!")
 
-    def test_all_172_versioned_checkpoints_load(self):
+    def test_all_184_versioned_checkpoints_load(self):
         sweeps_dir = Path(__file__).resolve().parents[1] / "data" / "sweeps"
         paths = sorted(sweeps_dir.rglob("variables_lyapunov.npz"))
-        self.assertEqual(len(paths), 172)
+        self.assertEqual(len(paths), 184)
         for p in paths:
             sr = load_sweep(p)
             self.assertIn("Nmap", sr.metadata)
