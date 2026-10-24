@@ -568,19 +568,26 @@ jobs:
             --output /tmp/tour_executed.ipynb
 
   # ───────────────────────────────────────────────────────────────────────
-  # Performance benchmarks: compare against baseline on PRs only.
+  # Performance benchmarks: compare PR base and head on the same runner.
+  # Shared runners are noisy, so this job is advisory and never blocks.
   # ───────────────────────────────────────────────────────────────────────
   benchmark:
     name: Performance benchmarks
     needs: test
     if: github.event_name == 'pull_request'
+    continue-on-error: true
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
     steps:
-      - name: Check out repository
+      - name: Check out pull request head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Python 3.14
@@ -610,11 +617,44 @@ jobs:
           restore-keys: |
             numba-${{ runner.os }}-py3.14-
 
-      - name: Run benchmarks and compare against baseline
+      - name: Create base worktree
         run: |
-          pytest benchmarks/ --benchmark-only \
-            --benchmark-compare=benchmarks/baseline/baseline_v0_7_0.json \
-            --benchmark-compare-fail=mean:25%
+          git worktree add --detach "$RUNNER_TEMP/bench-base" "$BASE_SHA"
+
+      - name: Run base benchmarks
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cd "$RUNNER_TEMP/bench-base"
+          PYTHONPATH="$RUNNER_TEMP/bench-base/src" \
+            pytest benchmarks/ --benchmark-only \
+            --benchmark-json="$RUNNER_TEMP/bench-base.json" \
+            | tee "$RUNNER_TEMP/bench-base.txt"
+
+      - name: Run head benchmarks against base
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          PYTHONPATH="$GITHUB_WORKSPACE/src" \
+            pytest benchmarks/ --benchmark-only \
+            --benchmark-compare="$RUNNER_TEMP/bench-base.json" \
+            --benchmark-compare-fail=mean:25% \
+            | tee "$RUNNER_TEMP/bench-head.txt"
+
+      - name: Publish benchmark comparison
+        if: always()
+        run: |
+          {
+            echo "## Performance benchmark comparison"
+            echo ""
+            echo "Base: \`$BASE_SHA\`"
+            echo ""
+            echo "Head: \`$HEAD_SHA\`"
+            echo ""
+            echo '```text'
+            cat "$RUNNER_TEMP/bench-head.txt" 2>/dev/null || cat "$RUNNER_TEMP/bench-base.txt" 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ───────────────────────────────────────────────────────────────────────
   # REUSE compliance: every file must declare its licence (via headers or
