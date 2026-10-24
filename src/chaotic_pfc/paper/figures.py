@@ -282,13 +282,29 @@ def fig_kaiser_beta(out_dir: Path) -> None:
         rows.sort()
         betas = np.array([r[0] for r in rows])
         rho = np.array([float(r[1]) for r in rows])
-        ax.plot(betas, rho, marker=markers[ft], ms=2.0, lw=0.8, label=ft)
+        (line,) = ax.plot(betas, rho, marker=markers[ft], ms=2.0, lw=0.8, label=ft)
+        rect_path = DATA_DIR / f"Rectangular ({ft})" / "variables_lyapunov.npz"
+        rect = load_sweep(rect_path)
+        h_rect = np.asarray(rect.h)
+        nc_rect = int(np.count_nonzero(h_rect > LAMBDA_CHAOS_THRESHOLD))
+        rho_rect = 100.0 * nc_rect / h_rect.size
+        ax.plot(
+            [0.0],
+            [rho_rect],
+            marker="s",
+            ms=4.0,
+            mfc="none",
+            linestyle="none",
+            color=line.get_color(),
+            label=r"rectangular ($\beta_K=0$)" if ft == "lowpass" else "_nolegend_",
+        )
         print(f"[fig_kaiser_beta] {ft}: " + " ".join(f"{b:g}:{printed}" for b, _, printed in rows))
+        print(f"[fig_kaiser_beta] {ft}: rectangular={pct(nc_rect, h_rect.size, 1)}%")
         best = int(np.argmax(rho))
         print(f"[fig_kaiser_beta] {ft}: max rho_abs={rows[best][2]}% at beta_K={betas[best]:g}")
     ax.set_xlabel(r"$\beta_K$", fontsize=9.0)
     ax.set_ylabel(r"$\rho_c^{\mathrm{abs}}$ (\%)", fontsize=9.0)
-    ax.set_xlim(0.5, 20.0)
+    ax.set_xlim(-0.5, 20.5)
     ax.tick_params(labelsize=8.0)
     ax.grid(alpha=0.25, lw=0.4)
     ax.legend(fontsize=6.5, frameon=False)

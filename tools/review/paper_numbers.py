@@ -18,7 +18,7 @@ from chaotic_pfc.analysis.sweep import (
 )
 from chaotic_pfc.analysis.sweep._types import WINDOW_SIDELOBE_DB
 from chaotic_pfc.analysis.sweep_plotting import chaotic_density_norm_table
-from chaotic_pfc.paper.numbers import FIXED, fixed_of, spearman_exact
+from chaotic_pfc.paper.numbers import FIXED, fixed_of, pct, spearman_exact
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 DISPLAY = {
@@ -71,13 +71,17 @@ def _table28(recs: list[Any]) -> list[dict[str, Any]]:
         for sr, name in picks:
             nc, nnc, _ = _counts(sr)
             mean, std = _mean_std(sr)
+            n_total = int(np.asarray(sr.h).size)
+            n_bounded = nc + nnc
             rows.append(
                 {
                     "filter": DISPLAY[ft],
-                    "window": name.replace("--", "-"),
+                    "window": name,
                     "Nc": nc,
-                    "rho_abs": 100.0 * nc / np.asarray(sr.h).size,
-                    "rho_cond": 100.0 * nc / (nc + nnc) if nc + nnc else float("nan"),
+                    "n_total": n_total,
+                    "n_bounded": n_bounded,
+                    "rho_abs": 100.0 * nc / n_total,
+                    "rho_cond": 100.0 * nc / n_bounded if n_bounded else float("nan"),
                     "mean_lambda1": mean,
                     "std_lambda1": std,
                 }
@@ -283,12 +287,13 @@ def _latex(rows: list[dict[str, Any]]) -> str:
         r"\begin{tabular}{rlrrrrrr}",
         r"\toprule",
         r"Rank & Filter & Window & $N_c$ & $\rho_c^{\mathrm{abs}}$ (\%) & "
-        r"$\rho_c^{\mathrm{cond}}$ (\%) & $\overline{\lambda}_1$ & $\sigma(\lambda_1)$ \\",
+        r"$\rho_c^{\mathrm{cond}}$ (\%) & $\bar{\lambda}_1$ & $\sigma_{\lambda_1}$ \\",
         r"\midrule",
     ]
     lines.extend(
         f"{row['rank']} & {row['filter']} & {row['window']} & {row['Nc']} & "
-        f"{row['rho_abs']:.3f} & {row['rho_cond']:.3f} & "
+        f"{pct(row['Nc'], row['n_total'], 1)} & "
+        f"{pct(row['Nc'], row['n_bounded'], 1)} & "
         f"{row['mean_lambda1']:.4f} & {row['std_lambda1']:.4f} \\\\"
         for row in rows
     )

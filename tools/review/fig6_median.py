@@ -41,6 +41,7 @@ BAND = (0.125, 0.875)
 PEAK_DISTANCE = 5
 RANDOM_POINTS = 30
 RANDOM_SEED = 42
+SVG_SALT = "chaotic-pfc-psd"
 
 
 def _best_record(recs: list[Any], filter_type: str) -> Any:
@@ -211,7 +212,17 @@ def run(out_dir: Path, horizon: int) -> None:
             fs=2.0,
         )
         db = 10.0 * np.log10(power / np.max(power))
+        i_max = int(np.argmax(power))
         ax.plot(f, db, color="black", lw=0.8, label="PSD $x_3$")
+        ax.plot(
+            f[i_max],
+            0.0,
+            marker="v",
+            color="black",
+            markersize=4.0,
+            clip_on=False,
+            zorder=10,
+        )
         ax.plot(
             w,
             20.0 * np.log10(np.maximum(np.abs(response), 1e-16)),
@@ -222,7 +233,12 @@ def run(out_dir: Path, horizon: int) -> None:
         ax.set_xlim(0, 1)
         ax.set_ylim(-120, 10)
         ax.set_title(
-            f"{filter_type.capitalize()} Nz={row['Nz']} wc/pi={wc:.4f}",
+            {
+                "lowpass": "(a) Lowpass",
+                "highpass": "(b) Highpass",
+                "bandpass": "(c) Bandpass",
+                "bandstop": "(d) Bandstop",
+            }[filter_type],
             fontsize=8,
         )
         ax.set_xlabel(r"$\omega/\pi$", fontsize=8)
@@ -233,6 +249,18 @@ def run(out_dir: Path, horizon: int) -> None:
 
     fig.tight_layout()
     fig.savefig(out_dir / "fig6_median.png", dpi=300, bbox_inches="tight")
+    plt.rcParams["svg.hashsalt"] = SVG_SALT
+    fig.savefig(
+        out_dir / "fig6_median.svg",
+        format="svg",
+        bbox_inches="tight",
+        metadata={"Date": None, "Creator": None},
+    )
+    svg = out_dir / "fig6_median.svg"
+    svg.write_text(
+        "\n".join(line.rstrip() for line in svg.read_text(encoding="utf-8").splitlines()) + "\n",
+        encoding="utf-8",
+    )
     plt.close(fig)
 
     with (out_dir / "fig6_median_points.csv").open("w", newline="", encoding="utf-8") as handle:
