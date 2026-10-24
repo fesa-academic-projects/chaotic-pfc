@@ -56,13 +56,14 @@ def _post_burn_in(
     perturbations: np.ndarray,
     i: int,
     j: int,
+    ic: int = 0,
 ) -> tuple[np.ndarray, np.ndarray, int]:
     orders = np.asarray(sr.num_taps_grid, dtype=np.int64)
     Ns = int(orders[i])
     c = np.asarray(bank[i, j, :Ns], dtype=np.float64)
     gain = float(gains[i, j])
     p1 = fixed_point_positive(gain, 1.4, 0.3)
-    noise = perturbations[i, j, 0, :Ns]
+    noise = perturbations[i, j, ic, :Ns]
     dim = 2 if Ns <= 2 else max(Ns, 4)
     xx = np.empty((2, dim))
     if Ns <= 2:

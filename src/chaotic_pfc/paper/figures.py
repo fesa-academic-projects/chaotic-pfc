@@ -288,7 +288,7 @@ def fig_kaiser_beta(out_dir: Path) -> None:
         print(f"[fig_kaiser_beta] {ft}: max rho_abs={rows[best][2]}% at beta_K={betas[best]:g}")
     ax.set_xlabel(r"$\beta_K$", fontsize=9.0)
     ax.set_ylabel(r"$\rho_c^{\mathrm{abs}}$ (\%)", fontsize=9.0)
-    ax.set_xlim(2.0, 20.0)
+    ax.set_xlim(0.5, 20.0)
     ax.tick_params(labelsize=8.0)
     ax.grid(alpha=0.25, lw=0.4)
     ax.legend(fontsize=6.5, frameon=False)

@@ -940,8 +940,8 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
     "8.3": "ratio between configurations, derived in the text",
     "4636": "bounded bandstop cells (TOT.bandstop.chaotic + periodic)",
     "62000": "highpass grid points (sum of TOT.highpass.*)",
-    "172000": "lowpass grid points (sum of TOT.lowpass.*)",
-    "516000": "total grid points across the 172 sweeps (derived)",
+    "184000": "lowpass grid points (sum of TOT.lowpass.*)",
+    "552000": "total grid points across the 184 sweeps (derived)",
     "8550": "CPU model in the machine description",
 }
 

@@ -422,8 +422,9 @@ def section_kaiser(recs: Any, out: dict[str, Any]) -> None:
         )
         vals = {b: pct(counts(r)["nc"], counts(r)["n"], 1) for b, r in cands}
         out[f"KAI.{ft}.all"] = ", ".join(f"{b:g}:{vals[b]}" for b in sorted(vals))
-        for b in (2.0, 10.0, 11.5, 13.0, 13.5, 14.0):
-            out[f"KAI.{ft}.beta{b:g}"] = vals[b]
+        for b in (0.5, 1.0, 1.5, 2.0, 10.0, 11.5, 13.0, 13.5, 14.0):
+            if b in vals:
+                out[f"KAI.{ft}.beta{b:g}"] = vals[b]
 
     def span(ft: Any, lo: Any, hi: Any) -> str:
         sub = [
@@ -436,7 +437,7 @@ def section_kaiser(recs: Any, out: dict[str, Any]) -> None:
     out["KAI.lowpass.plateau_10_14"] = span("lowpass", 10.0, 14.0)
     out["KAI.bandpass.plateau_10_14"] = span("bandpass", 10.0, 14.0)
     out["KAI.highpass.plateau_12_14"] = span("highpass", 12.0, 14.0)
-    out["KAI.bandstop.all"] = span("bandstop", 2.0, 20.0)
+    out["KAI.bandstop.all"] = span("bandstop", 0.5, 20.0)
     lp = dict(_kaiser_pairs(recs, "lowpass"))
     out["KAI.lowpass.Nc_13.0"] = str(counts(lp[13.0])["nc"])
     out["KAI.lowpass.Nc_13.5"] = str(counts(lp[13.5])["nc"])
@@ -651,23 +652,39 @@ def _seed_cache_identity(root: Path, sr: Any) -> tuple[str, str, Path | None]:
     return stem, digest, source
 
 
-def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
-    """Fill the ``SEED.*`` labels by rerunning with several seeds."""
+def seed_runs(root: Path, recs: Any) -> dict[str, Any]:
+    """Fill the ``SEED.*`` labels with protocol D.
+
+    Protocol D repeats, for every filter type, the best Kaiser configuration
+    and the best fixed-window configuration by ``Nc``; the bandstop type also
+    repeats Hamming.  The ten seeds are 1 to 9 and 42.
+    """
     from chaotic_pfc.analysis.sweep import run_sweep
 
     cache = CACHE / "seeds"
     cache.mkdir(parents=True, exist_ok=True)
-    configs = {}
+    configs: dict[str, list[dict[str, Any]]] = {}
     for ft in TYPES:
-        kb = [r for r in best[ft] if is_kaiser(r["sr"])]
-        fx = [r for r in best[ft] if not is_kaiser(r["sr"])]
-        table_rows = [r for r in best[ft][:2]]
-        chosen = {id(r): r for r in table_rows}
-        if kb:
-            chosen[id(kb[0])] = kb[0]
-        if fx:
-            chosen[id(fx[0])] = fx[0]
-        configs[ft] = list(chosen.values())
+        fx = fixed_of(recs, ft)
+        fixed_best = max(fx.values(), key=lambda r: counts(r)["nc"])
+        kb = best_kaiser(recs, ft)
+        rows = [
+            {"role": "best_kaiser", "name": kaiser_label(kb), "sr": kb},
+            {
+                "role": "best_fixed",
+                "name": WINDOW_DISPLAY_NAMES.get(fixed_best.window, fixed_best.window),
+                "sr": fixed_best,
+            },
+        ]
+        if ft == "bandstop" and fixed_best.window != "hamming":
+            rows.append(
+                {
+                    "role": "bandstop_hamming",
+                    "name": WINDOW_DISPLAY_NAMES.get("hamming", "Hamming"),
+                    "sr": fx["hamming"],
+                }
+            )
+        configs[ft] = rows
 
     results: dict[str, Any] = {}
     for ft, rows in configs.items():
@@ -709,6 +726,7 @@ def seed_runs(root: Path, best: dict[str, Any]) -> dict[str, Any]:
                 f.write_text(json.dumps(payload))
             results[key] = {
                 "ft": ft,
+                "role": row["role"],
                 "label": row["name"],
                 "ncs": ncs,
                 "kaiser": is_kaiser(sr),
@@ -757,7 +775,7 @@ def validation_ns1() -> dict[str, Any]:
     mean = float(np.mean(lams))
     return {
         "lambda1_mean": fmt(mean, 4),
-        "rel_err_pct": pct_float(abs(mean - 0.4192), 0.4192, 2),
+        "rel_err_pct": pct_float(abs(mean - 0.41922), 0.41922, 2),
         "max_sum_residual": f"{max(residuals):.2e}",
     }
 
@@ -802,19 +820,20 @@ def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     section_cost(recs, out)
     section_gain(recs, out)
     if extras:
-        seeds = seed_runs(root, best)
+        seeds = seed_runs(root, recs)
         for key, info in seeds.items():
             ncs = list(info["ncs"].values())
             out[f"SEED.{key}"] = (
                 f"{info['label']}: Nc mean={fmt(np.mean(ncs), 2)} sd={fmt(np.std(ncs, ddof=1), 2)} "
+                f"min={min(ncs)} max={max(ncs)} seed42={info['ncs'][42]} "
                 f"(seeds {SEED_LIST}: {ncs})"
             )
         for ft in TYPES:
-            kaiser = [v for v in seeds.values() if v["ft"] == ft and v["kaiser"]]
-            fixed = [v for v in seeds.values() if v["ft"] == ft and not v["kaiser"]]
+            kaiser = [v for v in seeds.values() if v["ft"] == ft and v["role"] == "best_kaiser"]
+            fixed = [v for v in seeds.values() if v["ft"] == ft and v["role"] == "best_fixed"]
             if kaiser and fixed:
-                k = max(kaiser, key=lambda v: np.mean(list(v["ncs"].values())))
-                f = max(fixed, key=lambda v: np.mean(list(v["ncs"].values())))
+                k = kaiser[0]
+                f = fixed[0]
                 wins = sum(k["ncs"][s] > f["ncs"][s] for s in SEED_LIST)
                 out[f"SEED.kaiser_gt_fixed.{ft}"] = f"{wins}/{len(SEED_LIST)} seeds"
         out["VAL.ns1"] = validation_ns1()

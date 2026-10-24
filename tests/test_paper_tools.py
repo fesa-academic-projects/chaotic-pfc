@@ -157,22 +157,37 @@ def test_seed_cache_key_invalidates_when_npz_changes(
         "Nmap_min": 1,
         "tol": 1e-3,
     }
-    best: dict[str, list[dict[str, object]]] = {}
+    recs: list[SweepResult] = []
     for ft in paper_numbers.TYPES:
+        for window, name, _ in paper_numbers.FIXED:
+            result = SweepResult(
+                h=np.array([[0.01, 0.02]]),
+                h_std=np.zeros((1, 2)),
+                num_taps_grid=np.array([3]),
+                cutoff_grid=np.array([0.25, 0.5]),
+                window=window,
+                filter_type=ft,
+                n_iters_used=np.array([[2.0, 2.0]]),
+                v_mean=np.array([[0.01, 0.02]]),
+                metadata=dict(metadata),
+            )
+            path = tree / f"{name} ({ft})" / "variables_lyapunov.npz"
+            save_sweep(result, path)
+            recs.append(load_sweep(path))
         result = SweepResult(
             h=np.array([[0.01, 0.02]]),
             h_std=np.zeros((1, 2)),
             num_taps_grid=np.array([3]),
             cutoff_grid=np.array([0.25, 0.5]),
-            window="boxcar",
+            window="kaiser",
             filter_type=ft,
             n_iters_used=np.array([[2.0, 2.0]]),
             v_mean=np.array([[0.01, 0.02]]),
             metadata=dict(metadata),
         )
-        path = tree / f"Rectangular ({ft})" / "variables_lyapunov.npz"
+        path = tree / "kaiser" / ft / "beta_5.00" / "variables_lyapunov.npz"
         save_sweep(result, path)
-        best[ft] = [{"name": "Rectangular", "sr": load_sweep(path), "db": 13, "nc": 1}]
+        recs.append(load_sweep(path))
 
     calls: list[int] = []
 
@@ -191,9 +206,10 @@ def test_seed_cache_key_invalidates_when_npz_changes(
     monkeypatch.setattr(sweep_pkg, "run_sweep", fake_run_sweep)
     monkeypatch.setattr(paper_numbers, "CACHE", tmp_path / "cache")
 
-    paper_numbers.seed_runs(tree, best)
+    paper_numbers.seed_runs(tree, recs)
     cache = tmp_path / "cache" / "seeds"
-    assert len(calls) == len(paper_numbers.TYPES) * len(paper_numbers.SEED_LIST)
+    n_configs = len(paper_numbers.TYPES) * 2 + 1
+    assert len(calls) == n_configs * len(paper_numbers.SEED_LIST)
     first_cache = {p.name for p in cache.glob("*.json")}
     assert len(first_cache) == len(calls)
 
@@ -203,7 +219,7 @@ def test_seed_cache_key_invalidates_when_npz_changes(
     save_sweep(result, changed)
 
     calls.clear()
-    paper_numbers.seed_runs(tree, best)
+    paper_numbers.seed_runs(tree, recs)
     assert len(calls) == len(paper_numbers.SEED_LIST)
     assert {p.name for p in cache.glob("*.json")} > first_cache
 

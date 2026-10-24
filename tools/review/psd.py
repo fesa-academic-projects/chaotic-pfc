@@ -157,8 +157,16 @@ def _baseline_psd() -> tuple[np.ndarray, np.ndarray]:
     return _psd(signal)
 
 
-def run(out_dir: Path) -> None:
+def run(out_dir: Path, edge_margin: float = 0.0, prefix: str = "") -> None:
     best = _best_per_type()
+    figure_path = out_dir / (f"{prefix}_fig_psd.svg" if prefix else "fig_psd_review.svg")
+    meta_path = out_dir / (f"{prefix}_psd_meta.csv" if prefix else "wave2_psd_meta.csv")
+    fraction_path = out_dir / (
+        f"{prefix}_psd_fraction.csv" if prefix else "wave2c_psd_fraction.csv"
+    )
+    summary_path = out_dir / (
+        f"{prefix}_psd_fraction_summary.csv" if prefix else "wave2c_psd_fraction_summary.csv"
+    )
     setup_rc()
     plt.rcParams["svg.hashsalt"] = SVG_SALT
     fig, axes = plt.subplots(2, 2, figsize=(7.16, 5.4))
@@ -171,7 +179,10 @@ def run(out_dir: Path) -> None:
         sr, rel = best[filter_type]
         orders, cutoffs, bank, gains, perturbations = _build(sr)
         h = np.asarray(sr.h, dtype=np.float64)
-        chaotic = np.argwhere((~np.isnan(h)) & (h > LAMBDA_CHAOS_THRESHOLD))
+        mask = (~np.isnan(h)) & (h > LAMBDA_CHAOS_THRESHOLD)
+        if edge_margin > 0.0 and filter_type in ("bandpass", "bandstop"):
+            mask &= (cutoffs[None, :] >= edge_margin) & (cutoffs[None, :] <= 1.0 - edge_margin)
+        chaotic = np.argwhere(mask)
         if not chaotic.size:
             raise RuntimeError(f"no chaotic point for {filter_type}")
         sorted_points = sorted(
@@ -311,13 +322,13 @@ def run(out_dir: Path) -> None:
             )
     fig.tight_layout()
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "fig_psd_review.svg", bbox_inches="tight")
+    fig.savefig(figure_path, bbox_inches="tight")
     plt.close(fig)
-    with (out_dir / "wave2_psd_meta.csv").open("w", newline="", encoding="utf-8") as handle:
+    with meta_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(meta[0]))
         writer.writeheader()
         writer.writerows(meta)
-    with (out_dir / "wave2c_psd_fraction.csv").open("w", newline="", encoding="utf-8") as handle:
+    with fraction_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(fraction_rows[0]))
         writer.writeheader()
         writer.writerows(fraction_rows)
@@ -366,14 +377,12 @@ def run(out_dir: Path) -> None:
                     else float("nan"),
                 }
             )
-    with (out_dir / "wave2c_psd_fraction_summary.csv").open(
-        "w", newline="", encoding="utf-8"
-    ) as handle:
+    with summary_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(summary[0]))
         writer.writeheader()
         writer.writerows(summary)
     print(f"max |h_repro - h_stored| over chaotic cells: {max_repro}")
-    print(f"wrote {out_dir / 'fig_psd_review.svg'}")
+    print(f"wrote {figure_path}")
     for row in meta:
         print(row)
 
@@ -381,8 +390,19 @@ def run(out_dir: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out-dir", default="build/review")
+    parser.add_argument(
+        "--edge-margin",
+        type=float,
+        default=0.0,
+        help="exclude bandpass/bandstop cutoffs outside [margin, 1-margin]",
+    )
+    parser.add_argument(
+        "--prefix",
+        default="",
+        help="prefix for the figure and CSV names (default: manuscript names)",
+    )
     args = parser.parse_args()
-    run(Path(args.out_dir))
+    run(Path(args.out_dir), args.edge_margin, args.prefix)
     return 0
 
 

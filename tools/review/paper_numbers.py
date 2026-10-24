@@ -361,9 +361,17 @@ def run(out_dir: Path) -> None:
     spearman = []
     ratio = {}
     ratio_path = out_dir / "wave2_selectivity_spearman.csv"
-    if ratio_path.exists():
-        for row in csv.DictReader(ratio_path.open()):
-            ratio[row["window"]] = float(row["median_ratio"])
+    if not ratio_path.exists():
+        # Keep this script runnable from a fresh output directory.  The
+        # selectivity diagnostic is cheap and supplies the median realized
+        # -6 dB ratio used by the lowpass Spearman test.
+        import selectivity
+
+        selectivity.run(out_dir)
+    if not ratio_path.exists():
+        raise RuntimeError(f"selectivity output not found: {ratio_path}")
+    for row in csv.DictReader(ratio_path.open()):
+        ratio[row["window"]] = float(row["median_ratio"])
     for ft in TYPES:
         fixed = fixed_of(recs, ft)
         nc = np.array([_counts(fixed[w])[0] for w, _, _ in FIXED], dtype=np.float64)
