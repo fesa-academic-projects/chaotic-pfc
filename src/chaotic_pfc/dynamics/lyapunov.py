@@ -35,6 +35,7 @@ from __future__ import annotations
 import csv
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from math import isfinite
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -217,6 +218,11 @@ class LyapunovResult:
     stable_n: bool | None = None
 
 
+def _all_finite(values: NDArray[np.float64]) -> bool:
+    """Return whether every element is finite, without a NumPy allocation."""
+    return all(isfinite(value) for value in values.flat)
+
+
 def _lyapunov_spectrum(
     x: NDArray[np.float64],
     iterate: Callable[[NDArray[np.float64]], NDArray[np.float64]],
@@ -246,12 +252,12 @@ def _lyapunov_spectrum(
     x = x.copy()
 
     with np.errstate(over="ignore", invalid="ignore"):
-        if not np.all(np.isfinite(x)):
+        if not _all_finite(x):
             return np.full(dim, np.nan)
 
         for _ in range(Ndiscard):
             x = iterate(x)
-            if not np.all(np.isfinite(x)):
+            if not _all_finite(x):
                 return np.full(dim, np.nan)
 
         W = np.eye(dim)
@@ -259,13 +265,13 @@ def _lyapunov_spectrum(
 
         for i in range(Nitera):
             Z = jacobian(x) @ W
-            if not np.all(np.isfinite(Z)):
+            if not _all_finite(Z):
                 return np.full(dim, np.nan)
             W, norms = _gram_schmidt(Z)
             for k in range(dim):
                 log_r[k, i] = np.log(max(norms[k], 1e-300))
             x = iterate(x)
-            if not np.all(np.isfinite(x)):
+            if not _all_finite(x):
                 return np.full(dim, np.nan)
 
     return np.array([np.mean(log_r[k, :]) for k in range(dim)])
