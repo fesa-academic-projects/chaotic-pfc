@@ -147,8 +147,17 @@ paper-pdf-local:  ## Preview the JCIS PDF with the system TeX Live, into $(PAPER
 
 PAPER_DIFF_DIR ?= .cache/diff
 PAPER_DIFF_OUT ?= $(PAPER_DIR)/diff
-PAPER_DIFF_OPTS ?=
+# Treat every changed tabular as one indivisible block.  Keep tikzpicture in
+# PICTUREENV: assigning it replaces latexdiff's default, and without
+# tikzpicture the old TikZ source of Fig. 2 is printed as deleted text.
+# latexdiff still comments the body of a float that disappears between the
+# versions; tools/paper_diff_tables.py restores those old tables below the
+# diff so that removals remain visible.
+PAPER_DIFF_OPTS ?= --no-label \
+	--config="PICTUREENV=(?:picture|tikzpicture|DIFnomarkup|tabular)[\w\d*@]*"
 
+paper-diff: export SOURCE_DATE_EPOCH = $(PAPER_EPOCH)
+paper-diff: export FORCE_SOURCE_DATE = 1
 paper-diff:  ## Build a latexdiff PDF against BASE (make paper-diff BASE=<commit> NAME=<label>)
 	@test -n "$(BASE)" || { echo "BASE=<commit> is required" >&2; exit 1; }
 	@test -n "$(NAME)" || { echo "NAME=<label> is required" >&2; exit 1; }
@@ -160,7 +169,10 @@ paper-diff:  ## Build a latexdiff PDF against BASE (make paper-diff BASE=<commit
 	git show $(BASE):$$base_tex > $(PAPER_DIFF_DIR)/old/article.tex; \
 	git show $(BASE):$$base_bib > $(PAPER_DIFF_DIR)/old/references.bib
 	cp $(PAPER_DIR)/Figures/* $(PAPER_DIFF_DIR)/Figures/
-	cp $(PAPER_BIB) $(PAPER_DIFF_DIR)/references.bib
+	# Deleted citations keep their old keys, so compile against the union of
+	# the current bibliography and entries that exist only in BASE.
+	python3 tools/paper_diff_bib.py $(PAPER_BIB) \
+		$(PAPER_DIFF_DIR)/old/references.bib $(PAPER_DIFF_DIR)/references.bib
 	for p in $$(grep -o 'Figures/[A-Za-z0-9_.-]*' $(PAPER_DIFF_DIR)/old/article.tex | sort -u); do \
 	  f=$${p#Figures/}; \
 	  [ -e $(PAPER_DIFF_DIR)/$$p ] && continue; \
@@ -179,6 +191,10 @@ paper-diff:  ## Build a latexdiff PDF against BASE (make paper-diff BASE=<commit
 	# IEEEtran \csname lines, which breaks the bibliography. The article has no
 	# \input or \include, so nothing is lost; bibtex builds the bibliography.
 	latexdiff $(PAPER_DIFF_OPTS) $(PAPER_DIFF_DIR)/old/article.tex $(PAPER_TEX) > $(PAPER_DIFF_DIR)/diff.tex
+	# latexdiff comments the body of deleted floats; restore the old tables in
+	# a red appendix so the removals remain visible in the PDF.
+	python3 tools/paper_diff_tables.py $(PAPER_DIFF_DIR)/old/article.tex \
+		$(PAPER_DIFF_DIR)/diff.tex
 	# Labels that exist only in BASE (deleted text) get their BASE numbers from its own .aux
 	cd $(PAPER_DIFF_DIR)/old && ln -sfn ../Figures Figures && pdflatex -shell-escape -interaction=nonstopmode article.tex > pass.log 2>&1
 	grep -o '\\label{[^}]*}' $(PAPER_TEX) | sed 's/.*{\(.*\)}/\1/' > $(PAPER_DIFF_DIR)/new_labels.txt
