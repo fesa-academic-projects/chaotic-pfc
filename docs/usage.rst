@@ -282,7 +282,7 @@ Produces 8 ``.tex`` files per language under ``data/analysis_output/tables/{pt,e
 
 * **tab_top_k.tex** — Top-3 windows per filter type (chaotic area).
 * **tab_top_k_extended.tex** — Top-3 with :math:`\lambda_{\max}` statistics and 95% CI.
-* **tab_full_ranking.tex** — Full 124-entry ranking (longtable).
+* **tab_full_ranking.tex** — Full 184-entry ranking (longtable).
 * **tab_sweet_spots.tex** — Grid point with highest :math:`\lambda_{\max}` per filter.
 * **tab_consolidated_top_k.tex** — Top-3 with Kaiser collapsed to best :math:`\beta`.
 * **tab_consolidated_extended.tex** — Extended stats, Kaiser consolidated.

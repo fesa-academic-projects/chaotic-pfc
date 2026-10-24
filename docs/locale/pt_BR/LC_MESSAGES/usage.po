@@ -476,8 +476,8 @@ msgstr ""
 ":math:`\\lambda_{\\max}` e IC de 95%."
 
 #: ../../usage.rst:285
-msgid "**tab_full_ranking.tex** — Full 124-entry ranking (longtable)."
-msgstr "**tab_full_ranking.tex** — Ranking completo com 124 entradas (longtable)."
+msgid "**tab_full_ranking.tex** — Full 184-entry ranking (longtable)."
+msgstr "**tab_full_ranking.tex** — Ranking completo com 184 entradas (longtable)."
 
 #: ../../usage.rst:286
 #, python-brace-format

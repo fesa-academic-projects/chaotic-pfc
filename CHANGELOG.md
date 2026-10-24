@@ -137,7 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tooling now lives in the package (`chaotic_pfc.paper`, `chaotic_pfc.sweeps`)
   and is driven from the CLI; the DOI whitelist ships as package data and is
   read with `importlib.resources`.
-- `data/sweeps/SHA256SUMS`, the sha256 of the 124 checkpoints, rewritten by
+- `data/sweeps/SHA256SUMS`, the sha256 of the 184 checkpoints, rewritten by
   `chaotic-pfc sweeps regenerate` and verified by an always-on test.
 - `articles/`: the JCIS manuscript under `articles/jcis/` and the frozen
   VIII SIMAC record (its PDFs, the reconstructed `.docx` files, and an errata)
@@ -163,7 +163,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fallback_mode` policy for the hybrid Lyapunov estimator (`0`, `1`, `2`),
   with `1` (full-spectrum recomputation of marginal cells) as the default.
 - `tests/test_cli_paper_sweeps.py` covering the new CLI groups.
-- `data/sweeps/ENVIRONMENT.json` recording the stack that regenerated the 124
+- `data/sweeps/ENVIRONMENT.json` recording the stack that regenerated the 184
   checkpoints, with `tests/test_sweep_environment.py` pinning the lock file, the
   `coef` field of the checkpoints and a byte fingerprint of the
   `scipy.signal.firwin` coefficient banks.
@@ -197,6 +197,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The default Kaiser grid runs from beta 0.5 to 20.0 in steps of 0.5, so
   `chaotic-pfc run all` and `chaotic-pfc run sweep beta-sweep` cover the 184
   canonical configurations. `chaotic-pfc run all --dry-run` lists them.
+- Documentation now refers to the 184 canonical checkpoints and the 184-entry
+  full ranking. No numeric values from `tab_sweet_spots.tex` are quoted in
+  `README.md`, `docs/` or this changelog; the table is cited by name only.
 - Window-agreement statistics exclude grid points whose FIR coefficients are
   non-finite (two-tap Hann and Bartlett), while maps and counts keep those
   points as divergent.
@@ -239,7 +242,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies updated to the latest stable compatible with the SPEC 0 floors:
   NumPy 2.5.4, SciPy 1.18.1, Numba 0.68.0, llvmlite 0.50.0, Matplotlib 3.11.2
   (plus the dev/docs stacks); `requirements-lock.txt` was regenerated from the
-  new environment. The 124 sweep checkpoints were regenerated with the new
+  new environment. The 184 sweep checkpoints were regenerated with the new
   kernel: **no number changed** (`sweeps compare`: 0 class changes,
   `max |Δλ| = 0`; `paper numbers`: 0 diffs; the JCIS figures and the exported
   tables are byte-identical), so the manuscript, the figures and the bit-exact
@@ -274,11 +277,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `jcis/` → `articles/jcis/` move, so the committed PDF is unchanged.
 - The Lyapunov sweep kernel now inlines the cancellation-free positive fixed
   point (`2α / ((1−β) + √((1−β)² + 4αG²))`), stable as `G → 0`.
-- The 124 versioned sweeps in `data/sweeps/` were regenerated with the current
+- The 184 versioned sweeps in `data/sweeps/` were regenerated with the current
   kernel; `tests/test_sweep_regressions.py` reproduces them bit for bit with
   Numba and `fallback_mode=1`.
 - `requirements-lock.txt` is aligned to the environment that regenerated the
-  124 checkpoints (`data/sweeps/ENVIRONMENT.json`), and now includes
+  184 checkpoints (`data/sweeps/ENVIRONMENT.json`), and now includes
   `hypothesis` so the test suite (and the bit-exact baseline) runs from the
   lock.
 - The shared figure-writing helper moved to `chaotic_pfc._figure_io`, so the

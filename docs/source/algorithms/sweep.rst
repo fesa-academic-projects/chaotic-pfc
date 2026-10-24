@@ -95,10 +95,10 @@ The convergence criterion:
 where :math:`\bar{\lambda}_k` is the running mean at checkpoint :math:`k`.
 Default values: :math:`K = 100`, :math:`M = 2`, :math:`\varepsilon = 10^{-3}`.
 
-Across the 124 versioned sweeps the effective accumulation horizon lands in a
+Across the 184 versioned sweeps the effective accumulation horizon lands in a
 narrow band: the median number of iterations per configuration is between about
 **700 and 1200**, with a floor of 700 (the minimum before the criterion may
-fire), and the cap of 3000 is reached at only 2 of the 372000 grid points.
+fire), and the cap of 3000 is reached at only 6 of the 552000 grid points.
 
 In practice this provides a 3–4× speedup on typical sweeps with negligible
 accuracy loss (the exponent estimate is already converged long before
@@ -157,7 +157,7 @@ Hybrid fallback for marginal cells
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Finite-block MGS (:math:`K=10`) can cause adjacent exponents to cross
-in 2.6–19.4 % of finite cells (measured across 124 sweeps):
+in 2.6–19.4 % of finite cells (measured across 184 sweeps):
 :math:`\text{lyap\_sum}[k] > \text{lyap\_sum}[0]` for some :math:`k > 0`.
 When this happens, the single-vector estimator (which always picks column
 0) differs from the true :math:`\lambda_{\max}` by at most
@@ -176,7 +176,7 @@ transition boundary, the sweep kernel applies a **hybrid strategy**:
    different estimators.
 
 The margin (:math:`5 \times 10^{-3}`) is conservative: the largest
-measured :math:`|\Delta \lambda|` across 124 sweeps is
+measured :math:`|\Delta \lambda|` across 184 sweeps is
 :math:`3.5 \times 10^{-3}`, so any cell accepted by the :math:`_v` path
 (:math:`|\lambda| \geq 5 \times 10^{-3}`) cannot change classification
 sign after the correction.  The fallback fraction depends strongly on
@@ -312,7 +312,7 @@ Every sweep is **deterministic** given the same seed:
 
 Running the same sweep twice with the same seed produces byte‑identical
 ``.npz`` files.  This is critical for scientific reproducibility.  The CI runs a
-dedicated ``baseline`` job that reproduces the 124 versioned checkpoints **bit
+dedicated ``baseline`` job that reproduces the 184 versioned checkpoints **bit
 for bit** (``CHAOTIC_PFC_RUN_BASELINE=1 pytest tests/test_sweep_regressions.py``)
 and a ``pipeline`` job that smoke-tests the orchestration with
 ``chaotic-pfc run all --quick-sweep``.

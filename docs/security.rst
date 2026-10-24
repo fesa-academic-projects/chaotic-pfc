@@ -10,7 +10,7 @@ exist. It also states what the library does **not** protect.
 Assets
 ------
 
-1. **Integrity of the scientific results.** The 124 versioned sweep
+1. **Integrity of the scientific results.** The 184 versioned sweep
    checkpoints, the exported tables and the manuscript numbers are canonical.
    A silently corrupted input must never be published as a result.
 2. **Integrity of the user's machine.** Opening a checkpoint must not execute
