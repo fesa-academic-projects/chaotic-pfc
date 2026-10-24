@@ -73,21 +73,21 @@ PAPER_TEX_OLD ?= $(PAPER_DIR_OLD)/article.tex
 PAPER_BIB_OLD ?= $(PAPER_DIR_OLD)/references.bib
 PAPER_STEM ?= article
 
-# Reproducibility stamp: the last commit that *changed the content* of the
-# manuscript sources, ignoring pure renames (the jcis/ -> articles/jcis/ move
-# is an add/delete under a pathspec). Both the old and the new paths are
-# queried so the stamp is stable across the move.
+# Reproducibility stamp: the author date of the last commit that *changed the
+# content* of the manuscript sources, ignoring pure renames (the jcis/ ->
+# articles/jcis/ move is an add/delete under a pathspec). Both the old and the
+# new paths are queried so the stamp is stable across the move.
 PAPER_SOURCES = $(PAPER_TEX) $(PAPER_BIB) $(PAPER_DIR)/Figures \
 	$(PAPER_TEX_OLD) $(PAPER_BIB_OLD) $(PAPER_DIR_OLD)/Figures
 # A shallow checkout can see the HEAD commit without seeing the last commit
-# that touched the manuscript. Fall back to the HEAD timestamp with a warning;
-# outside git (source tarball), accept an explicit SOURCE_DATE_EPOCH. An empty
-# value must never reach Inkscape because Fontconfig rejects it.
+# that touched the manuscript. Fall back to the author timestamp of HEAD with
+# a warning; outside git (source tarball), accept an explicit SOURCE_DATE_EPOCH.
+# An empty value must never reach Inkscape because Fontconfig rejects it.
 PAPER_GIT ?= $(shell command -v git 2>/dev/null)
 PAPER_IN_GIT := $(if $(PAPER_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) rev-parse --is-inside-work-tree 2>/dev/null))
-PAPER_EPOCH_FROM_SOURCES := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%ct --diff-filter=CMT -- $(PAPER_SOURCES) 2>/dev/null))
-PAPER_EPOCH_FROM_HEAD := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%ct 2>/dev/null))
-PAPER_EPOCH = $(if $(PAPER_EPOCH_FROM_SOURCES),$(PAPER_EPOCH_FROM_SOURCES),$(if $(PAPER_EPOCH_FROM_HEAD),$(warning PAPER_EPOCH: no commit in PAPER_SOURCES; falling back to the HEAD timestamp $(PAPER_EPOCH_FROM_HEAD))$(PAPER_EPOCH_FROM_HEAD),$(if $(SOURCE_DATE_EPOCH),$(warning PAPER_EPOCH: no git history; using SOURCE_DATE_EPOCH from the environment)$(SOURCE_DATE_EPOCH),$(error PAPER_EPOCH: no git repository and SOURCE_DATE_EPOCH is not set; run inside a git checkout or set SOURCE_DATE_EPOCH to a Unix timestamp))))
+PAPER_EPOCH_FROM_SOURCES := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%at --diff-filter=CMT -- $(PAPER_SOURCES) 2>/dev/null))
+PAPER_EPOCH_FROM_HEAD := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%at 2>/dev/null))
+PAPER_EPOCH = $(if $(PAPER_EPOCH_FROM_SOURCES),$(PAPER_EPOCH_FROM_SOURCES),$(if $(PAPER_EPOCH_FROM_HEAD),$(warning PAPER_EPOCH: no commit in PAPER_SOURCES; falling back to the HEAD author timestamp $(PAPER_EPOCH_FROM_HEAD))$(PAPER_EPOCH_FROM_HEAD),$(if $(SOURCE_DATE_EPOCH),$(warning PAPER_EPOCH: no git history; using SOURCE_DATE_EPOCH from the environment)$(SOURCE_DATE_EPOCH),$(error PAPER_EPOCH: no git repository and SOURCE_DATE_EPOCH is not set; run inside a git checkout or set SOURCE_DATE_EPOCH to a Unix timestamp))))
 
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
 	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures $(PAPER_DIR)/Figures --all-figures --sweeps data/sweeps
