@@ -31,6 +31,8 @@ The proposed border rule for Figures 6(c) and 6(d) is evaluated with
 | `locality.py` | Section IV-C locality statement. | `.venv/bin/python tools/review/locality.py --out-dir build/review` |
 | `long_horizon.py` | Shared long-horizon helpers for Sections III-C and IV-F; also emits the standalone horizon table. | `.venv/bin/python tools/review/long_horizon.py --out-dir build/review` |
 | `transient.py` | Section III-C marginal population and Section IV-F long-horizon numbers. | `.venv/bin/python tools/review/transient.py --out-dir build/review` |
+| `f3_long_horizon_400.py` | Section IV-F long-horizon test with 400 chaotic points per filter type, sampled from all configurations of each type. | `.venv/bin/python tools/review/f3_long_horizon_400.py --out-dir build/review` |
+| `bx1_validation_sweep.py` | Section IV-A single-vector validation value. | `.venv/bin/python tools/review/bx1_validation_sweep.py --out-dir build/review` |
 | `selectivity.py` | Section III-A realised widths and Section IV-B Spearman widths. | `.venv/bin/python tools/review/selectivity.py --out-dir build/review` |
 | `phase1.py` | Gate D3 items 1A to 1E: Figure 6 points, lowpass order counts, bandstop attenuation, validation differences and the Kaiser low-beta transition. | `.venv/bin/python tools/review/phase1.py --out-dir build/review` |
 | `psd.py` | Figure 6 and the `f/f0` result in Section IV-G. | `.venv/bin/python tools/review/psd.py --out-dir build/review` |
