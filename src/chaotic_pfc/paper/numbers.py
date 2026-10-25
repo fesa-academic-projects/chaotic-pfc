@@ -88,7 +88,7 @@ def load_all(root: Path, args: Any = None) -> list[Any]:
 
 
 def counts(sr: Any) -> dict[str, Any]:
-    """Return the chaotic/periodic/divergent counts of a sweep."""
+    """Return the chaotic/non-chaotic/divergent counts of a sweep."""
     h = np.asarray(sr.h, dtype=np.float64)
     nc = int(np.count_nonzero(h > LAMBDA_CHAOS_THRESHOLD))
     nper = int(np.count_nonzero((h <= LAMBDA_CHAOS_THRESHOLD) & ~np.isnan(h)))
@@ -153,7 +153,7 @@ def table2_row(row: Any) -> dict[str, Any]:
     return {
         "name": row["name"],
         "nc": c["nc"],
-        "rho_fin": pct(c["nc"], c["nb"], 1),
+        "rho_cond": pct(c["nc"], c["nb"], 1),
         "rho_abs": pct(c["nc"], c["n"], 1),
         "mean": fmt(float(np.mean(values)), 4),
         "std": fmt(float(np.std(values, ddof=1)), 4),
@@ -203,7 +203,7 @@ def section_table2_table3(recs: Any, out: dict[str, Any]) -> dict[str, Any]:
             base = f"T2.{ft}.{k}"
             out[f"{base}.name"] = t["name"]
             out[f"{base}.Nc"] = str(t["nc"])
-            out[f"{base}.rho_fin"] = t["rho_fin"]
+            out[f"{base}.rho_cond"] = t["rho_cond"]
             out[f"{base}.rho_abs"] = t["rho_abs"]
             out[f"{base}.mean"] = t["mean"]
             out[f"{base}.std"] = t["std"]
@@ -220,13 +220,13 @@ def section_table2_table3(recs: Any, out: dict[str, Any]) -> dict[str, Any]:
     for k, (ft, row) in enumerate(ordered, 1):
         t = table2_row(row)
         out[f"T3.rank{k:02d}"] = (
-            f"{ft} | {t['name']} | Nc={t['nc']} | rho_fin={t['rho_fin']} | "
+            f"{ft} | {t['name']} | Nc={t['nc']} | rho_cond={t['rho_cond']} | "
             f"mean={t['mean']} | ci={t['ci']}"
         )
         rank = f"T2.rank{k:02d}"
         out[f"{rank}.Nc"] = str(t["nc"])
         out[f"{rank}.rho_abs"] = t["rho_abs"]
-        out[f"{rank}.rho_fin"] = t["rho_fin"]
+        out[f"{rank}.rho_cond"] = t["rho_cond"]
         out[f"{rank}.mean"] = t["mean"]
         out[f"{rank}.std"] = t["std"]
     return best
@@ -271,6 +271,8 @@ def section_spearman(recs: Any, out: dict[str, Any]) -> None:
         nc = np.array([counts(fx[w])["nc"] for w, _, _ in FIXED], dtype=np.float64)
         r, p = spearman_exact(db, nc)
         out[f"SP.{ft}"] = f"r_s={fmt(r, 3)}, p={fmt(p, 4)}"
+        if ft == "bandstop":
+            out["SP.bandstop.abs_rho"] = fmt(abs(r), 2)
 
 
 def section_totals(recs: Any, out: dict[str, Any]) -> None:
@@ -286,18 +288,17 @@ def section_totals(recs: Any, out: dict[str, Any]) -> None:
             n_all += k["n"]
         nb = c + c_p
         out[f"TOT.{ft}.chaotic"] = str(c)
-        out[f"TOT.{ft}.periodic"] = str(c_p)
+        out[f"TOT.{ft}.non_chaotic"] = str(c_p)
         out[f"TOT.{ft}.divergent"] = str(c_d)
         out[f"TOT.{ft}.pct_chaotic"] = pct(c, n_all, 1)
-        out[f"TOT.{ft}.pct_periodic"] = pct(c_p, n_all, 1)
         out[f"TOT.{ft}.pct_non_chaotic"] = pct(c_p, n_all, 1)
         out[f"TOT.{ft}.pct_divergent"] = pct(c_d, n_all, 2)
-        out[f"TOT.{ft}.rho_fin_agg"] = pct(c, nb, 2)
+        out[f"TOT.{ft}.rho_cond_agg"] = pct(c, nb, 2)
         tot_c += c
         tot_p += c_p
         tot_d += c_d
     out["TOT.chaotic"] = str(tot_c)
-    out["TOT.periodic"] = str(tot_p)
+    out["TOT.non_chaotic"] = str(tot_p)
     out["TOT.divergent"] = str(tot_d)
 
 
@@ -610,6 +611,8 @@ def _wilson_interval(count: int, total: int) -> tuple[float, float]:
 
 def section_review_metrics(out: dict[str, Any]) -> None:
     """Labels from the long-horizon and spectrum review summaries."""
+    out["STAT.bonferroni_alpha"] = round_fraction(Fraction(5, 400), 4)
+    out["EST.Nmap"] = str(DEFAULT_CONFIG.sweep.Nmap)
     long_horizon = Path("data/analysis_output/review/f3_long_horizon_400_summary.json")
     if long_horizon.is_file():
         data = json.loads(long_horizon.read_text())
@@ -738,15 +741,15 @@ def section_gain(recs: Any, out: dict[str, Any]) -> None:
             lp_fin_divergent += int((finite & nan).sum())
 
     out["GAIN.n_absG_lt_0.1"] = str(n_low)
-    out["GAIN.periodic_count_absG_lt_0.1"] = str(n_per_low)
-    out["GAIN.periodic_pct_absG_lt_0.1"] = pct(n_per_low, n_low, 1)
+    out["GAIN.bounded_count_absG_lt_0.1"] = str(n_per_low)
+    out["GAIN.bounded_pct_absG_lt_0.1"] = pct(n_per_low, n_low, 1)
     out["GAIN.chaotic_count_absG_lt_0.1"] = str(n_cha_low)
     out["GAIN.highpass.chaotic_absG_lt_0.1"] = str(hp_cha_low)
     out["GAIN.highpass.chaotic_total"] = str(hp_cha_total)
 
     lp_fin_total = lp_fin_chaotic + lp_fin_periodic + lp_fin_divergent
     out["GAIN.lowpass.chaotic_pct"] = pct(lp_fin_chaotic, lp_fin_total, 1)
-    out["GAIN.lowpass.periodic_pct"] = pct(lp_fin_periodic, lp_fin_total, 1)
+    out["GAIN.lowpass.non_chaotic_pct"] = pct(lp_fin_periodic, lp_fin_total, 1)
     out["GAIN.lowpass.divergent_pct"] = pct(lp_fin_divergent, lp_fin_total, 1)
 
     _gain_band_table(recs, "highpass", out, "GAIN.highpass.Nz_x_wc")

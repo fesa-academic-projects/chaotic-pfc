@@ -31,6 +31,7 @@ import warnings
 from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
 from decimal import Decimal
+from fractions import Fraction
 from importlib import resources
 from pathlib import Path
 from typing import Any
@@ -656,6 +657,7 @@ def _data_chunks(tabular: str) -> list[str]:
 
 
 def _parse_best_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
+    """Legacy parser kept for the sweep report, which still reads old tables."""
     rows: list[dict[str, Any]] = []
     warnings: list[str] = []
     current_filter = ""
@@ -680,7 +682,7 @@ def _parse_best_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
                 "filter": current_filter.lower(),
                 "window": cells[1],
                 "nc": int(nc),
-                "rho_fin": rho_fin,
+                "rho_cond": rho_fin,
                 "rho_abs": rho_abs,
                 "lambda": lam,
                 "sigma": sigma,
@@ -691,74 +693,61 @@ def _parse_best_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 def _parse_ranking_rows(tabular: str) -> tuple[list[dict[str, Any]], list[str]]:
+    """Parse the eight columns of the current Table II."""
     rows: list[dict[str, Any]] = []
     warnings: list[str] = []
     for chunk in _data_chunks(tabular):
         cells = [_clean_cell(cell) for cell in chunk.split("&")]
-        if len(cells) != 7:
+        if len(cells) != 8:
             continue
         rank = _first_float(cells[0])
         if rank is None:
             continue  # header row
         nc = _first_float(cells[3])
-        lambda_1 = _first_float(cells[5])
-        ci = _parse_ci(cells[6])
-        rho_fin = _first_float(cells[4].replace("%", ""))
-        if nc is None or lambda_1 is None or ci is None or rho_fin is None:
+        rho_abs = _first_float(cells[4].replace("%", ""))
+        rho_cond = _first_float(cells[5].replace("%", ""))
+        mean = _first_float(cells[6])
+        sigma = _first_float(cells[7])
+        if nc is None or rho_abs is None or rho_cond is None or mean is None or sigma is None:
             warnings.append(f"unparsed tab:ranking row: {' '.join(chunk.split())[:90]}")
             continue
         rows.append(
             {
-                "filter": cells[1].lower(),
+                "rank": int(rank),
+                "filter": cells[1],
+                "filter_key": cells[1].lower(),
                 "window": cells[2],
                 "nc": int(nc),
-                "rho_fin": rho_fin,
-                "lambda": lambda_1,
-                "ci": ci,
+                "rho_abs": rho_abs,
+                "rho_cond": rho_cond,
+                "mean": mean,
+                "sigma": sigma,
             }
         )
     return rows, warnings
 
 
-def _compatible_nb(nc: int, grid: int, rho_fin: float) -> list[int]:
-    return [nb for nb in range(nc, grid + 1) if abs(float(pct(nc, nb, 1)) - rho_fin) < 1e-9]
-
-
-def _same(value_a: object, value_b: object) -> bool:
-    if isinstance(value_a, tuple) and isinstance(value_b, tuple):
-        return len(value_a) == len(value_b) and all(
-            abs(x - y) < 1e-9 for x, y in zip(value_a, value_b, strict=True)
-        )
-    return abs(float(value_a) - float(value_b)) < 1e-9  # type: ignore[arg-type]  # numeric strings accepted
-
-
 def check_tables(tex_text: str) -> CheckResult:
-    """C6: identities linking N_c, rho_fin, rho_abs, lambda_1, sigma and CI."""
-    clean = _strip_comments(tex_text)
-    best_tab = _extract_tabular(clean, "tab:best")
-    rank_tab = _extract_tabular(clean, "tab:ranking")
-    if best_tab is None or rank_tab is None:
-        missing = [
-            label
-            for label, tab in (("tab:best", best_tab), ("tab:ranking", rank_tab))
-            if tab is None
-        ]
-        return CheckResult(
-            [Finding("WARN", "C6", f"table(s) not found: {', '.join(missing)}")], "not found"
-        )
+    """C6: Table II rho_abs identity and rank ordering.
 
-    best, best_warnings = _parse_best_rows(best_tab)
-    ranking, rank_warnings = _parse_ranking_rows(rank_tab)
-    findings: list[Finding] = [
-        Finding("WARN", "C6", warning) for warning in (*best_warnings, *rank_warnings)
-    ]
+    R2 was removed because the current table prints rho_cond but not N_b or
+    the implied divergence bounds. R3 and R4 were removed because the
+    bootstrap CI and the separate tab:best table left the article.
+    """
+    clean = _strip_comments(tex_text)
+    rank_tab = _extract_tabular(clean, "tab:ranking")
+    if rank_tab is None:
+        return CheckResult([Finding("WARN", "C6", "table(s) not found: tab:ranking")], "not found")
+
+    rows, parse_warnings = _parse_ranking_rows(rank_tab)
+    findings: list[Finding] = [Finding("WARN", "C6", warning) for warning in parse_warnings]
     details: list[str] = []
 
-    # R1: rho_abs = N_c / N_grid, rounded to 0.1%.
-    for row in best:
-        grid = _GRID_SIZE.get(row["filter"])
+    # R1: rho_abs = N_c / N_grid, rounded to 0.1% with the shared rule.
+    for row in rows:
+        grid = _GRID_SIZE.get(row["filter_key"])
         if grid is None:
-            findings.append(Finding("WARN", "C6", f"R1 unknown filter type '{row['filter']}'"))
+            findings.append(Finding("WARN", "C6", f"R1 unknown filter type '{row['filter_key']}'"))
             continue
         expected = float(pct(row["nc"], grid, 1))
         if abs(expected - row["rho_abs"]) > 1e-9:
@@ -766,71 +755,48 @@ def check_tables(tex_text: str) -> CheckResult:
                 Finding(
                     "ERROR",
                     "C6",
-                    f"R1 {row['filter']}/{row['window']}: rho_abs printed {row['rho_abs']}%, "
-                    f"computed {expected}%",
+                    f"R1 {row['filter']}/{row['window']}: rho_abs printed "
+                    f"{row['rho_abs']}%, computed {expected}%",
                 )
             )
 
-    # R2: rho_fin = N_c / N_b for an integer N_b in [N_c, N_grid].
-    for source, rows in (("tab:best", best), ("tab:ranking", ranking)):
-        for row in rows:
-            grid = _GRID_SIZE.get(row["filter"])
-            if grid is None:
-                continue
-            compatible = _compatible_nb(row["nc"], grid, row["rho_fin"])
-            if not compatible:
+    # Rank order: rho_abs descending, then display filter, then display window.
+    # This is the tie-break used by tools/review/paper_numbers.py.
+    ranks = [row["rank"] for row in rows]
+    if ranks != list(range(1, len(rows) + 1)):
+        findings.append(
+            Finding(
+                "ERROR",
+                "C6",
+                f"rank column is not 1..{len(rows)}: {ranks}",
+            )
+        )
+    if all(row["filter_key"] in _GRID_SIZE for row in rows):
+        ordered = sorted(
+            rows,
+            key=lambda row: (
+                -Fraction(row["nc"], _GRID_SIZE[row["filter_key"]]),
+                row["filter"],
+                row["window"],
+            ),
+        )
+        for position, row in enumerate(ordered, start=1):
+            if row["rank"] != position:
                 findings.append(
                     Finding(
                         "ERROR",
                         "C6",
-                        f"R2 {source} {row['filter']}/{row['window']}: no N_b in "
-                        f"[{row['nc']},{grid}] reproduces rho_fin={row['rho_fin']}%",
+                        f"rank order mismatch at position {position}: rank {row['rank']} "
+                        f"({row['filter']}/{row['window']}, rho_abs={row['rho_abs']}%)",
                     )
                 )
-                continue
-            low, high = min(compatible), max(compatible)
-            frac_low = 100 * (grid - high) / grid
-            frac_high = 100 * (grid - low) / grid
-            details.append(
-                f"R2 {source} {row['filter']}/{row['window']}: N_c={row['nc']} "
-                f"rho_fin={row['rho_fin']}% N_b in [{low},{high}] "
-                f"implied divergent {frac_low:.2f}%-{frac_high:.2f}%"
-            )
+    else:
+        details.append("rank order skipped because a filter type is unknown")
 
-    # R3: CI half-width versus the normal approximation 1.96 sigma / sqrt(N_c).
-    for row in best:
-        half = (row["ci"][1] - row["ci"][0]) / 2.0
-        normal = 1.96 * row["sigma"] / (row["nc"] ** 0.5)
-        ratio = half / normal if normal else float("inf")
-        details.append(f"R3 {row['filter']}/{row['window']}: CI ratio {ratio:.3f}")
-        if not 0.5 <= ratio <= 2.0:
-            findings.append(
-                Finding(
-                    "WARN",
-                    "C6",
-                    f"R3 {row['filter']}/{row['window']}: CI ratio {ratio:.2f} outside [0.5, 2.0]",
-                )
-            )
-
-    # R4: combos present in both tables must agree on N_c, lambda_1 and CI.
-    best_index = {(row["filter"], row["window"].replace(" ", "")): row for row in best}
-    rank_index = {(row["filter"], row["window"].replace(" ", "")): row for row in ranking}
-    for key in sorted(set(best_index) & set(rank_index)):
-        for field_name in ("nc", "lambda", "ci"):
-            if not _same(best_index[key][field_name], rank_index[key][field_name]):
-                findings.append(
-                    Finding(
-                        "ERROR",
-                        "C6",
-                        f"R4 {key[0]}/{key[1]}: {field_name} diverges between tab:best "
-                        f"({best_index[key][field_name]}) and tab:ranking ({rank_index[key][field_name]})",
-                    )
-                )
-
-    coverage = (
-        f"parsed {len(best)} rows from tab:best, {len(ranking)} rows from tab:ranking, "
-        f"{len(details)} identity rows"
+    details.append(
+        f"checked R1 and rank order for {len(rows)} rows; tie-break: rho_abs desc, filter, window"
     )
+    coverage = f"parsed {len(rows)} rows from tab:ranking"
     return CheckResult(findings, coverage, details)
 
 
@@ -929,13 +895,9 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
     "498": "regeneration wall time (machine-specific; see data/sweeps/ENVIRONMENT.json)",
     "1.4": "Hénon parameter alpha (map constant, not a result)",
     "1.5": "figure layout length (\\vspace fraction)",
-    "0.37": "figure layout fraction (\\textwidth)",
-    "0.48": "figure layout fraction (\\textwidth)",
-    "0.0125": "Bonferroni threshold 0.05/4 computed inline",
     "0.0167": "Bonferroni-adjusted Spearman p-value derived in the text",
     "0.94": "alternative Spearman coefficient discussed for the Kaiser windows",
     "957": "lower end of the seed N_c range, inside the SEED label list",
-    "3000": "Nmap, the maximum number of iterations (harness constant)",
     "720": "number of permutations of the six windows (6!)",
     "8.3": "ratio between configurations, derived in the text",
     "4636": "bounded bandstop cells (TOT.bandstop.chaotic + periodic)",
@@ -944,10 +906,6 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
     "552000": "total grid points across the 184 sweeps (derived)",
     "8550": "CPU model in the machine description",
 }
-
-_TEXT_NUMBER_IGNORE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"^(19|20)\d\d$"), "reference publication year"),
-)
 
 # Context-bound exemptions. The token is ignored only in the named subsection;
 # the same value elsewhere remains a normal C8 error.
@@ -963,6 +921,10 @@ _TEXT_NUMBER_SCOPED_IGNORES: dict[str, tuple[str, str]] = {
     "0.875": (
         "Spectrum of the Generated Signals",
         "Figure 6 selection band upper edge",
+    ),
+    "0.48": (
+        "Configurations With Largest Chaotic Coverage",
+        "subfigure width fraction (0.48\\textwidth)",
     ),
 }
 
@@ -1025,6 +987,8 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
     body = body.replace("{,}", "").replace("\\,", "").replace("~", " ")
     # Plain commas used as thousands separators are part of the number.
     body = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", body)
+    # Citation keys such as Sprott2003 are not text numbers.
+    body = re.sub(r"\\cite\{[^}]*\}", " ", body)
 
     known = _paper_number_values(numbers)
     findings: list[Finding] = []
@@ -1042,11 +1006,6 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
             reason = scoped[1]
         if reason is None:
             reason = _TEXT_NUMBER_IGNORES.get(token)
-        if reason is None:
-            for pattern, why in _TEXT_NUMBER_IGNORE_PATTERNS:
-                if pattern.match(token):
-                    reason = why
-                    break
         if reason is not None:
             ignored[token] = reason
             continue

@@ -43,7 +43,7 @@ CSV_FIELDS = [
     "N_non_chaotic",
     "N_divergent",
     "N_bounded",
-    "rho_fin_pct",
+    "rho_cond_pct",
     "rho_abs_pct",
     "n_fallback",
     "n_fallback_frac",
@@ -97,7 +97,7 @@ def load_configs(sweep_dir: Path) -> list[dict[str, Any]]:
                 "N_non_chaotic": n_non_chaotic,
                 "N_divergent": n_divergent,
                 "N_bounded": n_bounded,
-                "rho_fin_pct": 100.0 * n_chaotic / n_bounded if n_bounded else float("nan"),
+                "rho_cond_pct": 100.0 * n_chaotic / n_bounded if n_bounded else float("nan"),
                 "rho_abs_pct": 100.0 * n_chaotic / n_grid if n_grid else float("nan"),
                 "n_fallback": n_fallback,
                 "n_fallback_frac": n_fallback / n_grid if n_grid else float("nan"),
@@ -121,7 +121,7 @@ def print_table(configs: list[dict[str, Any]]) -> None:
     """Print the per-configuration statistics table."""
     header = (
         f"{'filter':<9} {'window':<15} {'beta':>5} {'N_grid':>6} {'N_chaotic':>9} "
-        f"{'N_non_chaotic':>13} {'N_divergent':>11} {'rho_fin%':>8} {'rho_abs%':>8} "
+        f"{'N_non_chaotic':>13} {'N_divergent':>11} {'rho_cond%':>8} {'rho_abs%':>8} "
         f"{'n_fb':>5} {'fb_frac':>8}"
     )
     print(header)
@@ -131,7 +131,7 @@ def print_table(configs: list[dict[str, Any]]) -> None:
         print(
             f"{cfg['filter_type']:<9} {cfg['window']:<15} {beta:>5} {cfg['N_grid']:>6} "
             f"{cfg['N_chaotic']:>9} {cfg['N_non_chaotic']:>13} {cfg['N_divergent']:>11} "
-            f"{cfg['rho_fin_pct']:>8.2f} {cfg['rho_abs_pct']:>8.2f} "
+            f"{cfg['rho_cond_pct']:>8.2f} {cfg['rho_abs_pct']:>8.2f} "
             f"{cfg['n_fallback']:>5} {cfg['n_fallback_frac']:>8.4f}"
         )
 
@@ -162,7 +162,7 @@ def _norm_window(name: str) -> str:
 
 
 def _match_config(row: dict[str, Any], configs: list[dict[str, Any]]) -> dict[str, Any] | None:
-    filt = row["filter"]
+    filt = row.get("filter_key", row["filter"].lower())
     window = row["window"]
     if window.startswith("Kaiser"):
         digits = "".join(ch if ch.isdigit() or ch == "." else " " for ch in window).split()
@@ -188,7 +188,7 @@ def print_by_filter(configs: list[dict[str, Any]]) -> None:
     print("\naggregate divergent fraction by filter type (G ~ 1 vs G ~ 0 groups):")
     header = (
         f"{'filter':<9} {'N_grid':>7} {'N_chaotic':>9} {'N_non_chaotic':>13} "
-        f"{'N_divergent':>11} {'div_frac%':>9} {'rho_fin%':>8} {'rho_abs%':>8}"
+        f"{'N_divergent':>11} {'div_frac%':>9} {'rho_cond%':>8} {'rho_abs%':>8}"
     )
     print(header)
     print("-" * len(header))
@@ -200,11 +200,11 @@ def print_by_filter(configs: list[dict[str, Any]]) -> None:
         n_divergent = sum(cfg["N_divergent"] for cfg in subset)
         n_bounded = n_grid - n_divergent
         div_frac = 100.0 * n_divergent / n_grid if n_grid else float("nan")
-        rho_fin = 100.0 * n_chaotic / n_bounded if n_bounded else float("nan")
+        rho_cond = 100.0 * n_chaotic / n_bounded if n_bounded else float("nan")
         rho_abs = 100.0 * n_chaotic / n_grid if n_grid else float("nan")
         print(
             f"{filter_type:<9} {n_grid:>7} {n_chaotic:>9} {n_non_chaotic:>13} "
-            f"{n_divergent:>11} {div_frac:>9.2f} {rho_fin:>8.2f} {rho_abs:>8.2f}"
+            f"{n_divergent:>11} {div_frac:>9.2f} {rho_cond:>8.2f} {rho_abs:>8.2f}"
         )
 
 
@@ -274,12 +274,12 @@ def report_attenuation_correlation(configs: list[dict[str, Any]]) -> None:
             [WINDOW_SIDELOBE_DB[_norm_window(c["window"])] for c in subset], dtype=float
         )
         n_chaotic = np.array([c["N_chaotic"] for c in subset], dtype=float)
-        rho_fin = np.array([c["rho_fin_pct"] for c in subset], dtype=float)
+        rho_cond = np.array([c["rho_cond_pct"] for c in subset], dtype=float)
         order = np.argsort(attenuation)
         pairs = ", ".join(f"({int(attenuation[k])},{int(n_chaotic[k])})" for k in order)
         print(f"\n  {filter_type}: {len(subset)} windows")
         print(f"    raw (attenuation dB, N_chaotic): {pairs}")
-        for label, values in (("N_chaotic", n_chaotic), ("rho_fin", rho_fin)):
+        for label, values in (("N_chaotic", n_chaotic), ("rho_cond", rho_cond)):
             rho = _spearman_rho(attenuation, values)
             p_value, permutations = _exact_spearman_p(attenuation, values)
             tests += 1
@@ -309,10 +309,10 @@ def cross_check(tex_path: Path, configs: list[dict[str, Any]]) -> dict[str, Any]
                     f"ERROR {label} {row['filter']}/{row['window']}: N_chaotic "
                     f"article={int(row['nc'])} checkpoint={cfg['N_chaotic']}"
                 )
-            if abs(cfg["rho_fin_pct"] - row["rho_fin"]) > 0.05:
+            if abs(cfg["rho_cond_pct"] - row["rho_cond"]) > 0.05:
                 issues.append(
-                    f"ERROR {label} {row['filter']}/{row['window']}: rho_fin "
-                    f"article={row['rho_fin']:.2f} checkpoint={cfg['rho_fin_pct']:.2f}"
+                    f"ERROR {label} {row['filter']}/{row['window']}: rho_cond "
+                    f"article={row['rho_cond']:.2f} checkpoint={cfg['rho_cond_pct']:.2f}"
                 )
     return {
         "matched_best": matched["tab:best"],
@@ -374,5 +374,5 @@ def run(args: argparse.Namespace) -> int:
             print(f"  {issue}")
         print("  cross-check FAILED")
         return 1
-    print("  no divergence on N_chaotic and rho_fin for the matched rows.")
+    print("  no divergence on N_chaotic and rho_cond for the matched rows.")
     return 0

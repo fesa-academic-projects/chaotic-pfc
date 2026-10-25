@@ -258,66 +258,6 @@ class TestFigureLanguage(unittest.TestCase):
         self.assertIn("caótica", result.findings[0].message)
 
 
-class TestTables(unittest.TestCase):
-    BEST_HEADER = (
-        "\\textbf{Filter} & \\textbf{Window} & $N_c$ & $\\rho_c^{fin}$ & "
-        "$\\rho_c^{abs}$ & $\\bar\\lambda_1$ & $\\sigma$ & 95\\% CI \\\\"
-    )
-    BEST_ROW = "Lowpass & Rectangular & 100 & 50.0\\% & 2.5\\% & 0.0200 & 0.0500 & $[0.0100,\\,0.0300]$ \\\\"
-    RANK_HEADER = "\\textbf{\\#} & \\textbf{Filter} & \\textbf{Window} & $N_c$ & $\\rho_c^{fin}$ & $\\bar\\lambda_1$ & 95\\% CI \\\\"
-    RANK_ROW = "1 & Lowpass & Rectangular & 100 & 50.0\\% & 0.0200 & $[0.0100,\\,0.0300]$ \\\\"
-
-    def _tex(self, best_row: str, rank_row: str) -> str:
-        return (
-            "\\documentclass{j}\n\\begin{document}\n"
-            "\\begin{table*}\n\\caption{Best\\label{tab:best}}\n"
-            "\\begin{tabular}{llrrrrrc}\n\\toprule\n"
-            + self.BEST_HEADER
-            + "\n\\midrule\n"
-            + best_row
-            + "\n\\bottomrule\n\\end{tabular}\n\\end{table*}\n"
-            "\\begin{table*}\n\\caption{Rank\\label{tab:ranking}}\n"
-            "\\begin{tabular}{rllrrrc}\n\\toprule\n"
-            + self.RANK_HEADER
-            + "\n\\midrule\n"
-            + rank_row
-            + "\n\\bottomrule\n\\end{tabular}\n\\end{table*}\n"
-            "\\end{document}\n"
-        )
-
-    def test_clean_tables_pass_and_report_details(self):
-        result = audit.check_tables(self._tex(self.BEST_ROW, self.RANK_ROW))
-        self.assertEqual(_findings(result), [])
-        self.assertTrue(any("implied divergent" in detail for detail in result.details))
-        self.assertTrue(any("CI ratio" in detail for detail in result.details))
-
-    def test_r1_mismatch_is_error(self):
-        bad = self.BEST_ROW.replace("2.5\\%", "2.6\\%")
-        result = audit.check_tables(self._tex(bad, self.RANK_ROW))
-        errors = [f for f in result.findings if f.level == "ERROR"]
-        self.assertTrue(any("R1" in f.message for f in errors))
-
-    def test_r2_unreachable_fraction_is_error(self):
-        bad = self.BEST_ROW.replace("50.0\\%", "49.9\\%")
-        result = audit.check_tables(self._tex(bad, self.RANK_ROW))
-        errors = [f for f in result.findings if f.level == "ERROR"]
-        self.assertTrue(any("R2" in f.message for f in errors))
-
-    def test_r4_cross_table_mismatch_is_error(self):
-        bad_rank = self.RANK_ROW.replace("0.0200", "0.0300")
-        result = audit.check_tables(self._tex(self.BEST_ROW, bad_rank))
-        errors = [f for f in result.findings if f.level == "ERROR"]
-        self.assertTrue(any("R4" in f.message for f in errors))
-
-    def test_missing_table_is_warn(self):
-        tex = self._tex(self.BEST_ROW, self.RANK_ROW).replace(
-            "\\label{tab:ranking}", "\\label{tab:other}"
-        )
-        result = audit.check_tables(tex)
-        self.assertEqual(_levels(result), ["WARN"])
-        self.assertIn("tab:ranking", result.findings[0].message)
-
-
 class TestConfig(unittest.TestCase):
     @pytest.mark.slow
     def test_real_config_locates_known_constants(self):
@@ -325,6 +265,55 @@ class TestConfig(unittest.TestCase):
         self.assertIn("located", result.coverage)
         # These seven exist in config.py and match the article.
         self.assertFalse(any(f.level == "ERROR" for f in result.findings))
+
+
+class TestTableTwo(unittest.TestCase):
+    """C6 checks the current eight-column Table II."""
+
+    _TABLE = r"""
+\begin{table*}[!t]
+\caption{Ranking\label{tab:ranking}}
+\centering
+\begin{tabular}{rlrrrrrr}
+\toprule
+Rank & Filter & Window & $N_c$ & $\rho_c^{\text{abs}}$ (\%) &
+$\rho_c^{\text{cond}}$ (\%) & $\bar\lambda_1$ & $\sigma_{\lambda_1}$ \\
+\midrule
+1 & Lowpass & Kaiser & 654 & 16.4 & 55.3 & 0.0423 & 0.0186 \\
+2 & Bandpass & Kaiser & 310 & 7.8 & 9.5 & 0.0435 & 0.0272 \\
+3 & Highpass & Kaiser & 102 & 5.1 & 5.7 & 0.0406 & 0.0284 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+"""
+
+    def test_good_table_passes(self):
+        result = audit.check_tables(self._TABLE)
+        self.assertEqual(_levels(result), [])
+        self.assertIn("parsed 3 rows", result.coverage)
+
+    def test_rho_abs_error_is_reported(self):
+        tex = self._TABLE.replace("654 & 16.4", "654 & 16.5")
+        result = audit.check_tables(tex)
+        self.assertEqual(_levels(result), ["ERROR"])
+        self.assertIn("R1", result.findings[0].message)
+
+    def test_two_rows_out_of_order_are_reported(self):
+        tex = self._TABLE.replace(
+            "2 & Bandpass & Kaiser & 310 & 7.8 & 9.5 & 0.0435 & 0.0272 \\\\\n"
+            "3 & Highpass & Kaiser & 102 & 5.1 & 5.7 & 0.0406 & 0.0284",
+            "2 & Highpass & Kaiser & 102 & 5.1 & 5.7 & 0.0406 & 0.0284 \\\\\n"
+            "3 & Bandpass & Kaiser & 310 & 7.8 & 9.5 & 0.0435 & 0.0272",
+        )
+        result = audit.check_tables(tex)
+        self.assertGreaterEqual(_levels(result).count("ERROR"), 1)
+        self.assertTrue(any("rank order" in finding.message for finding in result.findings))
+
+    def test_missing_ranking_table_is_warn(self):
+        tex = self._TABLE.replace("\\label{tab:ranking}", "\\label{tab:other}")
+        result = audit.check_tables(tex)
+        self.assertEqual(_levels(result), ["WARN"])
+        self.assertIn("tab:ranking", result.findings[0].message)
 
 
 class TestRender(unittest.TestCase):
@@ -358,7 +347,7 @@ class TestTextNumbers(unittest.TestCase):
 
     _NUMBERS: ClassVar[dict[str, str]] = {
         "T2.lowpass.1.Nc": "980",
-        "T2.lowpass.1.rho_fin": "77.6",
+        "T2.lowpass.1.rho_cond": "77.6",
         "COST.regen_wall_seconds": "497.775142663",
     }
 
@@ -372,8 +361,8 @@ class TestTextNumbers(unittest.TestCase):
         result = audit.check_text_numbers(tex, self._NUMBERS)
         self.assertEqual(_levels(result), ["ERROR"])
 
-    def test_documented_ignore_covers_publication_year(self):
-        tex = "\\section{Results and Discussion}\nPublished in 2003."
+    def test_citation_key_year_is_not_a_text_number(self):
+        tex = "\\section{Results and Discussion}\nSee \\cite{Sprott2003}."
         result = audit.check_text_numbers(tex, {})
         self.assertEqual(_levels(result), [])
 
