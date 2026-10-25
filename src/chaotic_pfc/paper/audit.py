@@ -937,17 +937,6 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
     "957": "lower end of the seed N_c range, inside the SEED label list",
     "3000": "Nmap, the maximum number of iterations (harness constant)",
     "720": "number of permutations of the six windows (6!)",
-    "0.4192": "Sprott reference value for the unfiltered Hénon map",
-    "892": "thousands separator inside 182,892",
-    "790": "thousands separator inside 2,790",
-    "0.548": "sqrt(beta) derived from the map parameter beta = 0.3",
-    "41": "derived count, all but 41 bounded points",
-    "0.125": "Figure 6 selection band lower edge",
-    "0.875": "Figure 6 selection band upper edge",
-    "0.192": "Figure 6 lowpass point coordinate",
-    "0.141": "Figure 6 highpass point coordinate",
-    "0.162": "Figure 6 bandpass point coordinate",
-    "0.394": "Figure 6 bandstop point coordinate",
     "8.3": "ratio between configurations, derived in the text",
     "4636": "bounded bandstop cells (TOT.bandstop.chaotic + periodic)",
     "62000": "highpass grid points (sum of TOT.highpass.*)",
@@ -959,6 +948,31 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
 _TEXT_NUMBER_IGNORE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"^(19|20)\d\d$"), "reference publication year"),
 )
+
+# Context-bound exemptions. The token is ignored only in the named subsection;
+# the same value elsewhere remains a normal C8 error.
+_TEXT_NUMBER_SCOPED_IGNORES: dict[str, tuple[str, str]] = {
+    "0.4192": (
+        "Validation of the Estimator",
+        "Sprott reference value for the unfiltered Hénon map",
+    ),
+    "0.125": (
+        "Spectrum of the Generated Signals",
+        "Figure 6 selection band lower edge",
+    ),
+    "0.875": (
+        "Spectrum of the Generated Signals",
+        "Figure 6 selection band upper edge",
+    ),
+}
+
+
+def _numeric_scope(body: str, position: int) -> str:
+    """Return the last section or subsection title before *position*."""
+    title = ""
+    for match in re.finditer(r"\\(?:section|subsection)\{([^}]*)\}", body[:position]):
+        title = match.group(1)
+    return title
 
 
 def _paper_number_values(numbers: dict[str, Any]) -> list[Decimal]:
@@ -1009,17 +1023,25 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
     end = clean.find("\\bibliographystyle", start)
     body = clean[start:] if end == -1 else clean[start:end]
     body = body.replace("{,}", "").replace("\\,", "").replace("~", " ")
+    # Plain commas used as thousands separators are part of the number.
+    body = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", body)
 
     known = _paper_number_values(numbers)
     findings: list[Finding] = []
     matched: set[str] = set()
     ignored: dict[str, str] = {}
-    for raw in re.findall(r"\d+(?:\.\d+)?", body):
+    for match in re.finditer(r"\d+(?:\.\d+)?", body):
+        raw = match.group(0)
         token = raw
         if _token_matches(token, known):
             matched.add(token)
             continue
-        reason = _TEXT_NUMBER_IGNORES.get(token)
+        reason = None
+        scoped = _TEXT_NUMBER_SCOPED_IGNORES.get(token)
+        if scoped is not None and _numeric_scope(body, match.start()) == scoped[0]:
+            reason = scoped[1]
+        if reason is None:
+            reason = _TEXT_NUMBER_IGNORES.get(token)
         if reason is None:
             for pattern, why in _TEXT_NUMBER_IGNORE_PATTERNS:
                 if pattern.match(token):

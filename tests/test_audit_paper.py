@@ -377,6 +377,44 @@ class TestTextNumbers(unittest.TestCase):
         result = audit.check_text_numbers(tex, {})
         self.assertEqual(_levels(result), [])
 
+    def test_thousands_separator_is_one_token(self):
+        tex = (
+            "\\section{Results and Discussion}\n"
+            "None of the 182,892 grid points and 2,790 chaotic points.\n"
+        )
+        numbers = {"GAIN.n_absG_lt_0.1": "182892", "TOT.highpass.chaotic": "2790"}
+        result = audit.check_text_numbers(tex, numbers)
+        self.assertEqual(_levels(result), [])
+
+    def test_reference_exception_is_scoped_to_validation(self):
+        numbers = {"VAL.ns1.single_vector": "0.4194"}
+        in_validation = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Validation of the Estimator}\n"
+            "The literature value is 0.4192.\n"
+        )
+        in_maps = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Classification Maps}\n"
+            "The literature value is 0.4192.\n"
+        )
+        self.assertEqual(_levels(audit.check_text_numbers(in_validation, numbers)), [])
+        self.assertEqual(_levels(audit.check_text_numbers(in_maps, numbers)), ["ERROR"])
+
+    def test_selection_band_exception_is_scoped_to_spectrum(self):
+        in_spectrum = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Spectrum of the Generated Signals}\n"
+            "The band is 0.125 to 0.875.\n"
+        )
+        in_maps = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Classification Maps}\n"
+            "The band is 0.125 to 0.875.\n"
+        )
+        self.assertEqual(_levels(audit.check_text_numbers(in_spectrum, {})), [])
+        self.assertEqual(_levels(audit.check_text_numbers(in_maps, {})), ["ERROR", "ERROR"])
+
 
 if __name__ == "__main__":
     unittest.main()

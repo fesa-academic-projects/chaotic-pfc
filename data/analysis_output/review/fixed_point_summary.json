@@ -1,0 +1,30 @@
+{
+  "provenance": "tools/review/fixed_point.py",
+  "absG_lt_0.1": {
+    "n": 182795,
+    "converged": 182754,
+    "nonconverged": 41,
+    "per_filter": {
+      "lowpass": {
+        "n": 0,
+        "converged": 0,
+        "nonconverged": 0
+      },
+      "highpass": {
+        "n": 67915,
+        "converged": 67915,
+        "nonconverged": 0
+      },
+      "bandpass": {
+        "n": 114880,
+        "converged": 114839,
+        "nonconverged": 41
+      },
+      "bandstop": {
+        "n": 0,
+        "converged": 0,
+        "nonconverged": 0
+      }
+    }
+  }
+}

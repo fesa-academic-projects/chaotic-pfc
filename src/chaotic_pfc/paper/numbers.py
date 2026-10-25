@@ -41,6 +41,7 @@ from chaotic_pfc.analysis.sweep import (
     precompute_fir_bank,
 )
 from chaotic_pfc.analysis.sweep._types import WINDOW_DISPLAY_NAMES, WINDOW_SIDELOBE_DB
+from chaotic_pfc.config import DEFAULT_CONFIG
 
 TYPES = ("lowpass", "highpass", "bandpass", "bandstop")
 LOW_GAIN = 0.1
@@ -302,6 +303,7 @@ def section_totals(recs: Any, out: dict[str, Any]) -> None:
 
 def section_maps(best: dict[str, Any], out: dict[str, Any]) -> None:
     """Fill the ``MAPS.*`` labels."""
+    out["MAP.sqrt_beta"] = fmt(math.sqrt(DEFAULT_CONFIG.comm.henon.beta), 3)
     lp = best["lowpass"][0]["sr"]
     h = np.asarray(lp.h, dtype=np.float64)
     wc = np.asarray(lp.cutoff_grid, dtype=np.float64)  # already omega_c / pi
@@ -625,6 +627,11 @@ def section_review_metrics(out: dict[str, Any]) -> None:
             out[f"LH.{ft}.below_ci_low"] = fmt(100.0 * below_low, 1)
             out[f"LH.{ft}.below_ci_high"] = fmt(100.0 * below_high, 1)
 
+    fixed_point = Path("data/analysis_output/review/fixed_point_summary.json")
+    if fixed_point.is_file():
+        data = json.loads(fixed_point.read_text())["absG_lt_0.1"]
+        out["GAIN.nonconverged_absG_lt_0.1"] = str(data["nonconverged"])
+
     spectrum = Path("data/analysis_output/review/psd_summary.json")
     if spectrum.is_file():
         data = json.loads(spectrum.read_text())["metrics"]
@@ -633,6 +640,8 @@ def section_review_metrics(out: dict[str, Any]) -> None:
         out["PSD.highpass.c1.f_over_f0"] = fmt(data["highpass_c1_f_over_f0"], 2)
         out["PSD.bandstop.top5_p90_pct"] = fmt(100.0 * data["bandstop_top5_p90_fraction"], 0)
         out["PSD.bandpass.point_gain"] = fmt(data["bandpass_point_gain"], 2)
+        for filter_type, point in data["fig6_points"].items():
+            out[f"FIG6.{filter_type}.omega_c_pi"] = fmt(point["omega_c_pi"], 3)
         for band, key in (("le_0.1", "le_0.1"), ("gt_0.1", "gt_0.1")):
             row = data["c5_lowpass_Nz_ge8"][key]
             prefix = f"PSD.C5.lowpass.{band}"
