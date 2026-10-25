@@ -1,0 +1,32 @@
+{
+  "provenance": [
+    "tools/review/psd.py",
+    "tools/review/fig6_median.py",
+    "tools/review/revision_numbers.py"
+  ],
+  "metrics": {
+    "lowpass_Nz_ge8_median_f_over_f0": 10.140558313686078,
+    "bandstop_median_f_over_f0": 1.0220806083083416,
+    "highpass_c1_f": 0.8986303736804716,
+    "highpass_c1_f0": 0.9712577629269264,
+    "highpass_c1_f_over_f0": 0.9252233629231553,
+    "bandstop_top5_p90_fraction": 0.6582393321779823,
+    "bandpass_point_gain": 1.0630461588631734,
+    "c5_lowpass_Nz_ge8": {
+      "le_0.1": {
+        "n": 240,
+        "n_valid": 238,
+        "median": 13.85255739992343,
+        "p10": 1.1925977301618529,
+        "p90": 51.985471800845254
+      },
+      "gt_0.1": {
+        "n": 242,
+        "n_valid": 235,
+        "median": 6.692112579127343,
+        "p10": 2.723510640150734,
+        "p90": 32.29333935073975
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "provenance": "tools/review/f3_long_horizon_400.py",
+  "n_per_type": 400,
+  "horizon": 300000,
+  "seed": 42,
+  "rows": 1600,
+  "unique_paths": 184,
+  "summary": [
+    {
+      "filter_type": "lowpass",
+      "n": 400,
+      "keep": 356,
+      "keep_pct": 89.0,
+      "below": 32,
+      "below_pct": 8.0,
+      "nonchaotic_or_divergent": 12,
+      "non_pct": 3.0,
+      "non_ci_low": 1.7243020965143054,
+      "non_ci_high": 5.1698535709095665,
+      "keep_ci_low": 85.55490895383555,
+      "keep_ci_high": 91.70313208808932
+    },
+    {
+      "filter_type": "highpass",
+      "n": 400,
+      "keep": 333,
+      "keep_pct": 83.25,
+      "below": 22,
+      "below_pct": 5.5,
+      "nonchaotic_or_divergent": 45,
+      "non_pct": 11.25,
+      "non_ci_low": 8.514845878595949,
+      "non_ci_high": 14.722356932312028,
+      "keep_ci_low": 79.27798983351752,
+      "keep_ci_high": 86.58944259325176
+    },
+    {
+      "filter_type": "bandpass",
+      "n": 400,
+      "keep": 358,
+      "keep_pct": 89.5,
+      "below": 30,
+      "below_pct": 7.5,
+      "nonchaotic_or_divergent": 12,
+      "non_pct": 3.0,
+      "non_ci_low": 1.7243020965143054,
+      "non_ci_high": 5.1698535709095665,
+      "keep_ci_low": 86.11090149132419,
+      "keep_ci_high": 92.1376272562664
+    },
+    {
+      "filter_type": "bandstop",
+      "n": 400,
+      "keep": 279,
+      "keep_pct": 69.75,
+      "below": 17,
+      "below_pct": 4.25,
+      "nonchaotic_or_divergent": 104,
+      "non_pct": 26.0,
+      "non_ci_low": 21.94416470472687,
+      "non_ci_high": 30.512425423319367,
+      "keep_ci_low": 65.07820078218485,
+      "keep_ci_high": 74.04606359161043
+    }
+  ]
+}

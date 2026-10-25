@@ -30,12 +30,12 @@ import unicodedata
 import warnings
 from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import Decimal
 from importlib import resources
 from pathlib import Path
 from typing import Any
 
-from chaotic_pfc.paper.numbers import pct
+from chaotic_pfc._rounding import pct, round_decimal
 
 # ``pct`` (the shared rounding rule) is imported from
 # :mod:`chaotic_pfc.paper.numbers` above, so the article, the audit and the
@@ -937,6 +937,17 @@ _TEXT_NUMBER_IGNORES: dict[str, str] = {
     "957": "lower end of the seed N_c range, inside the SEED label list",
     "3000": "Nmap, the maximum number of iterations (harness constant)",
     "720": "number of permutations of the six windows (6!)",
+    "0.4192": "Sprott reference value for the unfiltered Hénon map",
+    "892": "thousands separator inside 182,892",
+    "790": "thousands separator inside 2,790",
+    "0.548": "sqrt(beta) derived from the map parameter beta = 0.3",
+    "41": "derived count, all but 41 bounded points",
+    "0.125": "Figure 6 selection band lower edge",
+    "0.875": "Figure 6 selection band upper edge",
+    "0.192": "Figure 6 lowpass point coordinate",
+    "0.141": "Figure 6 highpass point coordinate",
+    "0.162": "Figure 6 bandpass point coordinate",
+    "0.394": "Figure 6 bandstop point coordinate",
     "8.3": "ratio between configurations, derived in the text",
     "4636": "bounded bandstop cells (TOT.bandstop.chaotic + periodic)",
     "62000": "highpass grid points (sum of TOT.highpass.*)",
@@ -950,28 +961,27 @@ _TEXT_NUMBER_IGNORE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
 )
 
 
-def _paper_number_values(numbers: dict[str, Any]) -> list[float]:
+def _paper_number_values(numbers: dict[str, Any]) -> list[Decimal]:
     """Every number that appears inside a ``paper numbers`` value."""
-    values: list[float] = []
+    values: list[Decimal] = []
     for value in numbers.values():
         text = str(value).replace("{,}", "").replace(",", "")
         for match in re.findall(r"-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?", text):
             try:
-                values.append(float(match))
-            except ValueError:  # pragma: no cover - regex guarantees a float
+                values.append(Decimal(match))
+            except ValueError:  # pragma: no cover - regex guarantees a decimal
                 continue
     return values
 
 
-def _round_half_up(value: float, places: int) -> float:
-    q = Decimal(1).scaleb(-places)
-    return float(Decimal(repr(float(value))).quantize(q, rounding=ROUND_HALF_UP))
+def _round_half_up(value: Decimal, places: int) -> Decimal:
+    return Decimal(round_decimal(value, places))
 
 
-def _token_matches(token: str, values: list[float]) -> bool:
+def _token_matches(token: str, values: list[Decimal]) -> bool:
     """Return whether the token is the half-up rounding of some label."""
     places = len(token.split(".")[1]) if "." in token else 0
-    target = float(token)
+    target = Decimal(token)
     return any(_round_half_up(value, places) == target for value in values)
 
 

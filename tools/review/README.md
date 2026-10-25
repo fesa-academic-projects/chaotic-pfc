@@ -51,3 +51,9 @@ Run order:
 directory is empty, so `selectivity.py` does not need a separate first run.
 `revision_numbers.py` consumes `wave2c_psd_fraction.csv` and
 `wave2_psd_meta.csv` from step 2.
+
+`chaotic_pfc paper numbers` reads the versioned summaries
+`data/analysis_output/review/f3_long_horizon_400_summary.json` and
+`data/analysis_output/review/psd_summary.json` for the long-horizon and
+spectrum labels. The first is written by `f3_long_horizon_400.py`; the second
+records the outputs of `psd.py`, `fig6_median.py` and `revision_numbers.py`.

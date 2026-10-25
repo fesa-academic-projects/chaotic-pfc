@@ -1,4 +1,4 @@
-"""tests/test_analysis.py — Tests for the analysis module."""
+"""tests/test_analysis.py: tests for the analysis module."""
 
 import unittest
 from pathlib import Path
@@ -473,11 +473,16 @@ class TestAnalysis(unittest.TestCase):
                 self.assertEqual(ci[ft], {})
 
     def test_round_half_up_percentages(self):
-        """434/4000 (10.85%) rounds to 10.9 and 149/2000 (7.45%) rounds to 7.5."""
+        """Exact count fractions round half-up from the integers."""
+        from chaotic_pfc._rounding import pct
         from chaotic_pfc.analysis.stats._common import pct_round
 
         self.assertEqual(pct_round(434, 4000, 1), 10.9)
         self.assertEqual(pct_round(149, 2000, 1), 7.5)
+        self.assertEqual(pct(626, 4000, 1), "15.7")
+        self.assertEqual(pct(654, 4000, 1), "16.4")
+        self.assertEqual(pct(194, 4000, 1), "4.9")
+        self.assertEqual(pct(75, 2000, 1), "3.8")
 
         h_bp = np.full((40, 100), -0.1)
         h_bp.ravel()[:434] = 0.2

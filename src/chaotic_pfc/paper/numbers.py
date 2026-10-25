@@ -24,15 +24,17 @@ import math
 import os
 import sys
 import warnings
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 from chaotic_pfc._output import progress
+from chaotic_pfc._rounding import pct as pct
+from chaotic_pfc._rounding import round_decimal, round_fraction
 from chaotic_pfc.analysis.stats import lmax_statistics
-from chaotic_pfc.analysis.stats._common import pct as pct
 from chaotic_pfc.analysis.sweep import (
     LAMBDA_CHAOS_THRESHOLD,
     load_sweep,
@@ -66,8 +68,7 @@ SEED_LIST = (1, 2, 3, 4, 5, 6, 7, 8, 9, 42)
 
 def fmt(x: Any, places: int) -> str:
     """Round a float with ROUND_HALF_UP to *places* decimals."""
-    q = Decimal(1).scaleb(-places)
-    return str(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
+    return round_decimal(repr(float(x)), places)
 
 
 # ── loading and counts ──────────────────────────────────────────────────────
@@ -143,17 +144,18 @@ def candidates(recs: Any, ft: str) -> list[Any]:
 
 
 def table2_row(row: Any) -> dict[str, Any]:
-    """Table II/III entry, with the statistics of ``stats.lmax_statistics``."""
+    """Table II/III entry, with raw chaotic-region mean and standard deviation."""
     sr = row["sr"]
     c = counts(sr)
+    values = chaotic_values(sr)
     st = lmax_statistics(sr, region="chaotic", n_bootstrap=N_BOOT, seed=BOOT_SEED)
     return {
         "name": row["name"],
         "nc": c["nc"],
         "rho_fin": pct(c["nc"], c["nb"], 1),
         "rho_abs": pct(c["nc"], c["n"], 1),
-        "mean": fmt(st["mean"], 4),
-        "std": fmt(st["std"], 4),
+        "mean": fmt(float(np.mean(values)), 4),
+        "std": fmt(float(np.std(values, ddof=1)), 4),
         "ci": f"[{fmt(st['ci_95_low'], 4)}, {fmt(st['ci_95_high'], 4)}]",
     }
 
@@ -206,13 +208,26 @@ def section_table2_table3(recs: Any, out: dict[str, Any]) -> dict[str, Any]:
             out[f"{base}.std"] = t["std"]
             out[f"{base}.ci"] = t["ci"]
         all_rows.extend((ft, row) for row in rows)
-    ordered = sorted(all_rows, key=lambda p: (-p[1]["nc"], p[0], p[1]["name"]))
+    ordered = sorted(
+        all_rows,
+        key=lambda p: (
+            -Fraction(100 * p[1]["nc"], counts(p[1]["sr"])["n"]),
+            p[0],
+            p[1]["name"],
+        ),
+    )
     for k, (ft, row) in enumerate(ordered, 1):
         t = table2_row(row)
         out[f"T3.rank{k:02d}"] = (
             f"{ft} | {t['name']} | Nc={t['nc']} | rho_fin={t['rho_fin']} | "
             f"mean={t['mean']} | ci={t['ci']}"
         )
+        rank = f"T2.rank{k:02d}"
+        out[f"{rank}.Nc"] = str(t["nc"])
+        out[f"{rank}.rho_abs"] = t["rho_abs"]
+        out[f"{rank}.rho_fin"] = t["rho_fin"]
+        out[f"{rank}.mean"] = t["mean"]
+        out[f"{rank}.std"] = t["std"]
     return best
 
 
@@ -272,6 +287,9 @@ def section_totals(recs: Any, out: dict[str, Any]) -> None:
         out[f"TOT.{ft}.chaotic"] = str(c)
         out[f"TOT.{ft}.periodic"] = str(c_p)
         out[f"TOT.{ft}.divergent"] = str(c_d)
+        out[f"TOT.{ft}.pct_chaotic"] = pct(c, n_all, 1)
+        out[f"TOT.{ft}.pct_periodic"] = pct(c_p, n_all, 1)
+        out[f"TOT.{ft}.pct_non_chaotic"] = pct(c_p, n_all, 1)
         out[f"TOT.{ft}.pct_divergent"] = pct(c_d, n_all, 2)
         out[f"TOT.{ft}.rho_fin_agg"] = pct(c, nb, 2)
         tot_c += c
@@ -336,12 +354,19 @@ def section_density(root: Path, out: dict[str, Any]) -> None:
     from chaotic_pfc.analysis.sweep_plotting import chaotic_density_norm_table
 
     nz, wc, percent, n_cont = chaotic_density_norm_table(root)
-    k = np.rint(percent * n_cont[:, None] / 100.0)
-    total = np.broadcast_to(n_cont[:, None], percent.shape)
+    counts = np.rint(percent * n_cont[:, None] / 100.0).astype(np.int64)
 
-    def pooled(rows: np.ndarray, cols: np.ndarray) -> str:
-        sub = np.ix_(rows, cols)
-        return pct(int(np.nansum(k[sub])), int(np.nansum(total[sub])), 1)
+    def band_mean(rows: np.ndarray, cols: np.ndarray) -> str:
+        values = [
+            Fraction(int(counts[k, j]), int(n_cont[k]))
+            for k in np.flatnonzero(rows)
+            for j in np.flatnonzero(cols)
+            if n_cont[k] > 0
+        ]
+        if not values:
+            return "n/a"
+        mean = sum(values, Fraction(0)) / len(values) * 100
+        return round_fraction(mean, 1)
 
     bands = {
         "<=0.1": wc <= 0.1,
@@ -352,13 +377,14 @@ def section_density(root: Path, out: dict[str, Any]) -> None:
     ge8 = nz >= 8
     le7 = nz <= 7
     for label, cols in bands.items():
-        out[f"DEN.Nz_ge8.wc_{label}"] = pooled(ge8, cols)
-    le7_vals = [float(pooled(le7, cols)) for cols in bands.values()]
-    out["DEN.Nz_le7_band_range"] = f"[{fmt(min(le7_vals), 1)}, {fmt(max(le7_vals), 1)}]"
+        out[f"DEN.Nz_ge8.wc_{label}"] = band_mean(ge8, cols)
+        out[f"DEN.Nz_le7.wc_{label}"] = band_mean(le7, cols)
+    le7_vals = [Decimal(out[f"DEN.Nz_le7.wc_{label}"]) for label in bands]
+    out["DEN.Nz_le7_band_range"] = f"[{min(le7_vals)}, {max(le7_vals)}]"
 
     def point(kk: Any, jj: Any) -> str:
         n = int(n_cont[kk])
-        count = round(float(percent[kk, jj]) * n / 100.0)
+        count = int(counts[kk, jj])
         return f"Nz={nz[kk]}, wc/pi={fmt(wc[jj], 4)}, {pct(count, n, 1)}%, k={count} of n={n}"
 
     kk, jj = np.unravel_index(np.nanargmax(percent), percent.shape)
@@ -438,6 +464,14 @@ def section_kaiser(recs: Any, out: dict[str, Any]) -> None:
     out["KAI.bandpass.plateau_10_14"] = span("bandpass", 10.0, 14.0)
     out["KAI.highpass.plateau_12_14"] = span("highpass", 12.0, 14.0)
     out["KAI.bandstop.all"] = span("bandstop", 0.5, 20.0)
+    bandstop_large = [
+        Decimal(pct(counts(r)["nc"], counts(r)["n"], 1))
+        for beta, r in _kaiser_pairs(recs, "bandstop")
+        if beta > 2.0
+    ]
+    if bandstop_large:
+        out["KAI.bandstop.large_beta_min"] = str(min(bandstop_large))
+        out["KAI.bandstop.large_beta_max"] = str(max(bandstop_large))
     lp = dict(_kaiser_pairs(recs, "lowpass"))
     out["KAI.lowpass.Nc_13.0"] = str(counts(lp[13.0])["nc"])
     out["KAI.lowpass.Nc_13.5"] = str(counts(lp[13.5])["nc"])
@@ -447,6 +481,69 @@ def _kaiser_pairs(recs: Any, ft: str) -> list[Any]:
     return [
         (float(r.metadata["kaiser_beta"]), r) for r in recs if r.filter_type == ft and is_kaiser(r)
     ]
+
+
+def section_attenuation(out: dict[str, Any]) -> None:
+    """Bandstop attenuation at the center of the band for the low-beta points."""
+    from scipy.signal import freqz
+
+    for beta in (0.5, 1.0, 1.5, 2.0):
+        bank, _gains = precompute_fir_bank(
+            np.array([41], dtype=np.int64),
+            np.array([0.5], dtype=np.float64),
+            "bandstop",
+            "kaiser",
+            kaiser_beta=beta,
+            bandwidth=BANDWIDTH,
+        )
+        coefficients = np.asarray(bank[0, 0, :41], dtype=np.float64)
+        frequency, response = freqz(coefficients, worN=8192, fs=2.0)
+        magnitude = np.abs(response)
+        index = int(np.argmin(np.abs(frequency - 0.5)))
+        value = magnitude[index] / magnitude[0] if magnitude[0] > 0 else float("nan")
+        attenuation = -20.0 * math.log10(value) if value > 0 else float("inf")
+        out[f"ATT.bandstop.beta{beta:g}"] = fmt(attenuation, 1)
+
+
+def _three_db_width(w: np.ndarray, magnitude: np.ndarray) -> float:
+    peak = float(np.max(magnitude))
+    above = magnitude >= peak / np.sqrt(2.0)
+    centre = int(np.argmax(magnitude))
+    left = centre
+    while left > 0 and above[left - 1]:
+        left -= 1
+    right = centre
+    while right < len(magnitude) - 1 and above[right + 1]:
+        right += 1
+    return float(w[right] - w[left])
+
+
+def section_width_spearman(recs: Any, out: dict[str, Any]) -> None:
+    """Speed of the realized bandpass width against N_c over the fixed windows."""
+    from scipy.signal import freqz
+
+    fixed = fixed_of(recs, "bandpass")
+    nc = np.array([counts(fixed[w])["nc"] for w, _name, _db in FIXED], dtype=np.float64)
+    per_window = []
+    for window, _name, _db in FIXED:
+        values = []
+        for num_taps in (3, 5, 7, 11, 21, 41):
+            for cutoff in (0.1, 0.2, 0.4):
+                bank, _gains = precompute_fir_bank(
+                    np.array([num_taps], dtype=np.int64),
+                    np.array([cutoff], dtype=np.float64),
+                    "bandpass",
+                    window,
+                    kaiser_beta=13.5,
+                    bandwidth=BANDWIDTH,
+                )
+                coefficients = np.asarray(bank[0, 0, :num_taps], dtype=np.float64)
+                frequency, response = freqz(coefficients, worN=8192, fs=2.0)
+                values.append(_three_db_width(frequency, np.abs(response)) / BANDWIDTH)
+        per_window.append(float(np.median(values)))
+    rho, p_value = spearman_exact(np.asarray(per_window), nc)
+    out["WIDTH.bandpass.rho"] = fmt(rho, 2)
+    out["WIDTH.bandpass.p"] = fmt(p_value, 3)
 
 
 def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> None:
@@ -491,6 +588,59 @@ def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> 
     out["ROB.tableII.pct_mean_above_2se"] = f"[{fmt(min(t2), 1)}, {fmt(max(t2), 1)}]"
     out["ROB.tableII.kept_1e-3"] = f"[{fmt(min(t2_1), 1)}, {fmt(max(t2_1), 1)}]"
     out["ROB.tableII.kept_5e-3"] = f"[{fmt(min(t2_5), 1)}, {fmt(max(t2_5), 1)}]"
+
+
+def _wilson_interval(count: int, total: int) -> tuple[float, float]:
+    """Wilson score interval used by the long-horizon summary."""
+    if total == 0:
+        return float("nan"), float("nan")
+    z = 1.959963984540054
+    proportion = count / total
+    denominator = 1.0 + z * z / total
+    centre = (proportion + z * z / (2.0 * total)) / denominator
+    half = (
+        z
+        * math.sqrt(proportion * (1.0 - proportion) / total + z * z / (4.0 * total * total))
+        / denominator
+    )
+    return max(0.0, centre - half), min(1.0, centre + half)
+
+
+def section_review_metrics(out: dict[str, Any]) -> None:
+    """Labels from the long-horizon and spectrum review summaries."""
+    long_horizon = Path("data/analysis_output/review/f3_long_horizon_400_summary.json")
+    if long_horizon.is_file():
+        data = json.loads(long_horizon.read_text())
+        for row in data["summary"]:
+            ft = str(row["filter_type"])
+            total = int(row["n"])
+            out[f"LH.{ft}.keep"] = pct(int(row["keep"]), total, 1)
+            out[f"LH.{ft}.below"] = pct(int(row["below"]), total, 1)
+            out[f"LH.{ft}.non"] = pct(int(row["nonchaotic_or_divergent"]), total, 1)
+            out[f"LH.{ft}.keep_ci_low"] = fmt(row["keep_ci_low"], 1)
+            out[f"LH.{ft}.keep_ci_high"] = fmt(row["keep_ci_high"], 1)
+            out[f"LH.{ft}.non_ci_low"] = fmt(row["non_ci_low"], 1)
+            out[f"LH.{ft}.non_ci_high"] = fmt(row["non_ci_high"], 1)
+            below_low, below_high = _wilson_interval(int(row["below"]), total)
+            out[f"LH.{ft}.below_ci_low"] = fmt(100.0 * below_low, 1)
+            out[f"LH.{ft}.below_ci_high"] = fmt(100.0 * below_high, 1)
+
+    spectrum = Path("data/analysis_output/review/psd_summary.json")
+    if spectrum.is_file():
+        data = json.loads(spectrum.read_text())["metrics"]
+        out["PSD.lowpass.Nz_ge8.median_f_over_f0"] = fmt(data["lowpass_Nz_ge8_median_f_over_f0"], 1)
+        out["PSD.bandstop.median_f_over_f0"] = fmt(data["bandstop_median_f_over_f0"], 2)
+        out["PSD.highpass.c1.f_over_f0"] = fmt(data["highpass_c1_f_over_f0"], 2)
+        out["PSD.bandstop.top5_p90_pct"] = fmt(100.0 * data["bandstop_top5_p90_fraction"], 0)
+        out["PSD.bandpass.point_gain"] = fmt(data["bandpass_point_gain"], 2)
+        for band, key in (("le_0.1", "le_0.1"), ("gt_0.1", "gt_0.1")):
+            row = data["c5_lowpass_Nz_ge8"][key]
+            prefix = f"PSD.C5.lowpass.{band}"
+            out[f"{prefix}.n"] = str(row["n"])
+            out[f"{prefix}.n_valid"] = str(row["n_valid"])
+            out[f"{prefix}.median"] = fmt(row["median"], 3)
+            out[f"{prefix}.p10"] = fmt(row["p10"], 3)
+            out[f"{prefix}.p90"] = fmt(row["p90"], 3)
 
 
 def section_cost(recs: Any, out: dict[str, Any]) -> None:
@@ -579,6 +729,7 @@ def section_gain(recs: Any, out: dict[str, Any]) -> None:
             lp_fin_divergent += int((finite & nan).sum())
 
     out["GAIN.n_absG_lt_0.1"] = str(n_low)
+    out["GAIN.periodic_count_absG_lt_0.1"] = str(n_per_low)
     out["GAIN.periodic_pct_absG_lt_0.1"] = pct(n_per_low, n_low, 1)
     out["GAIN.chaotic_count_absG_lt_0.1"] = str(n_cha_low)
     out["GAIN.highpass.chaotic_absG_lt_0.1"] = str(hp_cha_low)
@@ -684,6 +835,22 @@ def seed_runs(root: Path, recs: Any) -> dict[str, Any]:
                     "sr": fx["hamming"],
                 }
             )
+        if ft == "lowpass":
+            beta16 = [
+                r
+                for r in recs
+                if r.filter_type == ft
+                and is_kaiser(r)
+                and abs(float(r.metadata["kaiser_beta"]) - 16.0) < 1e-9
+            ]
+            if beta16:
+                rows.append(
+                    {
+                        "role": "lowpass_beta16",
+                        "name": kaiser_label(beta16[0]),
+                        "sr": beta16[0],
+                    }
+                )
         configs[ft] = rows
 
     results: dict[str, Any] = {}
@@ -735,14 +902,8 @@ def seed_runs(root: Path, recs: Any) -> dict[str, Any]:
     return results
 
 
-def validation_ns1() -> dict[str, Any]:
-    """Ns=1, c0=1 map with the full-spectrum estimator, early stop off.
-
-    Mirrors the fallback path of the sweep kernel for Ns <= 2: the full
-    tangent matrix (2 x 2) is propagated and reorthonormalised, and the
-    returned value is the largest exponent. The sum of both exponents is
-    compared with ln(beta), which is the log of |det J| per iteration.
-    """
+def validation_ns1_exact() -> tuple[float, float]:
+    """Return the full-spectrum mean and the maximum tangent-sum residual."""
     from chaotic_pfc.analysis.sweep._kernel import _henon_n12_inplace, _lyap_online_n12
     from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
 
@@ -772,20 +933,44 @@ def validation_ns1() -> dict[str, Any]:
         lams.append(float(lam))
         lam_sum = float((lyap_sum[0] + lyap_sum[1]) / n_used)
         residuals.append(abs(lam_sum - math.log(beta)))
-    mean = float(np.mean(lams))
+    return float(np.mean(lams)), float(max(residuals))
+
+
+def validation_ns1() -> dict[str, Any]:
+    """Ns=1, c0=1 map with the full-spectrum estimator, early stop off."""
+    mean, max_residual = validation_ns1_exact()
     return {
         "lambda1_mean": fmt(mean, 4),
         "rel_err_pct": pct_float(abs(mean - 0.41922), 0.41922, 2),
-        "max_sum_residual": f"{max(residuals):.2e}",
+        "max_sum_residual": f"{max_residual:.2e}",
     }
+
+
+def validation_single_vector() -> float:
+    """Production single-vector value for the Ns=1 validation."""
+    from chaotic_pfc.analysis.sweep import run_sweep
+
+    result = run_sweep(
+        window="hamming",
+        filter_type="lowpass",
+        num_taps_grid=np.array([1], dtype=np.int64),
+        cutoff_grid=np.array([0.5], dtype=np.float64),
+        Nitera=500,
+        Nmap=3000,
+        n_initial=25,
+        adaptive=True,
+        Nmap_min=500,
+        tol=1e-3,
+        seed=42,
+    )
+    return float(result.h[0, 0])
 
 
 def pct_float(num: float, den: float, places: int) -> str:
     """Format ``num/den`` as a percentage string."""
-    q = Decimal(1).scaleb(-places)
-    return str(
-        (Decimal(repr(100.0 * num)) / Decimal(repr(den))).quantize(q, rounding=ROUND_HALF_UP)
-    )
+    if den == 0:
+        return "n/a"
+    return round_decimal(Decimal(repr(100.0 * num)) / Decimal(repr(den)), places)
 
 
 def machine() -> str:
@@ -816,9 +1001,12 @@ def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     section_density(root, out)
     section_concordance(recs, out)
     section_kaiser(recs, out)
+    section_attenuation(out)
+    section_width_spearman(recs, out)
     section_robustness(recs, best, out)
     section_cost(recs, out)
     section_gain(recs, out)
+    section_review_metrics(out)
     if extras:
         seeds = seed_runs(root, recs)
         for key, info in seeds.items():
@@ -836,7 +1024,18 @@ def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
                 f = fixed[0]
                 wins = sum(k["ncs"][s] > f["ncs"][s] for s in SEED_LIST)
                 out[f"SEED.kaiser_gt_fixed.{ft}"] = f"{wins}/{len(SEED_LIST)} seeds"
-        out["VAL.ns1"] = validation_ns1()
+        full_mean, full_residual = validation_ns1_exact()
+        single_mean = validation_single_vector()
+        out["VAL.ns1"] = {
+            "lambda1_mean": fmt(full_mean, 4),
+            "rel_err_pct": pct_float(abs(full_mean - 0.41922), 0.41922, 2),
+            "max_sum_residual": f"{full_residual:.2e}",
+        }
+        out["VAL.ns1.full_spectrum"] = fmt(full_mean, 4)
+        out["VAL.ns1.single_vector"] = fmt(single_mean, 4)
+        out["VAL.ns1.full_vs_ref"] = pct_float(abs(full_mean - 0.41922), 0.41922, 2)
+        out["VAL.ns1.single_vs_full"] = pct_float(abs(single_mean - full_mean), full_mean, 2)
+        out["VAL.ns1.single_vs_ref"] = pct_float(abs(single_mean - 0.41922), 0.41922, 2)
         out["COST.machine"] = machine()
     wall = CACHE / "regen_seconds.txt"
     if wall.exists():
