@@ -96,7 +96,7 @@ exponent, which measures the average exponential rate at which nearby orbits
 separate, exceeds a threshold of $5\times10^{-3}$, and as non-chaotic otherwise.
 Filtering does not eliminate the chaotic regime but reorganizes it in a way that
 depends on both the filter type and the window. Filters that remove the direct
-current (DC) component make the fixed point of the map stable and yield no
+current (DC) component make the fixed point of the map locally stable and yield no
 chaotic point in the grid, whereas, for unit DC gain, the order, the cutoff frequency, and
 the window decide the regime. At the orders studied, the designed filters do not
 realize the nominal bandpass and bandstop masks, and the chaotic generators
@@ -706,9 +706,11 @@ how homogeneous $\lambda_1$ is across the chaotic region, not the estimation
 noise at one point. The classification is checked in three ways: the
 sensitivity of $N_c$ to the threshold, with $10^{-3}$ and $10^{-2}$ in place of
 $\theta$; the repetition of the best Kaiser and the best fixed window of each
-filter type with ten seeds of the initial-condition generator (1 to 9 and 42);
+filter type, and, for the lowpass filter, of the neighboring value
+$\beta_K=16$, with ten seeds of the initial-condition generator (1 to 9 and 42);
 and a long-horizon test, in which 400 chaotic points per filter type, drawn at
-random, are recomputed with $3\times10^5$ iterations and no early stopping from
+random from all its configurations, are recomputed with $3\times10^5$
+iterations and no early stopping from
 the first initial condition of their ensemble (the classification averages the
 25 initial conditions). Rank correlations between window
 properties and $N_c$ use the Spearman coefficient $r_s$ over the six fixed
@@ -724,13 +726,13 @@ The estimator was validated on the map (\ref{eq:henon}) without filter
 ($N_s=1$, $c_0=1$), with $\alpha=1.4$ and $\beta=0.3$, for which
 $\lambda_1=0.4192$~\cite{Sprott2003}, using the ensemble of
 Section~\ref{sub:estimator}. The full-spectrum estimator, with early stopping
-disabled, gave $\bar{\lambda}_1=0.4185$ (0.17\% below the reference), and the identity
+disabled, gave $\bar{\lambda}_1=0.4185$ (0.18\% below the reference), and the identity
 $\lambda_1+\lambda_2=\ln|\beta|$ (Section~\ref{sub:lyap}) was satisfied
 within $5.4\times10^{-9}$ (maximum over the 25 initial conditions), which
 confirms the estimator independently of the reference value. The single-vector
 path of Algorithm~\ref{alg:lyap} used in the sweeps, with renormalization every
 ten iterations and early stopping enabled, gave $\bar{\lambda}_1=0.4194$, a
-relative difference of 0.22\% from the full-spectrum value and of 0.04\% from
+relative difference of 0.21\% from the full-spectrum value and of 0.03\% from
 the reference, which is enough to separate the classes of (\ref{eq:criterio}).
 
 % ---- IV-B ----
@@ -847,7 +849,7 @@ map (Fig.~\ref{fig:maps}(a)), chaos lies below a boundary in $\omega_c/\pi$
 that decreases with $N_z$, and the orbits diverge above it. The largest chaotic
 cutoff is 0.66 for $N_z=4$, 0.96 for $N_z=6$, and close to 1 for $N_z=7$, and
 it falls to 0.45 for $N_z=10$, 0.11 for $N_z=20$, and 0.03 for $N_z=40$; for
-$N_z=3$ and 5 no point is chaotic. In the highpass map
+$N_z\le3$ and $N_z=5$ no point is chaotic. In the highpass map
 (Fig.~\ref{fig:maps}(b)), chaos occurs at $\omega_c/\pi\le0.23$ for $N_z\ge6$
 and at $0.67\le\omega_c/\pi\le1$ only for $N_z=4$, where the largest
 $\lambda_1$, 0.105, also occurs. At high orders, both filters are chaotic only
@@ -1055,7 +1057,10 @@ and 0.8 for $N_z\le7$, and most of the power remains outside the nominal band
 (median $f=0.04$). For the highpass and bandstop filters, $f/f_0$
 is close to 1 (medians 1.00 and 1.02), because, at the
 cutoffs where most of their chaotic points occur, their nominal passbands
-cover nearly the whole frequency axis. In highpass and bandstop generators,
+cover nearly the whole frequency axis. At the highpass point of
+Fig.~\ref{fig:psd}(b), $f/f_0=0.93$: the filtered generator places less power
+in the nominal passband than the unfiltered map. In highpass and bandstop
+generators,
 chaotic signals can also carry strong spectral lines: the five largest peaks
 of the PSD of $x_3(n)$ hold a median of 15\% and 5\% of the power, and up to
 34\% and 66\% at the 90th percentile, respectively; the points shown in
@@ -1100,10 +1105,11 @@ $\theta=5\times10^{-3}$.
 
 Filtering does not eliminate the chaotic regime but reorganizes it into regions
 whose shape depends on the filter type and the window. The DC gain of the
-filter decides whether chaos is possible: a filter that removes the DC component
-makes the fixed point of the map stable for any choice of coefficients, and no
-grid point with $|G|<0.1$ was chaotic. Once the DC component is preserved, the
-order, the cutoff frequency, and the window decide the regime. For lowpass,
+filter decides whether chaos is found in the grid: a filter that removes the DC
+component makes the fixed point of the map locally stable for any choice of
+coefficients, and no grid point with $|G|<0.1$ was chaotic. Once the DC
+component is preserved, the order, the cutoff frequency, and the window decide
+the regime. For lowpass,
 highpass, and bandpass filters, windows of high side-lobe attenuation (Kaiser
 with $\beta_K$ between 15.5 and 17, and Blackman--Harris) give the largest
 chaotic coverage, the highest being that of the lowpass filter with the Kaiser
@@ -1132,7 +1138,12 @@ at the orders studied, the designed bandpass and bandstop filters do not
 realize their nominal band, and the chaotic generators concentrate their power
 in the nominal passband only partially. Both the dynamics and the spectrum of
 each design must therefore be verified explicitly, for example with
-classification maps and power fractions such as the ones presented here.
+classification maps and power fractions such as the ones presented here. The
+exception in the grid is the lowpass filter at high orders and low cutoff
+frequencies, where chaos is most frequent (Section~\ref{sub:density}) and the
+generator concentrates its power in the nominal passband
+(Section~\ref{sec:spectrum}), so a generator that is both chaotic and
+spectrally confined can be found there.
 
 The study has limitations. The classification uses a threshold on a
 finite-time estimate of $\lambda_1$: weakly chaotic orbits with
