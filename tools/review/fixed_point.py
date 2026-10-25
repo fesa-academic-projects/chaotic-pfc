@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2, item 2: fixed-point convergence of bounded non-chaotic points."""
+"""Fixed-point convergence of bounded non-chaotic points."""
 
 from __future__ import annotations
 
@@ -240,14 +240,14 @@ def run(out_dir: Path) -> None:
         print(f"scanned {rel}: {len(scanned)} non-chaotic cells", flush=True)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    _write(out_dir / "wave2_fixed_point_cells.csv", all_rows)
-    _write(out_dir / "wave2_fixed_point.csv", _aggregate(all_rows))
-    _write(out_dir / "wave2_fixed_point_bins.csv", _bins(all_rows))
-    _write(out_dir / "wave2_fixed_point_nonconverged.csv", _nonconverged(all_rows))
+    _write(out_dir / "fixed_point_cells.csv", all_rows)
+    _write(out_dir / "fixed_point.csv", _aggregate(all_rows))
+    _write(out_dir / "fixed_point_bins.csv", _bins(all_rows))
+    _write(out_dir / "fixed_point_nonconverged.csv", _nonconverged(all_rows))
     print(f"max |h_repro - h_stored| over 124 grids: {max_repro}")
-    print(f"wrote {out_dir / 'wave2_fixed_point.csv'}")
-    print(f"wrote {out_dir / 'wave2_fixed_point_bins.csv'}")
-    print(f"wrote {out_dir / 'wave2_fixed_point_nonconverged.csv'}")
+    print(f"wrote {out_dir / 'fixed_point.csv'}")
+    print(f"wrote {out_dir / 'fixed_point_bins.csv'}")
+    print(f"wrote {out_dir / 'fixed_point_nonconverged.csv'}")
 
 
 def main() -> int:

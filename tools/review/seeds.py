@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate 0 protocol D: ten-seed repetitions of the reference configurations.
+"""Ten-seed repetitions of the reference configurations.
 
 For each filter type the two reference configurations are the best Kaiser
 window and the best fixed window by ``Nc``.  The bandstop type also repeats the
@@ -101,9 +101,9 @@ def run(out_dir: Path) -> None:
                 "best_kaiser_path": rel,
                 "best_kaiser_beta": float(sr.metadata["kaiser_beta"]),
                 "best_kaiser_Nc": nc,
-                "gate1_best_path": old_rel,
-                "gate1_best_beta": float(old_sr.metadata["kaiser_beta"]),
-                "gate1_best_Nc": old_nc,
+                "low_beta_best_path": old_rel,
+                "low_beta_best_beta": float(old_sr.metadata["kaiser_beta"]),
+                "low_beta_best_Nc": old_nc,
                 "changed": rel != old_rel,
                 "best_fixed_path": fixed_rel,
                 "best_fixed_window": fixed_sr.window,
@@ -143,7 +143,7 @@ def run(out_dir: Path) -> None:
                         "Nc": ham_nc,
                     }
                 )
-    with (out_dir / "wave3_best_kaiser.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "best_kaiser.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(best_rows[0]))
         writer.writeheader()
         writer.writerows(best_rows)
@@ -210,7 +210,7 @@ def run(out_dir: Path) -> None:
             )
             done += 1
             progress(done, total, f"{item['filter_type']}/{item['path']}/seed={seed}", None)
-    with (out_dir / "wave3_seeds.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "seeds.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
@@ -247,7 +247,7 @@ def run(out_dir: Path) -> None:
                 "values": " ".join(str(v) for v in values),
             }
         )
-    with (out_dir / "wave3_seeds_summary.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "seeds_summary.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(summary[0]))
         writer.writeheader()
         writer.writerows(summary)

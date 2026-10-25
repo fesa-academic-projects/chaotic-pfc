@@ -31,12 +31,12 @@ The proposed border rule for Figures 6(c) and 6(d) is evaluated with
 | `locality.py` | Section IV-C locality statement. | `.venv/bin/python tools/review/locality.py --out-dir build/review` |
 | `long_horizon.py` | Shared long-horizon helpers for Sections III-C and IV-F; also emits the standalone horizon table. | `.venv/bin/python tools/review/long_horizon.py --out-dir build/review` |
 | `transient.py` | Section III-C marginal population and Section IV-F long-horizon numbers. | `.venv/bin/python tools/review/transient.py --out-dir build/review` |
-| `f3_long_horizon_400.py` | Section IV-F long-horizon test with 400 chaotic points per filter type, sampled from all configurations of each type. | `.venv/bin/python tools/review/f3_long_horizon_400.py --out-dir build/review` |
-| `bx1_validation_sweep.py` | Section IV-A single-vector validation value. | `.venv/bin/python tools/review/bx1_validation_sweep.py --out-dir build/review` |
+| `long_horizon_test.py` | Section IV-F long-horizon test with 400 chaotic points per filter type, sampled from all configurations of each type. | `.venv/bin/python tools/review/long_horizon_test.py --out-dir build/review` |
+| `estimator_validation.py` | Section IV-A single-vector validation value. | `.venv/bin/python tools/review/estimator_validation.py --out-dir build/review` |
 | `selectivity.py` | Section III-A realised widths and Section IV-B Spearman widths. | `.venv/bin/python tools/review/selectivity.py --out-dir build/review` |
-| `phase1.py` | Gate D3 items 1A to 1E: Figure 6 points, lowpass order counts, bandstop attenuation, validation differences and the Kaiser low-beta transition. | `.venv/bin/python tools/review/phase1.py --out-dir build/review` |
+| `targeted_checks.py` | Figure 6 candidates, lowpass order counts, bandstop attenuation, validation differences, Kaiser sidelobe levels and the low-beta transition. | `.venv/bin/python tools/review/targeted_checks.py --out-dir build/review` |
 | `psd.py` | Figure 6 and the `f/f0` result in Section IV-G. | `.venv/bin/python tools/review/psd.py --out-dir build/review` |
-| `seeds.py` | Protocol D seed means for the best Kaiser and best fixed window of each type, plus bandstop Hamming. | `.venv/bin/python tools/review/seeds.py --out-dir build/review` |
+| `seeds.py` | Ten-seed means for the best Kaiser and best fixed window of each type, plus bandstop Hamming. | `.venv/bin/python tools/review/seeds.py --out-dir build/review` |
 | `paper_numbers.py` | Table II, Sections IV-C, IV-D and IV-E numbers, and the Figure 7 and Figure 8 sources. | `.venv/bin/python tools/review/paper_numbers.py --out-dir build/review` |
 | `revision_numbers.py` | Section III-B fallback and horizon numbers, Section IV-B width correlations, Section IV-D band means and Section IV-G `f/f0` ratios. | `.venv/bin/python tools/review/revision_numbers.py --out-dir build/review` |
 
@@ -45,15 +45,14 @@ Run order:
 1. `paper_numbers.py`
 2. `psd.py`
 3. `revision_numbers.py`
-4. `fixed_point.py`, `locality.py`, `transient.py`, `phase1.py` and `seeds.py` in any order
+4. `fixed_point.py`, `locality.py`, `transient.py`, `targeted_checks.py` and `seeds.py` in any order
 
-`paper_numbers.py` generates `wave2_selectivity_spearman.csv` when the output
+`paper_numbers.py` generates `selectivity_spearman.csv` when the output
 directory is empty, so `selectivity.py` does not need a separate first run.
-`revision_numbers.py` consumes `wave2c_psd_fraction.csv` and
-`wave2_psd_meta.csv` from step 2.
+`revision_numbers.py` consumes `psd_fraction.csv` and `psd_meta.csv` from step 2.
 
 `chaotic_pfc paper numbers` reads the versioned summaries
-`data/analysis_output/review/f3_long_horizon_400_summary.json` and
+`data/analysis_output/review/long_horizon_summary.json` and
 `data/analysis_output/review/psd_summary.json` for the long-horizon and
-spectrum labels. The first is written by `f3_long_horizon_400.py`; the second
+spectrum labels. The first is written by `long_horizon_test.py`; the second
 records the outputs of `psd.py`, `fig6_median.py` and `revision_numbers.py`.

@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `SweepResult.v_mean` records the per-cell single-vector mean, and every new
   checkpoint stores `chaos_threshold` and `vonly_margin` in its metadata. The
-  diagnostic array lets the Wave 1 golden comparison reconstruct the fallback
+  diagnostic array lets the previous golden comparison reconstruct the fallback
   trigger without re-running the estimator.
 - A production-path validation test for the unfiltered Hénon map with 25
   initial conditions, adaptive early stopping and seed 42, plus threshold

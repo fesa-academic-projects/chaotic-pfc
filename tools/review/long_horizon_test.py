@@ -76,7 +76,7 @@ def run(
             print(index, filter_type, "elapsed", round(time.perf_counter() - start, 1), flush=True)
 
     elapsed = time.perf_counter() - start
-    csv_path = out_dir / "f3_long_horizon_400.csv"
+    csv_path = out_dir / "long_horizon_test.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
@@ -119,7 +119,7 @@ def run(
         "unique_paths": unique_paths,
         "summary": summary,
     }
-    summary_path = out_dir / "f3_long_horizon_400_summary.json"
+    summary_path = out_dir / "long_horizon_summary.json"
     summary_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print("rows", len(rows), "unique_paths", unique_paths, flush=True)
     print("elapsed_s", elapsed, flush=True)

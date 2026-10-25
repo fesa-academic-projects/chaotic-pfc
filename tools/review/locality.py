@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2, item 4: locality of the classification under redrawn initial states."""
+"""Locality of the classification under redrawn initial states."""
 
 from __future__ import annotations
 
@@ -175,7 +175,7 @@ def run(out_dir: Path) -> None:
             }
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "wave2_locality.csv"
+    path = out_dir / "locality.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()

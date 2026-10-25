@@ -28,8 +28,8 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
-import phase1
 import psd
+import targeted_checks
 from scipy.signal import find_peaks, freqz
 
 from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD
@@ -98,7 +98,7 @@ def _select_point(sr: Any, horizon: int) -> dict[str, Any]:
     ordered = sorted(eligible, key=lambda p: abs(float(h[p[0], p[1]]) - median_chaotic))
     for i, j in ordered:
         i, j = int(i), int(j)
-        ensemble = phase1._ensemble(sr, i, j, horizon)
+        ensemble = targeted_checks._ensemble(sr, i, j, horizon)
         if int(ensemble["n_finite"]) != int(sr.metadata["n_initial"]):
             continue
         return {

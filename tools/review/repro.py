@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Production-path reproduction helper for the Wave 2 review scripts."""
+"""Production-path reproduction helper for the manuscript diagnostics."""
 
 from __future__ import annotations
 

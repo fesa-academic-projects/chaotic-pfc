@@ -613,7 +613,7 @@ def section_review_metrics(out: dict[str, Any]) -> None:
     """Labels from the long-horizon and spectrum review summaries."""
     out["STAT.bonferroni_alpha"] = round_fraction(Fraction(5, 400), 4)
     out["EST.Nmap"] = str(DEFAULT_CONFIG.sweep.Nmap)
-    long_horizon = Path("data/analysis_output/review/f3_long_horizon_400_summary.json")
+    long_horizon = Path("data/analysis_output/review/long_horizon_summary.json")
     if long_horizon.is_file():
         data = json.loads(long_horizon.read_text())
         for row in data["summary"]:

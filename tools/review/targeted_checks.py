@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Gate D3, items 1A to 1E: targeted numerical checks.
+"""Targeted numerical checks for the manuscript figures and validation.
 
-The script does not modify the canonical sweep tree.  It selects the Fig. 6
+The script does not modify the canonical sweep tree. It selects the Fig. 6
 points from the current best configuration of each filter type, repeats them
 with the full 25-initial-condition ensemble at a long horizon, and reports the
 lowpass order counts, the bandstop attenuation, the validation differences and
@@ -188,7 +188,7 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
             row.update(ensemble)
             candidate_rows.append(row)
             print(ft, variant, row)
-    _write(out_dir / "phase1_fig6_candidates.csv", candidate_rows)
+    _write(out_dir / "fig6_candidates.csv", candidate_rows)
 
     lowpass = best["lowpass"]
     orders = np.asarray(lowpass.num_taps_grid, dtype=np.int64) - 1
@@ -210,7 +210,7 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
                 else f"{float(lowpass.metadata['kaiser_beta']):g}",
             }
         )
-    _write(out_dir / "phase1_lowpass_Nz_counts.csv", lowpass_rows)
+    _write(out_dir / "lowpass_Nz_counts.csv", lowpass_rows)
 
     attenuation_rows = []
     for window, _name, _db in FIXED:
@@ -235,7 +235,7 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
                     "attenuation_center_db": _attenuation(w, mag, 0.5),
                 }
             )
-    _write(out_dir / "phase1_bandstop_attenuation.csv", attenuation_rows)
+    _write(out_dir / "bandstop_attenuation.csv", attenuation_rows)
 
     validation_rows = []
     for name, value in VALIDATION:
@@ -258,13 +258,13 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
             "relative_pct": 100.0 * abs(VALIDATION[1][1] - VALIDATION[0][1]) / VALIDATION[0][1],
         }
     )
-    _write(out_dir / "phase1_validation.csv", validation_rows)
+    _write(out_dir / "validation_differences.csv", validation_rows)
 
     sidelobe_rows = [
         {"kaiser_beta": f"{beta:g}", "taps": 101, "peak_sidelobe_db": _peak_sidelobe(beta)}
         for beta in (0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0, 20.0)
     ]
-    _write(out_dir / "phase1_kaiser_sidelobe.csv", sidelobe_rows)
+    _write(out_dir / "kaiser_sidelobe.csv", sidelobe_rows)
 
     transition_rows = []
     for ft in TYPES:
@@ -290,7 +290,7 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
                     "rectangular_rho_cond": 100.0 * rc["nc"] / rc["nb"],
                 }
             )
-    _write(out_dir / "phase1_beta_transition.csv", transition_rows)
+    _write(out_dir / "kaiser_beta_transition.csv", transition_rows)
 
     summary = {
         "horizon": horizon,
@@ -309,10 +309,10 @@ def run(out_dir: Path, horizon: int, edge_margin: float) -> None:
         "sidelobe": sidelobe_rows,
         "beta_transition": transition_rows,
     }
-    (out_dir / "phase1_summary.json").write_text(
+    (out_dir / "targeted_checks_summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"
     )
-    print(f"wrote {out_dir / 'phase1_summary.json'}")
+    print(f"wrote {out_dir / 'targeted_checks_summary.json'}")
 
 
 def main() -> int:

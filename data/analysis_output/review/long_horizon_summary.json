@@ -1,5 +1,5 @@
 {
-  "provenance": "tools/review/f3_long_horizon_400.py",
+  "provenance": "tools/review/long_horizon_test.py",
   "n_per_type": 400,
   "horizon": 300000,
   "seed": 42,

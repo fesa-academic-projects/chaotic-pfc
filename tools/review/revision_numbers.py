@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 4, step 5: remaining raw numbers."""
+"""Remaining raw numbers."""
 
 from __future__ import annotations
 
@@ -77,7 +77,7 @@ def _fig7_low_bands() -> list[dict[str, Any]]:
 
 
 def _psd_ratio(out_dir: Path) -> list[dict[str, Any]]:
-    with open(out_dir / "wave2c_psd_fraction.csv", encoding="utf-8") as handle:
+    with open(out_dir / "psd_fraction.csv", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     out = []
     for ft in ("lowpass", "highpass", "bandpass", "bandstop"):
@@ -193,7 +193,7 @@ def _spearman_widths(recs: list[Any]) -> list[dict[str, Any]]:
 
 
 def _psd_meta(out_dir: Path) -> list[dict[str, Any]]:
-    with open(out_dir / "wave2_psd_meta.csv", encoding="utf-8") as handle:
+    with open(out_dir / "psd_meta.csv", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
 
 
@@ -207,7 +207,7 @@ def run(out_dir: Path) -> None:
         "spearman_widths": _spearman_widths(recs),
         "psd_meta": _psd_meta(out_dir),
     }
-    (out_dir / "wave4_numbers.json").write_text(
+    (out_dir / "revision_numbers.json").write_text(
         json.dumps(payload, indent=2) + "\n", encoding="utf-8"
     )
     for key, value in payload.items():

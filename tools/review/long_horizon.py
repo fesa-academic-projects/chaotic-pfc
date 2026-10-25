@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Wave 2, item 1: long-horizon decay of the single-vector estimator.
+"""Long-horizon decay of the single-vector estimator.
 
-Sixty grid points are sampled from the canonical and Wave 1 checkpoints:
+Sixty grid points are sampled from the canonical and earlier checkpoints:
 30 with old h in (0, 5e-3] and 30 controls with new h > 2e-2. The estimator
 runs without early stopping at N = 3e3, 3e4 and 3e5, starting from the first
 initial condition of the original ensemble.
@@ -209,7 +209,7 @@ def run(out_dir: Path) -> None:
                 }
             )
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "wave2_long_horizon.csv"
+    path = out_dir / "long_horizon.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 3, step 3 and 4: table, figures data and raw numbers."""
+"""Table, figures data and raw numbers."""
 
 from __future__ import annotations
 
@@ -322,16 +322,16 @@ def run(out_dir: Path) -> None:
         raise RuntimeError(f"expected {expected} configurations, found {len(recs)}")
     out_dir.mkdir(parents=True, exist_ok=True)
     table = _table28(recs)
-    _write(out_dir / "wave3_table28.csv", table)
-    (out_dir / "wave3_table28.tex").write_text(_latex(table), encoding="utf-8")
-    _write(out_dir / "wave3_pooled.csv", _pooled(recs))
+    _write(out_dir / "ranking_table.csv", table)
+    (out_dir / "ranking_table.tex").write_text(_latex(table), encoding="utf-8")
+    _write(out_dir / "pooled.csv", _pooled(recs))
     maxima, bands = _fig7()
-    _write(out_dir / "wave3_fig7.csv", maxima)
-    _write(out_dir / "wave3_fig7_bands.csv", bands)
-    _write(out_dir / "wave3_fig8.csv", _fig8(recs))
-    _write(out_dir / "wave3_dc_gain.csv", _dc_gain(recs))
-    _write(out_dir / "wave3_boundaries.csv", _boundaries(recs))
-    _write(out_dir / "wave3_thresholds.csv", _thresholds(recs))
+    _write(out_dir / "fig7.csv", maxima)
+    _write(out_dir / "fig7_bands.csv", bands)
+    _write(out_dir / "fig8.csv", _fig8(recs))
+    _write(out_dir / "dc_gain.csv", _dc_gain(recs))
+    _write(out_dir / "boundaries.csv", _boundaries(recs))
+    _write(out_dir / "thresholds.csv", _thresholds(recs))
 
     # Concordance on the mask-on data.
     conc = []
@@ -361,11 +361,11 @@ def run(out_dir: Path) -> None:
                     "n": int(mask.sum()),
                 }
             )
-    _write(out_dir / "wave3_concordance.csv", conc)
+    _write(out_dir / "concordance.csv", conc)
 
     spearman = []
     ratio = {}
-    ratio_path = out_dir / "wave2_selectivity_spearman.csv"
+    ratio_path = out_dir / "selectivity_spearman.csv"
     if not ratio_path.exists():
         # Keep this script runnable from a fresh output directory.  The
         # selectivity diagnostic is cheap and supplies the median realized
@@ -403,7 +403,7 @@ def run(out_dir: Path) -> None:
                     "n": 6,
                 }
             )
-    _write(out_dir / "wave3_spearman.csv", spearman)
+    _write(out_dir / "spearman.csv", spearman)
 
     summary = {
         "configurations": len(recs),
@@ -413,10 +413,10 @@ def run(out_dir: Path) -> None:
         "fig7_bands": bands,
         "spearman": spearman,
     }
-    (out_dir / "wave3_summary.json").write_text(
+    (out_dir / "paper_numbers_summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"
     )
-    print("wrote wave3_table28.csv/tex")
+    print("wrote ranking_table.csv/tex")
     print("wrote pooled, fig7, fig8, dc_gain, boundaries, thresholds, concordance, spearman")
 
 

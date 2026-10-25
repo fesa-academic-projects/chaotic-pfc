@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2c, item D: PSD of x3 and passband power fractions."""
+"""PSD of x3 and passband power fractions."""
 
 from __future__ import annotations
 
@@ -160,12 +160,10 @@ def _baseline_psd() -> tuple[np.ndarray, np.ndarray]:
 def run(out_dir: Path, edge_margin: float = 0.0, prefix: str = "") -> None:
     best = _best_per_type()
     figure_path = out_dir / (f"{prefix}_fig_psd.svg" if prefix else "fig_psd_review.svg")
-    meta_path = out_dir / (f"{prefix}_psd_meta.csv" if prefix else "wave2_psd_meta.csv")
-    fraction_path = out_dir / (
-        f"{prefix}_psd_fraction.csv" if prefix else "wave2c_psd_fraction.csv"
-    )
+    meta_path = out_dir / (f"{prefix}_psd_meta.csv" if prefix else "psd_meta.csv")
+    fraction_path = out_dir / (f"{prefix}_psd_fraction.csv" if prefix else "psd_fraction.csv")
     summary_path = out_dir / (
-        f"{prefix}_psd_fraction_summary.csv" if prefix else "wave2c_psd_fraction_summary.csv"
+        f"{prefix}_psd_fraction_summary.csv" if prefix else "psd_fraction_summary.csv"
     )
     setup_rc()
     plt.rcParams["svg.hashsalt"] = SVG_SALT

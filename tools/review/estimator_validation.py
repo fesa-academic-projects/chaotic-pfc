@@ -16,7 +16,7 @@ from chaotic_pfc.analysis.sweep import run_sweep
 
 
 def run(out_dir: Path) -> dict[str, float | int]:
-    """Run the validation and write ``bx1_validation_sweep.json``."""
+    """Run the validation and write ``estimator_validation.json``."""
     result = run_sweep(
         window="hamming",
         filter_type="lowpass",
@@ -35,7 +35,7 @@ def run(out_dir: Path) -> dict[str, float | int]:
         "n_fallback": int(result.metadata.get("n_fallback", -1)),
     }
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "bx1_validation_sweep.json"
+    path = out_dir / "estimator_validation.json"
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     return payload
 

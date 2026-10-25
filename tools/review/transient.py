@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2c, item C: transient chaos and the lowpass Nz=3 extension."""
+"""Transient chaos and the lowpass Nz=3 extension."""
 
 from __future__ import annotations
 
@@ -131,11 +131,11 @@ def run(out_dir: Path) -> None:
             )
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    with (out_dir / "wave2c_transient.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "transient.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    with (out_dir / "wave2c_lowpass_nz3.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "lowpass_nz3.csv").open("w", newline="", encoding="utf-8") as handle:
         subset = [r for r in rows if r["sample"] == "lowpass_nz3"]
         writer = csv.DictWriter(handle, fieldnames=list(subset[0]))
         writer.writeheader()
@@ -168,17 +168,15 @@ def run(out_dir: Path) -> None:
                         "count": value,
                     }
                 )
-    with (out_dir / "wave2c_transient_counts.csv").open(
-        "w", newline="", encoding="utf-8"
-    ) as handle:
+    with (out_dir / "transient_counts.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(count_rows[0]))
         writer.writeheader()
         writer.writerows(count_rows)
 
     print(f"max |h_repro - h_stored| over sample: {max_repro}")
-    print(f"wrote {out_dir / 'wave2c_transient.csv'}")
-    print(f"wrote {out_dir / 'wave2c_lowpass_nz3.csv'}")
-    print(f"wrote {out_dir / 'wave2c_transient_counts.csv'}")
+    print(f"wrote {out_dir / 'transient.csv'}")
+    print(f"wrote {out_dir / 'lowpass_nz3.csv'}")
+    print(f"wrote {out_dir / 'transient_counts.csv'}")
 
 
 def main() -> int:

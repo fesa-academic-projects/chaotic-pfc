@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2, items 5 and 6: realized selectivity of the FIR designs."""
+"""Realized selectivity of the FIR designs."""
 
 from __future__ import annotations
 
@@ -127,16 +127,12 @@ def run(out_dir: Path) -> None:
     rho_ratio, p_ratio = spearman_exact(x_ratio, y_nc)
     rho_db, p_db = spearman_exact(x_sidelobe, y_nc)
 
-    with (out_dir / "wave2_selectivity_lowpass.csv").open(
-        "w", newline="", encoding="utf-8"
-    ) as handle:
+    with (out_dir / "selectivity_lowpass.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
 
-    with (out_dir / "wave2_selectivity_spearman.csv").open(
-        "w", newline="", encoding="utf-8"
-    ) as handle:
+    with (out_dir / "selectivity_spearman.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(
             [
@@ -184,7 +180,7 @@ def run(out_dir: Path) -> None:
                         "value": metric,
                     }
                 )
-    with (out_dir / "wave2_selectivity_band.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (out_dir / "selectivity_band.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(band_rows[0]))
         writer.writeheader()
         writer.writerows(band_rows)
