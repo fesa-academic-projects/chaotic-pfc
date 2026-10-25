@@ -928,6 +928,14 @@ _TEXT_NUMBER_SCOPED_IGNORES: dict[str, tuple[str, str]] = {
     ),
 }
 
+# Context-bound exemptions tied to a figure label, independent of where the
+# float is placed in the source. The token is ignored only inside the figure
+# environment carrying the named label.
+_TEXT_NUMBER_FIGURE_SCOPED_IGNORES: dict[str, tuple[str, str]] = {
+    "0.125": ("fig:psd", "Figure 6 selection band lower edge"),
+    "0.875": ("fig:psd", "Figure 6 selection band upper edge"),
+}
+
 
 def _numeric_scope(body: str, position: int) -> str:
     """Return the last section or subsection title before *position*."""
@@ -935,6 +943,18 @@ def _numeric_scope(body: str, position: int) -> str:
     for match in re.finditer(r"\\(?:section|subsection)\{([^}]*)\}", body[:position]):
         title = match.group(1)
     return title
+
+
+def _figure_label_at(body: str, position: int) -> str | None:
+    """Return the label of the figure environment containing *position*."""
+    begin = body.rfind("\\begin{figure", 0, position)
+    if begin == -1:
+        return None
+    end = body.find("\\end{figure", begin)
+    if end == -1 or position > end:
+        return None
+    label = re.search(r"\\label\{([^}]*)\}", body[begin:end])
+    return label.group(1) if label else None
 
 
 def _paper_number_values(numbers: dict[str, Any]) -> list[Decimal]:
@@ -988,7 +1008,7 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
     # Plain commas used as thousands separators are part of the number.
     body = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", body)
     # Citation keys such as Sprott2003 are not text numbers.
-    body = re.sub(r"\\cite\{[^}]*\}", " ", body)
+    body = re.sub(r"\\cite(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
 
     known = _paper_number_values(numbers)
     findings: list[Finding] = []
@@ -1004,6 +1024,13 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
         scoped = _TEXT_NUMBER_SCOPED_IGNORES.get(token)
         if scoped is not None and _numeric_scope(body, match.start()) == scoped[0]:
             reason = scoped[1]
+        if reason is None:
+            figure_scoped = _TEXT_NUMBER_FIGURE_SCOPED_IGNORES.get(token)
+            if (
+                figure_scoped is not None
+                and _figure_label_at(body, match.start()) == figure_scoped[0]
+            ):
+                reason = figure_scoped[1]
         if reason is None:
             reason = _TEXT_NUMBER_IGNORES.get(token)
         if reason is not None:

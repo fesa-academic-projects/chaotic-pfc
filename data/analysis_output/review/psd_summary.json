@@ -4,6 +4,13 @@
     "tools/review/fig6_median.py",
     "tools/review/revision_numbers.py"
   ],
+  "welch": {
+    "window": "hann",
+    "nperseg": 4096,
+    "overlap_pct": 50,
+    "n_samples_x3": 262144,
+    "n_samples_x1": 65536
+  },
   "metrics": {
     "lowpass_Nz_ge8_median_f_over_f0": 10.140558313686078,
     "bandstop_median_f_over_f0": 1.0220806083083416,

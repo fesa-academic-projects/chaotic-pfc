@@ -362,7 +362,7 @@ class TestTextNumbers(unittest.TestCase):
         self.assertEqual(_levels(result), ["ERROR"])
 
     def test_citation_key_year_is_not_a_text_number(self):
-        tex = "\\section{Results and Discussion}\nSee \\cite{Sprott2003}."
+        tex = "\\section{Results and Discussion}\nSee \\cite{Sprott2003} and \\cite[Sec.~10.5.3]{Oppenheim2009}."
         result = audit.check_text_numbers(tex, {})
         self.assertEqual(_levels(result), [])
 
@@ -403,6 +403,26 @@ class TestTextNumbers(unittest.TestCase):
         )
         self.assertEqual(_levels(audit.check_text_numbers(in_spectrum, {})), [])
         self.assertEqual(_levels(audit.check_text_numbers(in_maps, {})), ["ERROR", "ERROR"])
+
+    def test_selection_band_exception_is_scoped_to_figure_six_caption(self):
+        in_figure = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Classification Maps}\n"
+            "\\begin{figure*}[!t]\n"
+            "\\caption{Selection band 0.125 to 0.875.}\n"
+            "\\label{fig:psd}\n"
+            "\\end{figure*}\n"
+        )
+        in_other_figure = (
+            "\\section{Results and Discussion}\n"
+            "\\subsection{Classification Maps}\n"
+            "\\begin{figure*}[!t]\n"
+            "\\caption{Selection band 0.125 to 0.875.}\n"
+            "\\label{fig:other}\n"
+            "\\end{figure*}\n"
+        )
+        self.assertEqual(_levels(audit.check_text_numbers(in_figure, {})), [])
+        self.assertEqual(_levels(audit.check_text_numbers(in_other_figure, {})), ["ERROR", "ERROR"])
 
 
 if __name__ == "__main__":

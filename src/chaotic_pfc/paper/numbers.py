@@ -637,7 +637,16 @@ def section_review_metrics(out: dict[str, Any]) -> None:
 
     spectrum = Path("data/analysis_output/review/psd_summary.json")
     if spectrum.is_file():
-        data = json.loads(spectrum.read_text())["metrics"]
+        payload = json.loads(spectrum.read_text())
+        data = payload["metrics"]
+        welch = payload.get("welch", {})
+        if welch:
+            out["PSD.welch_nperseg"] = str(int(welch["nperseg"]))
+            out["PSD.welch_overlap_pct"] = str(int(welch["overlap_pct"]))
+            out["PSD.n_samples_x3"] = str(int(welch["n_samples_x3"]))
+            out["PSD.n_samples_x1"] = str(int(welch["n_samples_x1"]))
+            out["PSD.log2_samples_x3"] = str(int(math.log2(welch["n_samples_x3"])))
+            out["PSD.log2_samples_x1"] = str(int(math.log2(welch["n_samples_x1"])))
         out["PSD.lowpass.Nz_ge8.median_f_over_f0"] = fmt(data["lowpass_Nz_ge8_median_f_over_f0"], 1)
         out["PSD.bandstop.median_f_over_f0"] = fmt(data["bandstop_median_f_over_f0"], 2)
         out["PSD.highpass.c1.f_over_f0"] = fmt(data["highpass_c1_f_over_f0"], 2)
@@ -1001,6 +1010,106 @@ def machine() -> str:
 # ── driver ──────────────────────────────────────────────────────────────────
 
 
+def section_phase_b_numbers(recs: Any, out: dict[str, Any]) -> None:
+    """Labels for the numerical statements added in the final revision."""
+    all_h = np.concatenate([np.asarray(r.h, dtype=np.float64).ravel() for r in recs])
+    positive = np.isfinite(all_h) & (all_h > 0.0)
+    bins = (
+        (1e-3, 2e-3, "POS.bin_1_2"),
+        (2e-3, 3e-3, "POS.bin_2_3"),
+        (3e-3, 4e-3, "POS.bin_3_4"),
+        (4e-3, 5e-3, "POS.bin_4_5"),
+    )
+    for low, high, label in bins:
+        out[label] = str(int(np.count_nonzero(positive & (all_h > low) & (all_h <= high))))
+
+    lowpass = next(r for r in recs if r.filter_type == "lowpass" and r.window == "boxcar")
+    highpass = next(r for r in recs if r.filter_type == "highpass" and r.window == "boxcar")
+    out["GRID.lowpass_bandpass"] = str(np.asarray(lowpass.h).size)
+    out["GRID.highpass_bandstop"] = str(np.asarray(highpass.h).size)
+    out["KAI.max_taps"] = str(max(int(np.max(r.num_taps_grid)) for r in recs))
+
+    band = next(
+        (
+            r
+            for r in recs
+            if r.filter_type == "bandpass"
+            and r.window == "kaiser"
+            and float(r.metadata.get("kaiser_beta", 0.0)) == 15.5
+        ),
+        None,
+    )
+    if band is not None:
+        hb = np.asarray(band.h, dtype=np.float64)
+        nz = np.asarray(band.num_taps_grid, dtype=np.int64) - 1
+        wc = np.asarray(band.cutoff_grid, dtype=np.float64)
+        runs_by_nz: dict[int, list[tuple[int, int]]] = {}
+        for k, order in enumerate(nz):
+            chaotic = np.isfinite(hb[k]) & (hb[k] > LAMBDA_CHAOS_THRESHOLD)
+            runs: list[tuple[int, int]] = []
+            start = None
+            for j, value in enumerate(chaotic):
+                if value and start is None:
+                    start = j
+                elif not value and start is not None:
+                    runs.append((start, j - 1))
+                    start = None
+            if start is not None:
+                runs.append((start, len(chaotic) - 1))
+            runs_by_nz[int(order)] = runs
+        out["BAND.bandpass_max_bands"] = str(max(len(v) for v in runs_by_nz.values()))
+        high_counts = [len(runs_by_nz[int(order)]) for order in nz if int(order) >= 12]
+        if high_counts:
+            out["BAND.bandpass_high_Nz_bands"] = str(
+                max(sorted(set(high_counts)), key=high_counts.count)
+            )
+            out["BAND.bandpass_high_Nz_start"] = str(
+                min(int(order) for order in nz if int(order) >= 12)
+            )
+        if 12 in runs_by_nz and 40 in runs_by_nz:
+            second_12 = runs_by_nz[12][1]
+            second_40 = runs_by_nz[40][1]
+            out["BAND.bandpass_center_start"] = fmt(wc[second_12[0]], 2)
+            out["BAND.bandpass_center_end"] = fmt(
+                (wc[second_40[0]] + wc[second_40[1]]) / 2.0,
+                2,
+            )
+
+    hamming = next(
+        (r for r in recs if r.filter_type == "lowpass" and r.window == "hamming"),
+        None,
+    )
+    if hamming is not None:
+        hh = np.asarray(hamming.h, dtype=np.float64)
+        hnz = np.asarray(hamming.num_taps_grid, dtype=np.int64) - 1
+        n_chaotic = np.array(
+            [
+                np.count_nonzero(np.isfinite(hh[k]) & (hh[k] > LAMBDA_CHAOS_THRESHOLD))
+                for k in range(len(hnz))
+            ]
+        )
+        n_divergent = np.array([np.count_nonzero(np.isnan(hh[k])) for k in range(len(hnz))])
+        n_non = np.array(
+            [
+                np.count_nonzero(np.isfinite(hh[k]) & (hh[k] <= LAMBDA_CHAOS_THRESHOLD))
+                for k in range(len(hnz))
+            ]
+        )
+        best = np.argsort(n_chaotic)[::-1]
+        chaotic_orders = np.flatnonzero(n_chaotic > 0)
+        if chaotic_orders.size:
+            out["HAM.nz_first_chaos"] = str(int(hnz[int(chaotic_orders[0])]))
+        if best.size >= 2:
+            out["HAM.nz_most_chaos_1"] = str(int(hnz[int(best[0])]))
+            out["HAM.nz_most_chaos_2"] = str(int(hnz[int(best[1])]))
+        divergent_orders = np.flatnonzero(n_divergent / hh.shape[1] >= 0.40)
+        if divergent_orders.size:
+            out["HAM.nz_divergence_ge40"] = str(int(hnz[int(divergent_orders[0])]))
+        divergent_most = np.flatnonzero((n_divergent > n_non) & (n_divergent > n_chaotic))
+        if divergent_most.size:
+            out["HAM.nz_divergence_most"] = str(int(hnz[int(divergent_most[0])]))
+
+
 def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     """Compute every manuscript quantity and return the label mapping."""
     recs = load_all(root, args)
@@ -1019,6 +1128,7 @@ def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     section_cost(recs, out)
     section_gain(recs, out)
     section_review_metrics(out)
+    section_phase_b_numbers(recs, out)
     if extras:
         seeds = seed_runs(root, recs)
         for key, info in seeds.items():

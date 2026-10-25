@@ -8,5 +8,8 @@
 # Livro sem DOI atribuido pela editora; ISBN registrado na entrada.
 Oppenheim2009
 
-# Livro sem DOI atribuido pela editora; ISBN registrado na entrada.
-Sprott2003
+# Resumo em anais sem DOI registrado; URL do artigo na entrada.
+CNMAC2023
+
+# Artigo de revista sem DOI registrado; URL do artigo na entrada.
+FontesSAI
