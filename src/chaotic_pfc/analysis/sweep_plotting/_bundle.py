@@ -28,6 +28,7 @@ def plot_chaotic_all(
     out_dir: str | Path = "figures/sweeps",
     close_figures: bool = True,
     lang: str = "pt",
+    strict: bool = True,
 ) -> list[Path]:
     """Generate both cross-sweep chaotic figures and save to *out_dir*.
 
@@ -57,11 +58,15 @@ def plot_chaotic_all(
         out_dir / f"{stem}.svg" for stem in (CHAOTIC_MAP_FILENAME, CHAOTIC_DENSITY_FILENAME)
     ]
 
-    fig = plot_chaotic_map(sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang)
+    fig = plot_chaotic_map(
+        sweep_dir, save_path=out_dir / CHAOTIC_MAP_FILENAME, lang=lang, strict=strict
+    )
     if close_figures:
         plt.close(fig)
 
-    fig = plot_chaotic_density(sweep_dir, save_path=out_dir / CHAOTIC_DENSITY_FILENAME, lang=lang)
+    fig = plot_chaotic_density(
+        sweep_dir, save_path=out_dir / CHAOTIC_DENSITY_FILENAME, lang=lang, strict=strict
+    )
     if close_figures:
         plt.close(fig)
 

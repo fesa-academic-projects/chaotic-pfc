@@ -66,6 +66,7 @@ def plot_chaotic_map(
     show_title: bool = True,
     ytick_step: float = 0.1,
     xtick_step: int = 5,
+    strict: bool = True,
 ) -> Figure:
     """Binary union of chaotic regions across all window × filter sweeps.
 
@@ -100,7 +101,7 @@ def plot_chaotic_map(
         Discrete-classification counterpart for a single sweep.
     """
     sweep_dir = Path(sweep_dir)
-    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
+    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir, strict=strict)
 
     # Binary union: 1 where any sweep is chaotic, NaN elsewhere
     binary = _binary_union(loaded)
@@ -161,6 +162,7 @@ def plot_chaotic_density(
     marker_size: float = 10.0,
     ytick_step: float = 0.1,
     xtick_step: int = 5,
+    strict: bool = True,
 ) -> Figure:
     """Density map: how many window × filter configurations are chaotic.
 
@@ -194,7 +196,7 @@ def plot_chaotic_density(
         Binary union map (chaotic or not).
     """
     sweep_dir = Path(sweep_dir)
-    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir)
+    loaded, Nz, cutoff_grid = _discover_sweeps(sweep_dir, strict=strict)
 
     # Count how many sweeps are chaotic at each grid point
     count = _chaotic_count(loaded)
@@ -263,6 +265,8 @@ def plot_chaotic_density(
 
 def chaotic_density_norm_table(
     sweep_dir: str | Path = "data/sweeps",
+    *,
+    strict: bool = True,
 ) -> tuple[NDArray[np.int64], NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
     """Percentage of the sweeps that contain each grid point and find it chaotic.
 
@@ -289,7 +293,9 @@ def chaotic_density_norm_table(
     for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         try:
             raw.append(load_sweep(npz_path))
-        except Exception as exc:  # a bad sibling must not abort the whole table
+        except Exception as exc:  # fatal unless explicitly relaxed
+            if strict:
+                raise
             warnings.warn(
                 f"skipping unreadable checkpoint {npz_path}: {exc}",
                 RuntimeWarning,
@@ -338,6 +344,7 @@ def plot_chaotic_density_norm(
     marker_size: float = 10.0,
     ytick_step: float = 0.1,
     xtick_step: int = 5,
+    strict: bool = True,
 ) -> Figure:
     """Normalised density map: chaotic percentage over the containing sweeps.
 
@@ -372,7 +379,7 @@ def plot_chaotic_density_norm(
     Figure
         The matplotlib figure.
     """
-    Nz, cutoff_grid, percent, _ = chaotic_density_norm_table(sweep_dir)
+    Nz, cutoff_grid, percent, _ = chaotic_density_norm_table(sweep_dir, strict=strict)
 
     h_expanded = _interleaved_expand(percent, data_slots, gap_slots)
     x_exp = np.arange(h_expanded.shape[0])

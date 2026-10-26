@@ -1,6 +1,7 @@
 """tests/test_sweep_plotting.py — Tests for the sweep plotting module."""
 
 import unittest
+import warnings
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -26,6 +27,7 @@ from chaotic_pfc.analysis.sweep_plotting import (
     FIGURE_FILENAMES,
     _interleaved_expand,
     _unpack,
+    chaotic_density_norm_table,
     classify,
     plot_all,
     plot_chaotic_density,
@@ -410,6 +412,27 @@ class TestChaoticRegions(unittest.TestCase):
             fig = plot_chaotic_density(sweep_dir)
             self.assertGreaterEqual(len(fig.axes), 2)  # ax + cbar
             fig.clear()
+
+    def test_corrupt_checkpoint_fails_closed(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            next(sweep_dir.rglob("variables_lyapunov.npz")).write_bytes(b"not an npz")
+            with self.assertRaises(ValueError):
+                plot_chaotic_map(sweep_dir)
+            with self.assertRaises(ValueError):
+                chaotic_density_norm_table(sweep_dir)
+
+    def test_corrupt_checkpoint_can_be_tolerated_explicitly(self):
+        with TemporaryDirectory() as td:
+            base = Path(td)
+            sweep_dir = self._make_sweep_dir(base / "sweeps")
+            next(sweep_dir.rglob("variables_lyapunov.npz")).write_bytes(b"not an npz")
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
+                fig = plot_chaotic_density(sweep_dir, strict=False)
+                self.assertTrue(any(issubclass(w.category, RuntimeWarning) for w in caught))
+                fig.clear()
 
     def test_interleaved_expand_shape(self):
         data = np.arange(12, dtype=np.float64).reshape(3, 4)

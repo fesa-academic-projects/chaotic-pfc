@@ -284,17 +284,23 @@ def _save(fig: Figure, path: str | Path | None) -> None:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _discover_sweeps(sweep_dir: Path) -> tuple[list[SweepResult], NDArray[Any], NDArray[Any]]:
+def _discover_sweeps(
+    sweep_dir: Path, *, strict: bool = True
+) -> tuple[list[SweepResult], NDArray[Any], NDArray[Any]]:
     """Load all sweeps under *sweep_dir* and unify to the finest grid.
 
     Returns (sweeps, Nz, cutoff_grid) where every sweep has been resampled
     (nearest-neighbour for num_taps_grid) to match the largest grid found.
+    With ``strict=True`` (the default), an unreadable checkpoint aborts the
+    figure; ``strict=False`` restores the tolerant interactive behaviour.
     """
     raw: list[SweepResult] = []
     for npz_path in sorted(sweep_dir.rglob("variables_lyapunov.npz")):
         try:
             raw.append(load_sweep(npz_path))
-        except Exception as exc:  # a bad sibling must not abort the whole figure
+        except Exception as exc:  # a bad sibling is fatal unless explicitly relaxed
+            if strict:
+                raise
             warnings.warn(
                 f"skipping unreadable checkpoint {npz_path}: {exc}",
                 RuntimeWarning,

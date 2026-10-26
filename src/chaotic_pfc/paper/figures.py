@@ -314,7 +314,7 @@ def fig_kaiser_beta(out_dir: Path) -> None:
 
 def fig_chaotic_density_norm(out_dir: Path) -> None:
     """Write the normalised chaotic-density map."""
-    Nz, cutoff_grid, percent, n_containing = chaotic_density_norm_table(DATA_DIR)
+    Nz, cutoff_grid, percent, n_containing = chaotic_density_norm_table(DATA_DIR, strict=True)
     for parity, mask in (("odd", Nz % 2 == 1), ("even", Nz % 2 == 0)):
         sub = np.where(mask[:, None], percent, -np.inf)
         k, j = np.unravel_index(np.argmax(sub), sub.shape)
@@ -335,6 +335,7 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
         show_title=False,
         ytick_step=0.2,
         xtick_step=10,
+        strict=True,
     )
     _save(fig, out_dir / "fig_chaotic_density_norm.svg")
 

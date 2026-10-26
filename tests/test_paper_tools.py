@@ -67,6 +67,13 @@ def test_compute_cli_writes_json(sweeps_tree: Path, tmp_path: Path) -> None:
     assert payload["TOT.chaotic"] == compute(sweeps_tree, extras=False)["TOT.chaotic"]
 
 
+def test_load_all_rejects_corrupt_checkpoint(tmp_path: Path) -> None:
+    bad = tmp_path / "variables_lyapunov.npz"
+    bad.write_bytes(b"not an npz")
+    with pytest.raises(ValueError, match="invalid or corrupted checkpoint"):
+        load_all(tmp_path)
+
+
 def test_paper_numbers_missing_sweeps_fails(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

@@ -6,10 +6,12 @@ with a small synthetic fixture: one case that passes and one that fails.
 
 from __future__ import annotations
 
+import argparse
 import tempfile
 import unittest
 from pathlib import Path
 from typing import ClassVar
+from unittest import mock
 
 import pytest
 
@@ -423,6 +425,28 @@ class TestTextNumbers(unittest.TestCase):
         )
         self.assertEqual(_levels(audit.check_text_numbers(in_figure, {})), [])
         self.assertEqual(_levels(audit.check_text_numbers(in_other_figure, {})), ["ERROR", "ERROR"])
+
+
+class TestAuditFailClosed(unittest.TestCase):
+    def test_check_exception_becomes_error(self):
+        def boom():
+            raise RuntimeError("boom")
+
+        result = audit._safe("C3", boom)
+        self.assertEqual(_levels(result), ["ERROR"])
+        self.assertEqual(result.findings[0].check, "C3")
+        self.assertIn("RuntimeError", result.findings[0].message)
+        self.assertIn("boom", result.findings[0].message)
+
+    def test_run_returns_one_when_check_aborts(self):
+        results = {check: audit.CheckResult([], "ok") for check in audit.CHECK_ORDER}
+
+        def boom():
+            raise RuntimeError("boom")
+
+        results["C3"] = audit._safe("C3", boom)
+        with mock.patch.object(audit, "run_checks", return_value=results):
+            self.assertEqual(audit.run(argparse.Namespace(json_out=None)), 1)
 
 
 if __name__ == "__main__":

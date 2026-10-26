@@ -26,6 +26,7 @@ import argparse
 import html
 import json
 import re
+import traceback
 import unicodedata
 import warnings
 from collections.abc import Callable, Iterator
@@ -1049,13 +1050,13 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
 
 
 def _safe(check: str, func: Callable[[], CheckResult]) -> CheckResult:
-    """Run *func*, converting any exception into a WARN so nothing aborts."""
+    """Run *func* and fail closed if the check itself raises."""
     try:
         return func()
     except Exception as exc:
-        return CheckResult(
-            [Finding("WARN", check, f"check aborted: {type(exc).__name__}: {exc}")], "aborted"
-        )
+        trace = traceback.format_exception(type(exc), exc, exc.__traceback__, limit=3)
+        summary = " | ".join(line.strip() for line in trace if line.strip())
+        return CheckResult([Finding("ERROR", check, f"check aborted: {summary}")], "aborted")
 
 
 def _load_whitelist() -> frozenset[str]:

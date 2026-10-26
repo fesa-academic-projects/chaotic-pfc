@@ -356,7 +356,7 @@ def section_density(root: Path, out: dict[str, Any]) -> None:
     """Fill the ``DENSITY.*`` labels from the density table."""
     from chaotic_pfc.analysis.sweep_plotting import chaotic_density_norm_table
 
-    nz, wc, percent, n_cont = chaotic_density_norm_table(root)
+    nz, wc, percent, n_cont = chaotic_density_norm_table(root, strict=True)
     counts = np.rint(percent * n_cont[:, None] / 100.0).astype(np.int64)
 
     def band_mean(rows: np.ndarray, cols: np.ndarray) -> str:
