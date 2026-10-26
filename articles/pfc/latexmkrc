@@ -1,0 +1,11 @@
+# latexmkrc - configuração do latexmk (lida também pelo Overleaf).
+#
+# Faz o XeLaTeX/biber usarem o biblatex-abnt VENDORIZADO em biblatex-abnt/ em
+# vez do que estiver instalado no TeX Live, para o estilo ficar preso à versão
+# que o repositório conferiu (ver docs/vendorizacao-biblatex-abnt.md).
+#
+# O "//" no fim faz a busca ser recursiva; o ":" no fim preserva os caminhos
+# padrão do TeX Live para acharem os outros pacotes.
+
+$ENV{'TEXINPUTS'} = 'biblatex-abnt//:' . ($ENV{'TEXINPUTS'} // '');
+$ENV{'BIBINPUTS'} = 'biblatex-abnt//:' . ($ENV{'BIBINPUTS'} // '');

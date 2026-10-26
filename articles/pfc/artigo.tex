@@ -1,0 +1,256 @@
+% ============================================================================
+%  ARTIGO CIENTÍFICO: TRABALHO DE CONCLUSÃO DE CURSO (TCC / PFC)
+%  Faculdade Engenheiro Salvador Arena (CEFSA / FESA): modelo oficial V-05
+% ----------------------------------------------------------------------------
+%  Este arquivo contém SOMENTE o conteúdo do artigo.  Margens, fontes,
+%  entrelinhas, recuos, cabeçalho, rodapé, notas de rodapé, legendas, fontes
+%  de figura/tabela/quadro e referências ficam na classe pfccefsa.cls.
+%
+%  COMO COMPILAR
+%    make pfc-pdf    (ou)   latexmk -pdfxe artigo.tex
+%    Overleaf: Menu -> Compiler -> XeLaTeX
+%
+%  ARQUIVOS NA MESMA PASTA
+%    pfccefsa.cls  classe com todo o layout (não edite)
+%    image1.png    marca da faculdade (alto, à direita)
+%    image2.png    logotipo horizontal da faculdade (alto, à esquerda)
+%
+%  DOCUMENTAÇÃO DA CLASSE: docs/classe-pfccefsa.md
+% ============================================================================
+%!TEX program = xelatex
+
+\documentclass{pfccefsa}
+
+% ----------------------------------------------------------------------------
+%  DADOS DO TRABALHO
+%  O que não for preenchido sai exatamente como no modelo oficial (por
+%  exemplo, o rodapé continua com "<nome do curso>").
+% ----------------------------------------------------------------------------
+\titulo{Digite aqui o título do seu artigo científico em negrito,
+centralizado, fonte Times New Roman, corpo 12, espaçamento simples entre
+linhas do título, somente com a primeira palavra iniciando-se em letra
+maiúscula}
+
+\autores{<Autores (as)> Nome Corrido, Nome Corrido, Nome Corrido,
+Último Nome Corrido\footnote{Faculdade Engenheiro Salvador Arena, Centro
+Educacional da Fundação Salvador Arena, Estrada dos Alvarengas, 4001 - São
+Bernardo do Campo - SP} (o sobrescrito deve estar no último componente do
+grupo)}
+
+\orientador{<Orientador (a)> Me. / Dr. Nome Corrido (adicionar titulação do
+prof. orientador)}
+
+% Rodapé (opcional): \curso{...} \diainicial{...} \diafinal{...} \mes{...} \ano{...}
+
+% ----------------------------------------------------------------------------
+%  REFERÊNCIAS A PARTIR DE UM ARQUIVO .bib (opcional)
+%  Descomente as duas linhas abaixo, preencha referencias.bib e troque o
+%  ambiente "referencias" do fim do arquivo por \imprimirreferencias.
+% ----------------------------------------------------------------------------
+% \addbibresource{referencias.bib}
+
+\begin{document}
+
+% ----------------------------------------------------------------------------
+%  ELEMENTOS PRÉ-TEXTUAIS (título, autores, resumo, abstract)
+% ----------------------------------------------------------------------------
+\imprimirtitulo
+\imprimirautores
+\imprimirorientador
+
+\begin{resumo}
+Descrever o resumo em português, sem deslocamento da primeira linha, texto
+justificado, fonte Times New Roman, tamanho 12, espaçamento simples entre
+linhas, no mínimo 100 e no máximo 250 palavras, conter o objetivo geral do
+artigo, o marco teórico que sustentou o estudo (principais conceitos,
+fundamentos), a descrição básica da metodologia, principais resultados e
+considerações em texto corrido. O texto deverá ser apresentado em parágrafo
+único.
+\end{resumo}
+
+\palavraschave{<No mínimo três (3). No máximo cinco (5). Separados por ponto
+final>}
+
+\begin{abstract}
+Descrever o resumo em português, sem deslocamento da primeira linha, texto
+justificado, fonte Times New Roman, tamanho 12, espaçamento simples entre
+linhas, no mínimo 100 e no máximo 250 palavras, conter o objetivo geral do
+artigo, o marco teórico que sustentou o estudo (principais conceitos,
+fundamentos), a descrição básica da metodologia, principais resultados e
+considerações em texto corrido. O texto deverá ser apresentado em parágrafo
+único
+\end{abstract}
+
+\keywords{No mínimo três (3). No máximo cinco (5). Separados por ponto final}
+
+% ============================================================================
+\section{Introdução}
+% ============================================================================
+
+Este \textit{template} já está de acordo com a formatação exigida no Manual
+para Elaboração de Artigo Científico dos Trabalhos de Conclusão de Curso da
+Faculdade Engenheiro Salvador Arena. O artigo científico deverá conter no
+mínimo 15 e no máximo 25 páginas (incluindo eventuais gráficos, tabelas,
+ilustrações, referências etc.).
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a parte textual do artigo, recomenda-se a seguinte estrutura:
+
+\begin{enumerate}
+  \item Introdução;
+  \item Referencial teórico (conforme deliberado por cada curso);
+  \item Metodologia (pode ser subdividida em etapas, conforme descrito no item
+        1.2.2.2 do Manual para elaboração de artigo científico para o Trabalho
+        de Conclusão de Curso da Faculdade Engenheiro Salvador Arena,
+        disponível no Moodle);
+  \item Análise dos resultados;
+  \item Considerações finais;
+\end{enumerate}
+
+Referências.
+
+Exemplo de tabela: A tabela e as informações (título, legenda e
+fonte) deverão ser centralizadas. Estar o mais próximo possível da parte do
+texto a que se refere. Não ser fechada lateralmente. No cabeçalho de cada
+coluna indicar o respectivo conteúdo. Ser digitada na mesma fonte do texto,
+mas em tamanho 11.
+
+% ----------------------------------------------------------------------------
+%  TABELA: sem fechamento lateral, linhas horizontais cinza (0,5 bp),
+%  colunas de 151 bp, texto 11 bp.  O tipo de coluna C já centraliza; o
+%  cabeçalho é negrito, como no modelo oficial.
+% ----------------------------------------------------------------------------
+\begin{tabela}[8]{Distribuição da informação recuperada na BVS-SP sobre
+dengue, por tipos de documentos e bases de dados}%
+{Fonte: Castro (2003)}
+  \begin{tabular}[t]{CCC}
+  \hline
+  \textbf{Aaaa} & \textbf{Bbb} & \textbf{Ccc} \\
+  \hline
+  000 & 111 & 222 \\
+  \hline
+  333 & 444 & 555 \\
+  \hline
+  \end{tabular}
+\end{tabela}
+
+Exemplo de quadro: O quadro e suas informações (título, legenda e
+fonte) deverão ser centralizados. Estar o mais próximo possível da parte do
+texto a que se refere. Ser digitado na mesma fonte do texto, mas em tamanho
+11.
+
+% ----------------------------------------------------------------------------
+%  QUADRO: grade completa, centralizado na página
+% ----------------------------------------------------------------------------
+\begin{quadro}[6]{Principais bases de dados bibliográficas de interesse para
+a área de saúde pública disponíveis para acesso na Biblioteca da Faculdade de
+Saúde Pública da USP, em 2014}%
+{Fonte: Castro (2003)}
+  \begin{tabular}[t]{|C|C|C|}
+  \hline
+  \textbf{Aaaa} & \textbf{Bbb} & \textbf{Ccc} \\
+  \hline
+  Ddd & Eee & Fff \\
+  \hline
+  Ggg & Hhh & Iii \\
+  \hline
+  \end{tabular}
+\end{quadro}
+
+% ============================================================================
+\section{Referencial teórico\mdseries{} (conforme deliberado por cada curso);}
+% ============================================================================
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a formatação de tabelas e figuras, seguir os exemplos descritos
+anteriormente.
+
+% ----------------------------------------------------------------------------
+\subsection{Subitem}
+% ----------------------------------------------------------------------------
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a formatação de tabelas e figuras, seguir os exemplos descritos
+anteriormente.
+
+% ----------------------------------------------------------------------------
+\subsubsection{Subitem}
+% ----------------------------------------------------------------------------
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a formatação de tabelas e figuras, seguir os exemplos descritos
+anteriormente.
+
+% ============================================================================
+\section{Metodologia}
+% ============================================================================
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a formatação de tabelas e figuras, seguir os exemplos descritos
+anteriormente.
+
+% ============================================================================
+\section{Resultados e discussão}
+% ============================================================================
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm. É atribuição dos
+autores respeitar os direitos autorais sobre artigos técnicos, artigos
+científicos, textos de livros, sítios da Internet, entre outros, evitando
+todas as formas e tipos de plágio acadêmico.
+
+Para a formatação de tabelas e figuras, seguir os exemplos descritos
+anteriormente.
+
+% ============================================================================
+\section{Considerações finais}
+% ============================================================================
+
+Texto justificado, fonte Times New Roman, tamanho 12, espaçamento simples
+entre linhas, com deslocamento da primeira linha de 1,25 cm.
+
+% ============================================================================
+%  REFERÊNCIAS: sempre em página nova, sem numeração de seção.
+%  Uma referência por \item (NBR 6023): elas já saem alinhadas à esquerda, sem
+%  recuo, em espaço simples e separadas por espaço duplo.  Para gerar a lista
+%  a partir de um arquivo .bib, use \imprimirreferencias (veja
+%  exemplo_artigo.tex).
+% ============================================================================
+\begin{referencias}
+  \item As referências são alinhadas somente à margem esquerda do texto e de
+  forma a identificar individualmente cada documento, sem deslocamento da
+  primeira linha, em espaço simples entre linhas e separadas entre si por
+  espaço duplo.
+  \item As referências bibliográficas são organizadas em ordem alfabética por
+  sobrenomes de autores, títulos e ou assuntos.
+  \item Para informações sobre como redigir as referências, consultar o Manual
+  para elaboração de artigo científico para o Trabalho de Conclusão de Curso
+  da Faculdade Engenheiro Salvador Arena, a partir da página 10.
+\end{referencias}
+
+\end{document}

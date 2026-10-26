@@ -1,4 +1,4 @@
-.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper regen-sweeps jcis-figures paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper regen-sweeps jcis-figures pfc-pdf paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -88,6 +88,13 @@ PAPER_IN_GIT := $(if $(PAPER_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) rev-parse --
 PAPER_EPOCH_FROM_SOURCES := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%at --diff-filter=CMT -- $(PAPER_SOURCES) 2>/dev/null))
 PAPER_EPOCH_FROM_HEAD := $(if $(PAPER_IN_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%at 2>/dev/null))
 PAPER_EPOCH = $(if $(PAPER_EPOCH_FROM_SOURCES),$(PAPER_EPOCH_FROM_SOURCES),$(if $(PAPER_EPOCH_FROM_HEAD),$(warning PAPER_EPOCH: no commit in PAPER_SOURCES; falling back to the HEAD author timestamp $(PAPER_EPOCH_FROM_HEAD))$(PAPER_EPOCH_FROM_HEAD),$(if $(SOURCE_DATE_EPOCH),$(warning PAPER_EPOCH: no git history; using SOURCE_DATE_EPOCH from the environment)$(SOURCE_DATE_EPOCH),$(error PAPER_EPOCH: no git repository and SOURCE_DATE_EPOCH is not set; run inside a git checkout or set SOURCE_DATE_EPOCH to a Unix timestamp))))
+
+PFC_DIR ?= articles/pfc
+PFC_TEX ?= artigo.tex
+PFC_LATEXMK ?= latexmk
+
+pfc-pdf:  ## Build the PFC article with XeLaTeX and biber
+	cd $(PFC_DIR) && $(PFC_LATEXMK) -pdfxe -interaction=nonstopmode -halt-on-error $(PFC_TEX)
 
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
 	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures $(PAPER_DIR)/Figures --all-figures --sweeps data/sweeps
