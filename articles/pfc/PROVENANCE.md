@@ -25,7 +25,8 @@ Foram removidos o exemplo de figura que dependia de `figura9.pdf` e a
 menção a esse arquivo. Travessões tipográficos em comentários foram
 substituídos por dois-pontos ou hífen, sem alteração de conteúdo técnico.
 O mesmo ajuste tipográfico foi feito nos comentários de `latexmkrc` e das
-duas ferramentas copiadas.
+duas ferramentas copiadas. As ferramentas também receberam docstrings e uma
+marca de lint, sem mudança funcional.
 
 ## Integridade
 

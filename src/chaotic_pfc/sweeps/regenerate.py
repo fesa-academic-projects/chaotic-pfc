@@ -18,6 +18,7 @@ import argparse
 import hashlib
 import importlib.metadata
 import json
+import os
 import platform
 import shutil
 import subprocess
@@ -35,6 +36,18 @@ _MANIFEST_NAME = "SHA256SUMS"
 _ENVIRONMENT_NAME = "ENVIRONMENT.json"
 _PACKAGE_NAMES = ("numpy", "scipy", "numba", "llvmlite", "matplotlib")
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _cpu_model() -> str:
+    """Return the CPU model string, with a portable fallback."""
+    try:
+        text = Path("/proc/cpuinfo").read_text(encoding="utf-8")
+    except OSError:
+        return platform.processor() or "unknown"
+    for line in text.splitlines():
+        if line.lower().startswith("model name"):
+            return line.split(":", 1)[1].strip()
+    return platform.processor() or "unknown"
 
 
 def _git_metadata() -> tuple[str | None, bool | None]:
@@ -95,6 +108,13 @@ def write_manifest(root: Path) -> Path:
     return manifest
 
 
+def _numba_threads() -> int:
+    """Return the effective Numba thread count, or 1 without Numba."""
+    from chaotic_pfc._compat import get_num_threads
+
+    return get_num_threads()
+
+
 def write_environment(
     root: Path,
     *,
@@ -121,6 +141,9 @@ def write_environment(
         "python": platform.python_version(),
         **_package_versions(),
         "platform": platform.platform(),
+        "cpu": _cpu_model(),
+        "cpu_count": os.cpu_count(),
+        "threads": _numba_threads(),
         "package_version": __version__,
         "regeneration_date": date.today().isoformat(),
         "checkpoints": checkpoints,

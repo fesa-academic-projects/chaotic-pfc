@@ -7,7 +7,7 @@ Two independent guarantees are encoded here:
   with ``requirements-lock.txt`` so the lock reproduces the generation
   environment.
 
-* The FIR coefficients are not stored in the ``.npz`` files — the ``num_taps_grid``
+* The FIR coefficients are not stored in the ``.npz`` files - the ``num_taps_grid``
   field holds the number of taps :math:`N_s` of each swept order. This module
   recomputes the taps with ``scipy.signal.firwin`` and checks them against the
   ``num_taps_grid`` field, and pins a fingerprint of the full coefficient bank so that a
@@ -136,6 +136,9 @@ def test_write_environment_records_stack_and_git(tmp_path, monkeypatch) -> None:
     assert env["package_version"] == __version__
     assert env["python"] == platform.python_version()
     assert env["platform"] == platform.platform()
+    assert isinstance(env["cpu"], str) and env["cpu"]
+    assert env["cpu_count"] == os.cpu_count()
+    assert env["threads"] >= 1
     assert env["regeneration_date"] == date.today().isoformat()
     assert env["regeneration_wall_seconds"] == 1.25
     assert env["git_commit"] == "0123456789abcdef0123456789abcdef01234567"

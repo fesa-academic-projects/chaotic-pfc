@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Confere as citações de um artigo contra o arquivo referencias.bib.
+r"""Confere as citações de um artigo contra o arquivo referencias.bib.
 
 Uso:
     python3 tools/conferir_citacoes.py [artigo.tex ...] [--bib referencias.bib]
@@ -47,11 +47,12 @@ CAMPO = re.compile(r"^\s*([a-zA-Z]+)\s*=\s*", re.MULTILINE)
 
 
 def sem_comentarios(texto: str) -> str:
+    """Remove comentários LaTeX de *texto*."""
     return re.sub(r"(?<!\\)%.*", "", texto)
 
 
 def chaves_citadas(tex: str) -> tuple[set[str], set[str]]:
-    """Devolve (chaves citadas no texto, chaves apenas registradas com \\nocite)."""
+    r"""Devolve (chaves citadas no texto, chaves apenas registradas com \\nocite)."""
     citadas: set[str] = set()
     registradas: set[str] = set()
     for comando, lista in CITE.findall(sem_comentarios(tex)):
@@ -71,13 +72,14 @@ def ler_bib(bib: str) -> dict[str, dict[str, object]]:
         campos: dict[str, str] = {}
         marcas = list(CAMPO.finditer(corpo))
         for j, m in enumerate(marcas):
-            valor = corpo[m.end(): marcas[j + 1].start() if j + 1 < len(marcas) else len(corpo)]
+            valor = corpo[m.end() : marcas[j + 1].start() if j + 1 < len(marcas) else len(corpo)]
             campos[m.group(1).lower()] = valor.strip().rstrip(",").strip().strip("{}").strip()
         entradas[chave] = {"tipo": tipo, "campos": campos}
     return entradas
 
 
 def presente(campos: dict[str, str], nome: str) -> bool:
+    """Informa se *nome* existe em *campos*."""
     if nome == "ano":
         return "year" in campos or "date" in campos
     if nome == "pages":
@@ -86,9 +88,16 @@ def presente(campos: dict[str, str], nome: str) -> bool:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("tex", nargs="*", help="arquivos .tex do artigo (padrão: todos os que usam referencias.bib)")
-    ap.add_argument("--bib", default="referencias.bib", help="arquivo .bib (padrão: referencias.bib)")
+    """Confere as citações e devolve o código de saída."""
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "tex", nargs="*", help="arquivos .tex do artigo (padrão: todos os que usam referencias.bib)"
+    )
+    ap.add_argument(
+        "--bib", default="referencias.bib", help="arquivo .bib (padrão: referencias.bib)"
+    )
     args = ap.parse_args(argv)
 
     bib_path = Path(args.bib)
@@ -100,8 +109,10 @@ def main(argv: list[str] | None = None) -> int:
         tex_paths = [Path(p) for p in args.tex]
     else:
         tex_paths = sorted(
-            p for p in Path(".").glob("*.tex")
-            if f"addbibresource{{{bib_path.name}}}" in sem_comentarios(p.read_text(encoding="utf-8"))
+            p
+            for p in Path(".").glob("*.tex")
+            if f"addbibresource{{{bib_path.name}}}"
+            in sem_comentarios(p.read_text(encoding="utf-8"))
         )
     if not tex_paths:
         print(f"ERRO: nenhum .tex usa \\addbibresource{{{bib_path.name}}} (informe os arquivos)")
@@ -116,7 +127,9 @@ def main(argv: list[str] | None = None) -> int:
         registradas |= n
         faltando = c - set(bib)
         if faltando:
-            print(f"ERRO: {p.name} cita chave(s) que não existe(m) em {bib_path}: {', '.join(sorted(faltando))}")
+            print(
+                f"ERRO: {p.name} cita chave(s) que não existe(m) em {bib_path}: {', '.join(sorted(faltando))}"
+            )
 
     erros = 0
     avisos: list[str] = []
@@ -134,7 +147,9 @@ def main(argv: list[str] | None = None) -> int:
             erros += 1
         falta_recom = sorted(c for c in recom if not presente(campos, c))
         if falta_recom:
-            avisos.append(f"{chave} (@{tipo}) sem campo(s) recomendado(s): {', '.join(falta_recom)}")
+            avisos.append(
+                f"{chave} (@{tipo}) sem campo(s) recomendado(s): {', '.join(falta_recom)}"
+            )
         if "url" in campos and not presente(campos, "urldate"):
             avisos.append(f"{chave}: url sem urldate (data de acesso)")
 
@@ -151,12 +166,19 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 vistos[v] = chave
 
-    chave_dup("doi", lambda v: v.lower().removeprefix("https://doi.org/").removeprefix("http://dx.doi.org/").strip())
+    chave_dup(
+        "doi",
+        lambda v: (
+            v.lower().removeprefix("https://doi.org/").removeprefix("http://dx.doi.org/").strip()
+        ),
+    )
     chave_dup("title", lambda v: re.sub(r"\W+", " ", v.lower()).strip())
 
     nao_usadas = sorted(set(bib) - citadas - registradas)
     if nao_usadas:
-        avisos.append("entradas no .bib que não são citadas por nenhum dos .tex: " + ", ".join(nao_usadas))
+        avisos.append(
+            "entradas no .bib que não são citadas por nenhum dos .tex: " + ", ".join(nao_usadas)
+        )
 
     print()
     print(f"arquivos .tex conferidos : {', '.join(p.name for p in tex_paths)}")
@@ -169,7 +191,9 @@ def main(argv: list[str] | None = None) -> int:
     if erros:
         print("\nRESULTADO: há erros de citação/referência (veja acima).")
         return 1
-    print("\nRESULTADO: toda citação tem entrada no .bib e toda entrada tem os campos obrigatórios.")
+    print(
+        "\nRESULTADO: toda citação tem entrada no .bib e toda entrada tem os campos obrigatórios."
+    )
     return 0
 
 

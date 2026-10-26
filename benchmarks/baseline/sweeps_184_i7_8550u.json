@@ -1,0 +1,1884 @@
+{
+  "machine": {
+    "platform": "Linux-7.2.11_1-x86_64-with-glibc2.41",
+    "cpu": "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz",
+    "cpu_count": 8,
+    "ram_gib": 31.1,
+    "governor": "powersave"
+  },
+  "versions": {
+    "python": "3.14.8",
+    "chaotic_pfc": "0.8.0",
+    "numpy": "2.5.2",
+    "scipy": "1.18.0",
+    "matplotlib": "3.11.1",
+    "numba": "0.67.0"
+  },
+  "numba": {
+    "available": true,
+    "threads": 8,
+    "disable_jit": "0"
+  },
+  "git": {
+    "commit": "4deaa1f50f6db7e89515df27e4d4ebdbfc659556",
+    "dirty": false
+  },
+  "protocol": {
+    "sweeps": 184,
+    "warmup": "one small run_sweep with warmup=True, excluded from the timings",
+    "Nitera": 500,
+    "Nmap": 3000,
+    "n_initial": 25,
+    "bandwidth": 0.05,
+    "adaptive": true,
+    "Nmap_min": 500,
+    "tol": 0.001,
+    "repetitions": 1
+  },
+  "warmup_seconds": 0.305165,
+  "sweeps_seconds": 574.943478,
+  "total_seconds": 575.248643,
+  "total_minutes": 9.587,
+  "sweeps": [
+    {
+      "index": 1,
+      "window": "hamming",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.100386,
+      "valid_points": 1255,
+      "total_points": 4000,
+      "points_per_s": 1290.162
+    },
+    {
+      "index": 2,
+      "window": "hamming",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.373996,
+      "valid_points": 1889,
+      "total_points": 2000,
+      "points_per_s": 592.769
+    },
+    {
+      "index": 3,
+      "window": "hamming",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 6.013629,
+      "valid_points": 3716,
+      "total_points": 4000,
+      "points_per_s": 665.156
+    },
+    {
+      "index": 4,
+      "window": "hamming",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.582426,
+      "valid_points": 155,
+      "total_points": 2000,
+      "points_per_s": 3433.91
+    },
+    {
+      "index": 5,
+      "window": "hann",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.601481,
+      "valid_points": 1183,
+      "total_points": 4000,
+      "points_per_s": 1110.654
+    },
+    {
+      "index": 6,
+      "window": "hann",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.499921,
+      "valid_points": 1879,
+      "total_points": 2000,
+      "points_per_s": 571.442
+    },
+    {
+      "index": 7,
+      "window": "hann",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 6.440551,
+      "valid_points": 3582,
+      "total_points": 4000,
+      "points_per_s": 621.065
+    },
+    {
+      "index": 8,
+      "window": "hann",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.682143,
+      "valid_points": 151,
+      "total_points": 2000,
+      "points_per_s": 2931.937
+    },
+    {
+      "index": 9,
+      "window": "blackman",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 5.571212,
+      "valid_points": 1297,
+      "total_points": 4000,
+      "points_per_s": 717.977
+    },
+    {
+      "index": 10,
+      "window": "blackman",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.480729,
+      "valid_points": 1854,
+      "total_points": 2000,
+      "points_per_s": 574.592
+    },
+    {
+      "index": 11,
+      "window": "blackman",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 7.575807,
+      "valid_points": 3557,
+      "total_points": 4000,
+      "points_per_s": 527.997
+    },
+    {
+      "index": 12,
+      "window": "blackman",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.655417,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3051.493
+    },
+    {
+      "index": 13,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 0.5,
+      "elapsed_s": 2.244447,
+      "valid_points": 1045,
+      "total_points": 4000,
+      "points_per_s": 1782.176
+    },
+    {
+      "index": 14,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 1.0,
+      "elapsed_s": 1.995724,
+      "valid_points": 1063,
+      "total_points": 4000,
+      "points_per_s": 2004.285
+    },
+    {
+      "index": 15,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 1.5,
+      "elapsed_s": 2.031466,
+      "valid_points": 1114,
+      "total_points": 4000,
+      "points_per_s": 1969.021
+    },
+    {
+      "index": 16,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 2.0,
+      "elapsed_s": 2.097442,
+      "valid_points": 1138,
+      "total_points": 4000,
+      "points_per_s": 1907.085
+    },
+    {
+      "index": 17,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 2.5,
+      "elapsed_s": 2.383375,
+      "valid_points": 1157,
+      "total_points": 4000,
+      "points_per_s": 1678.292
+    },
+    {
+      "index": 18,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 3.0,
+      "elapsed_s": 2.645537,
+      "valid_points": 1188,
+      "total_points": 4000,
+      "points_per_s": 1511.981
+    },
+    {
+      "index": 19,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 3.5,
+      "elapsed_s": 2.962908,
+      "valid_points": 1200,
+      "total_points": 4000,
+      "points_per_s": 1350.025
+    },
+    {
+      "index": 20,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 4.0,
+      "elapsed_s": 3.213156,
+      "valid_points": 1215,
+      "total_points": 4000,
+      "points_per_s": 1244.882
+    },
+    {
+      "index": 21,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 4.5,
+      "elapsed_s": 2.801494,
+      "valid_points": 1230,
+      "total_points": 4000,
+      "points_per_s": 1427.81
+    },
+    {
+      "index": 22,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 5.0,
+      "elapsed_s": 2.899499,
+      "valid_points": 1245,
+      "total_points": 4000,
+      "points_per_s": 1379.549
+    },
+    {
+      "index": 23,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 5.5,
+      "elapsed_s": 2.881148,
+      "valid_points": 1257,
+      "total_points": 4000,
+      "points_per_s": 1388.335
+    },
+    {
+      "index": 24,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 6.0,
+      "elapsed_s": 3.299845,
+      "valid_points": 1269,
+      "total_points": 4000,
+      "points_per_s": 1212.178
+    },
+    {
+      "index": 25,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 6.5,
+      "elapsed_s": 3.306692,
+      "valid_points": 1280,
+      "total_points": 4000,
+      "points_per_s": 1209.668
+    },
+    {
+      "index": 26,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 7.0,
+      "elapsed_s": 3.63383,
+      "valid_points": 1286,
+      "total_points": 4000,
+      "points_per_s": 1100.767
+    },
+    {
+      "index": 27,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 7.5,
+      "elapsed_s": 4.163854,
+      "valid_points": 1289,
+      "total_points": 4000,
+      "points_per_s": 960.648
+    },
+    {
+      "index": 28,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 8.0,
+      "elapsed_s": 4.500909,
+      "valid_points": 1293,
+      "total_points": 4000,
+      "points_per_s": 888.709
+    },
+    {
+      "index": 29,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 8.5,
+      "elapsed_s": 4.726235,
+      "valid_points": 1294,
+      "total_points": 4000,
+      "points_per_s": 846.34
+    },
+    {
+      "index": 30,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 9.0,
+      "elapsed_s": 5.040782,
+      "valid_points": 1291,
+      "total_points": 4000,
+      "points_per_s": 793.528
+    },
+    {
+      "index": 31,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 9.5,
+      "elapsed_s": 5.470999,
+      "valid_points": 1294,
+      "total_points": 4000,
+      "points_per_s": 731.128
+    },
+    {
+      "index": 32,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 10.0,
+      "elapsed_s": 5.585589,
+      "valid_points": 1296,
+      "total_points": 4000,
+      "points_per_s": 716.129
+    },
+    {
+      "index": 33,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 10.5,
+      "elapsed_s": 4.836552,
+      "valid_points": 1296,
+      "total_points": 4000,
+      "points_per_s": 827.035
+    },
+    {
+      "index": 34,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 11.0,
+      "elapsed_s": 4.510074,
+      "valid_points": 1290,
+      "total_points": 4000,
+      "points_per_s": 886.903
+    },
+    {
+      "index": 35,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 11.5,
+      "elapsed_s": 3.858823,
+      "valid_points": 1290,
+      "total_points": 4000,
+      "points_per_s": 1036.585
+    },
+    {
+      "index": 36,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 12.0,
+      "elapsed_s": 2.504137,
+      "valid_points": 1285,
+      "total_points": 4000,
+      "points_per_s": 1597.357
+    },
+    {
+      "index": 37,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 12.5,
+      "elapsed_s": 2.444709,
+      "valid_points": 1276,
+      "total_points": 4000,
+      "points_per_s": 1636.187
+    },
+    {
+      "index": 38,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 13.0,
+      "elapsed_s": 2.244312,
+      "valid_points": 1270,
+      "total_points": 4000,
+      "points_per_s": 1782.284
+    },
+    {
+      "index": 39,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 13.5,
+      "elapsed_s": 2.190106,
+      "valid_points": 1263,
+      "total_points": 4000,
+      "points_per_s": 1826.396
+    },
+    {
+      "index": 40,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 14.0,
+      "elapsed_s": 2.074168,
+      "valid_points": 1253,
+      "total_points": 4000,
+      "points_per_s": 1928.484
+    },
+    {
+      "index": 41,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 14.5,
+      "elapsed_s": 2.107435,
+      "valid_points": 1243,
+      "total_points": 4000,
+      "points_per_s": 1898.042
+    },
+    {
+      "index": 42,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 15.0,
+      "elapsed_s": 2.022802,
+      "valid_points": 1234,
+      "total_points": 4000,
+      "points_per_s": 1977.455
+    },
+    {
+      "index": 43,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 15.5,
+      "elapsed_s": 1.99815,
+      "valid_points": 1221,
+      "total_points": 4000,
+      "points_per_s": 2001.852
+    },
+    {
+      "index": 44,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 16.0,
+      "elapsed_s": 2.001085,
+      "valid_points": 1211,
+      "total_points": 4000,
+      "points_per_s": 1998.915
+    },
+    {
+      "index": 45,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 16.5,
+      "elapsed_s": 1.991334,
+      "valid_points": 1191,
+      "total_points": 4000,
+      "points_per_s": 2008.704
+    },
+    {
+      "index": 46,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 17.0,
+      "elapsed_s": 1.891924,
+      "valid_points": 1183,
+      "total_points": 4000,
+      "points_per_s": 2114.249
+    },
+    {
+      "index": 47,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 17.5,
+      "elapsed_s": 1.869147,
+      "valid_points": 1166,
+      "total_points": 4000,
+      "points_per_s": 2140.014
+    },
+    {
+      "index": 48,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 18.0,
+      "elapsed_s": 1.800195,
+      "valid_points": 1139,
+      "total_points": 4000,
+      "points_per_s": 2221.981
+    },
+    {
+      "index": 49,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 18.5,
+      "elapsed_s": 1.801646,
+      "valid_points": 1119,
+      "total_points": 4000,
+      "points_per_s": 2220.192
+    },
+    {
+      "index": 50,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 19.0,
+      "elapsed_s": 1.759468,
+      "valid_points": 1091,
+      "total_points": 4000,
+      "points_per_s": 2273.414
+    },
+    {
+      "index": 51,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 19.5,
+      "elapsed_s": 1.759945,
+      "valid_points": 1043,
+      "total_points": 4000,
+      "points_per_s": 2272.798
+    },
+    {
+      "index": 52,
+      "window": "kaiser",
+      "filter_type": "lowpass",
+      "kaiser_beta": 20.0,
+      "elapsed_s": 1.695412,
+      "valid_points": 1021,
+      "total_points": 4000,
+      "points_per_s": 2359.308
+    },
+    {
+      "index": 53,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 0.5,
+      "elapsed_s": 2.531155,
+      "valid_points": 1932,
+      "total_points": 2000,
+      "points_per_s": 790.153
+    },
+    {
+      "index": 54,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 1.0,
+      "elapsed_s": 2.383411,
+      "valid_points": 1930,
+      "total_points": 2000,
+      "points_per_s": 839.133
+    },
+    {
+      "index": 55,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 1.5,
+      "elapsed_s": 2.432956,
+      "valid_points": 1927,
+      "total_points": 2000,
+      "points_per_s": 822.045
+    },
+    {
+      "index": 56,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 2.0,
+      "elapsed_s": 2.421791,
+      "valid_points": 1921,
+      "total_points": 2000,
+      "points_per_s": 825.835
+    },
+    {
+      "index": 57,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 2.5,
+      "elapsed_s": 2.601387,
+      "valid_points": 1914,
+      "total_points": 2000,
+      "points_per_s": 768.821
+    },
+    {
+      "index": 58,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 3.0,
+      "elapsed_s": 2.717571,
+      "valid_points": 1909,
+      "total_points": 2000,
+      "points_per_s": 735.951
+    },
+    {
+      "index": 59,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 3.5,
+      "elapsed_s": 2.817236,
+      "valid_points": 1903,
+      "total_points": 2000,
+      "points_per_s": 709.916
+    },
+    {
+      "index": 60,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 4.0,
+      "elapsed_s": 2.926865,
+      "valid_points": 1898,
+      "total_points": 2000,
+      "points_per_s": 683.325
+    },
+    {
+      "index": 61,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 4.5,
+      "elapsed_s": 2.819885,
+      "valid_points": 1895,
+      "total_points": 2000,
+      "points_per_s": 709.249
+    },
+    {
+      "index": 62,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 5.0,
+      "elapsed_s": 3.147239,
+      "valid_points": 1887,
+      "total_points": 2000,
+      "points_per_s": 635.478
+    },
+    {
+      "index": 63,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 5.5,
+      "elapsed_s": 3.047201,
+      "valid_points": 1883,
+      "total_points": 2000,
+      "points_per_s": 656.34
+    },
+    {
+      "index": 64,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 6.0,
+      "elapsed_s": 3.043368,
+      "valid_points": 1875,
+      "total_points": 2000,
+      "points_per_s": 657.167
+    },
+    {
+      "index": 65,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 6.5,
+      "elapsed_s": 3.221959,
+      "valid_points": 1873,
+      "total_points": 2000,
+      "points_per_s": 620.74
+    },
+    {
+      "index": 66,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 7.0,
+      "elapsed_s": 3.049687,
+      "valid_points": 1870,
+      "total_points": 2000,
+      "points_per_s": 655.805
+    },
+    {
+      "index": 67,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 7.5,
+      "elapsed_s": 3.160346,
+      "valid_points": 1864,
+      "total_points": 2000,
+      "points_per_s": 632.842
+    },
+    {
+      "index": 68,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 8.0,
+      "elapsed_s": 3.308364,
+      "valid_points": 1864,
+      "total_points": 2000,
+      "points_per_s": 604.528
+    },
+    {
+      "index": 69,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 8.5,
+      "elapsed_s": 3.239427,
+      "valid_points": 1856,
+      "total_points": 2000,
+      "points_per_s": 617.393
+    },
+    {
+      "index": 70,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 9.0,
+      "elapsed_s": 3.480671,
+      "valid_points": 1855,
+      "total_points": 2000,
+      "points_per_s": 574.602
+    },
+    {
+      "index": 71,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 9.5,
+      "elapsed_s": 3.249751,
+      "valid_points": 1848,
+      "total_points": 2000,
+      "points_per_s": 615.432
+    },
+    {
+      "index": 72,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 10.0,
+      "elapsed_s": 3.383789,
+      "valid_points": 1844,
+      "total_points": 2000,
+      "points_per_s": 591.053
+    },
+    {
+      "index": 73,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 10.5,
+      "elapsed_s": 3.367557,
+      "valid_points": 1840,
+      "total_points": 2000,
+      "points_per_s": 593.902
+    },
+    {
+      "index": 74,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 11.0,
+      "elapsed_s": 3.298536,
+      "valid_points": 1835,
+      "total_points": 2000,
+      "points_per_s": 606.33
+    },
+    {
+      "index": 75,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 11.5,
+      "elapsed_s": 3.581042,
+      "valid_points": 1832,
+      "total_points": 2000,
+      "points_per_s": 558.497
+    },
+    {
+      "index": 76,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 12.0,
+      "elapsed_s": 3.49289,
+      "valid_points": 1826,
+      "total_points": 2000,
+      "points_per_s": 572.592
+    },
+    {
+      "index": 77,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 12.5,
+      "elapsed_s": 3.426948,
+      "valid_points": 1821,
+      "total_points": 2000,
+      "points_per_s": 583.61
+    },
+    {
+      "index": 78,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 13.0,
+      "elapsed_s": 3.495634,
+      "valid_points": 1814,
+      "total_points": 2000,
+      "points_per_s": 572.142
+    },
+    {
+      "index": 79,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 13.5,
+      "elapsed_s": 3.308924,
+      "valid_points": 1810,
+      "total_points": 2000,
+      "points_per_s": 604.426
+    },
+    {
+      "index": 80,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 14.0,
+      "elapsed_s": 3.434111,
+      "valid_points": 1807,
+      "total_points": 2000,
+      "points_per_s": 582.392
+    },
+    {
+      "index": 81,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 14.5,
+      "elapsed_s": 3.466795,
+      "valid_points": 1801,
+      "total_points": 2000,
+      "points_per_s": 576.902
+    },
+    {
+      "index": 82,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 15.0,
+      "elapsed_s": 3.507721,
+      "valid_points": 1795,
+      "total_points": 2000,
+      "points_per_s": 570.171
+    },
+    {
+      "index": 83,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 15.5,
+      "elapsed_s": 3.391202,
+      "valid_points": 1786,
+      "total_points": 2000,
+      "points_per_s": 589.761
+    },
+    {
+      "index": 84,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 16.0,
+      "elapsed_s": 3.519125,
+      "valid_points": 1778,
+      "total_points": 2000,
+      "points_per_s": 568.323
+    },
+    {
+      "index": 85,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 16.5,
+      "elapsed_s": 3.36041,
+      "valid_points": 1771,
+      "total_points": 2000,
+      "points_per_s": 595.165
+    },
+    {
+      "index": 86,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 17.0,
+      "elapsed_s": 3.378478,
+      "valid_points": 1750,
+      "total_points": 2000,
+      "points_per_s": 591.983
+    },
+    {
+      "index": 87,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 17.5,
+      "elapsed_s": 3.552777,
+      "valid_points": 1746,
+      "total_points": 2000,
+      "points_per_s": 562.94
+    },
+    {
+      "index": 88,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 18.0,
+      "elapsed_s": 3.485491,
+      "valid_points": 1742,
+      "total_points": 2000,
+      "points_per_s": 573.807
+    },
+    {
+      "index": 89,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 18.5,
+      "elapsed_s": 3.543946,
+      "valid_points": 1740,
+      "total_points": 2000,
+      "points_per_s": 564.343
+    },
+    {
+      "index": 90,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 19.0,
+      "elapsed_s": 3.413582,
+      "valid_points": 1740,
+      "total_points": 2000,
+      "points_per_s": 585.895
+    },
+    {
+      "index": 91,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 19.5,
+      "elapsed_s": 3.503185,
+      "valid_points": 1738,
+      "total_points": 2000,
+      "points_per_s": 570.909
+    },
+    {
+      "index": 92,
+      "window": "kaiser",
+      "filter_type": "highpass",
+      "kaiser_beta": 20.0,
+      "elapsed_s": 3.481543,
+      "valid_points": 1737,
+      "total_points": 2000,
+      "points_per_s": 574.458
+    },
+    {
+      "index": 93,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 0.5,
+      "elapsed_s": 5.019727,
+      "valid_points": 3844,
+      "total_points": 4000,
+      "points_per_s": 796.856
+    },
+    {
+      "index": 94,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 1.0,
+      "elapsed_s": 5.097406,
+      "valid_points": 3845,
+      "total_points": 4000,
+      "points_per_s": 784.713
+    },
+    {
+      "index": 95,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 1.5,
+      "elapsed_s": 4.786327,
+      "valid_points": 3842,
+      "total_points": 4000,
+      "points_per_s": 835.714
+    },
+    {
+      "index": 96,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 2.0,
+      "elapsed_s": 4.902239,
+      "valid_points": 3838,
+      "total_points": 4000,
+      "points_per_s": 815.954
+    },
+    {
+      "index": 97,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 2.5,
+      "elapsed_s": 4.915181,
+      "valid_points": 3836,
+      "total_points": 4000,
+      "points_per_s": 813.805
+    },
+    {
+      "index": 98,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 3.0,
+      "elapsed_s": 4.921628,
+      "valid_points": 3815,
+      "total_points": 4000,
+      "points_per_s": 812.739
+    },
+    {
+      "index": 99,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 3.5,
+      "elapsed_s": 5.201705,
+      "valid_points": 3798,
+      "total_points": 4000,
+      "points_per_s": 768.979
+    },
+    {
+      "index": 100,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 4.0,
+      "elapsed_s": 5.040891,
+      "valid_points": 3760,
+      "total_points": 4000,
+      "points_per_s": 793.51
+    },
+    {
+      "index": 101,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 4.5,
+      "elapsed_s": 5.350553,
+      "valid_points": 3732,
+      "total_points": 4000,
+      "points_per_s": 747.586
+    },
+    {
+      "index": 102,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 5.0,
+      "elapsed_s": 5.47943,
+      "valid_points": 3699,
+      "total_points": 4000,
+      "points_per_s": 730.003
+    },
+    {
+      "index": 103,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 5.5,
+      "elapsed_s": 5.861897,
+      "valid_points": 3675,
+      "total_points": 4000,
+      "points_per_s": 682.373
+    },
+    {
+      "index": 104,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 6.0,
+      "elapsed_s": 5.961649,
+      "valid_points": 3660,
+      "total_points": 4000,
+      "points_per_s": 670.955
+    },
+    {
+      "index": 105,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 6.5,
+      "elapsed_s": 6.01268,
+      "valid_points": 3644,
+      "total_points": 4000,
+      "points_per_s": 665.261
+    },
+    {
+      "index": 106,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 7.0,
+      "elapsed_s": 6.286546,
+      "valid_points": 3617,
+      "total_points": 4000,
+      "points_per_s": 636.279
+    },
+    {
+      "index": 107,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 7.5,
+      "elapsed_s": 6.580259,
+      "valid_points": 3601,
+      "total_points": 4000,
+      "points_per_s": 607.879
+    },
+    {
+      "index": 108,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 8.0,
+      "elapsed_s": 6.403828,
+      "valid_points": 3581,
+      "total_points": 4000,
+      "points_per_s": 624.626
+    },
+    {
+      "index": 109,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 8.5,
+      "elapsed_s": 6.963451,
+      "valid_points": 3561,
+      "total_points": 4000,
+      "points_per_s": 574.428
+    },
+    {
+      "index": 110,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 9.0,
+      "elapsed_s": 6.903256,
+      "valid_points": 3535,
+      "total_points": 4000,
+      "points_per_s": 579.437
+    },
+    {
+      "index": 111,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 9.5,
+      "elapsed_s": 6.855783,
+      "valid_points": 3517,
+      "total_points": 4000,
+      "points_per_s": 583.449
+    },
+    {
+      "index": 112,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 10.0,
+      "elapsed_s": 6.979574,
+      "valid_points": 3494,
+      "total_points": 4000,
+      "points_per_s": 573.101
+    },
+    {
+      "index": 113,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 10.5,
+      "elapsed_s": 6.216724,
+      "valid_points": 3467,
+      "total_points": 4000,
+      "points_per_s": 643.426
+    },
+    {
+      "index": 114,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 11.0,
+      "elapsed_s": 6.10311,
+      "valid_points": 3439,
+      "total_points": 4000,
+      "points_per_s": 655.404
+    },
+    {
+      "index": 115,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 11.5,
+      "elapsed_s": 5.821371,
+      "valid_points": 3410,
+      "total_points": 4000,
+      "points_per_s": 687.123
+    },
+    {
+      "index": 116,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 12.0,
+      "elapsed_s": 5.907866,
+      "valid_points": 3396,
+      "total_points": 4000,
+      "points_per_s": 677.063
+    },
+    {
+      "index": 117,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 12.5,
+      "elapsed_s": 5.855114,
+      "valid_points": 3376,
+      "total_points": 4000,
+      "points_per_s": 683.163
+    },
+    {
+      "index": 118,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 13.0,
+      "elapsed_s": 5.728166,
+      "valid_points": 3361,
+      "total_points": 4000,
+      "points_per_s": 698.304
+    },
+    {
+      "index": 119,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 13.5,
+      "elapsed_s": 5.812606,
+      "valid_points": 3349,
+      "total_points": 4000,
+      "points_per_s": 688.16
+    },
+    {
+      "index": 120,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 14.0,
+      "elapsed_s": 5.736877,
+      "valid_points": 3330,
+      "total_points": 4000,
+      "points_per_s": 697.244
+    },
+    {
+      "index": 121,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 14.5,
+      "elapsed_s": 5.735444,
+      "valid_points": 3317,
+      "total_points": 4000,
+      "points_per_s": 697.418
+    },
+    {
+      "index": 122,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 15.0,
+      "elapsed_s": 5.732072,
+      "valid_points": 3293,
+      "total_points": 4000,
+      "points_per_s": 697.828
+    },
+    {
+      "index": 123,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 15.5,
+      "elapsed_s": 5.757538,
+      "valid_points": 3274,
+      "total_points": 4000,
+      "points_per_s": 694.741
+    },
+    {
+      "index": 124,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 16.0,
+      "elapsed_s": 5.711847,
+      "valid_points": 3252,
+      "total_points": 4000,
+      "points_per_s": 700.299
+    },
+    {
+      "index": 125,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 16.5,
+      "elapsed_s": 6.184538,
+      "valid_points": 3235,
+      "total_points": 4000,
+      "points_per_s": 646.774
+    },
+    {
+      "index": 126,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 17.0,
+      "elapsed_s": 5.550546,
+      "valid_points": 3206,
+      "total_points": 4000,
+      "points_per_s": 720.65
+    },
+    {
+      "index": 127,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 17.5,
+      "elapsed_s": 5.824148,
+      "valid_points": 3187,
+      "total_points": 4000,
+      "points_per_s": 686.796
+    },
+    {
+      "index": 128,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 18.0,
+      "elapsed_s": 5.60801,
+      "valid_points": 3160,
+      "total_points": 4000,
+      "points_per_s": 713.266
+    },
+    {
+      "index": 129,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 18.5,
+      "elapsed_s": 5.792906,
+      "valid_points": 3145,
+      "total_points": 4000,
+      "points_per_s": 690.5
+    },
+    {
+      "index": 130,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 19.0,
+      "elapsed_s": 5.63675,
+      "valid_points": 3119,
+      "total_points": 4000,
+      "points_per_s": 709.629
+    },
+    {
+      "index": 131,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 19.5,
+      "elapsed_s": 5.592256,
+      "valid_points": 3106,
+      "total_points": 4000,
+      "points_per_s": 715.275
+    },
+    {
+      "index": 132,
+      "window": "kaiser",
+      "filter_type": "bandpass",
+      "kaiser_beta": 20.0,
+      "elapsed_s": 5.716017,
+      "valid_points": 3085,
+      "total_points": 4000,
+      "points_per_s": 699.788
+    },
+    {
+      "index": 133,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 0.5,
+      "elapsed_s": 0.562465,
+      "valid_points": 173,
+      "total_points": 2000,
+      "points_per_s": 3555.775
+    },
+    {
+      "index": 134,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 1.0,
+      "elapsed_s": 0.545686,
+      "valid_points": 148,
+      "total_points": 2000,
+      "points_per_s": 3665.108
+    },
+    {
+      "index": 135,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 1.5,
+      "elapsed_s": 0.529005,
+      "valid_points": 141,
+      "total_points": 2000,
+      "points_per_s": 3780.683
+    },
+    {
+      "index": 136,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 2.0,
+      "elapsed_s": 0.52831,
+      "valid_points": 142,
+      "total_points": 2000,
+      "points_per_s": 3785.653
+    },
+    {
+      "index": 137,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 2.5,
+      "elapsed_s": 0.518014,
+      "valid_points": 141,
+      "total_points": 2000,
+      "points_per_s": 3860.903
+    },
+    {
+      "index": 138,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 3.0,
+      "elapsed_s": 0.527948,
+      "valid_points": 142,
+      "total_points": 2000,
+      "points_per_s": 3788.252
+    },
+    {
+      "index": 139,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 3.5,
+      "elapsed_s": 0.526198,
+      "valid_points": 147,
+      "total_points": 2000,
+      "points_per_s": 3800.85
+    },
+    {
+      "index": 140,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 4.0,
+      "elapsed_s": 0.52786,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3788.881
+    },
+    {
+      "index": 141,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 4.5,
+      "elapsed_s": 0.518449,
+      "valid_points": 153,
+      "total_points": 2000,
+      "points_per_s": 3857.663
+    },
+    {
+      "index": 142,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 5.0,
+      "elapsed_s": 0.521214,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3837.196
+    },
+    {
+      "index": 143,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 5.5,
+      "elapsed_s": 0.519422,
+      "valid_points": 151,
+      "total_points": 2000,
+      "points_per_s": 3850.43
+    },
+    {
+      "index": 144,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 6.0,
+      "elapsed_s": 0.521046,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3838.435
+    },
+    {
+      "index": 145,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 6.5,
+      "elapsed_s": 0.533063,
+      "valid_points": 153,
+      "total_points": 2000,
+      "points_per_s": 3751.905
+    },
+    {
+      "index": 146,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 7.0,
+      "elapsed_s": 0.522157,
+      "valid_points": 152,
+      "total_points": 2000,
+      "points_per_s": 3830.265
+    },
+    {
+      "index": 147,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 7.5,
+      "elapsed_s": 0.524334,
+      "valid_points": 153,
+      "total_points": 2000,
+      "points_per_s": 3814.361
+    },
+    {
+      "index": 148,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 8.0,
+      "elapsed_s": 0.524191,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3815.404
+    },
+    {
+      "index": 149,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 8.5,
+      "elapsed_s": 0.521604,
+      "valid_points": 151,
+      "total_points": 2000,
+      "points_per_s": 3834.324
+    },
+    {
+      "index": 150,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 9.0,
+      "elapsed_s": 0.520765,
+      "valid_points": 151,
+      "total_points": 2000,
+      "points_per_s": 3840.503
+    },
+    {
+      "index": 151,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 9.5,
+      "elapsed_s": 0.521478,
+      "valid_points": 151,
+      "total_points": 2000,
+      "points_per_s": 3835.252
+    },
+    {
+      "index": 152,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 10.0,
+      "elapsed_s": 0.521056,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3838.356
+    },
+    {
+      "index": 153,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 10.5,
+      "elapsed_s": 0.52225,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3829.583
+    },
+    {
+      "index": 154,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 11.0,
+      "elapsed_s": 0.521694,
+      "valid_points": 150,
+      "total_points": 2000,
+      "points_per_s": 3833.663
+    },
+    {
+      "index": 155,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 11.5,
+      "elapsed_s": 0.52451,
+      "valid_points": 147,
+      "total_points": 2000,
+      "points_per_s": 3813.081
+    },
+    {
+      "index": 156,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 12.0,
+      "elapsed_s": 0.513746,
+      "valid_points": 146,
+      "total_points": 2000,
+      "points_per_s": 3892.977
+    },
+    {
+      "index": 157,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 12.5,
+      "elapsed_s": 0.542795,
+      "valid_points": 145,
+      "total_points": 2000,
+      "points_per_s": 3684.633
+    },
+    {
+      "index": 158,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 13.0,
+      "elapsed_s": 0.526178,
+      "valid_points": 145,
+      "total_points": 2000,
+      "points_per_s": 3800.996
+    },
+    {
+      "index": 159,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 13.5,
+      "elapsed_s": 0.521431,
+      "valid_points": 144,
+      "total_points": 2000,
+      "points_per_s": 3835.597
+    },
+    {
+      "index": 160,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 14.0,
+      "elapsed_s": 0.519072,
+      "valid_points": 145,
+      "total_points": 2000,
+      "points_per_s": 3853.03
+    },
+    {
+      "index": 161,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 14.5,
+      "elapsed_s": 0.529551,
+      "valid_points": 145,
+      "total_points": 2000,
+      "points_per_s": 3776.785
+    },
+    {
+      "index": 162,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 15.0,
+      "elapsed_s": 0.522309,
+      "valid_points": 142,
+      "total_points": 2000,
+      "points_per_s": 3829.151
+    },
+    {
+      "index": 163,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 15.5,
+      "elapsed_s": 0.515504,
+      "valid_points": 140,
+      "total_points": 2000,
+      "points_per_s": 3879.702
+    },
+    {
+      "index": 164,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 16.0,
+      "elapsed_s": 0.517149,
+      "valid_points": 140,
+      "total_points": 2000,
+      "points_per_s": 3867.356
+    },
+    {
+      "index": 165,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 16.5,
+      "elapsed_s": 0.516254,
+      "valid_points": 138,
+      "total_points": 2000,
+      "points_per_s": 3874.064
+    },
+    {
+      "index": 166,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 17.0,
+      "elapsed_s": 0.516403,
+      "valid_points": 139,
+      "total_points": 2000,
+      "points_per_s": 3872.944
+    },
+    {
+      "index": 167,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 17.5,
+      "elapsed_s": 0.516708,
+      "valid_points": 138,
+      "total_points": 2000,
+      "points_per_s": 3870.659
+    },
+    {
+      "index": 168,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 18.0,
+      "elapsed_s": 0.518241,
+      "valid_points": 139,
+      "total_points": 2000,
+      "points_per_s": 3859.206
+    },
+    {
+      "index": 169,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 18.5,
+      "elapsed_s": 0.51899,
+      "valid_points": 138,
+      "total_points": 2000,
+      "points_per_s": 3853.639
+    },
+    {
+      "index": 170,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 19.0,
+      "elapsed_s": 0.514828,
+      "valid_points": 137,
+      "total_points": 2000,
+      "points_per_s": 3884.792
+    },
+    {
+      "index": 171,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 19.5,
+      "elapsed_s": 0.517923,
+      "valid_points": 140,
+      "total_points": 2000,
+      "points_per_s": 3861.576
+    },
+    {
+      "index": 172,
+      "window": "kaiser",
+      "filter_type": "bandstop",
+      "kaiser_beta": 20.0,
+      "elapsed_s": 0.514975,
+      "valid_points": 135,
+      "total_points": 2000,
+      "points_per_s": 3883.684
+    },
+    {
+      "index": 173,
+      "window": "blackmanharris",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 2.817165,
+      "valid_points": 1284,
+      "total_points": 4000,
+      "points_per_s": 1419.867
+    },
+    {
+      "index": 174,
+      "window": "blackmanharris",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 3.568936,
+      "valid_points": 1828,
+      "total_points": 2000,
+      "points_per_s": 560.391
+    },
+    {
+      "index": 175,
+      "window": "blackmanharris",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 6.033852,
+      "valid_points": 3397,
+      "total_points": 4000,
+      "points_per_s": 662.926
+    },
+    {
+      "index": 176,
+      "window": "blackmanharris",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.602606,
+      "valid_points": 148,
+      "total_points": 2000,
+      "points_per_s": 3318.916
+    },
+    {
+      "index": 177,
+      "window": "boxcar",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 1.77448,
+      "valid_points": 1045,
+      "total_points": 4000,
+      "points_per_s": 2254.181
+    },
+    {
+      "index": 178,
+      "window": "boxcar",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 2.492168,
+      "valid_points": 1933,
+      "total_points": 2000,
+      "points_per_s": 802.514
+    },
+    {
+      "index": 179,
+      "window": "boxcar",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 4.82705,
+      "valid_points": 3846,
+      "total_points": 4000,
+      "points_per_s": 828.663
+    },
+    {
+      "index": 180,
+      "window": "boxcar",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.703557,
+      "valid_points": 181,
+      "total_points": 2000,
+      "points_per_s": 2842.696
+    },
+    {
+      "index": 181,
+      "window": "bartlett",
+      "filter_type": "lowpass",
+      "kaiser_beta": null,
+      "elapsed_s": 2.713723,
+      "valid_points": 1108,
+      "total_points": 4000,
+      "points_per_s": 1473.99
+    },
+    {
+      "index": 182,
+      "window": "bartlett",
+      "filter_type": "highpass",
+      "kaiser_beta": null,
+      "elapsed_s": 2.615567,
+      "valid_points": 1875,
+      "total_points": 2000,
+      "points_per_s": 764.653
+    },
+    {
+      "index": 183,
+      "window": "bartlett",
+      "filter_type": "bandpass",
+      "kaiser_beta": null,
+      "elapsed_s": 5.063425,
+      "valid_points": 3616,
+      "total_points": 4000,
+      "points_per_s": 789.979
+    },
+    {
+      "index": 184,
+      "window": "bartlett",
+      "filter_type": "bandstop",
+      "kaiser_beta": null,
+      "elapsed_s": 0.501615,
+      "valid_points": 142,
+      "total_points": 2000,
+      "points_per_s": 3987.118
+    }
+  ]
+}

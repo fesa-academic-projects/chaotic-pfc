@@ -121,8 +121,9 @@ optional Numba dependency:
     ├── stats.py                          →  comparison, ranking, correlation
     └── sweep_plotting.py                 →  classification figures (SVG + PNG)
 
-Every hot loop is Numba-JIT compiled. The outer loop is a single
-``prange`` where tasks are **interleaved** (not chunked) via the
+The sweep hot loop is Numba-JIT compiled. The standalone map and Lyapunov
+helpers are NumPy/Python. The outer loop is a single ``prange`` where tasks
+are **interleaved** (not chunked) via the
 permuted task order, balancing thread load across the heterogeneous
 (high-cutoff = many-tap = slow, low-cutoff = few-tap = fast) grid
 points.
@@ -134,8 +135,14 @@ Key design decisions
 correctly without Numba installed. All JIT-compiled kernels fall back
 to pure Python via ``chaotic_pfc._compat``: a thin compatibility
 layer that no-ops ``njit``, aliases ``prange`` to ``range``, and
-returns ``1`` for ``get_num_threads()``. Install the ``[fast]`` extra
-for 20–50× speedup on the sweep.
+returns ``1`` for ``get_num_threads()``. Install the ``[fast]`` extra for
+the measured sweep speedup. On ``mini_sweep_30_points``, pure Python is
+53.3x slower than Numba with one thread. The parallel factor comes from the
+canonical lowpass Hamming 4,000-point sweep: eight threads are 3.58x faster
+than one thread on the four physical cores of the i7-8550U. The 30-point
+load is dominated by fixed thread overhead and is not used for the parallel
+factor. The other benchmarked loads are NumPy/Python or SciPy-bound and stay
+close to 1x. See ``benchmarks/baseline/pfc_bench_i7_8550u.json``.
 
 **Deterministic reproducibility.** Perturbation vectors are
 pre-generated on the Python side using ``default_rng(seed)`` and passed as

@@ -33,31 +33,48 @@ from pathlib import Path
 #   exige?  = "tem" (o alvo precisa aparecer) ou "nao_tem"
 #   onde    = "bruto" (texto com espaços, como o gs escreve) ou "sem" (sem espaços)
 CHECAGENS = [
-    ("8.1.1.2",  "quatro autores: todos indicados na lista",      "tem",     "CHATTERJEE,Kiron;MARTIN,Adam;DAVIS,Adrian", "sem"),
-    ("10520",    "citação continua com et al.",                    "tem",     "Clarketal.",                                 "sem"),
-    ("7.7.6",    "DOI como endereço completo",                     "tem",     "DOI:https://doi.org/",                       "sem"),
-    ("7.7.6",    "DOI não sai na forma curta",                     "nao_tem", "DOI:10.",                                    "sem"),
-    ("8.4.4",    "[S. l.] com espaço (forma da norma)",            "tem",     "[S. l.]",                                    "bruto"),
-    ("8.4",      "local real preservado (Belo Horizonte)",         "tem",     "BeloHorizonte",                              "sem"),
-    ("8.4",      "local real preservado (London)",                 "tem",     "London",                                     "sem"),
-    ("8.6.1.4",  "intervalo de páginas com hífen",                 "tem",     "p.302-314",                                  "sem"),
-    ("8.6.1.4",  "intervalo de anos com hífen",                    "tem",     "2018-2022",                                  "sem"),
-    ("8.6.1.4",  "sem travessão de intervalo",                     "nao_tem", "\u2013",                                     "bruto"),
-    ("7.7.6",    "número de artigo (eid) sem o p.",                "tem",     "e39114141",                                  "sem"),
-    ("7.7.6",    "número de artigo não sai como página",           "nao_tem", "p.e39114141",                                "sem"),
-    ("8.13",     "url diferente do DOI continua impressa",         "tem",     "tandfonline.com",                            "sem"),
+    (
+        "8.1.1.2",
+        "quatro autores: todos indicados na lista",
+        "tem",
+        "CHATTERJEE,Kiron;MARTIN,Adam;DAVIS,Adrian",
+        "sem",
+    ),
+    ("10520", "citação continua com et al.", "tem", "Clarketal.", "sem"),
+    ("7.7.6", "DOI como endereço completo", "tem", "DOI:https://doi.org/", "sem"),
+    ("7.7.6", "DOI não sai na forma curta", "nao_tem", "DOI:10.", "sem"),
+    ("8.4.4", "[S. l.] com espaço (forma da norma)", "tem", "[S. l.]", "bruto"),
+    ("8.4", "local real preservado (Belo Horizonte)", "tem", "BeloHorizonte", "sem"),
+    ("8.4", "local real preservado (London)", "tem", "London", "sem"),
+    ("8.6.1.4", "intervalo de páginas com hífen", "tem", "p.302-314", "sem"),
+    ("8.6.1.4", "intervalo de anos com hífen", "tem", "2018-2022", "sem"),
+    ("8.6.1.4", "sem travessão de intervalo", "nao_tem", "\u2013", "bruto"),
+    ("7.7.6", "número de artigo (eid) sem o p.", "tem", "e39114141", "sem"),
+    ("7.7.6", "número de artigo não sai como página", "nao_tem", "p.e39114141", "sem"),
+    ("8.13", "url diferente do DOI continua impressa", "tem", "tandfonline.com", "sem"),
 ]
 
 # A contagem de "sine loco" é conferida à parte: o gs às vezes come o espaço
 # depois do ponto ("[S.l.]"), então o teste do espaço vale para o texto bruto e
 # a contagem para o texto sem espaços.
-SINELOCO_ESPERADO = 3   # ACHEAMPONG e CLARK (literal no .bib) + GRI (sem local)
+SINELOCO_ESPERADO = 3  # ACHEAMPONG e CLARK (literal no .bib) + GRI (sem local)
 
 
 def texto_do_pdf(pdf: Path, gs: str) -> str:
-    r = subprocess.run(
-        [gs, "-q", "-dNOSAFER", "-dNOPAUSE", "-dBATCH", "-sDEVICE=txtwrite", "-sOutputFile=-", str(pdf)],
-        capture_output=True, text=True,
+    """Extrai o texto de *pdf* com Ghostscript."""
+    r = subprocess.run(  # noqa: S603
+        [
+            gs,
+            "-q",
+            "-dNOSAFER",
+            "-dNOPAUSE",
+            "-dBATCH",
+            "-sDEVICE=txtwrite",
+            "-sOutputFile=-",
+            str(pdf),
+        ],
+        capture_output=True,
+        text=True,
     )
     if r.returncode != 0 or not r.stdout.strip():
         print(f"ERRO: não consegui extrair o texto de {pdf} com o Ghostscript")
@@ -67,7 +84,10 @@ def texto_do_pdf(pdf: Path, gs: str) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    """Executa as checagens da norma e devolve o código de saída."""
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--pdf", default="teste_abnt2025.pdf", help="PDF do documento de teste")
     ap.add_argument("--log", default=None, help=".log do XeLaTeX (padrão: mesmo nome do PDF)")
     ap.add_argument("--gs", default="gs", help="executável do Ghostscript")
@@ -99,7 +119,9 @@ def main(argv: list[str] | None = None) -> int:
             print("ERRO: o .log não diz qual abnt.bbx foi carregado")
             falhas += 1
         elif not vendorizado:
-            print(f"ERRO: o estilo vendorizado em biblatex-abnt/ NÃO foi usado (log: {caminhos[0]})")
+            print(
+                f"ERRO: o estilo vendorizado em biblatex-abnt/ NÃO foi usado (log: {caminhos[0]})"
+            )
             falhas += 1
         else:
             print(f"estilo: vendorizado ({vendorizado[0]})")
@@ -111,14 +133,18 @@ def main(argv: list[str] | None = None) -> int:
         if not ok:
             falhas += 1
         verbo = "tem" if exige == "tem" else "não tem"
-        print(f"  [{'ok ' if ok else 'FALHA'}] {clausula:8s} {descricao} (esperado {verbo}: {alvo!r})")
+        print(
+            f"  [{'ok ' if ok else 'FALHA'}] {clausula:8s} {descricao} (esperado {verbo}: {alvo!r})"
+        )
 
     quantos = sem_espaco.count("[S.l.]")
     ok = quantos == SINELOCO_ESPERADO
     if not ok:
         falhas += 1
-    print(f"  [{'ok ' if ok else 'FALHA'}] 8.4.4    sine loco nas 3 referências sem local "
-          f"(esperado {SINELOCO_ESPERADO}, achou {quantos})")
+    print(
+        f"  [{'ok ' if ok else 'FALHA'}] 8.4.4    sine loco nas 3 referências sem local "
+        f"(esperado {SINELOCO_ESPERADO}, achou {quantos})"
+    )
 
     if falhas:
         print(f"\nRESULTADO: {falhas} item(ns) fora da NBR 6023:2025 (veja acima).")

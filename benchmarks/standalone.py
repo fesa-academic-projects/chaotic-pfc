@@ -4,8 +4,12 @@
 Usage:  python benchmarks/standalone.py
 
 All benchmarks run with Numba JIT acceleration when available
-(``pip install -e '.[fast]'``). Without Numba, the same code
-runs in pure Python — correct but ~80-100x slower.
+(``pip install -e '.[fast]'``). Only the sweep kernel is JIT-compiled;
+the map and Lyapunov helpers are NumPy/Python. The measured JIT factor is
+53.3x on the mini sweep with one thread. The parallel factor is 3.58x on
+the canonical lowpass Hamming 4,000-point sweep with eight threads on four
+physical cores; the 30-point load is dominated by fixed overhead. See
+``benchmarks/baseline/pfc_bench_i7_8550u.json``.
 """
 
 import time
