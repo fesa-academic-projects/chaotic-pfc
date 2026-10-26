@@ -1,0 +1,140 @@
+{
+  "sources": {
+    "validacao": {
+      "source": "JCIS, subseção de validação, e reprodução no pacote",
+      "values": [
+        0.4192,
+        0.4185,
+        0.4194,
+        0.18,
+        0.21,
+        0.03,
+        5.4
+      ]
+    },
+    "desempenho": {
+      "source": "benchmarks/baseline/pfc_bench_i7_8550u.json e sweeps_184_i7_8550u.json",
+      "values": [
+        53.3,
+        3.58,
+        11.24,
+        3.14,
+        575,
+        9.59,
+        1.0,
+        8,
+        4,
+        5,
+        3,
+        4000
+      ]
+    },
+    "comunicacao": {
+      "source": "JCIS, antiga Seção II-E, reproduzida pelo pacote",
+      "values": [
+        0.4324,
+        831,
+        1.9,
+        8.7,
+        0.0786,
+        201,
+        100,
+        1000000,
+        0.01,
+        20,
+        9,
+        8,
+        0.52,
+        0.99,
+        0.5
+      ]
+    },
+    "mapas": {
+      "source": "JCIS, Tabela II e mapas de classificação",
+      "values": [
+        654,
+        102,
+        310,
+        118,
+        16.4,
+        5.1,
+        7.8,
+        5.9,
+        17,
+        15.5,
+        4,
+        7,
+        40,
+        20,
+        0.5,
+        184,
+        552000
+      ]
+    },
+    "testes": {
+      "source": "execução local de make check-all e make check-paper",
+      "values": [
+        1482,
+        4,
+        18,
+        0,
+        10
+      ]
+    },
+    "equipamento": {
+      "source": "ficha do ambiente de medição (CPU, RAM e versões)",
+      "values": [
+        8550,
+        31.1,
+        1.18
+      ]
+    },
+    "endereco": {
+      "source": "endereço institucional no rodapé de autoria",
+      "values": [
+        4001
+      ]
+    },
+    "estimador": {
+      "source": "JCIS, parâmetros do estimador",
+      "values": [
+        500
+      ]
+    }
+  },
+  "citation_years": [
+    1976,
+    1980,
+    1985,
+    1990,
+    1993,
+    1996,
+    2003,
+    2009,
+    2015,
+    2016,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2026,
+    1978,
+    2017
+  ],
+  "structural": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    106
+  ]
+}

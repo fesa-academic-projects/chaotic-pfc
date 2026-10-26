@@ -1,4 +1,4 @@
-.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper regen-sweeps jcis-figures pfc-pdf paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
+.PHONY: help setup install test test-fast lint format format-check typecheck check-all check-paper regen-sweeps jcis-figures pfc-pdf pfc-check paper-pdf paper-pdf-build paper-pdf-local paper-diff docs docs-strict docs-i18n-check docs-pt docs-all docs-pdf docs-pdf-pt docs-epub docs-epub-pt benchmark clean pre-commit check-venv notebook
 
 # The test and tooling targets run inside the project virtualenv, where the
 # package and its dev dependencies (pytest, ruff, mypy, numba, …) live.
@@ -92,9 +92,28 @@ PAPER_EPOCH = $(if $(PAPER_EPOCH_FROM_SOURCES),$(PAPER_EPOCH_FROM_SOURCES),$(if 
 PFC_DIR ?= articles/pfc
 PFC_TEX ?= artigo.tex
 PFC_LATEXMK ?= latexmk
+PFC_BUILD ?= build/pfc
+PFC_SWEEPS ?= data/sweeps
+PFC_NUMBERS ?= $(PFC_BUILD)/pfc_numbers.json
+PFC_PDF ?= $(PFC_DIR)/artigo.pdf
+PFC_NEW_NUMBERS ?= $(PFC_DIR)/new_numbers.json
+PFC_CHECK_NUMBERS ?= $(PFC_DIR)/tools/check_pfc_numbers.py
+PFC_CHECK_DIAGRAMS ?= $(PFC_DIR)/tools/check_pfc_diagrams.py
+PFC_SOURCES = $(PFC_DIR)/$(PFC_TEX) $(PFC_DIR)/referencias.bib $(PFC_DIR)/figures
+# Freeze the PDF timestamp at the last source commit, as the JCIS target does.
+PFC_SOURCE_DATE_EPOCH := $(SOURCE_DATE_EPOCH)
+PFC_EPOCH ?= $(if $(PFC_SOURCE_DATE_EPOCH),$(PFC_SOURCE_DATE_EPOCH),$(if $(PAPER_GIT),$(shell $(PAPER_GIT) -C $(CURDIR) log -1 --format=%at --diff-filter=CMT -- $(PFC_SOURCES) 2>/dev/null)))
 
+pfc-pdf: export SOURCE_DATE_EPOCH = $(PFC_EPOCH)
+pfc-pdf: export FORCE_SOURCE_DATE = 1
 pfc-pdf:  ## Build the PFC article with XeLaTeX and biber
 	cd $(PFC_DIR) && $(PFC_LATEXMK) -pdfxe -interaction=nonstopmode -halt-on-error $(PFC_TEX)
+
+pfc-check: check-venv  ## Recompute and check the PFC numbers and diagrams
+	mkdir -p $(PFC_BUILD)
+	$(PYTHON) -m chaotic_pfc paper numbers --sweeps $(PFC_SWEEPS) --json $(PFC_NUMBERS)
+	$(PYTHON) $(PFC_CHECK_NUMBERS) --pdf $(PFC_PDF) --numbers $(PFC_NUMBERS) --new $(PFC_NEW_NUMBERS)
+	$(PYTHON) $(PFC_CHECK_DIAGRAMS)
 
 check-paper: check-venv  ## Audit the JCIS manuscript sources against the repository
 	$(PYTHON) -m chaotic_pfc paper audit --tex $(PAPER_TEX) --bib $(PAPER_BIB) --figures $(PAPER_DIR)/Figures --all-figures --sweeps data/sweeps

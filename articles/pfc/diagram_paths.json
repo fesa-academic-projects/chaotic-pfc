@@ -1,0 +1,64 @@
+{
+  "diagrams": [
+    {
+      "label": "fig:comm_pfc",
+      "blocks": [
+        {"name": "text_message", "path": "src/chaotic_pfc/dynamics/signals.py", "symbol": "def text_message("},
+        {"name": "transmit", "path": "src/chaotic_pfc/comms/transmitter.py", "symbol": "def transmit("},
+        {"name": "ideal_channel", "path": "src/chaotic_pfc/comms/channel.py", "symbol": "def ideal_channel("},
+        {"name": "fir_channel", "path": "src/chaotic_pfc/comms/channel.py", "symbol": "def fir_channel("},
+        {"name": "receive", "path": "src/chaotic_pfc/comms/receiver.py", "symbol": "def receive("},
+        {"name": "comm_metrics", "path": "src/chaotic_pfc/comms/metrics.py", "symbol": "def comm_metrics("},
+        {"name": "config", "path": "src/chaotic_pfc/config.py", "symbol": "class CommConfig"}
+      ]
+    },
+    {
+      "label": "fig:estimador_pfc",
+      "blocks": [
+        {"name": "_sample_ics", "path": "src/chaotic_pfc/dynamics/lyapunov.py", "symbol": "def _sample_ics("},
+        {"name": "_burn_in_n12", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _burn_in_n12("},
+        {"name": "_burn_in_nN", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _burn_in_nN("},
+        {"name": "_lyap_online_core", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _lyap_online_core("},
+        {"name": "_adaptive_checkpoint", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _adaptive_checkpoint("},
+        {"name": "_samples_summary", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _samples_summary("},
+        {"name": "classify", "path": "src/chaotic_pfc/analysis/sweep_plotting/_common.py", "symbol": "def classify("},
+        {"name": "threshold", "path": "src/chaotic_pfc/analysis/sweep/_types.py", "symbol": "LAMBDA_CHAOS_THRESHOLD"}
+      ]
+    },
+    {
+      "label": "fig:arquitetura_pfc",
+      "blocks": [
+        {"name": "config.py", "path": "src/chaotic_pfc/config.py"},
+        {"name": "run_all.py", "path": "src/chaotic_pfc/cli/run_all.py"},
+        {"name": "run_sweep", "path": "src/chaotic_pfc/analysis/sweep/_orchestration.py", "symbol": "def run_sweep("},
+        {"name": "_sweep_kernel", "path": "src/chaotic_pfc/analysis/sweep/_kernel.py", "symbol": "def _sweep_kernel("},
+        {"name": "save_sweep", "path": "src/chaotic_pfc/analysis/sweep/_io.py", "symbol": "def save_sweep("},
+        {"name": "load_sweep", "path": "src/chaotic_pfc/analysis/sweep/_io.py", "symbol": "def load_sweep("},
+        {"name": "stats", "path": "src/chaotic_pfc/analysis/stats"},
+        {"name": "compute", "path": "src/chaotic_pfc/paper/numbers.py", "symbol": "def compute("},
+        {"name": "figures", "path": "src/chaotic_pfc/paper/figures.py", "symbol": "def fig_classification("},
+        {"name": "audit", "path": "src/chaotic_pfc/paper/audit.py", "symbol": "def run_checks("},
+        {"name": "check_pfc_numbers", "path": "articles/pfc/tools/check_pfc_numbers.py"},
+        {"name": "check_pfc_diagrams", "path": "articles/pfc/tools/check_pfc_diagrams.py"},
+        {"name": "artigo.tex", "path": "articles/pfc/artigo.tex"}
+      ]
+    },
+    {
+      "label": "fig:ci_pfc",
+      "blocks": [
+        {"name": "lint", "path": ".github/workflows/ci.yml", "symbol": "  lint:"},
+        {"name": "typecheck", "path": ".github/workflows/ci.yml", "symbol": "  typecheck:"},
+        {"name": "test", "path": ".github/workflows/ci.yml", "symbol": "  test:"},
+        {"name": "contract", "path": ".github/workflows/ci.yml", "symbol": "  contract:"},
+        {"name": "runtime-warnings", "path": ".github/workflows/ci.yml", "symbol": "  runtime-warnings:"},
+        {"name": "baseline", "path": ".github/workflows/ci.yml", "symbol": "  baseline:"},
+        {"name": "paper-check", "path": ".github/workflows/ci.yml", "symbol": "  paper-check:"},
+        {"name": "paper-pdf", "path": ".github/workflows/ci.yml", "symbol": "  paper-pdf:"},
+        {"name": "security", "path": ".semgrep/chaotic-pfc.yml"},
+        {"name": "security", "path": "requirements-lock.txt"},
+        {"name": "security", "path": ".github/workflows/codeql.yml"},
+        {"name": "security", "path": ".github/dependabot.yml"}
+      ]
+    }
+  ]
+}
