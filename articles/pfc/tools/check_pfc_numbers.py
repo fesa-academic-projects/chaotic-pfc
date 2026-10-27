@@ -44,6 +44,18 @@ def _pdf_text(pdf: Path) -> str:
 def _normalize(text: str) -> str:
     cut = re.split(r"\n\s*REFER[ÊE]NCIAS\s*\n", text, maxsplit=1, flags=re.IGNORECASE)
     text = cut[0]
+    # The English abstract repeats the resumo with English formatting, where a
+    # comma marks thousands (552,000). The comma-to-dot rule below would read
+    # that as 552.000 = 552 and report a false mismatch. The same numbers are
+    # checked in the Portuguese resumo and in the body, so the translated
+    # abstract is skipped.
+    text = re.sub(
+        r"\n\s*Abstract\s*\n.*?\n\s*Keywords:[^\n]*\n",
+        "\n",
+        text,
+        count=1,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
     kept: list[str] = []
     for line in text.splitlines():
         if not line.strip():
