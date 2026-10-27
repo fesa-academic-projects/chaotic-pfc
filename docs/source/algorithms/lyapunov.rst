@@ -41,15 +41,18 @@ Gram-Schmidt  (MGS)**) approach to Lyapunov spectra.  The MGS variant is
 more stable numerically than classical Gram-Schmidt, especially when
 the tangent vectors become nearly parallel after many iterations.
 
-The **production sweeps do not use the full MGS**, though: to keep the cost
-:math:`\mathcal{O}(K)` per iteration instead of :math:`\mathcal{O}(K^3)`, the
-sweep kernel propagates a **single tangent vector**, multiplied by the Jacobian
-at each step and renormalised once every **ten** iterations (a period that
-follows the established practice of Benettin *et al.*).  The full-spectrum MGS
-above is used by the validation wrappers and, in the sweep, to recompute the
-*marginal* cells (:math:`|\lambda - \theta| < 5\times10^{-3}`, with
+The **production sweeps do not use the full MGS at every iteration**, though:
+to keep the cost :math:`\mathcal{O}(K)` per iteration instead of
+:math:`\mathcal{O}(K^3)`, the sweep kernel propagates a **single tangent
+vector**, multiplied by the Jacobian at each step and renormalised once every
+**ten** iterations (a period that follows the established practice of Benettin
+*et al.*).  The validation wrappers apply the full MGS at every iteration, at
+:math:`\mathcal{O}(K^3)` per iteration.  The sweep reuses that MGS only when it
+recomputes a *marginal* cell (:math:`|\lambda - \theta| < 5\times10^{-3}`, with
 :math:`\theta = 5\times10^{-3}`) whose class the single-vector estimate cannot
-settle confidently (``fallback_mode=1``).
+settle confidently (``fallback_mode=1``), and it re-orthonormalises every ten
+iterations there, at :math:`\mathcal{O}(K^2 + K^3/10)` amortised per
+iteration.
 
 Wolf et al. method
 ------------------

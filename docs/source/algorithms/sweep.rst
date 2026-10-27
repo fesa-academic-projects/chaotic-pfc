@@ -39,9 +39,12 @@ The sweep uses a **hybrid estimator**: the default single-vector path
 (described below) runs at :math:`O(N_s)` per iteration; cells whose
 :math:`\lambda_{\max}` is close to the classification threshold
 :math:`\theta = 5 \times 10^{-3}` (:math:`|\lambda - \theta| < 5 \times 10^{-3}`)
-are transparently recomputed with the full spectrum at :math:`O(N_s^2)` per
-iteration.  This eliminates classification flips near the chaotic/periodic
-transition while keeping the common-case cost low.
+are transparently recomputed with the full spectrum.  The full-spectrum path
+costs :math:`O(N_s^2)` per iteration for the Jacobian-vector products plus an
+MGS re-orthonormalisation of :math:`O(N_s^3)` every :math:`K=10` iterations,
+that is, :math:`O(N_s^2 + N_s^3/K)` amortised per iteration.  This eliminates
+classification flips near the chaotic/periodic transition while keeping the
+common-case cost low.
 
 The total cost therefore depends on the fraction :math:`f` of marginal cells:
 
@@ -49,7 +52,7 @@ The total cost therefore depends on the fraction :math:`f` of marginal cells:
 
    \text{cost} \approx N_{\text{orders}} \times N_{\text{cutoffs}}
    \times N_{\text{CI}} \times N_{\text{itera}}
-   \times \left[ O(N_s) + f \cdot O(N_s^2) \right]
+   \times \left[ O(N_s) + f \cdot O(N_s^2 + N_s^3/K) \right]
 
 Parallel architecture
 ---------------------
@@ -145,7 +148,8 @@ The first column of the tangent matrix is **independent** of all other
 columns in the MGS factorisation.  Under exact arithmetic, column 0 can
 be evolved and normalised in isolation, and its growth rate is exactly
 the largest Lyapunov exponent.  The per-iteration cost drops from
-:math:`O(N_s^2)` (full-spectrum J@W + MGS) to :math:`O(N_s)`.
+:math:`O(N_s^2 + N_s^3/K)` amortised (full-spectrum J@W plus block MGS)
+to :math:`O(N_s)`.
 
 The :math:`_v` kernel variants (``_lyap_online_core_v``,
 ``_propagate_v_n12``, ``_propagate_v_nN``) implement exactly this
