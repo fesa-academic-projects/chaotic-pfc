@@ -127,6 +127,16 @@ Security layers, in order of defence
     ``gitleaks``, SBOM, provenance).
 11. **Guard the repository** (pre-commit hooks and importable rulesets).
 
+Advisory dependency audits
+--------------------------
+
+``pip-audit`` and Dependabot run and report, but they are not required status
+checks. A vulnerability can be disclosed in a dependency after a change is
+opened, without any relation to that change; making the audit blocking would
+stop unrelated work. The audit output remains visible for triage, while the
+required checks cover the code, the data and the manuscript that the change
+actually touches.
+
 Non-goals
 ---------
 

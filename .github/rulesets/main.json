@@ -77,7 +77,16 @@
             "context": "Static analysis (Semgrep)"
           },
           {
+            "context": "Secret scan (gitleaks)"
+          },
+          {
+            "context": "Workflow audit (zizmor)"
+          },
+          {
             "context": "Manuscript audit (check-paper)"
+          },
+          {
+            "context": "Manuscript PDF reproducibility"
           },
           {
             "context": "Compile every exported table"
