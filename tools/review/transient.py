@@ -14,11 +14,11 @@ from long_horizon import HORIZONS, _build, _lambda_at, _post_burn_in, _rel_for
 from repro import max_difference, reproduce_cell
 
 from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep
-from chaotic_pfc.paper.numbers import candidates, load_all
+from chaotic_pfc.paper.numbers import REVIEW_N_LOWPASS, candidates, load_all
 
 SEED = 42
 N_PER_TYPE = 100
-N_LOWPASS = 30
+N_LOWPASS = REVIEW_N_LOWPASS
 
 
 def _classify(value: float) -> str:

@@ -20,8 +20,9 @@ import transient
 from long_horizon import _build, _lambda_at, _post_burn_in
 
 from chaotic_pfc.analysis.sweep import load_sweep
+from chaotic_pfc.paper.numbers import REVIEW_N_PER_TYPE
 
-N_PER_TYPE = 400
+N_PER_TYPE = REVIEW_N_PER_TYPE
 SEED = 42
 HORIZON = 300_000
 

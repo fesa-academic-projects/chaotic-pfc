@@ -14,6 +14,7 @@ is omitted, so two runs produce identical files.
 from __future__ import annotations
 
 import argparse
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -21,6 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import firwin
 
+from chaotic_pfc._rounding import round_decimal
 from chaotic_pfc.analysis.stats._common import pct as pct
 from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep, run_sweep
 from chaotic_pfc.analysis.sweep_plotting import (
@@ -38,6 +40,22 @@ from chaotic_pfc.dynamics.spectral import psd_normalised
 from chaotic_pfc.plotting.figures import setup_rc
 
 JCIS_W = 3.50
+
+
+def _fixed(value: float, places: int) -> str:
+    """Format a fixed-point number with the half-up rule of ``paper.numbers``."""
+    return round_decimal(float(value), places)
+
+
+def _sci(value: float, decimals: int) -> str:
+    """Format a number in scientific notation, rounding the mantissa half-up."""
+    number = Decimal(repr(float(value)))
+    if not number.is_finite() or number == 0:
+        return str(number)
+    quantum = Decimal(1).scaleb(number.adjusted() - decimals)
+    return format(number.quantize(quantum, rounding=ROUND_HALF_UP), f".{decimals}e")
+
+
 JCIS_LABEL = 9.0
 JCIS_TICK = 8.0
 JCIS_LEGEND = 7.5
@@ -121,12 +139,14 @@ def fig_henon_signals(out_dir: Path) -> None:
 
     alpha_b, xb1, xb2 = rows["b"]
     print(
-        f"[fig_henon_signals] (b) alpha={alpha_b}: period-2 values x1(98)={xb1[98]:.4f}, "
-        f"x1(99)={xb1[99]:.4f}; x1(96)={xb1[96]:.4f} (same orbit: {np.isclose(xb1[96], xb1[98])})"
+        f"[fig_henon_signals] (b) alpha={alpha_b}: period-2 values "
+        f"x1(98)={_fixed(xb1[98], 4)}, "
+        f"x1(99)={_fixed(xb1[99], 4)}; x1(96)={_fixed(xb1[96], 4)} "
+        f"(same orbit: {np.isclose(xb1[96], xb1[98])})"
     )
     print(
         f"[fig_henon_signals] (b) alpha={alpha_b}: max|dx1| over n in [50, 99] = "
-        f"{np.max(np.abs(xb1[50:] - xb2[50:])):.3e}"
+        f"{_sci(np.max(np.abs(xb1[50:] - xb2[50:])), 3)}"
     )
 
     fig, axes = plt.subplots(2, 1, figsize=(JCIS_W, 4.6), sharex=True)
@@ -201,8 +221,8 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
     )
     lam_loop = float(loop.h[0, 0])
     print(
-        f"[fig_comm_bandlimited] loop-filter lambda_1 = {lam_loop:.3f} "
-        f"({lam_loop:.6f}) for Nz={len(c) - 1}, cutoff={FIR_LOOP_CUTOFF}pi, "
+        f"[fig_comm_bandlimited] loop-filter lambda_1 = {_fixed(lam_loop, 3)} "
+        f"({_fixed(lam_loop, 6)}) for Nz={len(c) - 1}, cutoff={FIR_LOOP_CUTOFF}pi, "
         f"window=hamming, n_initial={CFG.sweep.n_initial}, seed={CFG.seed}"
     )
 
@@ -216,8 +236,8 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
     for label, m_hat in (("a", m_hat_a), ("b", m_hat_b)):
         met = comm_metrics(m, m_hat, transient=tr, bit_period=comm.message_period, delay=delay)
         print(
-            f"[fig_comm_bandlimited] ({label}) BER={met['ber']:.4f} "
-            f"MSE={met['mse']:.4e} (delay={delay}, transient={tr})"
+            f"[fig_comm_bandlimited] ({label}) BER={_fixed(met['ber'], 4)} "
+            f"MSE={_sci(met['mse'], 4)} (delay={delay}, transient={tr})"
         )
     print(
         f"[fig_comm_bandlimited] internal FIR: numtaps={len(c)} (Nz={len(c) - 1}), "
@@ -245,7 +265,7 @@ def fig_comm_bandlimited(out_dir: Path) -> None:
         ax.set_ylim(-3.2, 3.2)
         ax.set_yticks([-3, 0, 3])
         ax.set_title(
-            f"({label}) {descriptions[label]}, BER={bers[label]:.4f}",
+            f"({label}) {descriptions[label]}, BER={_fixed(bers[label], 4)}",
             loc="left",
             fontsize=JCIS_LABEL,
             pad=2,
@@ -322,7 +342,8 @@ def fig_chaotic_density_norm(out_dir: Path) -> None:
         count = round(float(percent[k, j]) * n / 100.0)
         print(
             f"[fig_chaotic_density_norm] max over Nz {parity}: Nz={Nz[k]}, "
-            f"omega_c/pi={cutoff_grid[j]:.4f}, {pct(count, n, 1)}%, k={count} of n={n}"
+            f"omega_c/pi={_fixed(cutoff_grid[j], 4)}, {pct(count, n, 1)}%, "
+            f"k={count} of n={n}"
         )
     fig = plot_chaotic_density_norm(
         DATA_DIR,
@@ -353,7 +374,8 @@ def fig_comm_ideal(out_dir: Path) -> None:
 
     met = comm_metrics(m, m_hat, transient=tr, bit_period=comm.message_period, delay=0)
     print(
-        f"[fig_comm_ideal] MSE(n>{tr})={np.mean((m[tr:] - m_hat[tr:]) ** 2):.4e} BER={met['ber']:.4f}"
+        f"[fig_comm_ideal] MSE(n>{tr})={_sci(np.mean((m[tr:] - m_hat[tr:]) ** 2), 4)} "
+        f"BER={_fixed(met['ber'], 4)}"
     )
 
     def psd(x: Any) -> Any:

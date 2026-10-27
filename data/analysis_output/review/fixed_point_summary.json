@@ -26,5 +26,31 @@
         "nonconverged": 0
       }
     }
+  },
+  "absG_ge_0.1": {
+    "n": 91886,
+    "converged": 28747,
+    "per_filter": {
+      "lowpass": {
+        "n": 36771,
+        "converged": 7606,
+        "share_pct": 20.684778765875283
+      },
+      "highpass": {
+        "n": 14010,
+        "converged": 4739,
+        "share_pct": 33.82583868665239
+      },
+      "bandpass": {
+        "n": 36638,
+        "converged": 16402,
+        "share_pct": 44.76772749604236
+      },
+      "bandstop": {
+        "n": 4467,
+        "converged": 0,
+        "share_pct": 0.0
+      }
+    }
   }
 }

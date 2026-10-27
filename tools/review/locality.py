@@ -26,12 +26,13 @@ from chaotic_pfc.analysis.sweep._kernel import (
     _lyap_online_nN,
 )
 from chaotic_pfc.analysis.sweep._orchestration import _precompute_perturbations
+from chaotic_pfc.paper.numbers import REVIEW_N_POINTS, REVIEW_RANGE
 
 SEED = 42
-N_POINTS = 200
+N_POINTS = REVIEW_N_POINTS
 N_IC = 25
-LOW = -1.5
-HIGH = 1.5
+LOW = -REVIEW_RANGE
+HIGH = REVIEW_RANGE
 
 
 def _simulate(

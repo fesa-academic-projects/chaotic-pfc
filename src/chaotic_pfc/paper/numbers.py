@@ -62,6 +62,26 @@ N_BOOT = 1000
 BOOT_SEED = 42
 CACHE = Path(".cache/paper")
 SEED_LIST = (1, 2, 3, 4, 5, 6, 7, 8, 9, 42)
+# The manuscript cites the radius of the initial-condition sphere used in the
+# reference work (Borges, Silva and Eisencraft, CNSNS 2024), not the half-width
+# of the cube used by this sweep.
+REFERENCE_SPHERE_RADIUS = 0.01
+# Constants of the review scripts cited in the Methodology.
+REVIEW_N_PER_TYPE = 400
+REVIEW_N_POINTS = 200
+REVIEW_N_LOWPASS = 30
+REVIEW_RANGE = 1.5
+N_KAISER_BETAS = 40
+N_SWEEPS = len(TYPES) * (len(FIXED) + N_KAISER_BETAS)
+ODD_SWEEPS = 2 * (len(FIXED) + N_KAISER_BETAS)
+FIXED_CONFIGS = len(TYPES) * len(FIXED)
+KAISER_CONFIGS = len(TYPES) * N_KAISER_BETAS
+TOTAL_POINTS = (
+    (len(TYPES) // 2) * len(FIXED) * 4000
+    + (len(TYPES) // 2) * len(FIXED) * 2000
+    + (len(TYPES) // 2) * N_KAISER_BETAS * 4000
+    + (len(TYPES) // 2) * N_KAISER_BETAS * 2000
+)
 
 
 # ── formatting ──────────────────────────────────────────────────────────────
@@ -166,6 +186,17 @@ def table2_row(row: Any) -> dict[str, Any]:
 
 def section_recalc(recs: Any, out: dict[str, Any]) -> None:
     """Fill the ``RECALC.*`` labels (fallback recomputation)."""
+    out["GRID.n_sweeps"] = str(N_SWEEPS)
+    out["GRID.odd_sweeps"] = str(ODD_SWEEPS)
+    out["GRID.fixed_configs"] = str(FIXED_CONFIGS)
+    out["GRID.kaiser_configs"] = str(KAISER_CONFIGS)
+    out["GRID.kaiser_betas"] = str(N_KAISER_BETAS)
+    out["GRID.total_points"] = str(TOTAL_POINTS)
+    out["REFERENCE.sphere_radius"] = fmt(REFERENCE_SPHERE_RADIUS, 2)
+    out["REVIEW.n_per_type"] = str(REVIEW_N_PER_TYPE)
+    out["REVIEW.n_points"] = str(REVIEW_N_POINTS)
+    out["REVIEW.n_lowpass"] = str(REVIEW_N_LOWPASS)
+    out["REVIEW.range"] = fmt(REVIEW_RANGE, 1)
     total = sum(counts(r)["n"] for r in recs)
     if all("n_fallback" in r.metadata for r in recs):
         fb = sum(int(r.metadata["n_fallback"]) for r in recs)
@@ -209,6 +240,13 @@ def section_table2_table3(recs: Any, out: dict[str, Any]) -> dict[str, Any]:
             out[f"{base}.std"] = t["std"]
             out[f"{base}.ci"] = t["ci"]
         all_rows.extend((ft, row) for row in rows)
+    bs_fixed = fixed_of(recs, "bandstop")
+    other_nc = [
+        counts(bs_fixed[w])["nc"]
+        for w in ("bartlett", "hann", "hamming", "blackman", "blackmanharris")
+    ]
+    out["T2.bandstop.other_Nc_min"] = str(min(other_nc))
+    out["T2.bandstop.other_Nc_max"] = str(max(other_nc))
     ordered = sorted(
         all_rows,
         key=lambda p: (
@@ -311,7 +349,7 @@ def section_maps(best: dict[str, Any], out: dict[str, Any]) -> None:
     nz = np.asarray(lp.num_taps_grid, dtype=np.int64) - 1
     entries, none = [], []
     for i, z in enumerate(nz):
-        mask = h[i] > 0
+        mask = h[i] > LAMBDA_CHAOS_THRESHOLD
         if mask.any():
             entries.append(f"{z}:{fmt(wc[np.flatnonzero(mask).max()], 2)}")
         else:
@@ -428,6 +466,10 @@ def section_concordance(recs: Any, out: dict[str, Any]) -> None:
         out[f"CON.{ft}.pooled_Nz_le10"] = pct(int(agree[le10].sum()), int(le10.sum()), 1)
         out[f"CON.{ft}.pooled_Nz_gt20"] = pct(int(agree[gt20].sum()), int(gt20.sum()), 1)
         if ft == "lowpass":
+            out["CON.lowpass.disagreement_pct_Nz_le10"] = pct(
+                int((~agree[le10]).sum()), int(le10.sum()), 0
+            )
+        if ft == "lowpass":
             agreement_pct = [
                 100.0 * int(agree[i][valid[i]].sum()) / int(valid[i].sum())
                 for i in range(agree.shape[0])
@@ -466,6 +508,13 @@ def section_kaiser(recs: Any, out: dict[str, Any]) -> None:
     out["KAI.lowpass.plateau_10_14"] = span("lowpass", 10.0, 14.0)
     out["KAI.bandpass.plateau_10_14"] = span("bandpass", 10.0, 14.0)
     out["KAI.highpass.plateau_12_14"] = span("highpass", 12.0, 14.0)
+    high_beta = [
+        float(pct(counts(r)["nc"], counts(r)["n"], 1))
+        for beta, r in _kaiser_pairs(recs, "highpass")
+        if beta >= 17.0
+    ]
+    out["KAI.highpass.beta_ge17_min"] = fmt(min(high_beta), 1)
+    out["KAI.highpass.beta_ge17_max"] = fmt(max(high_beta), 1)
     out["KAI.bandstop.all"] = span("bandstop", 0.5, 20.0)
     bandstop_large = [
         Decimal(pct(counts(r)["nc"], counts(r)["n"], 1))
@@ -486,26 +535,39 @@ def _kaiser_pairs(recs: Any, ft: str) -> list[Any]:
     ]
 
 
-def section_attenuation(out: dict[str, Any]) -> None:
-    """Bandstop attenuation at the center of the band for the low-beta points."""
+def _bandstop_attenuation(window: str, beta: float, num_taps: int) -> float:
+    """Attenuation at the centre of a bandstop filter, in dB."""
     from scipy.signal import freqz
 
+    bank, _gains = precompute_fir_bank(
+        np.array([num_taps], dtype=np.int64),
+        np.array([0.5], dtype=np.float64),
+        "bandstop",
+        window,
+        kaiser_beta=beta,
+        bandwidth=BANDWIDTH,
+    )
+    coefficients = np.asarray(bank[0, 0, :num_taps], dtype=np.float64)
+    frequency, response = freqz(coefficients, worN=8192, fs=2.0)
+    magnitude = np.abs(response)
+    index = int(np.argmin(np.abs(frequency - 0.5)))
+    value = magnitude[index] / magnitude[0] if magnitude[0] > 0 else float("nan")
+    return -20.0 * math.log10(value) if value > 0 else float("inf")
+
+
+def section_attenuation(out: dict[str, Any]) -> None:
+    """Bandstop attenuation at the center of the band for the low-beta points."""
     for beta in (0.5, 1.0, 1.5, 2.0):
-        bank, _gains = precompute_fir_bank(
-            np.array([41], dtype=np.int64),
-            np.array([0.5], dtype=np.float64),
-            "bandstop",
-            "kaiser",
-            kaiser_beta=beta,
-            bandwidth=BANDWIDTH,
-        )
-        coefficients = np.asarray(bank[0, 0, :41], dtype=np.float64)
-        frequency, response = freqz(coefficients, worN=8192, fs=2.0)
-        magnitude = np.abs(response)
-        index = int(np.argmin(np.abs(frequency - 0.5)))
-        value = magnitude[index] / magnitude[0] if magnitude[0] > 0 else float("nan")
-        attenuation = -20.0 * math.log10(value) if value > 0 else float("inf")
-        out[f"ATT.bandstop.beta{beta:g}"] = fmt(attenuation, 1)
+        out[f"ATT.bandstop.beta{beta:g}"] = fmt(_bandstop_attenuation("kaiser", beta, 41), 1)
+    out["ATT.bandstop.beta0"] = fmt(_bandstop_attenuation("boxcar", 0.0, 41), 1)
+    nz10 = [_bandstop_attenuation(window, 0.0, 11) for window, _name, _db in FIXED]
+    out["ATT.bandstop.Nz10_min"] = fmt(min(nz10), 2)
+    out["ATT.bandstop.Nz10_max"] = fmt(max(nz10), 2)
+    others = [
+        _bandstop_attenuation(window, 0.0, 41) for window, _name, _db in FIXED if window != "boxcar"
+    ]
+    out["ATT.bandstop.others_max_db"] = fmt(max(others), 1)
+    out["ATT.bandstop.others_bound_db"] = "6.2"
 
 
 def _three_db_width(w: np.ndarray, magnitude: np.ndarray) -> float:
@@ -547,6 +609,21 @@ def section_width_spearman(recs: Any, out: dict[str, Any]) -> None:
     rho, p_value = spearman_exact(np.asarray(per_window), nc)
     out["WIDTH.bandpass.rho"] = fmt(rho, 2)
     out["WIDTH.bandpass.p"] = fmt(p_value, 3)
+    widths = []
+    for window, _name, _db in FIXED:
+        bank, _gains = precompute_fir_bank(
+            np.array([11], dtype=np.int64),
+            np.array([0.5], dtype=np.float64),
+            "bandpass",
+            window,
+            kaiser_beta=13.5,
+            bandwidth=BANDWIDTH,
+        )
+        coefficients = np.asarray(bank[0, 0, :11], dtype=np.float64)
+        frequency, response = freqz(coefficients, worN=8192, fs=2.0)
+        widths.append(_three_db_width(frequency, np.abs(response)))
+    out["WIDTH.bandpass.Nz10_min"] = fmt(min(widths), 2)
+    out["WIDTH.bandpass.Nz10_max"] = fmt(max(widths), 2)
 
 
 def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> None:
@@ -593,6 +670,19 @@ def section_robustness(recs: Any, best: dict[str, Any], out: dict[str, Any]) -> 
     out["ROB.tableII.kept_5e-3"] = f"[{fmt(min(t2_5), 1)}, {fmt(max(t2_5), 1)}]"
 
 
+def section_threshold_sensitivity(best: dict[str, Any], out: dict[str, Any]) -> None:
+    """Reduction/increase of N_c when theta moves away from 5e-3."""
+    for ft in TYPES:
+        h = np.asarray(best[ft][0]["sr"].h, dtype=np.float64)
+        n5 = int(np.count_nonzero(h > LAMBDA_CHAOS_THRESHOLD))
+        n2 = int(np.count_nonzero(h > 1e-2))
+        out[f"ROB.threshold_1e-2.{ft}_drop_pct"] = pct(n5 - n2, n5, 1)
+    h = np.asarray(best["lowpass"][0]["sr"].h, dtype=np.float64)
+    n5 = int(np.count_nonzero(h > LAMBDA_CHAOS_THRESHOLD))
+    n1 = int(np.count_nonzero(h > 1e-3))
+    out["ROB.threshold_1e-3.lowpass_gain_pct"] = pct(n1 - n5, n5, 0)
+
+
 def _wilson_interval(count: int, total: int) -> tuple[float, float]:
     """Wilson score interval used by the long-horizon summary."""
     if total == 0:
@@ -632,8 +722,25 @@ def section_review_metrics(out: dict[str, Any]) -> None:
 
     fixed_point = Path("data/analysis_output/review/fixed_point_summary.json")
     if fixed_point.is_file():
-        data = json.loads(fixed_point.read_text())["absG_lt_0.1"]
+        payload = json.loads(fixed_point.read_text())
+        data = payload["absG_lt_0.1"]
         out["GAIN.nonconverged_absG_lt_0.1"] = str(data["nonconverged"])
+        high_gain = payload.get("absG_ge_0.1")
+        if high_gain:
+            for ft, row in high_gain["per_filter"].items():
+                out[f"GAIN.{ft}.n_absG_ge_0.1"] = str(row["n"])
+                out[f"GAIN.{ft}.converged_absG_ge_0.1"] = str(row["converged"])
+                out[f"GAIN.{ft}.converged_pct_absG_ge_0.1"] = pct(
+                    int(row["converged"]), int(row["n"]), 0
+                )
+
+    locality = Path("data/analysis_output/review/locality_summary.json")
+    if locality.is_file():
+        data = json.loads(locality.read_text())
+        out["LOCALITY.n_points"] = str(data["n_points"])
+        out["LOCALITY.kept_positive"] = str(data["kept_positive_all_horizons"])
+        out["LOCALITY.changed_sign"] = str(data["changed_sign"])
+        out["LOCALITY.median_slope"] = fmt(data["median_slope"], 2)
 
     spectrum = Path("data/analysis_output/review/psd_summary.json")
     if spectrum.is_file():
@@ -671,6 +778,10 @@ def section_cost(recs: Any, out: dict[str, Any]) -> None:
         it = np.asarray(r.n_iters_used, dtype=np.float64)
         total += float(np.nansum(it))
     out["COST.sum_n_iters_used"] = f"{total:.4g}"
+    benchmark = Path("benchmarks/baseline/sweeps_184_i7_8550u.json")
+    if benchmark.is_file():
+        data = json.loads(benchmark.read_text())
+        out["COST.sweeps_184_minutes"] = fmt(data["total_minutes"], 0)
 
 
 # ── DC-gain analysis ────────────────────────────────────────────────────────
@@ -1022,6 +1133,16 @@ def section_phase_b_numbers(recs: Any, out: dict[str, Any]) -> None:
     )
     for low, high, label in bins:
         out[label] = str(int(np.count_nonzero(positive & (all_h > low) & (all_h <= high))))
+    out["POS.positive"] = str(int(np.count_nonzero(positive)))
+    out["POS.marginal_le_1e-3"] = str(
+        int(np.count_nonzero(positive & (all_h > 0.0) & (all_h <= 1e-3)))
+    )
+    upper = [
+        int(np.count_nonzero(positive & (all_h > low) & (all_h <= low + 1e-3)))
+        for low in np.arange(5e-3, 2e-2, 1e-3)
+    ]
+    out["POS.bin_5_20_min"] = str(min(upper))
+    out["POS.bin_5_20_max"] = str(max(upper))
 
     lowpass = next(r for r in recs if r.filter_type == "lowpass" and r.window == "boxcar")
     highpass = next(r for r in recs if r.filter_type == "highpass" and r.window == "boxcar")
@@ -1125,6 +1246,7 @@ def compute(root: Path, extras: bool, args: Any = None) -> dict[str, Any]:
     section_attenuation(out)
     section_width_spearman(recs, out)
     section_robustness(recs, best, out)
+    section_threshold_sensitivity(best, out)
     section_cost(recs, out)
     section_gain(recs, out)
     section_review_metrics(out)

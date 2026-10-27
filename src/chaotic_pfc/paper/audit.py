@@ -809,6 +809,8 @@ def check_tables(tex_text: str) -> CheckResult:
 # config path None means: no constant with an obvious name, emit WARN and say
 # which names were searched. Values come from sub:grid, sub:ensemble, sub:stats.
 CONFIG_EXPECTATIONS: tuple[tuple[str, str, float, tuple[str, ...] | None, tuple[str, ...]], ...] = (
+    ("sub:grid", "Hénon alpha", 1.4, ("comm", "henon", "alpha"), ()),
+    ("sub:grid", "Hénon beta", 0.3, ("comm", "henon", "beta"), ()),
     ("sub:ensemble", "burn-in iterations", 500.0, ("sweep", "Nitera"), ()),
     ("sub:ensemble", "accumulation iterations", 3000.0, ("sweep", "Nmap"), ()),
     ("sub:ensemble", "initial conditions per point", 25.0, ("sweep", "n_initial"), ()),
@@ -827,6 +829,23 @@ CONFIG_EXPECTATIONS: tuple[tuple[str, str, float, tuple[str, ...] | None, tuple[
     # there is no X_max constant to locate and the check is omitted here.
     ("sub:ensemble", "initial-condition cube edge", 0.1, ("lyapunov", "perturbation"), ()),
     ("sub:stats", "bootstrap resamples", 1000.0, ("sweep", "n_bootstrap"), ()),
+)
+
+# Constants that live in ``chaotic_pfc.paper.numbers`` rather than in the
+# experiment config: result-analysis thresholds, review-sample sizes and
+# derived grid counts.
+CONSTANT_EXPECTATIONS: tuple[tuple[str, str, float, str], ...] = (
+    ("sub:grid", "reference sphere radius", 0.01, "REFERENCE_SPHERE_RADIUS"),
+    ("sub:maps", "DC-gain threshold", 0.1, "LOW_GAIN"),
+    ("sub:stats", "long-horizon points per type", 400.0, "REVIEW_N_PER_TYPE"),
+    ("sub:stats", "locality points", 200.0, "REVIEW_N_POINTS"),
+    ("sub:stats", "locality range", 1.5, "REVIEW_RANGE"),
+    ("sub:grid", "number of sweeps", 184.0, "N_SWEEPS"),
+    ("sub:grid", "odd-order sweeps", 92.0, "ODD_SWEEPS"),
+    ("sub:grid", "fixed configurations", 24.0, "FIXED_CONFIGS"),
+    ("sub:grid", "Kaiser configurations", 160.0, "KAISER_CONFIGS"),
+    ("sub:grid", "Kaiser beta values", 40.0, "N_KAISER_BETAS"),
+    ("sub:grid", "total grid points", 552000.0, "TOTAL_POINTS"),
 )
 
 
@@ -873,7 +892,32 @@ def check_config() -> CheckResult:
             )
         else:
             details.append(f"{quantity} ({subsection}): {value} matches the article")
-    coverage = f"located {checked}/{len(CONFIG_EXPECTATIONS)} constants"
+    try:
+        from chaotic_pfc.paper import numbers as numbers_module
+    except Exception as exc:
+        findings.append(Finding("WARN", "C7", f"could not import paper.numbers: {exc}"))
+        numbers_module = None
+    if numbers_module is not None:
+        for subsection, quantity, expected, attribute in CONSTANT_EXPECTATIONS:
+            value = getattr(numbers_module, attribute, None)
+            if value is None:
+                findings.append(
+                    Finding("WARN", "C7", f"{quantity} ({subsection}): {attribute} not found")
+                )
+                continue
+            checked += 1
+            if abs(float(value) - expected) > 1e-12:
+                findings.append(
+                    Finding(
+                        "ERROR",
+                        "C7",
+                        f"{quantity} ({subsection}): article {expected} vs {attribute} {value}",
+                    )
+                )
+            else:
+                details.append(f"{quantity} ({subsection}): {value} matches the article")
+    total = len(CONFIG_EXPECTATIONS) + len(CONSTANT_EXPECTATIONS)
+    coverage = f"located {checked}/{total} constants"
     return CheckResult(findings, coverage, details)
 
 

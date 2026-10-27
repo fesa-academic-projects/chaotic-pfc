@@ -1,0 +1,7 @@
+{
+  "provenance": "tools/review/transient.py (lowpass_nz3 sample)",
+  "n_points": 30,
+  "kept_positive_all_horizons": 18,
+  "changed_sign": 12,
+  "median_slope": -0.9519990728572632
+}
