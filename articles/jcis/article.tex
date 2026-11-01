@@ -89,14 +89,16 @@ generating map may destroy the chaotic behavior. This work investigates, by
 numerical simulation, the conditions under which chaos is preserved in the
 H\'enon map with an internal FIR filter, for four filter types (lowpass,
 highpass, bandpass, and bandstop) and seven design windows, including a sweep of
-the Kaiser shape parameter. Each point of the plane formed by the filter order and the cutoff frequency is
-classified as divergent, chaotic (largest Lyapunov exponent above
-$5\times10^{-3}$), or non-chaotic.
+the Kaiser shape parameter. Points of the plane formed by the filter order and the cutoff frequency whose
+orbits become unbounded are classified as divergent. The remaining points are
+classified as chaotic when the largest Lyapunov exponent, which measures the
+average exponential rate at which nearby orbits separate, is above a small
+positive threshold, and as non-chaotic otherwise.
 Filtering does not remove chaos from the design space but reorganizes it in a way that
-depends on both the filter type and the window. Filters that remove the direct
-current (DC) component make the fixed point of the map locally stable and yield no
-chaotic point in the grid, whereas, for unit DC gain, the order, the cutoff frequency, and
-the window decide the regime. At the orders studied, the designed filters do not
+depends on both the filter type and the window. Filters whose direct
+current (DC) gain is close to zero yield no chaotic point in the grid; with zero
+DC gain, the fixed point of the map is locally stable. For unit DC gain, the order,
+the cutoff frequency, and the window decide the regime. At the orders studied, the designed filters do not
 realize the nominal bandpass and bandstop masks, and the chaotic generators
 confine their spectrum only partially. Therefore, neither the dynamics nor the
 spectrum of a filtered generator follows from the filter specification, and
@@ -151,13 +153,11 @@ lost~\cite{Eisencraft2011}. To overcome this limitation, Eisencraft
 linear filter in the feedback loop of the chaotic generator, and Fontes and
 Eisencraft~\cite{Fontes2016} showed that the filter does not prevent
 synchronization, a result already indicated in~\cite{Eisencraft2009}.
-Over band-limited channels, a filter in the feedback loop of the generator
-allows coherent detection~\cite{Eisencraft2009,Fontes2016}.
 Further practical limitations, such as finite-precision digital
 implementation, were investigated by Borges and
 Eisencraft~\cite{Borges2021sbrt}. The lowpass case corresponds to a baseband
 channel, but other spectral masks arise in practice. Highpass filtering
-removes the direct current (DC) component of the chaotic signal, which carries no information
+is used to remove the direct current (DC) component of the chaotic signal, which carries no information
 and is blocked by capacitively coupled channels. Bandpass filtering confines the signal
 to an allocated band, and bandstop filtering creates a spectral notch to
 avoid narrowband interference or to coexist with other
@@ -227,7 +227,9 @@ its orbits.
 
 % ---- II-A ----  [E-mail 7]: only the Hénon map, with a figure
 \subsection{H\'enon Map}\label{sub:henon}
-Consider the H\'enon map~\cite{Henon1976}
+Consider the H\'enon map~\cite{Henon1976}, a two-dimensional discrete-time map that,
+for suitable parameters, has a chaotic attractor and is used here as the chaotic
+generator:
 \begin{equation}
   \begin{cases}
     x_1(n+1) = \alpha - x_1^2(n) + \beta\, x_2(n), \\
@@ -248,12 +250,8 @@ converge to a fixed point, converge to a periodic orbit, behave chaotically,
 or diverge~\cite{Alligood1996}. A \emph{fixed point} is a state
 $\mathbf{x}^\star$ left unchanged by one iteration,
 $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$, so that an orbit started at
-$\mathbf{x}^\star$ stays there for all $n$. An orbit is \emph{bounded} when
-there is a finite $M$ such that $\|\mathbf{x}(n)\|\le M$ for all $n$, and
-\emph{divergent} otherwise~\cite{Alligood1996}. For \eqref{eq:henon}, the
-condition $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$ gives two fixed
-points, of which the positive one is used as the reference state in this
-work.
+$\mathbf{x}^\star$ stays there for all $n$. An orbit is \emph{bounded} when $\|\mathbf{x}(n)\|$ does not grow without limit as $n$
+increases, and \emph{divergent} otherwise~\cite{Alligood1996}.
 
 Fig.~\ref{fig:henon} illustrates the chaotic and the periodic behaviors with
 segments of $x_1(n)$ generated from two initial conditions that differ by
@@ -263,9 +261,10 @@ aperiodic and, although the two initial conditions are nearly
 indistinguishable, the distance between them first exceeds $0.1$ at $n=11$
 and reaches order one at $n=18$; this is the SDIC of chaotic signals. In Fig.~\ref{fig:henon}(b),
 with $\alpha=0.9$ and $\beta=0.3$, both orbits converge to the same period-2
-orbit, which alternates between $x_1\approx1.08$ and $x_1\approx-0.38$, and
+orbit (a sequence of states that repeats every two iterations), which alternates between $x_1\approx1.08$ and $x_1\approx-0.38$, and
 the difference between the initial conditions is lost.
-Throughout this work, $\alpha=1.4$ and $\beta=0.3$ are adopted.
+Throughout this work, the classical values $\alpha=1.4$ and $\beta=0.3$, used by
+H\'enon~\cite{Henon1976}, are adopted.
 
 \begin{figure}[!t]
 \centering
@@ -283,10 +282,7 @@ periodic signal (period~2).}
 
 This subsection defines the filter, the expanded system obtained when the
 filter is inserted in the map, and the quantities of that system used in the
-rest of the paper. To limit the bandwidth of the generated signal, Eisencraft
-\textit{et al.}~\cite{Eisencraft2009} and Fontes and
-Eisencraft~\cite{Fontes2016} proposed filtering $x_1(n)$ with an FIR filter and feeding the filter output back into the
-map. Fig.~\ref{fig:generator} shows the generator studied in this work. The output of the filter is
+rest of the paper. Fig.~\ref{fig:generator} shows the generator studied in this work. The output of the filter is
 \begin{equation}
   x_3(n) = \sum_{j=0}^{N_s-1} c_j\, x_1(n-j),
   \label{eq:filtro}
@@ -320,20 +316,18 @@ conditions~\cite{Oppenheim2009},
 
 Evaluating $H(z)$ on the unit circle, $z=e^{j\omega}$, gives the frequency
 response $H(e^{j\omega})$, where $\omega\in[0,\pi]$ is the normalized angular
-frequency in rad/sample. The frequency response fixes the passband, the
-transition width, and the stopband attenuation delivered by a given set of
-coefficients~\cite{Oppenheim2009}. In this work, it is specified by the filter
+frequency in rad/sample. In this work, it is specified by the filter
 type (lowpass, highpass, bandpass, or bandstop) and by a cutoff frequency
 $\omega_c$, plus a bandwidth for bandpass and bandstop filters
 (Section~\ref{sub:grid}). Its value at $\omega=0$ is the DC gain of the filter,
-$G=H(e^{j0})=\sum_{j}c_j$~\cite{Oppenheim2009}.
+$G=H(e^{j0})=\sum_{j}c_j$~\cite{Oppenheim2009}, the factor by which the filter scales the mean
+value of $x_1(n)$.
 
 The filtered signal $x_3(n)$ replaces $x_1(n)$ in the nonlinear term
-of~\eqref{eq:henon}. Because~\eqref{eq:filtro} depends on the past samples
-$x_1(n-1),\ldots,x_1(n-N_s+1)$, the pair $(x_1,x_2)$ is no longer a complete
-state of the system. These samples are therefore stored as auxiliary state
-variables $x_4,\ldots,x_{N_s}$, each holding a one-step delay of the
-preceding one. For $N_s\ge3$, the resulting expanded system
+of~\eqref{eq:henon}. Because $x_3(n+1)$ depends, through~\eqref{eq:filtro}, on $x_1(n+1-j)$ for
+$0 \le j \le N_s - 1$, the samples $x_1(n-1), \dots, x_1(n-N_s+2)$ must be part of the
+state. The sample $x_1(n-1)$ is already held by $x_2(n)$, and the others are stored
+as auxiliary state variables, $x_j(n) = x_1(n-j+2)$, $j = 4, \dots, N_s$. For $N_s\ge3$, the resulting expanded system
 is~\cite{Borges2022sbrt,BorgesCNSNS2024}
 \begin{equation}
   \begin{cases}
@@ -346,19 +340,13 @@ is~\cite{Borges2022sbrt,BorgesCNSNS2024}
   \end{cases}
   \label{eq:expandido}
 \end{equation}
-whose dimension is $K=N_s$; for $N_s=3$, the terms in $x_4,\ldots,x_{N_s}$
-are absent. For $N_s\le2$, the filter output $x_3(n)=c_0x_1(n)+c_1x_2(n)$ (with
-$c_1=0$ for $N_s=1$) is a function of the current state, so no auxiliary
-variable is needed and the system keeps dimension $K=2$:
-\begin{equation}
-  \begin{cases}
-    x_1(n+1) = \alpha - \bigl(c_0x_1(n)+c_1x_2(n)\bigr)^2 + \beta\, x_2(n), \\
-    x_2(n+1) = x_1(n).
-  \end{cases}
-  \label{eq:expandido2}
-\end{equation}
+whose dimension (number of state variables) is $K=N_s$; for $N_s=3$, the terms in $x_4,\ldots,x_{N_s}$
+are absent. For $N_s \le 2$, $x_3(n) = c_0 x_1(n) + c_1 x_2(n)$ (with $c_1 = 0$ for $N_s = 1$) is a
+function of the current state, no auxiliary variable is needed, and the system
+is~\eqref{eq:henon} with $x_1(n)$ replaced by $x_3(n)$ in the nonlinear term, with
+dimension $K = 2$.
 For $N_s=1$ and $c_0=1$, the filter is the identity and the original
-map~\eqref{eq:henon} is recovered. As for~\eqref{eq:henon}, the fixed points of~\eqref{eq:expandido} are the
+map~\eqref{eq:henon} is recovered. The fixed points of~\eqref{eq:expandido} are the
 solutions of $\mathbf{x}^\star=\mathbf{F}(\mathbf{x}^\star)$, where
 $\mathbf{F}$ now denotes the right-hand side of~\eqref{eq:expandido}. At a
 fixed point all delayed samples are equal, $x_1=x_2=x_4=\cdots=x_{N_s}=p$, and
@@ -368,7 +356,7 @@ Its positive root is
   p = \frac{2\alpha}{(1-\beta)+\sqrt{(1-\beta)^2+4\alpha G^2}}.
   \label{eq:pfixo}
 \end{equation}
-For $G = 0$, approximately the case of highpass and bandpass filters,
+For $G = 0$, the ideal DC gain of highpass and bandpass filters,
 $p = \alpha/(1-\beta)$. The
 positive fixed point of the expanded system is
 $\mathbf{x}^\star=[p\;\,p\;\,Gp\;\,p\cdots p]^T$ (or
@@ -382,9 +370,7 @@ gain $G$ and is used to initialize the simulations
 The sensitivity of a system to its initial conditions can be quantified by
 how fast two very close states move apart as they evolve. Assuming that this
 separation grows exponentially, the Lyapunov exponent is the average
-exponential rate at which two nearby orbits separate, that is, the average
-over the orbit of the natural logarithm of the stretching factor per
-iteration~\cite{Alligood1996,Borges2022sbrt}. An
+exponential rate at which two nearby orbits separate~\cite{Alligood1996,Borges2022sbrt}. An
 exponent equal to $\ln2$ along a given direction, for instance, means that the
 distance between the orbits doubles, on average, at each iteration in that
 direction, whereas a negative exponent means that the orbits approach each
@@ -411,30 +397,20 @@ system~\eqref{eq:expandido}, it is~\cite{Borges2022sbrt,BorgesCNSNS2024}
   \end{pmatrix},
   \label{eq:jacobiana}
 \end{equation}
-in which only the third row depends on the filter coefficients; for
-$N_s\le2$, $\mathbf{J}(n)$ is the $2\times2$ Jacobian
-of~\eqref{eq:expandido2}. For the map~\eqref{eq:henon}, $\det\mathbf{J}(n)=-\beta$
+For $N_s \le 2$, $\mathbf{J}(n)$ is the $2 \times 2$ Jacobian of the two-dimensional
+system described above. For the map~\eqref{eq:henon}, $\det\mathbf{J}(n)=-\beta$
 for every $n$, so its two exponents satisfy
 $\lambda_1+\lambda_2=\ln|\beta|$~\cite{Alligood1996}, an identity used in
 Section~\ref{sub:validation} to validate the implementation.
 
-The exponents are computed by the tangent-map
-method~\cite{Alligood1996,Borges2022sbrt}. A unit hypersphere in the tangent
-space at $\mathbf{x}(0)$ is represented by a matrix $\mathbf{U}$ whose
-columns are its orthogonal axes. Each iteration of the map turns the
-hypersphere into an ellipsoid, and after $n$ iterations the axes of the
-ellipsoid are the columns of
-$\mathbf{J}(n-1)\cdots\mathbf{J}(1)\mathbf{J}(0)\mathbf{U}$. Computing the
-lengths of these axes directly is numerically inadequate, because directions
-that are stretched and directions that are compressed produce very large and
-very small numbers. Instead, the growth of each axis is computed at every
-iteration, and the axes are orthonormalized again before the next one, in the
-following steps~\cite{Alligood1996}:
+The exponents are computed by the tangent-map method~\cite{Alligood1996,Borges2022sbrt}:
+a set of orthonormal directions is transformed by $\mathbf{J}(n)$ at each iteration,
+the growth of each direction is measured, and the directions are orthonormalized
+again before the next iteration, in the following steps~\cite{Alligood1996}:
 \begin{enumerate}
   \item Choose an orthonormal basis $\{\mathbf{w}_1(0),\ldots,\mathbf{w}_K(0)\}$
   and compute $\mathbf{z}_k(0)=\mathbf{J}(0)\mathbf{w}_k(0)$, $1\le k\le K$.
-  These vectors are axes of the new ellipsoid, but they are not necessarily
-  orthogonal.
+  These vectors are not necessarily orthogonal.
   \item Orthogonalize them by the Gram--Schmidt process,
   \begin{equation}
     \mathbf{y}_k(1)=\mathbf{z}_k(0)-\sum_{i=1}^{k-1}
@@ -457,7 +433,7 @@ The Lyapunov exponent in the $k$-th direction is then
   \label{eq:lyap}
 \end{equation}
 
-Only the largest exponent, $\lambda_1$, is used in this work. For
+Only $\lambda_1$ is used to classify the orbits. For
 $\alpha=1.4$ and $\beta=0.3$, the map
 \eqref{eq:henon} has
 $\lambda_1\approx0.42$~\cite{Sprott2003}.
@@ -471,12 +447,9 @@ Based on these concepts, each orbit is classified as
   \end{cases}
   \label{eq:criterio}
 \end{equation}
-where $\theta=5\times10^{-3}$ is the classification threshold, whose choice is
-justified in Section~\ref{sub:metrics}. The
-non-chaotic class also includes convergence to a fixed point, because
-the criterion distinguishes only the presence or absence of chaos and not the
-period of the limit orbit. The numerical detection of unbounded orbits is
-described in Section~\ref{sub:metrics}.
+where $\theta=5\times10^{-3}$ is the classification threshold; the choice of $\theta$
+and the detection of unbounded orbits are described in Section~\ref{sub:metrics}. The
+non-chaotic class also includes convergence to a fixed point.
 
 % ---- II-D ----  [E-mail 9]: design windows
 \subsection{FIR Design Windows}\label{sub:windows}
@@ -484,19 +457,14 @@ This subsection describes how the coefficients $c_j$ are obtained and which
 design windows are compared. The coefficients are obtained by the window
 method~\cite{Oppenheim2009,Harris1978}: the impulse response of the ideal
 filter, which is infinitely long, is delayed by $N_z/2$ samples and truncated by
-a window of $N_s$ samples. The shape of the window sets a trade-off between the
-stopband attenuation and the width of the transition band of the resulting
-filter: windows with lower side lobes give higher attenuation at the cost of
-a wider transition band~\cite{Harris1978}.
+a window of $N_s$ samples. The shape of the window sets a trade-off between the stopband attenuation (how much
+the rejected frequencies are reduced) and the width of the transition band (between
+the passband and the stopband): windows with lower side lobes give higher attenuation
+at the cost of a wider transition band~\cite{Harris1978}.
 
 Seven windows are considered (Table~\ref{tab:windows}). The values listed
 are the peak side-lobe levels of the discrete-time Fourier transform of each
-window, relative to the main-lobe peak~\cite{Harris1978}; in the window
-method, lower side lobes give higher stopband attenuation of the designed
-filter~\cite{Oppenheim2009}. The values range from $-13$~dB for the
-rectangular window, whose abrupt truncation produces strong side lobes, to
-$-92$~dB for the four-term Blackman--Harris window, whose cosine-sum
-coefficients are chosen to cancel side lobes~\cite{Harris1978}.
+window, relative to the main-lobe peak~\cite{Harris1978}.
 
 \begin{table}[!t]
 \caption{FIR Windows Evaluated and Their Peak Side-Lobe Levels\label{tab:windows}}
@@ -519,22 +487,17 @@ Kaiser ($\beta_K$ variable)   & variable \\
 {\footnotesize Source: adapted from~\cite{Harris1978}.}
 \end{table}
 
-The seven windows cover a broad range of this trade-off: the rectangular
-window as the worst case; the Bartlett and Hann windows as classical
-intermediate cases; the Hamming window, adopted as a reference because it was
-used in the previous works on the filtered H\'enon
-map~\cite{Fontes2017,BorgesCNSNS2024,Borges2022sbrt}; and the Blackman and Blackman--Harris
-windows as high-attenuation cases. The Kaiser
+The Hamming window is included because it was used in the previous works on the
+filtered H\'enon map~\cite{Fontes2017,BorgesCNSNS2024,Borges2022sbrt}. The Kaiser
 window~\cite{Kaiser1980} has a shape parameter $\beta_K\ge0$ that varies the
 trade-off continuously without changing the filter order: for
-$\beta_K\in[0.5,20]$ its peak side-lobe level, computed here for 41 samples,
-the longest window in the grid, goes from about $-13.6$~dB to $-155$~dB, a
+$\beta_K\in[0.5,20]$ its peak side-lobe level (for $N_s = 41$) goes from about
+$-13.6$~dB to $-155$~dB, a
 range that contains
 the side-lobe levels of the Bartlett, Hann, Hamming, Blackman, and
 Blackman--Harris windows in Table~\ref{tab:windows}, and for $\beta_K=0$ the
-window reduces to the rectangular one. The sweep of $\beta_K$ therefore
-provides a continuous path between the fixed windows. Values $\beta_K>12$
-correspond to stopband attenuations above about 120~dB~\cite{Oppenheim2009},
+window reduces to the rectangular one. Values $\beta_K>12$
+correspond to stopband attenuations above about 118~dB~\cite{Oppenheim2009},
 beyond practical requirements; they are included to locate the maximum of the
 chaotic coverage (Section~\ref{sub:beta}).
 
@@ -552,7 +515,7 @@ sweeps took about 10 min on a four-core laptop.
 \subsection{Filter Types and Parameter Grid}\label{sub:grid}
 Four filter types are designed with the seven windows of
 Table~\ref{tab:windows} by the routine \texttt{firwin} of the SciPy
-library~\cite{Virtanen2020}, in the versions pinned by the package~\cite{chaoticPFC2026}.
+library~\cite{Virtanen2020}.
 For lowpass and highpass filters, $\omega_c$ is the cutoff frequency, at which
 the gain of the designed filter is $-6$~dB; for bandpass and bandstop filters,
 it is the center of a
@@ -836,8 +799,7 @@ Rank & Filter & Window & $N_c$ & $\rho_c^{\mathrm{abs}}$ (\%) & $\rho_c^{\mathrm
 \vspace{2pt}
 {\footnotesize $\rho_c^{\mathrm{abs}}=N_c/N_{\mathrm{grid}}$, with
 $N_{\mathrm{grid}}=4{,}000$ for lowpass and bandpass and $2{,}000$ for
-highpass and bandstop filters. Full per-configuration tables are regenerated
-from the versioned sweep files by the released package~\cite{chaoticPFC2026}.}
+highpass and bandstop filters.}
 \end{table*}
 
 \begin{figure*}[!t]
@@ -1159,7 +1121,7 @@ coverage has an interior maximum in $\beta_K$. The window matters mainly at low
 and moderate orders: the six fixed windows disagree on the class of 38\% of the
 lowpass grid points with $N_z\le10$.
 
-The work makes three contributions. First, it extends the previous studies of
+The work makes two contributions. First, it extends the previous studies of
 the filtered H\'enon map \cite{BorgesCNSNS2024,BorgesCSF2022,Borges2022sbrt,CNMAC2023},
 in which the filters designed by windowing were lowpass filters with the
 Hamming or the Blackman window, to four filter types and seven design windows,
@@ -1168,10 +1130,7 @@ it explains the absence of chaos for filters that remove the DC component.
 Second, it distinguishes sustained chaos from marginal estimates with a
 threshold supported by the distribution of finite-time exponents, checks the
 classification with ten seeds, and quantifies the fraction of chaotic
-transients with a long-horizon test. Third, it releases an
-open-source package \cite{chaoticPFC2026} with which all the figures and tables
-can be reproduced and the study extended.
-
+transients with a long-horizon test.
 For the design of chaotic generators for CBCS, the results point in two
 directions. The spectral specification of the filter does not ensure a chaotic
 generator, and a chaotic generator does not ensure the spectral specification:
