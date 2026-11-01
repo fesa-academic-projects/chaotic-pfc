@@ -197,6 +197,7 @@ def section_recalc(recs: Any, out: dict[str, Any]) -> None:
     out["REVIEW.n_points"] = str(REVIEW_N_POINTS)
     out["REVIEW.n_lowpass"] = str(REVIEW_N_LOWPASS)
     out["REVIEW.range"] = fmt(REVIEW_RANGE, 1)
+    out["STAT.ci_level"] = "95"
     total = sum(counts(r)["n"] for r in recs)
     if all("n_fallback" in r.metadata for r in recs):
         fb = sum(int(r.metadata["n_fallback"]) for r in recs)

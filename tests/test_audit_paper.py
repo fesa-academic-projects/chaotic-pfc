@@ -427,6 +427,39 @@ class TestTextNumbers(unittest.TestCase):
         self.assertEqual(_levels(audit.check_text_numbers(in_other_figure, {})), ["ERROR", "ERROR"])
 
 
+class TestExtendedTextNumbers(unittest.TestCase):
+    """C9: Methodology and Final Remarks need a label or a constant."""
+
+    _NUMBERS: ClassVar[dict[str, str]] = {
+        "GRID.n_sweeps": "184",
+        "ATT.bandstop.beta0": "20.1",
+        "CON.lowpass.disagreement_pct_Nz_le10": "38",
+    }
+
+    _TEX = (
+        "\\section{Methodology}\n"
+        "The 184 sweeps used 500 burn-in iterations, a hypercube of side 0.1, "
+        "and 720 permutations.\n"
+        "\\section{Final Remarks}\n"
+        "No grid point with $|G|<0.1$ was chaotic, and 38\\% disagreed.\n"
+    )
+
+    def test_labels_constants_and_context_pass(self):
+        result = audit.check_text_numbers_extended(self._TEX, self._NUMBERS)
+        self.assertEqual(_levels(result), [])
+        self.assertIn("constants", result.coverage)
+
+    def test_unlabelled_number_is_error(self):
+        tex = self._TEX.replace("184 sweeps", "123 sweeps")
+        result = audit.check_text_numbers_extended(tex, self._NUMBERS)
+        self.assertEqual(_levels(result), ["ERROR"])
+
+    def test_point_one_without_context_is_error(self):
+        tex = "\\section{Methodology}\nThe value 0.1 is unqualified.\n"
+        result = audit.check_text_numbers_extended(tex, self._NUMBERS)
+        self.assertEqual(_levels(result), ["ERROR"])
+
+
 class TestAuditFailClosed(unittest.TestCase):
     def test_check_exception_becomes_error(self):
         def boom():

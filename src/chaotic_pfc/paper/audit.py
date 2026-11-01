@@ -66,7 +66,7 @@ PORTUGUESE_TERMS = (
 # (check C2). The list ships as package data (``paper/doi_whitelist.txt``) and
 # is read with :mod:`importlib.resources` (see :func:`_load_whitelist`).
 
-CHECK_ORDER = ("IN", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8")
+CHECK_ORDER = ("IN", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9")
 
 CHECK_TITLES = {
     "IN": "input files",
@@ -78,6 +78,7 @@ CHECK_TITLES = {
     "C6": "table identities",
     "C7": "article constants versus config",
     "C8": "text numbers versus paper numbers",
+    "C9": "methodology and final remarks numbers",
 }
 
 # LaTeX log lines treated as fatal.
@@ -892,6 +893,7 @@ def check_config() -> CheckResult:
             )
         else:
             details.append(f"{quantity} ({subsection}): {value} matches the article")
+    numbers_module: Any = None
     try:
         from chaotic_pfc.paper import numbers as numbers_module
     except Exception as exc:
@@ -1093,6 +1095,103 @@ def check_text_numbers(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
     return CheckResult(findings, coverage, details)
 
 
+_EXTENDED_SECTIONS = ("Methodology", "Final Remarks")
+
+_EXTENDED_CONSTANTS: dict[str, str] = {
+    "1.4": "comm.henon.alpha",
+    "0.3": "comm.henon.beta",
+    "0.05": "sweep.bandwidth",
+    "0.1": "context-dependent: lyapunov.perturbation or LOW_GAIN",
+    "25": "sweep.n_initial",
+    "40": "sweep.n_z_max",
+    "42": "seed",
+    "100": "sweep.n_cutoffs",
+    "500": "sweep.Nitera",
+    "1000": "sweep.n_bootstrap",
+}
+
+_EXTENDED_IGNORES: dict[str, str] = {
+    "1": "seed list 1 to 9",
+    "3": "3 dB bandwidth unit",
+    "9": "seed list 1 to 9",
+    "720": "number of permutations of the six windows (6!)",
+}
+
+
+def _extended_body(tex_text: str) -> str:
+    """Return the Methodology and Final Remarks prose with math removed."""
+    clean = _strip_comments(tex_text)
+    chunks: list[str] = []
+    for title in _EXTENDED_SECTIONS:
+        start = clean.find(f"\\section{{{title}}}")
+        if start == -1:
+            continue
+        next_section = clean.find("\\section{", start + 1)
+        end = next_section if next_section != -1 else clean.find("\\bibliographystyle", start)
+        if end == -1:
+            end = len(clean)
+        chunk = clean[start:end]
+        chunk = re.sub(
+            r"\\begin\{(equation\*?|align\*?|algorithm)\}.*?\\end\{\1\}",
+            " ",
+            chunk,
+            flags=re.DOTALL,
+        )
+        chunk = re.sub(r"\$[^$]*\$", " ", chunk)
+        chunk = re.sub(r"\\\[.*?\\\]", " ", chunk, flags=re.DOTALL)
+        chunks.append(chunk)
+    body = "\n".join(chunks)
+    body = re.sub(r"\\cite(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
+    body = re.sub(r"\\(?:ref|eqref|label)(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
+    body = body.replace("{,}", "").replace("\\,", "").replace("~", " ")
+    return re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", body)
+
+
+def check_text_numbers_extended(tex_text: str, numbers: dict[str, Any]) -> CheckResult:
+    """C9: Methodology/Final Remarks numbers need a label or a constant."""
+    body = _extended_body(tex_text)
+    if not body:
+        return CheckResult(
+            [Finding("WARN", "C9", "Methodology/Final Remarks sections not found")],
+            "sections not found",
+        )
+    known = _paper_number_values(numbers)
+    findings: list[Finding] = []
+    matched: set[str] = set()
+    constants: set[str] = set()
+    ignored: dict[str, str] = {}
+    for match in re.finditer(r"\d+(?:\.\d+)?", body):
+        token = match.group(0)
+        if token == "0.1":  # noqa: S105
+            context = body[max(0, match.start() - 80) : match.end() + 80].lower()
+            if "hypercube" in context or "side" in context:
+                constants.add(token)
+                continue
+            if "|g|" in context:
+                constants.add(token)
+                continue
+            findings.append(Finding("ERROR", "C9", "0.1 without a cube-edge or |G| context"))
+            continue
+        if token in _EXTENDED_CONSTANTS:
+            constants.add(token)
+            continue
+        if _token_matches(token, known):
+            matched.add(token)
+            continue
+        reason = _EXTENDED_IGNORES.get(token)
+        if reason is not None:
+            ignored[token] = reason
+            continue
+        findings.append(Finding("ERROR", "C9", f"cited number {token} has no label or constant"))
+    coverage = (
+        f"{len(matched)} labels, {len(constants)} constants, "
+        f"{len(ignored)} ignored, {len(findings)} unmatched"
+    )
+    details = [f"constant {token}: {_EXTENDED_CONSTANTS[token]}" for token in sorted(constants)]
+    details += [f"ignored {token}: {ignored[token]}" for token in sorted(ignored)]
+    return CheckResult(findings, coverage, details)
+
+
 def _safe(check: str, func: Callable[[], CheckResult]) -> CheckResult:
     """Run *func* and fail closed if the check itself raises."""
     try:
@@ -1193,8 +1292,13 @@ def run_checks(args: argparse.Namespace) -> dict[str, CheckResult]:
             [Finding("WARN", "C8", "no --sweeps or --numbers-json given; check skipped")],
             "skipped (no paper numbers)",
         )
+        results["C9"] = CheckResult(
+            [Finding("WARN", "C9", "no --sweeps or --numbers-json given; check skipped")],
+            "skipped (no paper numbers)",
+        )
     else:
         results["C8"] = _safe("C8", lambda: check_text_numbers(tex, numbers_map))
+        results["C9"] = _safe("C9", lambda: check_text_numbers_extended(tex, numbers_map))
     return results
 
 
