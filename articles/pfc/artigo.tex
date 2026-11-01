@@ -56,38 +56,43 @@ Arena, Centro Educacional da Fundação Salvador Arena, Estrada dos Alvarengas,
 \imprimirorientador
 
 \begin{resumo}
-A inserção de um filtro de resposta ao impulso finita (FIR) na realimentação do
-mapa de Hénon confina o espectro do sinal e preserva a sincronização de um
-enlace caótico, mas pode destruir o caos do gerador. Quais parâmetros do filtro
-preservam esse regime não está sistematizado. Para cada uma de 184
-configurações, formadas por quatro tipos de filtro e sete janelas de projeto,
-estimou-se o maior expoente de Lyapunov em 552.000 pontos do plano formado pela
-ordem e pela frequência de corte, com uma ferramenta em Python compilada,
-paralela, determinística e projetada para falhar de forma segura. O tipo de
-filtro é o fator de maior efeito: o passa-baixas tem a maior região caótica, e
-um filtro escolhido e verificado no mapa de classificação recupera a mensagem no
-canal em que o sistema sem filtro falha. A solução está no nível 3 de maturidade
-tecnológica (TRL 3), mas o enlace foi avaliado sem ruído, e o esquema não oferece
-garantia criptográfica.
+Um canal de banda limitada impede a sincronização de um enlace de comunicação
+caótico, e um filtro de resposta ao impulso finita (FIR) na realimentação do mapa
+de Hénon confina o espectro do sinal, mas pode destruir o caos do gerador. A
+classificação cobre 184 configurações, que combinam quatro tipos de filtro com
+seis janelas fixas e com 40 valores do parâmetro de forma da janela de Kaiser, e
+552.000 projetos, rotulados pelo maior expoente de Lyapunov, que mede a taxa média
+de afastamento de órbitas vizinhas. Um corte de cerca de 1\% da banda já
+impede a sincronização do enlace sem filtro, que chega a erro de estado de 1,88;
+com o filtro no laço, o erro cai para menos de 0,0001 no mesmo canal. O tipo de
+filtro é o fator de maior efeito sobre a fração de projetos caóticos, e o
+passa-baixas tem a maior região caótica. O filtro do enlace, um passa-baixas com
+janela de Hamming, ordem 8 e corte normalizado 0,52, escolhido na região caótica
+com margem, sincroniza no canal em que o enlace sem filtro falha. A solução está
+no nível 3 de maturidade tecnológica (TRL 3), mas o enlace foi avaliado sem
+ruído, e o esquema não oferece garantia criptográfica.
 \end{resumo}
 
 \palavraschave{Comunicação baseada em caos. Mapa de Hénon. Filtros FIR. Expoente
 de Lyapunov. Engenharia de software científico.}
 
 \begin{abstract}
-A finite impulse response (FIR) filter in the feedback loop of the Hénon map
-confines the spectrum of the signal and preserves the synchronisation of a
-chaotic link, but it may destroy the chaos of the generator. Which filter
-parameters preserve that regime is not systematised. For each of 184
-configurations, formed by four filter types and seven design windows, the
-largest Lyapunov exponent was estimated at 552,000 points of the plane formed by
-the filter order and the cutoff frequency, with a compiled, parallel and
-deterministic Python tool designed to fail safely. The filter type is the
-dominant factor: the lowpass filter has the largest chaotic region, and a filter
-chosen and verified on the classification map recovers the message over the
-channel on which the unfiltered system fails. The solution is at technology
-readiness level 3 (TRL 3), but the link was evaluated without noise, and the
-scheme offers no cryptographic guarantee.
+A band-limited channel prevents synchronisation of a chaotic communication link,
+and a finite impulse response (FIR) filter in the feedback loop of the Hénon map
+confines the spectrum of the signal but may destroy the chaos of the generator.
+The classification covers 184 configurations, which combine four filter types
+with six fixed windows and with 40 values of the Kaiser window shape parameter,
+and 552,000 designs, labelled by the largest Lyapunov exponent, which measures the
+average rate at which nearby orbits separate. A cut of about 1\% of the band
+already prevents synchronisation of the unfiltered link, whose state error
+reaches 1.88; with the filter in the loop, the error falls below 0.0001 over the
+same channel. The filter type is the dominant factor for the fraction of chaotic
+designs, and the lowpass filter has the largest chaotic region. The link filter,
+a lowpass with a Hamming window, order 8 and normalised cutoff 0.52, chosen
+inside the chaotic region with margin, synchronises over the channel on which the
+unfiltered link fails. The solution is at technology readiness level 3 (TRL 3),
+but the link was evaluated without noise, and the scheme offers no cryptographic
+guarantee.
 \end{abstract}
 
 \keywords{Chaos-based communication. Hénon map. FIR filters. Lyapunov exponent.
@@ -343,8 +348,9 @@ $\ln 2$ em uma direção, por exemplo, indica que a distância entre as órbitas
 dobra, em média, a cada iteração nessa direção; um expoente negativo indica que
 as órbitas se aproximam. Um sistema de dimensão $K$ tem $K$ expoentes,
 $\lambda_1\ge\lambda_2\ge\cdots\ge\lambda_K$. Uma órbita é limitada quando
-existe $M>0$ tal que $|\mathbf{x}(n)|\le M$ para todo $n$, e um sinal limitado,
-aperiódico e com $\lambda_1>0$ é caótico \cite{Alligood1996}.
+$\|\mathbf{x}(n)\|$ não cresce sem limite à medida que $n$ aumenta, e divergente
+caso contrário; um sinal limitado, aperiódico e com $\lambda_1>0$ é caótico
+\cite{Alligood1996}.
 
 Os expoentes são calculados a partir da matriz jacobiana $\mathbf{J}(n)$, a
 matriz $K\times K$ das derivadas parciais do lado direito de~\eqref{eq:filtrado_pfc}
@@ -364,7 +370,7 @@ transformada em uma iteração. Para o mapa filtrado, ela é
 \end{equation}
 em que apenas a terceira linha depende dos coeficientes do filtro.
 
-O cálculo segue o método do mapa tangente \cite{Alligood1996,Benettin1980a}.
+O cálculo segue o método do mapa tangente \cite{Alligood1996,Benettin1980a,Benettin1980b}.
 Uma base ortonormal de $K$ vetores é propagada pela jacobiana; a cada iteração,
 os vetores são ortogonalizados pelo processo de Gram-Schmidt e normalizados, e o
 logaritmo das normas é acumulado. Como as direções que se esticam e as que se
@@ -392,7 +398,8 @@ Depois de $n$ repetições, o expoente na $k$-ésima direção é
 \end{equation}
 Na varredura, descrita na Seção~\ref{sub:implementacao}, o maior expoente é
 estimado com um único vetor tangente \cite{Wolf1985}, que é o caso de interesse
-na classificação. Para o mapa~\eqref{eq:henon_pfc} com $\alpha=1{,}4$ e
+na classificação; perto da fronteira de classe, o espectro completo é
+recalculado. Para o mapa~\eqref{eq:henon_pfc} com $\alpha=1{,}4$ e
 $\beta=0{,}3$,
 $\lambda_1\approx0{,}42$ \cite{Sprott2003}, e, como $\det\mathbf{J}(n)=-\beta$ em
 toda a órbita, os dois expoentes satisfazem $\lambda_1+\lambda_2=\ln|\beta|$
@@ -473,15 +480,14 @@ de~\eqref{eq:filtrado_pfc} \cite{Candido2015,BorgesCNSNS2024}.
 O esquema da Figura~\ref{fig:enlace_sem_pfc} é o mascaramento caótico, em que a
 mensagem é somada diretamente à portadora. Outros esquemas codificam os bits
 na escolha entre sinais caóticos distintos, como o chaveamento por
-deslocamento caótico (CSK), ou na correlação entre dois trechos do mesmo sinal,
-como o chaveamento diferencial por deslocamento caótico (DCSK), que dispensa a
-sincronização e, por isso, é menos sensível às imperfeições do canal
+deslocamento caótico, ou na correlação entre dois trechos do mesmo sinal, como o
+chaveamento diferencial por deslocamento caótico \cite{Kolumban1996DCSK}, que
+dispensa a sincronização e, por isso, é menos sensível às imperfeições do canal
 \cite{Kaddoum2016}. O desempenho desses
 esquemas costuma ser expresso pela taxa de erro de bit (BER), a fração de bits
 recuperados incorretamente, em função da relação sinal-ruído (SNR), a razão
-entre a potência do sinal e a do ruído no canal \cite{Kaddoum2016}. Neste
-trabalho, o canal não tem ruído, e o desempenho de comunicação é avaliado pela
-comparação direta entre a mensagem enviada e a recuperada.
+entre a potência do sinal e a do ruído no canal \cite{Kaddoum2016}. O canal não tem ruído, e o enlace é avaliado pelo erro entre os estados do
+transmissor e do receptor, não pela taxa de erro de bit.
 
 \subsection{Aplicações e contexto}
 
@@ -557,14 +563,20 @@ Seção~\ref{sub:caos_pfc}.
 Os filtros são projetados pela rotina \texttt{firwin} da biblioteca SciPy
 \cite{Virtanen2020}. Para os filtros passa-baixas e passa-altas, $\omega_c$ é a
 frequência de corte; para os filtros passa-faixa e rejeita-faixa, é o centro de
-uma faixa de largura fixa $0{,}05\pi$. As variáveis de varredura são a ordem
+uma faixa nominal de largura $0{,}05\pi$; nas ordens da grade, a faixa realizada é
+bem mais larga no passa-faixa, e o rejeita-faixa quase não rejeita a faixa. As
+variáveis de varredura são a ordem
 $N_z$ e a frequência de corte $\omega_c$, porque é a resposta em frequência, e
 não cada coeficiente, que precisa ser compatível com o canal. Para os filtros
 passa-baixas e passa-faixa, $N_z\in\{1,2,\ldots,40\}$ e 100 valores de
 $\omega_c/\pi$ igualmente espaçados entre $10^{-5}$ e $1-10^{-5}$, o que dá 4.000
 pontos por configuração, produto de 40 ordens por 100 cortes. Os filtros
 passa-altas e rejeita-faixa admitem apenas ordens pares no método da janela
-\cite{Oppenheim2009}, com 2.000 pontos, produto de 20 ordens por 100 cortes.
+\cite{Oppenheim2009}, com 2.000 pontos, produto de 20 ordens por 100 cortes. Nas
+janelas de Hann e Bartlett, com $N_z=1$, a rotina \texttt{firwin} devolve
+coeficientes não finitos, porque as janelas simétricas de duas amostras são nulas;
+esses pontos aparecem como divergentes por causa do projeto do filtro, e não da
+dinâmica, e ficam fora das comparações entre janelas (Seção~\ref{sub:caos_pfc}).
 
 As seis janelas fixas da Tabela~\ref{tab:janelas_pfc} dão 24 configurações, e a
 janela de Kaiser é varrida em 40 valores de $\beta_K$ entre 0,5 e 20, com passo
@@ -591,10 +603,8 @@ foram feitas em um Intel Core i7-8550U, com quatro núcleos físicos, oito threa
 e 31,1~GiB de memória. O documento é gerado por \texttt{make pfc-pdf}, a
 auditoria por \texttt{make pfc-check} e os números do texto por
 \texttt{chaotic-pfc paper numbers}. O código está no repositório
-\texttt{fesa-academic-projects/chaotic-pfc}, e o DOI de conceito é
-10.5281/zenodo.22740317.
-
-% REVISAR: preencher a versão e o DOI de versão após a release; a tag 0.8.0 do CITATION.cff não corresponde ao código usado no artigo.
+\texttt{fesa-academic-projects/chaotic-pfc}, na tag \texttt{pfc-banca-2026-11}, e o DOI
+de conceito é 10.5281/zenodo.22740317.
 
 \begin{figura}{Componentes da ferramenta e fluxo de dados entre eles.}{Fonte:
 Elaborada pelos autores (2026)}
@@ -802,9 +812,9 @@ filtro FIR no transmissor e no receptor.}{Fonte: Elaborada pelos autores
 O canal de banda limitada é um filtro FIR de fase linear com 201 coeficientes,
 janela de Hamming e corte $0{,}99\pi$; o seu atraso de grupo de 100 amostras é
 compensado na comparação entre a mensagem enviada e a recuperada. São avaliados
-três cenários: o gerador sem filtro em canal ideal, o gerador sem filtro no
-canal de banda limitada e o gerador com o filtro escolhido no mesmo canal de
-banda limitada. O controle de atraso puro repete o enlace sem filtro com um
+três cenários: o enlace sem limitação de banda, o enlace sem filtro no canal de
+banda limitada e o enlace com o filtro escolhido no mesmo canal de banda
+limitada. O controle de atraso puro repete o enlace sem filtro com um
 canal que apenas atrasa a portadora em 100 amostras, sem limitar a banda.
 
 O critério de sincronização é o erro de estado entre transmissor e receptor:
@@ -837,11 +847,10 @@ de~\eqref{eq:criterio_pfc}, o que permite usar o caminho rápido na varredura.
 \subsection{Enlace sem filtro}
 \label{sub:sem_filtro_pfc}
 
-No canal ideal, o enlace da Figura~\ref{fig:enlace_sem_pfc} recupera a mensagem,
-porque o receptor recebe exatamente o sinal transmitido. Pelo critério da
-Seção~\ref{sub:cenarios}, o erro de estado fica abaixo do limiar em todas as
-amostras depois do transiente de sincronização e cai para $1{,}0\times10^{-16}$
-no regime permanente.
+Sem limitação de banda, o enlace da Figura~\ref{fig:enlace_sem_pfc} recupera a
+mensagem: pelo critério da Seção~\ref{sub:cenarios}, o erro de estado fica abaixo
+do limiar depois do transiente de sincronização e cai para
+$1{,}0\times10^{-16}$ no regime permanente.
 
 No canal de banda limitada, o mesmo enlace perde a sincronização
 (Figura~\ref{fig:falha_pfc}). O erro de estado chega a 1,88 depois do
@@ -878,15 +887,20 @@ as órbitas divergem acima dela e, para $N_z\le3$ e $N_z=5$, nenhum ponto é
 caótico. No passa-altas, o caos ocorre em $\omega_c/\pi\le0{,}23$ para $N_z\ge6$
 e, apenas para $N_z=4$, em $0{,}67\le\omega_c/\pi\le1$. No passa-faixa, a região
 caótica é fragmentada, com até seis faixas ao longo de $\omega_c$ em ordens
-baixas e duas faixas para $N_z\ge12$. No rejeita-faixa, a divergência domina, e
-somente $N_z=2$ não tem pontos divergentes.
+baixas e duas faixas para $N_z\ge12$. Nesses dois tipos, as condições iniciais
+partem perto do ponto fixo do sistema expandido, que é estável para qualquer
+coeficiente; a órbita converge para ele e a saída fica constante. Por isso, a
+maior parte dos pontos não caóticos desses tipos é ponto fixo, e não órbita
+periódica. No rejeita-faixa, a divergência domina, e somente $N_z=2$ não tem
+pontos divergentes.
 
 \begin{figura}{Mapas de classificação no plano $(N_z,\omega_c/\pi)$ da
 configuração de maior cobertura caótica de cada tipo de filtro: (a)
 passa-baixas, Kaiser com $\beta_K=17$; (b) passa-altas, Kaiser com
 $\beta_K=15{,}5$; (c) passa-faixa, Kaiser com $\beta_K=15{,}5$; (d)
-rejeita-faixa, janela retangular. Caótico em vermelho, não caótico em azul e
-divergente em cinza.}{Fonte: Elaborada pelos autores (2026)}
+rejeita-faixa, janela retangular. Caótico em roxo escuro, não caótico em verde
+azulado e divergente em cinza claro; as três cores se distinguem em escala de
+cinza.}{Fonte: Elaborada pelos autores (2026)}
 \begin{minipage}{\textwidth}
 \begin{minipage}[t]{0.49\textwidth}\centering
   \includegraphics[width=\linewidth]{figures/kaiser_b17p0_lowpass_classification_interleaved}\\
@@ -908,9 +922,9 @@ divergente em cinza.}{Fonte: Elaborada pelos autores (2026)}
 \label{fig:mapas_pfc}
 \end{figura}
 
-\begin{tabela}{Configuração de maior cobertura caótica de cada tipo de filtro:
-número de pontos caóticos $N_c$ e cobertura $\rho_c$.}{Fonte: Elaborada pelos
-autores (2026)}
+\begin{tabela}{Maior cobertura caótica de cada tipo de filtro: $N_c$ (contagem) e
+$\rho_c$ (fração, usada nas comparações).}{Fonte: Elaborada pelos autores
+(2026)}
 \makebox[\textwidth][c]{%
 \begin{tabular}[t]{lccc}
 \hline
@@ -933,8 +947,9 @@ muda com o tipo: nos passa-baixas e rejeita-faixa, 69,7\% e 92,6\% dos pontos
 divergem, enquanto nos passa-altas e passa-faixa, 89,0\% e 82,3\% dos pontos são
 não caóticos.
 
-A Figura~\ref{fig:densidade_pfc} reúne as 184 configurações e mostra, em cada
-ponto $(N_z,\omega_c/\pi)$, a porcentagem de configurações em que ele é caótico.
+A Figura~\ref{fig:densidade_pfc} reúne todos os pontos caóticos das 184
+configurações, de forma agregada: em cada ponto do plano, mostra a porcentagem de
+configurações em que ele é caótico.
 Como o mesmo par de ordem e corte corresponde a filtros diferentes em cada tipo e
 janela, a figura não descreve um filtro, e sim o quanto cada coordenada de
 projeto favorece o caos. Para $N_z\ge8$, o caos é mais frequente nos cortes
@@ -945,10 +960,11 @@ $0{,}1<\omega_c/\pi\le0{,}2$, em 4,9\% para $0{,}2<\omega_c/\pi\le0{,}4$ e em
 médias são 4,8\%, 9,8\%, 11,7\% e 15,4\%. O máximo, 56,5\%, ocorre em $N_z=9$ e
 $\omega_c/\pi\approx0{,}12$.
 
-\begin{figura}{Densidade caótica agregada: porcentagem das configurações que
-contêm cada ponto $(N_z,\omega_c/\pi)$ em que ele é caótico (184 configurações
-para $N_z$ par e 92 para $N_z$ ímpar, que só existe nos filtros passa-baixas e
-passa-faixa).}{Fonte: Elaborada pelos autores (2026)}
+\begin{figura}{Todos os pontos caóticos das 184 configurações, de forma agregada:
+cada célula do plano $(N_z,\omega_c/\pi)$ mostra a porcentagem das configurações em
+que o ponto é caótico (184 configurações para $N_z$ par e 92 para $N_z$ ímpar, que
+só existe nos filtros passa-baixas e passa-faixa).}{Fonte: Elaborada pelos
+autores (2026)}
   \includegraphics[width=0.9\textwidth]{figures/fig_chaotic_density_norm}
   \label{fig:densidade_pfc}
 \end{figura}
@@ -959,9 +975,14 @@ classe em 61,6\% dos pontos do passa-baixas com $N_z\le10$ e em 88,9\% dos ponto
 com $N_z>20$, porque os filtros projetados se aproximam do ideal à medida que a
 ordem cresce \cite{Oppenheim2009}. Entre as janelas fixas, a Blackman-Harris dá
 o maior número de pontos caóticos nos filtros passa-baixas, passa-altas e
-passa-faixa, e a retangular no rejeita-faixa. Nos três primeiros tipos, as
-janelas de lóbulos laterais mais baixos preservam mais caos, e no rejeita-faixa a
-relação se inverte.
+passa-faixa, e a retangular no rejeita-faixa. Nas ordens baixas, as janelas que
+deram maior fração caótica são as que produzem filtros menos seletivos: com corte
+nominal de $0{,}2\pi$ e $N_z=4$, o ganho cai 6~dB em $0{,}26\pi$ na retangular,
+$0{,}44\pi$ na Hamming e $0{,}76\pi$ na Blackman-Harris, e o efeito da atenuação
+não se separa da seletividade nesta grade. No rejeita-faixa, a relação se inverte,
+porque a retangular é, nas ordens da grade, a única janela que chega a formar o
+entalhe: com $N_z=40$, a atenuação no centro da faixa é de 20~dB nela e 6~dB na
+Hamming.
 
 A Figura~\ref{fig:beta_pfc} mostra a cobertura em função do parâmetro de forma da
 janela de Kaiser. No passa-baixas, ela cresce de 3,5\% em $\beta_K=0{,}5$ para
@@ -997,25 +1018,27 @@ estados.
 O filtro do enlace é o passa-baixas com janela de Hamming já usado nos trabalhos
 anteriores desta linha de pesquisa \cite{Borges2022sbrt,BorgesCNSNS2024},
 mantido por comparabilidade, com $N_z=8$ e o corte deslocado até a região
-caótica, $\lambda_1>0{,}05$. No mapa dessa configuração
+caótica, $\lambda_1>0{,}05$. Não é a configuração de maior cobertura; o critério é
+a verificação individual descrita na Seção~\ref{sub:caos_pfc}. No mapa dessa configuração
 (Figura~\ref{fig:hamming_pfc}), o ponto mais próximo da grade, com
 $\omega_c/\pi=0{,}5152$, tem $\bar\lambda_1=0{,}0788$, e o expoente do próprio
 projeto é 0,0786, cerca de dezesseis vezes o limiar $\theta$
 de~\eqref{eq:criterio_pfc}.
 
-\begin{figura}{Mapa de classificação do passa-baixas com janela de Hamming. O
-círculo marca o filtro escolhido para o enlace, com $N_z=8$ e
-$\omega_c/\pi=0{,}52$.}{Fonte: Elaborada pelos autores (2026)}
-  \includegraphics[width=0.50\textwidth]{figures/hamming_lowpass_classification}
-  \label{fig:hamming_pfc}
-\end{figura}
-
 Com esse filtro no transmissor e no receptor, o mesmo canal passa a permitir a
 comunicação (Figura~\ref{fig:filtro_pfc}). O espectro transmitido fica confinado
-pela resposta do filtro; com isso, o erro de estado depois do transiente fica
+pela resposta do filtro (Figura~\ref{fig:psd_pfc}); com isso, o erro de estado depois do transiente fica
 abaixo de $10^{-4}$, e a mensagem recuperada coincide com a enviada. O resultado
 não depende do limiar dentro da faixa da Seção~\ref{sub:cenarios}, de $10^{-3}$ a
 $10^{-1}$, em que os três cenários mantêm a mesma classificação.
+
+\begin{figura}{Mapa de classificação do passa-baixas com janela de Hamming. O
+círculo marca o filtro escolhido para o enlace, com $N_z=8$ e
+$\omega_c/\pi=0{,}52$.}{Fonte: Elaborada pelos autores (2026)}
+  \includegraphics[width=0.70\textwidth]{figures/hamming_lowpass_classification}
+  \label{fig:hamming_pfc}
+\end{figura}
+
 
 \begin{figura}{Enlace com o filtro escolhido no canal FIR de banda limitada:
 (a) mensagem, (b) sinal transmitido, (c) sinal recebido e (d) mensagem
@@ -1023,6 +1046,14 @@ recuperada, com as respectivas densidades espectrais de potência. A mensagem é
 recuperada.}{Fonte: Elaborada pelos autores (2026)}
   \includegraphics[width=0.80\textwidth]{figures/fig_comm_filtro}
   \label{fig:filtro_pfc}
+\end{figura}
+
+\begin{figura}{Densidade espectral de potência do sinal gerado, normalizada pelo pico
+do sinal sem filtro: sinal sem filtro e sinal com o filtro do enlace (passa-baixas,
+janela de Hamming, ordem 8, corte $0{,}52\pi$). A linha pontilhada marca o limite
+do canal, em $0{,}99\pi$.}{Fonte: Elaborada pelos autores (2026)}
+  \includegraphics[width=0.62\textwidth]{figures/fig_psd_laco}
+  \label{fig:psd_pfc}
 \end{figura}
 
 % ----------------------------------------------------------------------------
@@ -1094,7 +1125,9 @@ fracamente caóticas, com expoente positivo abaixo do limiar, são contadas como
 não caóticas, e transitórios mais longos que o horizonte são contados como
 caóticos. A classificação é local no espaço de estados. A grade cobre ordens até
 40 (Seção~\ref{sub:varredura}), uma única largura de banda para os filtros
-passa-faixa e rejeita-faixa e um único par de parâmetros do mapa. O enlace foi avaliado sem ruído e com o canal
+passa-faixa e rejeita-faixa e um único par de parâmetros do mapa. Além disso, nas
+ordens baixas o filtro realizado não cumpre a especificação nominal, e a
+comparação entre janelas herda essa diferença. O enlace foi avaliado sem ruído e com o canal
 conhecido (Seção~\ref{sub:cenarios}), o desempenho computacional foi medido em um
 único computador, e o esquema de comunicação não oferece garantia
 criptográfica.
@@ -1114,19 +1147,19 @@ experimento não permite atribuir o ganho de caos a um dos dois.
 \section{Considerações finais}
 \label{sec:conclusao}
 
-O enlace baseado no mapa de Hénon funciona em canal ideal e falha quando o canal
-limita a banda. A inserção de um filtro FIR na realimentação do gerador confina o
+O enlace baseado no mapa de Hénon funciona sem limitação de banda e falha quando
+o canal limita a banda. A inserção de um filtro FIR na realimentação do gerador confina o
 espectro e preserva a sincronização, mas pode destruir o caos, o que exige
 verificar quais filtros preservam o regime caótico.
 
 A verificação de 552.000 projetos mostrou que o tipo de filtro é o fator de
 maior efeito, e que variar o parâmetro de forma da janela de Kaiser altera mais a
 fração caótica do que trocar entre as janelas fixas. O passa-baixas tem a maior
-região caótica, as janelas de lóbulos laterais mais baixos tendem a preservar
-mais caos nos filtros passa-baixas, passa-altas e passa-faixa, e, para ordens a
-partir de 8, o caos se concentra nos cortes baixos. Um filtro escolhido com
-esses critérios e verificado pela ferramenta permitiu recuperar a mensagem no
-mesmo canal em que o sistema sem filtro falhava.
+região caótica, e, para ordens a partir de 8, o caos se concentra nos cortes baixos.
+Nas ordens baixas, as janelas que produzem filtros menos seletivos deram maior fração
+caótica nos três primeiros tipos; nesta grade, a atenuação não se separa da
+seletividade. Um filtro escolhido e verificado no mapa de classificação permitiu
+recuperar a mensagem no mesmo canal em que o sistema sem filtro falhava.
 
 A contribuição de engenharia de computação é a ferramenta que tornou essa
 verificação possível. Compilada e paralela, ela executa a grade completa em

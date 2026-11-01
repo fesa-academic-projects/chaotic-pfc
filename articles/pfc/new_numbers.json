@@ -188,6 +188,24 @@
         42,
         0.001
       ]
+    },
+    "revisao": {
+      "source": "revisao/scripts (erro_sincronizacao.py, verificacao_canal.py, hierarquia.py, recalculo firwin); .cache/paper/seeds; data/sweeps/Hamming (lowpass); requirements-lock.txt; CITATION.cff; pytest --collect-only -q",
+      "values": [
+        0.0001,
+        0.015,
+        0.066,
+        0.44,
+        0.505,
+        0.586,
+        0.68,
+        0.76,
+        1.88,
+        10.5281,
+        1517,
+        22740317,
+        645
+      ]
     }
   },
   "citation_years": [

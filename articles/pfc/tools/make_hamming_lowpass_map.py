@@ -11,9 +11,15 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import Patch
 
 from chaotic_pfc.analysis.sweep import load_sweep
-from chaotic_pfc.analysis.sweep_plotting import plot_classification_interleaved
+from chaotic_pfc.analysis.sweep_plotting import (
+    COLOR_CHAOTIC,
+    COLOR_PERIODIC,
+    COLOR_UNBOUNDED,
+    plot_classification_interleaved,
+)
 from chaotic_pfc.paper.figures import JCIS_FIG
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -37,10 +43,18 @@ def main() -> int:
         "legend_fontsize": 8.0,
         "ytick_step": 0.2,
         "xtick_step": 10,
-        "legend": True,
-        "lang": "en",
+        "legend": False,
+        "lang": "pt",
     }
     fig = plot_classification_interleaved(sweep, **opts)
+    handles = [
+        Patch(facecolor=COLOR_CHAOTIC, edgecolor="gray", label="Caótico"),
+        Patch(facecolor=COLOR_PERIODIC, edgecolor="gray", label="Não caótico"),
+        Patch(facecolor=COLOR_UNBOUNDED, edgecolor="gray", label="Divergente"),
+    ]
+    fig.axes[0].legend(
+        handles=handles, loc="upper right", fontsize=opts["legend_fontsize"], framealpha=1.0
+    )
 
     target_nz = 8
     target_cutoff = 0.52

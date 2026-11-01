@@ -25,9 +25,9 @@ from chaotic_pfc.errors import InvalidParameterError
 # Palette and discrete classification
 # ═══════════════════════════════════════════════════════════════════════════
 
-COLOR_PERIODIC: str = "#4DBEEE"
-COLOR_CHAOTIC: str = "red"
-COLOR_UNBOUNDED: str = "#E0E0E0"
+COLOR_PERIODIC: str = "#21918c"
+COLOR_CHAOTIC: str = "#440154"
+COLOR_UNBOUNDED: str = "#d9d9d9"
 COLOR_GAP: str = "white"
 
 _cmap_disc = mcolors.ListedColormap(
