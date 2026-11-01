@@ -48,6 +48,7 @@ from chaotic_pfc.dynamics.maps import henon_generalised  # noqa: E402
 from chaotic_pfc.dynamics.signals import text_message  # noqa: E402
 from chaotic_pfc.dynamics.spectral import psd_normalised  # noqa: E402
 from tools.paper_style import (  # noqa: E402
+    LINK_COLORS,
     SERIES,
     Style,
     apply,
@@ -126,7 +127,9 @@ def henon(st: Style) -> None:
         ax.plot(n, x1_a, lw=1.0, label=r"$x_1(0)=x_2(0)=0$", **series(0))
         ax.plot(n, x1_b, lw=1.0, label=r"$x_1(0)=0,\ x_2(0)=0{,}001$", **series(1))
         ax.set_title(
-            f"({label})  " + rf"$\alpha={st.number(alpha)}$, $\beta={st.number(0.3)}$",
+            f"({label})  "
+            + rf"$\alpha={st.number(alpha).replace(',', '{,}')}$, "
+            + rf"$\beta={st.number(0.3).replace(',', '{,}')}$",
             loc="left",
             pad=3,
         )
@@ -165,19 +168,27 @@ def fir(st: Style) -> None:
                 ("blackmanharris", 21),
                 (("kaiser", 17.0), 21),
             ],
-            ("rectangular", "hamming", "blackmanharris", "kaiser"),
+            ("Retangular", "Hamming", "Blackman-Harris", r"Kaiser, $\beta_K=17$"),
         ),
         (
             "(b) janela de Hamming, ordens diferentes",
             [("hamming", 5), ("hamming", 9), ("hamming", 21), ("hamming", 41)],
-            ("4", "8", "20", "40"),
+            (r"$N_z=4$", r"$N_z=8$", r"$N_z=20$", r"$N_z=40$"),
         ),
     )
+    styles = (
+        ("#1F77B4", "-", "o"),
+        ("#D62728", "--", "s"),
+        ("#2CA02C", "-.", "^"),
+        ("#000000", ":", "D"),
+    )
     for ax, (title, curves, labels) in zip(axes, panels, strict=True):
-        for index, ((window, taps), label) in enumerate(zip(curves, labels, strict=True)):
+        for index, ((window, taps), name) in enumerate(zip(curves, labels, strict=True)):
             w, mag = _response(taps, window)
-            name = WINDOW_LABELS.get(label, f"$N_z={label}$")
-            ax.plot(w, mag, lw=1.0, label=name, **series(index))
+            color, ls, marker = styles[index]
+            ax.plot(
+                w, mag, color=color, ls=ls, lw=1.2, marker=marker, markevery=180, ms=3.0, label=name
+            )
         ax.axvline(FIR_CUTOFF, color="0.35", lw=0.6, ls=":")
         ax.set_xlim(0.0, 1.0)
         ax.set_ylim(-160.0, 5.0)
@@ -244,7 +255,7 @@ def density(st: Style) -> None:
     fig = plot_chaotic_density_norm(
         SWEEPS,
         lang="pt",
-        figsize=st.figsize(0.9, aspect=0.57),
+        figsize=st.figsize(0.70, aspect=0.57),
         label_fontsize=st.caption_pt,
         tick_fontsize=st.caption_pt,
         cbar_fontsize=st.caption_pt,
@@ -255,8 +266,6 @@ def density(st: Style) -> None:
     )
     ax = fig.axes[0]
     ax.yaxis.set_major_formatter(FuncFormatter(st.number))
-    for line in list(ax.lines):
-        line.remove()
     if len(fig.axes) > 1:
         cbar = fig.axes[1]
         cbar.yaxis.set_major_formatter(FuncFormatter(st.number))
@@ -272,6 +281,12 @@ def density(st: Style) -> None:
 def kaiser(st: Style) -> None:
     """Write the chaotic coverage as a function of the Kaiser beta."""
     fig, ax = st.subplots(1, 1, fraction=0.8, aspect=0.60)
+    styles = (
+        ("#1B4F9C", "-", "o"),
+        ("#B2182B", "--", "s"),
+        ("#1B7837", "-.", "^"),
+        ("#6A3D9A", ":", "D"),
+    )
     for index, ft in enumerate(("lowpass", "highpass", "bandpass", "bandstop")):
         rows = []
         for path in sorted((SWEEPS / "kaiser" / ft).glob("beta_*/variables_lyapunov.npz")):
@@ -283,7 +298,17 @@ def kaiser(st: Style) -> None:
         rows.sort()
         betas = np.array([row[0] for row in rows])
         coverage = np.array([row[1] for row in rows])
-        ax.plot(betas, coverage, marker="o", ms=2.4, lw=1.0, label=TYPE_LABELS[ft], **series(index))
+        color, ls, marker = styles[index]
+        ax.plot(
+            betas,
+            coverage,
+            color=color,
+            ls=ls,
+            marker=marker,
+            ms=2.8,
+            lw=1.2,
+            label=TYPE_LABELS[ft],
+        )
         best = int(np.argmax(coverage))
         print(
             f"[kaiser] {ft}: max {round_decimal(float(coverage[best]), 1)}% at beta_K={betas[best]:g}; "
@@ -368,14 +393,15 @@ def _panel(
     y: np.ndarray,
     *,
     title: str,
+    color: str,
     reference: np.ndarray | None = None,
     reference_label: str = "",
     solid_label: str = "mensagem recuperada",
     ylim: tuple[float, float] | None = None,
 ) -> None:
     if reference is not None:
-        ax.plot(x, reference, color="black", ls="--", lw=0.8, label=reference_label)
-    ax.plot(x, y, lw=0.8, label=solid_label if reference is not None else None, **series(0))
+        ax.plot(x, reference, color="black", ls="--", lw=1.0, label=reference_label)
+    ax.plot(x, y, color=color, lw=1.2, label=solid_label if reference is not None else None)
     ax.set_title(title, loc="left", pad=2)
     if ylim is not None:
         ax.set_ylim(*ylim)
@@ -400,18 +426,46 @@ def _comm_figure(
     n = np.arange(start, stop)
     delayed = message[n - delay]
 
-    aspect = 0.755
+    aspect = 0.68
     fig, axes = st.subplots(4, 2, fraction=fraction, aspect=aspect, sharex="col")
     panel_labels = ("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)")
     rows = (
-        ("mensagem", "mensagem", message, False),
-        ("sinal transmitido", "transmitido", sent, False),
-        ("sinal recebido", "recebido", received, False),
-        ("mensagem recuperada", "recuperado", recovered, clip_recovered),
+        (
+            "mensagem",
+            "mensagem",
+            message,
+            LINK_COLORS["message"],
+            LINK_COLORS["message_spec"],
+            False,
+        ),
+        (
+            "transmitido",
+            "transmitido",
+            sent,
+            LINK_COLORS["carrier"],
+            LINK_COLORS["carrier_spec"],
+            False,
+        ),
+        (
+            "recebido",
+            "recebido",
+            received,
+            LINK_COLORS["carrier"],
+            LINK_COLORS["carrier_spec"],
+            False,
+        ),
+        (
+            "recuperada",
+            "recuperado",
+            recovered,
+            LINK_COLORS["message"],
+            LINK_COLORS["message_spec"],
+            clip_recovered,
+        ),
     )
-    for row, (label, short, signal, clipped) in enumerate(rows):
+    for row, (label, _short, signal, color, spec_color, clipped) in enumerate(rows):
         ylim = (-3.0, 3.0) if clipped else None
-        suffix = "\n(limitada a ±3)" if clipped else ""
+        suffix = ""
         reference = delayed if row == 3 else None
         _panel(
             axes[row, 0],
@@ -419,6 +473,7 @@ def _comm_figure(
             n,
             signal[n],
             title=f"{panel_labels[row]} {label}{suffix}",
+            color=color,
             reference=reference,
             reference_label="mensagem enviada (atrasada)",
             ylim=ylim,
@@ -429,9 +484,8 @@ def _comm_figure(
             st,
             omega,
             values,
-            title=f"{panel_labels[row + 4]} espectro do {short}"
-            if short != "mensagem"
-            else f"{panel_labels[row + 4]} espectro da mensagem",
+            title=f"{panel_labels[row + 4]} espectro: {label}",
+            color=spec_color,
         )
     axes[0, 0].set_ylabel("amplitude")
     axes[0, 1].set_ylabel("densidade espectral")
@@ -440,7 +494,7 @@ def _comm_figure(
     axes[-1, 1].set_xlabel(r"$\omega/\pi$")
     handles, _ = axes[3, 0].get_legend_handles_labels()
     legend_above(fig, handles, ncol=2, pad=0.995)
-    fig.subplots_adjust(left=0.115, right=0.995, top=0.87, bottom=0.10, hspace=0.72, wspace=0.28)
+    fig.subplots_adjust(left=0.075, right=0.995, top=0.88, bottom=0.09, hspace=0.62, wspace=0.22)
     save(fig, path)
     print(f"wrote {path.relative_to(ROOT)}")
 
@@ -468,7 +522,7 @@ def comm(st: Style) -> None:
         received,
         recovered,
         OUT / "fig_comm_falha.pdf",
-        fraction=0.82,
+        fraction=1.0,
         clip_recovered=True,
     )
 
@@ -492,7 +546,7 @@ def comm(st: Style) -> None:
         received_f,
         recovered_f,
         OUT / "fig_comm_filtro.pdf",
-        fraction=0.80,
+        fraction=1.0,
         clip_recovered=False,
     )
 

@@ -64,7 +64,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.colors import BoundaryNorm, ListedColormap
+from matplotlib.colors import BoundaryNorm, LinearSegmentedColormap, ListedColormap
 from matplotlib.ticker import FuncFormatter
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -78,6 +78,33 @@ CLASS_COLORS: dict[str, str] = {
     "divergent": "#E0E0E0",
 }
 COLOR_GAP = "white"
+
+#: One colour per signal family in the link figures (Figs. 8 and 13 of the PFC):
+#: message in time, message spectrum, carrier in time, carrier spectrum.
+LINK_COLORS: dict[str, str] = {
+    "message": "#0073BD",
+    "message_spec": "#804000",
+    "carrier": "#E00000",
+    "carrier_spec": "#660066",
+}
+
+#: Approximation of the MATLAB ``parula`` colormap (the default since R2014b;
+#: the advisor's ``.m`` files never call ``colormap``), from nine anchors of the
+#: 64-colour table.  Used by the aggregate density map.
+PARULA = LinearSegmentedColormap.from_list(
+    "parula-aprox",
+    [
+        (0.2422, 0.1504, 0.6603),
+        (0.2810, 0.3228, 0.9579),
+        (0.1786, 0.5289, 0.9682),
+        (0.0689, 0.6948, 0.8394),
+        (0.2161, 0.7843, 0.5923),
+        (0.5444, 0.8020, 0.3222),
+        (0.8977, 0.7508, 0.1203),
+        (0.9964, 0.5981, 0.0809),
+        (0.9763, 0.9831, 0.0538),
+    ],
+)
 
 #: Line-series order of the advisor: blue solid, red dashed, then black and
 #: gray for references (JCIS Fig. 1 and the MATLAB sources).

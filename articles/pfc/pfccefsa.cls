@@ -298,10 +298,10 @@
 \newcommand{\pfc@autores}{}
 \newcommand{\pfc@orientador}{}
 \newcommand{\pfc@curso}{\textless{}nome do curso\textgreater{}}
-\newcommand{\pfc@diainicial}{\textless{}incluir o dia inicial da defesa\textgreater{}}
-\newcommand{\pfc@diafinal}{\textless{}incluir o dia final da defesa\textgreater{}}
-\newcommand{\pfc@mes}{\textless{}incluir o mês\textgreater{}}
-\newcommand{\pfc@ano}{\textless{}incluir o ano\textgreater{}}
+\newcommand{\pfc@diainicial}{[DIA INICIAL]}
+\newcommand{\pfc@diafinal}{[DIA FINAL]}
+\newcommand{\pfc@mes}{[MÊS]}
+\newcommand{\pfc@ano}{2026}
 \newcommand{\pfc@versao}{V-05}
 
 \newcommand{\titulo}[1]{\gdef\pfc@titulo{#1}\hypersetup{pdftitle={#1}}}

@@ -1,0 +1,53 @@
+\documentclass[border=2pt,12pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\tikzset{
+  bloco/.style={draw, rounded corners=2pt, minimum height=8mm, minimum width=17mm,
+                align=center, font=\small, fill=white, inner sep=2pt},
+  soma/.style={draw, circle, inner sep=0pt, minimum size=5mm, font=\small, fill=white},
+  seta/.style={-{Stealth[length=2mm]}, thick},
+  rotulo/.style={font=\small},
+}
+\begin{document}
+% Figura 7: s(n) = x3(n) + mu m(n); s(n) realimenta o mapa; filtro nos dois lados.
+% Mesma geometria da Figura 4, com o filtro inserido entre o mapa e o somador.
+\begin{tikzpicture}
+\node[bloco] (mapa)  at (0,0)     {Mapa de\\Hénon};
+\node[bloco] (fir)   at (3.1,0)   {Filtro FIR\\$H(z)$};
+\node[soma]  (soma)  at (5.6,0)   {$\Sigma$};
+\node[bloco, minimum width=8mm] (mu) at (5.6,1.5) {$\mu$};
+\node[rotulo] (m)    at (4.2,1.5) {$m(n)$};
+\node[bloco, minimum width=14mm] (canal) at (7.8,0) {Canal};
+\node[soma]  (sub)   at (12.2,0)  {$\Sigma$};
+\node[bloco] (copia) at (9.5,-2.0) {Mapa de\\Hénon};
+\node[bloco] (firr)  at (12.2,-2.0) {Filtro FIR\\$H(z)$};
+\node[bloco, minimum width=8mm] (inv) at (14.2,0) {$1/\mu$};
+\node[rotulo, anchor=west] (mh) at (15.72,0) {$\hat m(n)$};
+
+\draw[seta] (mapa) -- node[above, rotulo]{$x_1(n)$} (fir);
+\draw[seta] (fir) -- node[above, rotulo]{$x_3(n)$} (soma);
+\draw[seta] (m) -- (mu);
+\draw[seta] (mu) -- (soma);
+\draw[seta] (soma) -- node[above, rotulo]{$s(n)$} (canal);
+\draw[seta] (canal) -- node[above, rotulo, pos=0.28]{$r(n)$} (sub);
+% realimentação de s(n) para o mapa
+\coordinate (fb) at (6.1,0);
+\fill (fb) circle (1.2pt);
+\draw[seta] (fb) -- (6.1,-1.1) -- (0,-1.1) -- (mapa.south);
+% r(n) desce fora da caixa e entra pela lateral esquerda da cópia
+\coordinate (rc) at (8.55,0);
+\fill (rc) circle (1.2pt);
+\draw[seta] (rc) -- (8.55,-2.0) -- (copia.west);
+\draw[seta] (copia) -- (firr);
+\draw[seta] (firr) -- node[right, rotulo]{$\hat x_3(n)$} (sub);
+\draw[seta] (sub) -- (inv);
+\draw[seta] (inv.east) -- ++(1.0,0);
+% sinais do somador do receptor, cada um do lado da sua seta
+\node[rotulo, anchor=south east, inner sep=1pt] at (sub.west) {$+$};
+\node[rotulo, anchor=north east, inner sep=1pt] at (sub.south) {$-$};
+\node[rotulo] at (2.5,2.35) {Transmissor};
+\node[rotulo] at (11.75,2.35) {Receptor};
+\end{tikzpicture}
+\end{document}

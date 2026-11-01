@@ -16,20 +16,29 @@
       ]
     },
     "desempenho": {
-      "source": "benchmarks/baseline/pfc_bench_i7_8550u.json e sweeps_184_i7_8550u.json",
+      "source": "articles/pfc/revisao/scripts/medir_desempenho.py (saída em scripts/saida/desempenho.json, medianas de 5 repetições); a linha da compilação usa benchmarks/baseline/pfc_bench_i7_8550u.json (carga mini_sweep_30_points, 5 repetições, mesma máquina)",
       "values": [
         53.3,
-        3.58,
-        11.24,
-        3.14,
-        575,
-        9.59,
-        1.0,
-        8,
-        4,
-        5,
-        3,
-        4000
+        0.492,
+        0.0092,
+        7.72,
+        2.94,
+        2.6,
+        1.36,
+        2.2,
+        24.05,
+        0.6,
+        40.1,
+        4.56,
+        3.24,
+        708,
+        3000,
+        3992,
+        4000,
+        184,
+        41,
+        30,
+        5
       ]
     },
     "comunicacao": {
@@ -90,7 +99,11 @@
       "values": [
         8550,
         31.1,
-        1.18
+        1.18,
+        3.14,
+        2.5,
+        4,
+        0.68
       ]
     },
     "endereco": {
@@ -206,6 +219,17 @@
         22740317,
         645
       ]
+    },
+    "hierarquia": {
+      "source": "articles/pfc/revisao/hierarquia.md (medida de tamanho de efeito por fator)",
+      "values": [
+        0.731,
+        0.495,
+        0.321,
+        4,
+        7,
+        40
+      ]
     }
   },
   "citation_years": [
@@ -218,7 +242,9 @@
     1995,
     1996,
     2003,
+    2006,
     2009,
+    2011,
     2014,
     2015,
     2016,

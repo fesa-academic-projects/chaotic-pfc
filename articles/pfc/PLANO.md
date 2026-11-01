@@ -113,7 +113,7 @@ estudo de caso (BER), limitações. 200 a 240 palavras.
   confina o espectro transmitido. / Eisencraft 2009; Fontes 2016.
 - **P3** O filtro preserva a sincronização, mas pode destruir o caos do gerador, e isso
   muda com cada escolha de tipo, janela, ordem e corte. / Borges 2026; Candido 2015;
-  Borges e Eisencraft 2022a, 2022b; Borges, Silva e Eisencraft 2023, 2024; Silva et al. 2026a.
+  Borges e Eisencraft 2022a, 2022b; Borges, Silva e Eisencraft 2023, 2024.
 - **P4** Verificar o caos de cada projeto exige uma cadeia longa de cálculo, e um erro
   silencioso em qualquer etapa produz uma conclusão errada com aparência correta; daí a
   pergunta do trabalho: como construir, validar e usar uma ferramenta confiável para essa
@@ -148,7 +148,7 @@ estudo de caso (BER), limitações. 200 a 240 palavras.
   expoente. / equação; Benettin 1980a,b; Wolf 1985.
 - **P2** Na prática usa-se uma estimativa de tempo finito e um limiar θ = 5 × 10⁻³, com
   três classes; o limiar é uma decisão operacional e a classificação é local no espaço de
-  estados. / Sprott 2003; Silva et al. 2026a.
+  estados. / Sprott 2003.
 
 **2.4 Enlace mestre-escravo**
 - **P1** Transmissor e receptor com o mesmo gerador; a mensagem modula a portadora e o
