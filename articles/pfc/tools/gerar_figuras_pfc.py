@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 r"""Generate the PFC data figures in Portuguese, with comma decimals.
 
-The figures are rebuilt from the versioned sweeps in ``data/sweeps`` and from
-the communication pipeline of ``chaotic_pfc``. Nothing is recomputed from a
-different data set: the sweeps and the modulator/receiver are the same used by
-the manuscript. Output names match the ``\\includegraphics`` calls of
-``artigo.tex``.
+Every figure is rebuilt from the versioned sweeps in ``data/sweeps`` and from
+the communication pipeline of ``chaotic_pfc``; nothing is edited by hand.
+The style comes from :mod:`tools.paper_style`, which fixes the advisor
+standard shared with the JCIS: Times face, text at the caption size, figures
+produced already at their final printed width, red/blue/gray classification
+and comma decimals.
+
+Output names match the ``\includegraphics`` calls of ``artigo.tex``.
 
 Usage::
 
@@ -16,36 +19,43 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
+from typing import Any
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
-from scipy.signal import firwin
+from scipy.signal import firwin, freqz
 
-from chaotic_pfc._rounding import round_decimal
-from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep
-from chaotic_pfc.analysis.sweep_plotting import (
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+
+from chaotic_pfc._rounding import round_decimal  # noqa: E402
+from chaotic_pfc.analysis.sweep import LAMBDA_CHAOS_THRESHOLD, load_sweep  # noqa: E402
+from chaotic_pfc.analysis.sweep_plotting import (  # noqa: E402
     plot_chaotic_density_norm,
     plot_classification_interleaved,
 )
-from chaotic_pfc.analysis.sweep_plotting._common import (
-    COLOR_CHAOTIC,
-    COLOR_PERIODIC,
-    COLOR_UNBOUNDED,
+from chaotic_pfc.comms.channel import fir_channel  # noqa: E402
+from chaotic_pfc.comms.receiver import receive, receive_order_n  # noqa: E402
+from chaotic_pfc.comms.transmitter import transmit, transmit_order_n  # noqa: E402
+from chaotic_pfc.config import DEFAULT_CONFIG as CFG  # noqa: E402
+from chaotic_pfc.dynamics.maps import henon_generalised  # noqa: E402
+from chaotic_pfc.dynamics.signals import text_message  # noqa: E402
+from chaotic_pfc.dynamics.spectral import psd_normalised  # noqa: E402
+from tools.paper_style import (  # noqa: E402
+    SERIES,
+    Style,
+    apply,
+    class_handles,
+    install_sweep_palette,
+    save,
 )
-from chaotic_pfc.comms.channel import fir_channel
-from chaotic_pfc.comms.receiver import receive, receive_order_n
-from chaotic_pfc.comms.transmitter import transmit, transmit_order_n
-from chaotic_pfc.config import DEFAULT_CONFIG as CFG
-from chaotic_pfc.dynamics.signals import text_message
-from chaotic_pfc.dynamics.spectral import psd_normalised
 
-ROOT = Path(__file__).resolve().parents[3]
 SWEEPS = ROOT / "data/sweeps"
 OUT = ROOT / "articles/pfc/figures"
 
@@ -63,129 +73,206 @@ TYPE_LABELS = {
     "bandstop": "Rejeita-faixa",
 }
 
+WINDOW_LABELS = {
+    "rectangular": "Retangular",
+    "hamming": "Hamming",
+    "blackmanharris": "Blackman-Harris",
+    "kaiser": r"Kaiser, $\beta_K=17$",
+}
+
 COMM_WINDOW = (2000, 2400)
 FILTER_CUTOFF = 0.52
 FILTER_TAPS = 9
+FIR_CUTOFF = 0.4
 
 
-def setup() -> None:
-    """Configure a serif face close to the article body and vector PDFs."""
-    plt.rcParams.update(
-        {
-            "text.usetex": False,
-            "font.family": "serif",
-            "font.serif": ["Liberation Serif"],
-            "mathtext.fontset": "stix",
-            "axes.unicode_minus": True,
-            "pdf.fonttype": 42,
-            "ps.fonttype": 42,
-            "font.size": 9,
-            "axes.labelsize": 9,
-            "xtick.labelsize": 8,
-            "ytick.labelsize": 8,
-            "legend.fontsize": 7,
-            "figure.dpi": 150,
-            "savefig.dpi": 300,
-            "axes.linewidth": 0.8,
-        }
+def setup() -> Style:
+    """Apply the shared figure style and point the sweep palette at it."""
+    st = apply("pfc")
+    install_sweep_palette()
+    return st
+
+
+def series(index: int) -> dict[str, Any]:
+    """Colour and line style of series ``index`` in the advisor order."""
+    color, ls = SERIES[index % len(SERIES)]
+    return {"color": color, "linestyle": ls}
+
+
+def legend_above(fig: plt.Figure, handles: list[Any], *, ncol: int, pad: float = 1.0) -> None:
+    """Place the legend above the axes, outside the plotting area."""
+    fig.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, pad),
+        ncol=ncol,
+        handlelength=1.5,
+        handleheight=0.8,
+        columnspacing=1.4,
     )
 
 
-def comma(value: float, _pos: float | None = None) -> str:
-    """Format a tick with a decimal comma and a typographic minus."""
-    text = f"{value:g}"
-    return text.replace(".", ",").replace("-", "\u2212")
+# ── Fig. 1: Hénon signals ──────────────────────────────────────────────────
 
 
-def save(fig: plt.Figure, path: Path) -> None:
-    """Write a deterministic PDF without metadata dates."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(
-        path,
-        format="pdf",
-        bbox_inches="tight",
-        facecolor="white",
-        metadata={"Creator": "chaotic-pfc", "CreationDate": None, "ModDate": None},
-    )
-    plt.close(fig)
-    print(f"wrote {path.relative_to(ROOT)}")
-
-
-def legend_handles() -> list[Patch]:
-    """Return the classification key in the order requested by the text."""
-    return [
-        Patch(facecolor=COLOR_CHAOTIC, edgecolor="gray", label="Caótico"),
-        Patch(facecolor=COLOR_PERIODIC, edgecolor="gray", label="Não caótico"),
-        Patch(facecolor=COLOR_UNBOUNDED, edgecolor="gray", label="Divergente"),
-    ]
-
-
-def style_classification(fig: plt.Figure, *, legend: bool) -> None:
-    """Apply comma ticks and the Portuguese legend to a classification panel."""
-    ax = fig.axes[0]
-    ax.yaxis.set_major_formatter(FuncFormatter(comma))
-    if legend:
-        ax.legend(
-            handles=legend_handles(),
-            loc="upper right",
-            fontsize=6.5,
-            framealpha=0.95,
-            edgecolor="gray",
-            fancybox=False,
-            handlelength=1.2,
-            handleheight=0.8,
-            borderpad=0.4,
+def henon(st: Style) -> None:
+    """Write the two-panel Hénon trace of Fig. 1."""
+    n_steps = 99
+    n = np.arange(n_steps + 1)
+    fig, axes = st.subplots(2, 1, height_in=2.4, sharex=True)
+    for ax, (label, alpha) in zip(axes, (("a", 1.4), ("b", 0.9)), strict=True):
+        x1_a, _ = henon_generalised(n_steps, x0=0.0, y0=0.0, alpha=alpha, beta=0.3)
+        x1_b, _ = henon_generalised(n_steps, x0=0.0, y0=0.001, alpha=alpha, beta=0.3)
+        ax.plot(n, x1_a, lw=1.0, label=r"$x_1(0)=x_2(0)=0$", **series(0))
+        ax.plot(n, x1_b, lw=1.0, label=r"$x_1(0)=0,\ x_2(0)=0{,}001$", **series(1))
+        ax.set_title(
+            f"({label})  " + rf"$\alpha={st.number(alpha)}$, $\beta={st.number(0.3)}$",
+            loc="left",
+            pad=3,
         )
+        ax.set_ylabel(r"$x_1(n)$")
+        ax.set_yticks([-1.0, 0.0, 1.0] if label == "a" else [0.0, 1.0])
+        ax.yaxis.set_major_formatter(st.formatter)
+        ax.grid(alpha=0.3)
+    axes[1].set_xticks([0, 20, 40, 60, 80, 100])
+    axes[1].xaxis.set_major_formatter(st.formatter)
+    axes[1].set_xlabel("$n$")
+    handles, _ = axes[0].get_legend_handles_labels()
+    legend_above(fig, handles, ncol=2, pad=0.995)
+    fig.subplots_adjust(left=0.088, right=0.995, top=0.80, bottom=0.17, hspace=0.7)
+    save(fig, OUT / "fig_henon_signals_h.pdf")
+    print(f"wrote {(OUT / 'fig_henon_signals_h.pdf').relative_to(ROOT)}")
 
 
-def classification() -> None:
-    """Write the four classification maps."""
-    for k, (name, stem) in enumerate(CLASSIFICATION):
+# ── Fig. 2: FIR responses ──────────────────────────────────────────────────
+
+
+def _response(numtaps: int, window: str | tuple[str, float]) -> tuple[np.ndarray, np.ndarray]:
+    coeffs = firwin(numtaps=numtaps, cutoff=FIR_CUTOFF, window=window, pass_zero=True, fs=2.0)
+    w, h = freqz(coeffs, worN=2048, fs=2.0)
+    return w, 20.0 * np.log10(np.maximum(np.abs(h), 1e-12))
+
+
+def fir(st: Style) -> None:
+    """Write the two-panel frequency response of Fig. 2."""
+    fig, axes = st.subplots(1, 2, height_in=3.05, sharey=True)
+    panels = (
+        (
+            "(a) janelas diferentes, $N_z=20$",
+            [
+                ("rectangular", 21),
+                ("hamming", 21),
+                ("blackmanharris", 21),
+                (("kaiser", 17.0), 21),
+            ],
+            ("rectangular", "hamming", "blackmanharris", "kaiser"),
+        ),
+        (
+            "(b) janela de Hamming, ordens diferentes",
+            [("hamming", 5), ("hamming", 9), ("hamming", 21), ("hamming", 41)],
+            ("4", "8", "20", "40"),
+        ),
+    )
+    for ax, (title, curves, labels) in zip(axes, panels, strict=True):
+        for index, ((window, taps), label) in enumerate(zip(curves, labels, strict=True)):
+            w, mag = _response(taps, window)
+            name = WINDOW_LABELS.get(label, f"$N_z={label}$")
+            ax.plot(w, mag, lw=1.0, label=name, **series(index))
+        ax.axvline(FIR_CUTOFF, color="0.35", lw=0.6, ls=":")
+        ax.set_xlim(0.0, 1.0)
+        ax.set_ylim(-160.0, 5.0)
+        ax.set_title(title, loc="left", pad=3)
+        ax.set_xlabel(r"$\omega/\pi$")
+        ax.xaxis.set_major_formatter(st.formatter)
+        ax.yaxis.set_major_formatter(st.formatter)
+        ax.grid(alpha=0.3)
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.30),
+            ncol=2,
+            handlelength=1.4,
+            columnspacing=1.2,
+        )
+    axes[0].set_ylabel(r"$|H(e^{j\omega})|$ (dB)")
+    fig.subplots_adjust(left=0.085, right=0.995, top=0.90, bottom=0.36, wspace=0.12)
+    save(fig, OUT / "fig_fir_respostas.pdf")
+    print(f"wrote {(OUT / 'fig_fir_respostas.pdf').relative_to(ROOT)}")
+
+
+# ── Fig. 9: classification maps ────────────────────────────────────────────
+
+
+def classification(st: Style) -> None:
+    """Write the four classification maps and their shared key."""
+    for name, stem in CLASSIFICATION:
         sweep = load_sweep(SWEEPS / name / "variables_lyapunov.npz")
         fig = plot_classification_interleaved(
             sweep,
             lang="pt",
-            figsize=(3.6, 2.4),
-            label_fontsize=9.0,
-            tick_fontsize=8.0,
+            figsize=st.figsize(0.49, aspect=0.67),
+            label_fontsize=st.caption_pt,
+            tick_fontsize=st.caption_pt,
             legend=False,
             ytick_step=0.2,
             xtick_step=10,
         )
-        style_classification(fig, legend=k == 0)
+        ax = fig.axes[0]
+        ax.yaxis.set_major_formatter(FuncFormatter(st.number))
+        ax.grid(False)
         save(fig, OUT / f"{stem}.pdf")
+        print(f"wrote {(OUT / f'{stem}.pdf').relative_to(ROOT)}")
+
+    fig, ax = st.subplots(1, 1, fraction=1.0, height_in=0.32)
+    ax.axis("off")
+    fig.legend(
+        handles=class_handles("pt"),
+        loc="center",
+        ncol=3,
+        handlelength=1.6,
+        handleheight=0.8,
+        columnspacing=2.4,
+    )
+    save(fig, OUT / "legenda_classificacao.pdf")
+    print(f"wrote {(OUT / 'legenda_classificacao.pdf').relative_to(ROOT)}")
 
 
-def density() -> None:
+# ── Fig. 10: aggregate chaotic density ─────────────────────────────────────
+
+
+def density(st: Style) -> None:
     """Write the normalised chaotic-density map."""
     fig = plot_chaotic_density_norm(
         SWEEPS,
         lang="pt",
-        figsize=(6.2, 3.4),
-        label_fontsize=9.0,
-        tick_fontsize=8.0,
-        cbar_fontsize=8.0,
+        figsize=st.figsize(0.9, aspect=0.57),
+        label_fontsize=st.caption_pt,
+        tick_fontsize=st.caption_pt,
+        cbar_fontsize=st.caption_pt,
         show_title=False,
         ytick_step=0.2,
         xtick_step=10,
         strict=True,
     )
     ax = fig.axes[0]
-    ax.yaxis.set_major_formatter(FuncFormatter(comma))
+    ax.yaxis.set_major_formatter(FuncFormatter(st.number))
     for line in list(ax.lines):
         line.remove()
     if len(fig.axes) > 1:
         cbar = fig.axes[1]
-        cbar.yaxis.set_major_formatter(FuncFormatter(comma))
-        cbar.set_ylabel("porcentagem das configurações (%)", fontsize=8.0)
-    fig.tight_layout()
+        cbar.yaxis.set_major_formatter(FuncFormatter(st.number))
+        cbar.set_ylabel("porcentagem das configurações (%)", fontsize=st.caption_pt)
+    fig.tight_layout(pad=0.2)
     save(fig, OUT / "fig_chaotic_density_norm.pdf")
+    print(f"wrote {(OUT / 'fig_chaotic_density_norm.pdf').relative_to(ROOT)}")
 
 
-def kaiser() -> None:
+# ── Fig. 11: chaotic coverage against the Kaiser beta ──────────────────────
+
+
+def kaiser(st: Style) -> None:
     """Write the chaotic coverage as a function of the Kaiser beta."""
-    fig, ax = plt.subplots(figsize=(6.0, 3.2))
-    for ft in ("lowpass", "highpass", "bandpass", "bandstop"):
+    fig, ax = st.subplots(1, 1, fraction=0.8, aspect=0.60)
+    for index, ft in enumerate(("lowpass", "highpass", "bandpass", "bandstop")):
         rows = []
         for path in sorted((SWEEPS / "kaiser" / ft).glob("beta_*/variables_lyapunov.npz")):
             sweep = load_sweep(path)
@@ -196,7 +283,7 @@ def kaiser() -> None:
         rows.sort()
         betas = np.array([row[0] for row in rows])
         coverage = np.array([row[1] for row in rows])
-        ax.plot(betas, coverage, marker="o", ms=2.4, lw=0.9, label=TYPE_LABELS[ft])
+        ax.plot(betas, coverage, marker="o", ms=2.4, lw=1.0, label=TYPE_LABELS[ft], **series(index))
         best = int(np.argmax(coverage))
         print(
             f"[kaiser] {ft}: max {round_decimal(float(coverage[best]), 1)}% at beta_K={betas[best]:g}; "
@@ -206,51 +293,60 @@ def kaiser() -> None:
     ax.set_xlabel(r"$\beta_K$")
     ax.set_ylabel("cobertura caótica (%)")
     ax.set_xlim(0.0, 20.5)
-    ax.xaxis.set_major_formatter(FuncFormatter(comma))
-    ax.yaxis.set_major_formatter(FuncFormatter(comma))
-    ax.grid(alpha=0.25, lw=0.4)
-    ax.legend(frameon=False, fontsize=7.5)
-    fig.tight_layout()
+    ax.xaxis.set_major_formatter(FuncFormatter(st.number))
+    ax.yaxis.set_major_formatter(FuncFormatter(st.number))
+    handles, _ = ax.get_legend_handles_labels()
+    legend_above(fig, handles, ncol=4, pad=0.995)
+    fig.subplots_adjust(left=0.13, right=0.99, top=0.79, bottom=0.19)
     save(fig, OUT / "fig_kaiser_beta.pdf")
+    print(f"wrote {(OUT / 'fig_kaiser_beta.pdf').relative_to(ROOT)}")
 
 
-def hamming() -> None:
-    """Write the Hamming lowpass map with the chosen project marked."""
+# ── Fig. 12: Hamming lowpass map with the chosen design ────────────────────
+
+
+def hamming(st: Style) -> None:
+    """Write the Hamming lowpass map with the chosen project circled."""
     sweep = load_sweep(SWEEPS / "Hamming (lowpass)" / "variables_lyapunov.npz")
     fig = plot_classification_interleaved(
         sweep,
         lang="pt",
-        figsize=(3.6, 1.9),
-        label_fontsize=8.5,
-        tick_fontsize=7.0,
+        figsize=st.figsize(0.70, aspect=0.63),
+        label_fontsize=st.caption_pt,
+        tick_fontsize=st.caption_pt,
         legend=False,
         ytick_step=0.2,
         xtick_step=10,
     )
-    style_classification(fig, legend=True)
     ax = fig.axes[0]
+    ax.yaxis.set_major_formatter(FuncFormatter(st.number))
+    ax.grid(False)
     target = 8
     row = int(np.flatnonzero(np.asarray(sweep.num_taps_grid) == target + 1)[0])
-    x = row * 4 + 1
     ax.plot(
-        [x],
+        [row * 4 + 1],
         [FILTER_CUTOFF],
         marker="o",
-        markersize=5.5,
-        markerfacecolor="none",
+        markersize=7,
+        markerfacecolor="white",
         markeredgecolor="black",
         markeredgewidth=1.2,
         linestyle="none",
         zorder=20,
     )
-    fig.tight_layout()
+    legend_above(fig, class_handles("pt"), ncol=3, pad=0.99)
+    fig.subplots_adjust(left=0.13, right=0.99, top=0.80, bottom=0.17)
     save(fig, OUT / "hamming_lowpass_classification.pdf")
+    print(f"wrote {(OUT / 'hamming_lowpass_classification.pdf').relative_to(ROOT)}")
 
     nearest = int(np.argmin(np.abs(np.asarray(sweep.cutoff_grid) - FILTER_CUTOFF)))
     print(
         f"[hamming] Nz={target} cutoff={round_decimal(float(sweep.cutoff_grid[nearest]), 10)} "
         f"lambda1={round_decimal(float(sweep.h[row, nearest]), 10)}"
     )
+
+
+# ── Figs. 8 and 13: eight-panel communication figures ──────────────────────
 
 
 def _psd(signal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -267,37 +363,36 @@ def _psd(signal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 def _panel(
     ax: plt.Axes,
+    st: Style,
     x: np.ndarray,
     y: np.ndarray,
     *,
     title: str,
-    ylabel: str,
-    xlabel: str,
     reference: np.ndarray | None = None,
     reference_label: str = "",
     solid_label: str = "mensagem recuperada",
     ylim: tuple[float, float] | None = None,
 ) -> None:
     if reference is not None:
-        ax.plot(x, reference, color="black", lw=0.6, ls="--", label=reference_label)
-    ax.plot(x, y, color="tab:blue", lw=0.7, label=solid_label if reference is not None else None)
-    ax.set_title(title, loc="left", fontsize=6.5, pad=2)
-    ax.set_ylabel(ylabel, fontsize=6.5)
-    ax.set_xlabel(xlabel, fontsize=6.5)
+        ax.plot(x, reference, color="black", ls="--", lw=0.8, label=reference_label)
+    ax.plot(x, y, lw=0.8, label=solid_label if reference is not None else None, **series(0))
+    ax.set_title(title, loc="left", pad=2)
     if ylim is not None:
         ax.set_ylim(*ylim)
-    ax.xaxis.set_major_formatter(FuncFormatter(comma))
-    ax.yaxis.set_major_formatter(FuncFormatter(comma))
-    ax.grid(alpha=0.25, lw=0.4)
+    ax.xaxis.set_major_formatter(FuncFormatter(st.number))
+    ax.yaxis.set_major_formatter(FuncFormatter(st.number))
+    ax.grid(alpha=0.3)
 
 
 def _comm_figure(
+    st: Style,
     message: np.ndarray,
     sent: np.ndarray,
     received: np.ndarray,
     recovered: np.ndarray,
     path: Path,
     *,
+    fraction: float,
     clip_recovered: bool,
 ) -> None:
     delay = (CFG.channel.num_taps - 1) // 2
@@ -305,25 +400,25 @@ def _comm_figure(
     n = np.arange(start, stop)
     delayed = message[n - delay]
 
-    fig, axes = plt.subplots(4, 2, figsize=(5.2, 3.8))
+    aspect = 0.755
+    fig, axes = st.subplots(4, 2, fraction=fraction, aspect=aspect, sharex="col")
     panel_labels = ("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)")
     rows = (
-        ("mensagem", message, False),
-        ("sinal transmitido", sent, False),
-        ("sinal recebido", received, False),
-        ("mensagem recuperada", recovered, clip_recovered),
+        ("mensagem", "mensagem", message, False),
+        ("sinal transmitido", "transmitido", sent, False),
+        ("sinal recebido", "recebido", received, False),
+        ("mensagem recuperada", "recuperado", recovered, clip_recovered),
     )
-    for row, (label, signal, clipped) in enumerate(rows):
+    for row, (label, short, signal, clipped) in enumerate(rows):
         ylim = (-3.0, 3.0) if clipped else None
-        suffix = " (limitada a ±3)" if clipped else ""
+        suffix = "\n(limitada a ±3)" if clipped else ""
         reference = delayed if row == 3 else None
         _panel(
             axes[row, 0],
+            st,
             n,
             signal[n],
             title=f"{panel_labels[row]} {label}{suffix}",
-            ylabel="amplitude",
-            xlabel="amostra",
             reference=reference,
             reference_label="mensagem enviada (atrasada)",
             ylim=ylim,
@@ -331,27 +426,26 @@ def _comm_figure(
         omega, values = _psd(signal)
         _panel(
             axes[row, 1],
+            st,
             omega,
             values,
-            title=f"{panel_labels[row + 4]} espectro de {label}",
-            ylabel="densidade espectral",
-            xlabel=r"$\omega/\pi$",
+            title=f"{panel_labels[row + 4]} espectro do {short}"
+            if short != "mensagem"
+            else f"{panel_labels[row + 4]} espectro da mensagem",
         )
-    handles, labels = axes[3, 0].get_legend_handles_labels()
-    fig.legend(
-        handles,
-        labels,
-        fontsize=6.0,
-        frameon=False,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 1.01),
-        ncol=2,
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    axes[0, 0].set_ylabel("amplitude")
+    axes[0, 1].set_ylabel("densidade espectral")
+    for ax in axes[-1, :]:
+        ax.set_xlabel("amostra")
+    axes[-1, 1].set_xlabel(r"$\omega/\pi$")
+    handles, _ = axes[3, 0].get_legend_handles_labels()
+    legend_above(fig, handles, ncol=2, pad=0.995)
+    fig.subplots_adjust(left=0.115, right=0.995, top=0.87, bottom=0.10, hspace=0.72, wspace=0.28)
     save(fig, path)
+    print(f"wrote {path.relative_to(ROOT)}")
 
 
-def comm() -> None:
+def comm(st: Style) -> None:
     """Write the failure and the filtered-link eight-panel figures."""
     comm_cfg = CFG.comm
     message = text_message(comm_cfg.message_text, comm_cfg.N, bit_period=comm_cfg.message_period)
@@ -368,7 +462,14 @@ def comm() -> None:
         z0=rng.random(),
     )
     _comm_figure(
-        message, sent, received, recovered, OUT / "fig_comm_falha.pdf", clip_recovered=True
+        st,
+        message,
+        sent,
+        received,
+        recovered,
+        OUT / "fig_comm_falha.pdf",
+        fraction=0.82,
+        clip_recovered=True,
     )
 
     coeffs = firwin(
@@ -385,11 +486,20 @@ def comm() -> None:
     received_f, _ = fir_channel(sent_f, cutoff=CFG.channel.cutoff, num_taps=CFG.channel.num_taps)
     recovered_f, _ = receive_order_n(received_f, coeffs, mu=comm_cfg.mu, alpha=1.4, beta=0.3, y0=y0)
     _comm_figure(
-        message, sent_f, received_f, recovered_f, OUT / "fig_comm_filtro.pdf", clip_recovered=False
+        st,
+        message,
+        sent_f,
+        received_f,
+        recovered_f,
+        OUT / "fig_comm_filtro.pdf",
+        fraction=0.80,
+        clip_recovered=False,
     )
 
 
 GENERATORS = {
+    "henon": henon,
+    "fir": fir,
     "classification": classification,
     "density": density,
     "kaiser": kaiser,
@@ -408,10 +518,10 @@ def main() -> int:
         help="Generate only one group of figures.",
     )
     args = parser.parse_args()
-    setup()
+    st = setup()
     names = list(GENERATORS) if args.only == "all" else [args.only]
     for name in names:
-        GENERATORS[name]()
+        GENERATORS[name](st)
     return 0
 
 

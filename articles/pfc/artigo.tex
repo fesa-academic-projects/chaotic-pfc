@@ -23,14 +23,14 @@
                    align=center, font=\small, fill=black!6},
   seta/.style={-{Stealth[length=2mm]}, thick},
   grupo/.style={draw, dashed, rounded corners=4pt, inner sep=3mm},
-  rotulo/.style={font=\footnotesize},
+  rotulo/.style={font=\small},
   comp/.style={bloco, text width=42mm, minimum height=12mm,
                execute at begin node={\hyphenpenalty=10000 }},
   passo/.style={bloco, text width=62mm, minimum height=9mm,
                 execute at begin node={\hyphenpenalty=10000 }},
   saida/.style={terminal, text width=26mm},
 }
-\newcommand{\comp}[2]{\textbf{#1}\\[-1pt]{\scriptsize #2}}
+\newcommand{\comp}[2]{\textbf{#1}\\[-1pt]{#2}}
 
 % ----------------------------------------------------------------------------
 %  DADOS DO TRABALHO
@@ -608,15 +608,15 @@ de conceito é 10.5281/zenodo.22740317.
 
 \begin{figura}{Componentes da ferramenta e fluxo de dados entre eles.}{Fonte:
 Elaborada pelos autores (2026)}
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}
 \node[comp] (cfg) at (0,0)      {\comp{Configuração}{parâmetros do mapa, do filtro e da grade}};
-\node[comp] (cli) at (0,-1.9)   {\comp{Interface de linha de comando}{coordena as execuções}};
-\node[comp] (var) at (-4.9,-3.9){\comp{Varredura}{núcleo compilado e paralelo}};
-\node[comp] (din) at (0,-3.9)   {\comp{Dinâmica}{mapa, filtro FIR, estimador}};
-\node[comp] (com) at (4.9,-3.9) {\comp{Comunicação}{transmissor, canal, receptor}};
-\node[comp] (per) at (-4.9,-5.9){\comp{Persistência}{arquivos com verificação de integridade}};
-\node[comp] (ana) at (0,-7.9)   {\comp{Análise}{classes, estatísticas, mapas, sinais}};
-\node[comp] (man) at (0,-9.9)   {\comp{Publicação}{figuras, tabelas e números do texto}};
+\node[comp] (cli) at (0,-2.1)   {\comp{Interface}{coordena as execuções}};
+\node[comp] (var) at (-5.2,-4.8){\comp{Varredura}{núcleo compilado e paralelo}};
+\node[comp] (din) at (0,-4.8)   {\comp{Dinâmica}{mapa, filtro FIR, estimador}};
+\node[comp] (com) at (5.2,-4.8) {\comp{Comunicação}{transmissor, canal, receptor}};
+\node[comp] (per) at (-5.2,-6.9){\comp{Persistência}{arquivos com verificação de integridade}};
+\node[comp] (ana) at (0,-9.6)   {\comp{Análise}{classes, estatísticas, mapas, sinais}};
+\node[comp] (man) at (0,-11.7)  {\comp{Publicação}{figuras, tabelas e números do texto}};
 \draw[seta] (cfg) -- (cli);
 \draw[seta] (cli.west) -| (var.north);
 \draw[seta] (cli.east) -| (com.north);
@@ -651,7 +651,7 @@ pontos.
 
 \begin{figura}{Fluxograma da estimativa do maior expoente de Lyapunov e da
 classificação de cada ponto da grade.}{Fonte: Elaborada pelos autores (2026)}
-\begin{tikzpicture}[node distance=6mm, scale=0.88, transform shape]
+\begin{tikzpicture}[node distance=6mm]
 \node[passo] (ic) {Sortear 25 condições iniciais perto do ponto fixo};
 \node[passo, below=of ic] (bi) {Iterar 500 vezes e descartar o\ transiente do estimador};
 \node[decisao, below=of bi] (nf) {Estado não\\finito};
@@ -898,10 +898,13 @@ pontos divergentes.
 configuração de maior cobertura caótica de cada tipo de filtro: (a)
 passa-baixas, Kaiser com $\beta_K=17$; (b) passa-altas, Kaiser com
 $\beta_K=15{,}5$; (c) passa-faixa, Kaiser com $\beta_K=15{,}5$; (d)
-rejeita-faixa, janela retangular. Caótico em roxo escuro, não caótico em verde
-azulado e divergente em cinza claro; as três cores se distinguem em escala de
-cinza.}{Fonte: Elaborada pelos autores (2026)}
+rejeita-faixa, janela retangular. Divergente em cinza claro, caótico em
+vermelho e não caótico em azul, na mesma ordem da~\eqref{eq:criterio_pfc}; as
+três cores se distinguem em escala de cinza.}{Fonte: Elaborada pelos autores
+(2026)}
 \begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/legenda_classificacao}\\[-2pt]
 \begin{minipage}[t]{0.49\textwidth}\centering
   \includegraphics[width=\linewidth]{figures/kaiser_b17p0_lowpass_classification_interleaved}\\
   (a) passa-baixas
