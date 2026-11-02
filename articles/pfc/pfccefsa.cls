@@ -167,9 +167,10 @@
 %%                 troque o "-" do \AtBeginDocument abaixo por \textendash
 %% ---------------------------------------------------------------------------
 
-% 8.1.1.2 — a lista de referências indica todos os autores (a citação, que
-% segue a NBR 10520:2023, continua com "et al." a partir de quatro).
-\ExecuteBibliographyOptions{maxbibnames=99}
+% 8.1.1.2 — por limite de páginas, obras com quatro ou mais autores usam o
+% primeiro autor seguido de "et al."; duas ou três autores são listados. A
+% citação segue a NBR 10520:2023.
+\ExecuteBibliographyOptions{maxbibnames=3}
 
 % 7.7.6 — o DOI vira https://doi.org/... (o campo continua sendo só o
 % identificador: doi = {10.1007/s11116-023-10391-3}).
