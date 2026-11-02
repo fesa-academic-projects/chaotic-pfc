@@ -471,33 +471,35 @@ pelos autores (2026)}
 \node[soma]  (soma)  at (2.5,0)   {$\Sigma$};
 \node[bloco, minimum width=8mm] (mu) at (2.5,1.5) {$\mu$};
 \node[rotulo] (m)    at (1.1,1.5) {$m(n)$};
-\node[bloco, minimum width=14mm] (canal) at (4.85,0) {Canal};
-\node[soma]  (sub)   at (7.2,0)   {$\Sigma$};
-\node[bloco, minimum width=17mm] (copia) at (7.2,-2.0) {Mapa de\\Hénon};
-\node[bloco, minimum width=8mm] (inv) at (9.25,0) {$1/\mu$};
-\node[rotulo, anchor=west] (mh) at (10.95,0) {$\hat m(n)$};
+\node[bloco, minimum width=14mm] (canal) at (4.2,0) {Canal};
+\node[soma]  (sub)   at (7.5,0)   {$\Sigma$};
+\node[bloco, minimum width=14mm] (copia) at (7.5,-2.0) {Mapa de\\Hénon};
+\node[bloco, minimum width=8mm] (inv) at (9.5,0) {$1/\mu$};
+\node[rotulo, anchor=west] (mh) at (11.0,0) {$\hat m(n)$};
 
 \draw[seta] (mapa) -- node[above, rotulo]{$x_1(n)$} (soma);
 \draw[seta] (m) -- (mu);
 \draw[seta] (mu) -- (soma);
-\draw[seta] (soma) -- node[above, rotulo]{$s(n)$} (canal);
+\draw[seta] (soma) -- (canal);
+\node[rotulo] at (3.35,0.62) {$s(n)$};
 \draw[seta] (canal) -- node[above, rotulo, pos=0.35]{$r(n)$} (sub);
 % realimentação de s(n) para o mapa
-\coordinate (fb) at (3.05,0);
+\coordinate (fb) at (2.8,0);
 \fill (fb) circle (1.2pt);
-\draw[seta] (fb) -- (3.05,-1.1) -- (0,-1.1) -- (mapa.south);
-% r(n) desce fora da caixa e entra pela lateral esquerda da cópia
-\coordinate (rc) at (5.9,0);
+\draw[seta] (fb) -- (2.8,-1.1) -- (0,-1.1) -- (mapa.south);
+% r(n): ponto médio entre canal e somador, desce no centro da cópia e entra
+% pela lateral esquerda com pelo menos 0,6 cm de trecho horizontal
+\coordinate (rc) at (6.2,0);
 \fill (rc) circle (1.2pt);
-\draw[seta] (rc) -- (5.9,-2.0) -- (copia.west);
+\draw[seta] (rc) -- (6.2,-2.0) -- (copia.west);
 \draw[seta] (copia) -- node[right, rotulo]{$\hat x_1(n)$} (sub);
 \draw[seta] (sub) -- (inv);
 \draw[seta] (inv.east) -- ++(1.2,0);
-% sinais do somador do receptor, cada um do lado da sua seta
-\node[rotulo, anchor=south east, inner sep=1pt] at (sub.west) {$+$};
-\node[rotulo, anchor=north east, inner sep=1pt] at (sub.south) {$-$};
+% sinais do somador do receptor
+\node[rotulo, anchor=south, inner sep=1pt] at ($(sub)+(-0.45,0.18)$) {$+$};
+\node[rotulo, anchor=west, inner sep=1pt] at ($(sub)+(0.32,-0.30)$) {$-$};
 \node[rotulo] at (0.95,2.35) {Transmissor};
-\node[rotulo] at (8.3,2.35) {Receptor};
+\node[rotulo] at (8.6,2.35) {Receptor};
 \end{tikzpicture}
 \label{fig:enlace_sem_pfc}
 \end{figura}
@@ -820,40 +822,44 @@ de texto codificada em bits, com 20 amostras por bit, e $10^6$ amostras.
 transmissor e no receptor.}{Fonte: Elaborada pelos autores (2026)}
 \begin{tikzpicture}
 \node[bloco, minimum width=17mm] (mapa)  at (0,0)     {Mapa de\\Hénon};
-\node[bloco, minimum width=17mm] (fir)   at (3.1,0)   {Filtro FIR\\$H(z)$};
-\node[soma]  (soma)  at (5.6,0)   {$\Sigma$};
-\node[bloco, minimum width=8mm] (mu) at (5.6,1.5) {$\mu$};
-\node[rotulo] (m)    at (4.2,1.5) {$m(n)$};
-\node[bloco, minimum width=14mm] (canal) at (7.8,0) {Canal};
-\node[soma]  (sub)   at (12.2,0)  {$\Sigma$};
-\node[bloco, minimum width=17mm] (copia) at (9.5,-2.0) {Mapa de\\Hénon};
-\node[bloco, minimum width=17mm] (firr)  at (12.2,-2.0) {Filtro FIR\\$H(z)$};
-\node[bloco, minimum width=8mm] (inv) at (14.2,0) {$1/\mu$};
-\node[rotulo, anchor=west] (mh) at (15.72,0) {$\hat m(n)$};
+\node[bloco, minimum width=17mm] (fir)   at (2.4,0)   {Filtro FIR\\$H(z)$};
+\node[soma]  (soma)  at (4.0,0)   {$\Sigma$};
+\node[bloco, minimum width=8mm] (mu) at (4.0,1.5) {$\mu$};
+\node[rotulo] (m)    at (2.6,1.5) {$m(n)$};
+\node[bloco, minimum width=14mm] (canal) at (5.7,0) {Canal};
+\node[soma]  (sub)   at (12.9,0)  {$\Sigma$};
+\node[bloco, minimum width=14mm] (copia) at (10.7,-2.0) {Mapa de\\Hénon};
+\node[bloco, minimum width=17mm] (firr)  at (12.9,-2.0) {Filtro FIR\\$H(z)$};
+\node[bloco, minimum width=8mm] (inv) at (14.8,0) {$1/\mu$};
+\node[rotulo, anchor=west] (mh) at (16.3,0) {$\hat m(n)$};
 
-\draw[seta] (mapa) -- node[above, rotulo]{$x_1(n)$} (fir);
-\draw[seta] (fir) -- node[above, rotulo]{$x_3(n)$} (soma);
+\draw[seta] (mapa) -- (fir);
+\node[rotulo] at (1.15,0.72) {$x_1(n)$};
+\draw[seta] (fir) -- (soma);
+\node[rotulo] at (3.6,0.72) {$x_3(n)$};
 \draw[seta] (m) -- (mu);
 \draw[seta] (mu) -- (soma);
-\draw[seta] (soma) -- node[above, rotulo]{$s(n)$} (canal);
+\draw[seta] (soma) -- (canal);
+\node[rotulo] at (4.9,0.72) {$s(n)$};
 \draw[seta] (canal) -- node[above, rotulo, pos=0.28]{$r(n)$} (sub);
 % realimentação de s(n) para o mapa
-\coordinate (fb) at (6.1,0);
+\coordinate (fb) at (4.6,0);
 \fill (fb) circle (1.2pt);
-\draw[seta] (fb) -- (6.1,-1.1) -- (0,-1.1) -- (mapa.south);
-% r(n) desce fora da caixa e entra pela lateral esquerda da cópia
-\coordinate (rc) at (8.55,0);
+\draw[seta] (fb) -- (4.6,-1.1) -- (0,-1.1) -- (mapa.south);
+% r(n): ponto médio entre canal e somador, desce no centro da cópia e entra
+% pela lateral esquerda com pelo menos 0,6 cm de trecho horizontal
+\coordinate (rc) at (9.4,0);
 \fill (rc) circle (1.2pt);
-\draw[seta] (rc) -- (8.55,-2.0) -- (copia.west);
-\draw[seta] (copia) -- (firr);
+\draw[seta] (rc) -- (9.4,-2.0) -- (copia.west);
+\draw[seta] (copia) -- node[above=0.62cm, rotulo]{$\hat x_1(n)$} (firr);
 \draw[seta] (firr) -- node[right, rotulo]{$\hat x_3(n)$} (sub);
 \draw[seta] (sub) -- (inv);
 \draw[seta] (inv.east) -- ++(1.0,0);
-% sinais do somador do receptor, cada um do lado da sua seta
-\node[rotulo, anchor=south east, inner sep=1pt] at (sub.west) {$+$};
-\node[rotulo, anchor=north east, inner sep=1pt] at (sub.south) {$-$};
-\node[rotulo] at (2.5,2.35) {Transmissor};
-\node[rotulo] at (11.75,2.35) {Receptor};
+% sinais do somador do receptor
+\node[rotulo, anchor=south, inner sep=1pt] at ($(sub)+(-0.45,0.18)$) {$+$};
+\node[rotulo, anchor=west, inner sep=1pt] at ($(sub)+(0.32,-0.30)$) {$-$};
+\node[rotulo] at (1.35,2.35) {Transmissor};
+\node[rotulo] at (12.3,2.35) {Receptor};
 \end{tikzpicture}
 \label{fig:enlace_pfc}
 \end{figura}
@@ -914,8 +920,9 @@ mensagem recuperada não acompanha a enviada.
 
 \begin{figura}{Enlace sem filtro no canal FIR de banda limitada: (a) mensagem,
 (b) sinal transmitido, (c) sinal recebido e (d) mensagem recuperada, com as
-respectivas densidades espectrais de potência. O sinal estimado $\hat m(n)$ é
-limitado a $\pm3$ para exibição; a mensagem não é recuperada.}{Fonte: Elaborada
+respectivas densidades espectrais de potência. Os sinais recebidos estão
+alinhados pelo atraso de grupo do canal (100 amostras). O sinal estimado
+$\hat m(n)$ é limitado a $\pm3$ para exibição; a mensagem não é recuperada.}{Fonte: Elaborada
 pelos autores (2026)}
   \includegraphics[width=\textwidth]{figures/fig_comm_falha}
   \label{fig:falha_pfc}
@@ -1124,7 +1131,8 @@ $\omega_c/\pi=0{,}52$.}{Fonte: Elaborada pelos autores (2026)}
 
 
 \begin{figura}{Mesmo arranjo da Figura~\ref{fig:falha_pfc}, com o filtro escolhido
-no transmissor e no receptor: a mensagem é recuperada.}{Fonte: Elaborada pelos
+no transmissor e no receptor: a mensagem é recuperada. Os sinais recebidos estão
+alinhados pelo atraso de grupo do canal (100 amostras).}{Fonte: Elaborada pelos
 autores (2026)}
   \includegraphics[width=\textwidth]{figures/fig_comm_filtro}
   \label{fig:filtro_pfc}

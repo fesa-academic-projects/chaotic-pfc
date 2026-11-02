@@ -424,7 +424,14 @@ def _comm_figure(
     delay = (CFG.channel.num_taps - 1) // 2
     start, stop = COMM_WINDOW
     n = np.arange(start, stop)
-    delayed = message[n - delay]
+    # Same alignment as the synchronisation criterion: the channel is a
+    # linear-phase FIR, so m_hat[n] reproduces m[n - delay] and the received
+    # samples are compared at n + delay.  Plot every received/recovered panel
+    # on that shifted grid so (a) and (d) show the same message bits.
+    received_aligned = received[n + delay]
+    recovered_aligned = recovered[n + delay]
+    message_window = message[n]
+    sent_window = sent[n]
 
     aspect = 0.68
     fig, axes = st.subplots(4, 2, fraction=fraction, aspect=aspect, sharex="col")
@@ -433,6 +440,7 @@ def _comm_figure(
         (
             "mensagem",
             "mensagem",
+            message_window,
             message,
             LINK_COLORS["message"],
             LINK_COLORS["message_spec"],
@@ -441,6 +449,7 @@ def _comm_figure(
         (
             "transmitido",
             "transmitido",
+            sent_window,
             sent,
             LINK_COLORS["carrier"],
             LINK_COLORS["carrier_spec"],
@@ -449,6 +458,7 @@ def _comm_figure(
         (
             "recebido",
             "recebido",
+            received_aligned,
             received,
             LINK_COLORS["carrier"],
             LINK_COLORS["carrier_spec"],
@@ -457,28 +467,29 @@ def _comm_figure(
         (
             "recuperada",
             "recuperado",
+            recovered_aligned,
             recovered,
             LINK_COLORS["message"],
             LINK_COLORS["message_spec"],
             clip_recovered,
         ),
     )
-    for row, (label, _short, signal, color, spec_color, clipped) in enumerate(rows):
+    for row, (label, _short, signal, psd_signal, color, spec_color, clipped) in enumerate(rows):
         ylim = (-3.0, 3.0) if clipped else None
         suffix = ""
-        reference = delayed if row == 3 else None
+        reference = message_window if row == 3 else None
         _panel(
             axes[row, 0],
             st,
             n,
-            signal[n],
+            signal,
             title=f"{panel_labels[row]} {label}{suffix}",
             color=color,
             reference=reference,
-            reference_label="mensagem enviada (atrasada)",
+            reference_label="mensagem enviada",
             ylim=ylim,
         )
-        omega, values = _psd(signal)
+        omega, values = _psd(psd_signal)
         _panel(
             axes[row, 1],
             st,
@@ -487,14 +498,35 @@ def _comm_figure(
             title=f"{panel_labels[row + 4]} espectro: {label}",
             color=spec_color,
         )
-    axes[0, 0].set_ylabel("amplitude")
-    axes[0, 1].set_ylabel("densidade espectral")
     for ax in axes[-1, :]:
         ax.set_xlabel("amostra")
     axes[-1, 1].set_xlabel(r"$\omega/\pi$")
     handles, _ = axes[3, 0].get_legend_handles_labels()
     legend_above(fig, handles, ncol=2, pad=0.995)
-    fig.subplots_adjust(left=0.075, right=0.995, top=0.88, bottom=0.09, hspace=0.62, wspace=0.22)
+    fig.subplots_adjust(left=0.085, right=0.995, top=0.88, bottom=0.09, hspace=0.62, wspace=0.28)
+    # One y label per column, centred on the four rows and clear of the tick
+    # labels of both columns.
+    y_mid = 0.5 * (axes[0, 0].get_position().y1 + axes[-1, 0].get_position().y0)
+    left_x = axes[0, 0].get_position().x0 - 0.045
+    right_x = axes[0, 1].get_position().x0 - 0.060
+    fig.text(
+        left_x,
+        y_mid,
+        "amplitude",
+        rotation=90,
+        ha="center",
+        va="center",
+        fontsize=st.caption_pt,
+    )
+    fig.text(
+        right_x,
+        y_mid,
+        "densidade espectral",
+        rotation=90,
+        ha="center",
+        va="center",
+        fontsize=st.caption_pt,
+    )
     save(fig, path)
     print(f"wrote {path.relative_to(ROOT)}")
 
