@@ -9,6 +9,12 @@ b) a jacobiana usada no código é comparada com diferenças finitas centrais do
 
 O mapeamento entre o texto e o código é ``Ns = Nz + 1`` (ordem do filtro contra
 número de coeficientes).
+
+Independência das referências: em (a), o sistema (4) e a matriz (5) são escritos
+com SymPy diretamente a partir das equações do artigo, sem chamar funções do
+pacote. Em (b), a referência numérica é diferença finita central apenas do mapa
+do código, sem usar as funções de jacobiana. Em (c), a referência de (4) é uma
+implementação literal da equação, também independente do pacote.
 """
 
 from __future__ import annotations
@@ -16,11 +22,16 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from chaotic_pfc.analysis.sweep import _kernel as K
-
 ALPHA = 1.4
 BETA = 0.3
 STEP = 1e-6
+
+
+def _kernel():
+    """Importa o kernel só onde ele é o objeto sob teste."""
+    from chaotic_pfc.analysis.sweep import _kernel as K
+
+    return K
 
 
 def _state_dim(Ns: int) -> int:
@@ -35,6 +46,7 @@ def _coeffs(Ns: int, seed: int) -> np.ndarray:
 
 def _step(x: np.ndarray, c: np.ndarray) -> np.ndarray:
     Ns = len(c)
+    K = _kernel()
     x_in = np.asarray(x, dtype=float).copy()
     x_out = np.empty_like(x_in)
     if Ns <= 2:
@@ -46,6 +58,7 @@ def _step(x: np.ndarray, c: np.ndarray) -> np.ndarray:
 
 def _analytic(x: np.ndarray, c: np.ndarray) -> np.ndarray:
     Ns = len(c)
+    K = _kernel()
     if Ns <= 2:
         xx = np.empty((2, 2))
         ww = np.empty((2, 2, 2))
@@ -119,3 +132,34 @@ def test_symbolic_jacobian_matches_matrix_eq5() -> None:
         matrix[row, row - 1] = 1
 
     assert sp.simplify(symbolic - matrix) == sp.zeros(Ns, Ns)
+
+
+def _eq4_map(x: np.ndarray, c: np.ndarray) -> np.ndarray:
+    """Sistema (4) do artigo, escrito aqui sem funções do pacote."""
+    Ns = len(c)
+    out = np.empty(Ns)
+    out[0] = ALPHA - x[2] ** 2 + BETA * x[1]
+    out[1] = x[0]
+    out[2] = c[0] * (ALPHA - x[2] ** 2 + BETA * x[1]) + c[1] * x[0] + c[2] * x[1]
+    for j in range(3, Ns):
+        out[2] += c[j] * x[j]
+    if Ns > 3:
+        out[3] = x[1]
+    for j in range(4, Ns):
+        out[j] = x[j - 1]
+    return out
+
+
+@pytest.mark.parametrize("Nz", [2, 3, 5, 8, 40])
+def test_eq4_map_matches_code(Nz: int) -> None:
+    """A referência literal de (4) reproduz o mapa do código."""
+    Ns = Nz + 1
+    worst = 0.0
+    for seed in range(10):
+        c = _coeffs(Ns, seed)
+        rng = np.random.default_rng(200 + seed)
+        x = 0.1 * rng.standard_normal(_state_dim(Ns))
+        reference = _eq4_map(x[:Ns], c)
+        package = _step(x, c)[:Ns]
+        worst = max(worst, float(np.max(np.abs(reference - package))))
+    assert worst < 1e-12, f"Nz={Nz}: erro absoluto máximo {worst:.2e}"

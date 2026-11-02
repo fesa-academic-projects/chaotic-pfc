@@ -17,6 +17,10 @@ d) estimador do código contra a descrição das Seções 2.5 e 3.3: vetor únic
 O mapeamento entre o texto e o código é ``Ns = Nz + 1``: ``Nz`` é a ordem do
 filtro e ``Ns`` é o número de coeficientes (taps).
 
+As referências de (4) e (5) usadas em (a) e (c) são escritas a partir das
+equações do artigo, sem chamar funções do pacote. Em (b), a diferença finita
+central usa só o mapa do código, nunca as funções de jacobiana.
+
 Uso::
 
     python articles/pfc/revisao/scripts/verificar_nucleo.py
