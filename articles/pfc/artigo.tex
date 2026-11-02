@@ -51,6 +51,10 @@ Bernardo do Campo, SP, Brasil}}
 \orientador{Prof. Dr. Vinícius da Silva Borges}
 
 \curso{Engenharia de Computação}
+% Data da banca: trocar os três valores abaixo quando a data for definida.
+\diainicial{\textless{}incluir o dia inicial da defesa\textgreater{}}
+\diafinal{\textless{}incluir o dia final da defesa\textgreater{}}
+\mesdefesa{\textless{}incluir o mês\textgreater{}}
 \ano{2026}
 
 \begin{document}
@@ -587,13 +591,14 @@ de $\rho_c$ sobre as configurações daquele tipo, que é a mesma fração calcu
 sobre todas as células do tipo; é essa a quantidade comparada na
 Seção~\ref{sub:caos_pfc}. Para comparar os fatores, usa-se $\rho_c$ de cada
 configuração, agrupada por tipo de filtro (quatro níveis), por janela (sete
-níveis, com a Kaiser em um único nível) e por $\beta_K$ dentro da janela de
-Kaiser (40 níveis), sobre as ordens pares, o suporte comum aos quatro tipos.
-Como os fatores têm números de níveis diferentes, usa-se um $\eta^2$ com blocos,
-$\eta^2=SS_{\text{fator}}/(SS_{\text{fator}}+SS_{\text{erro}})$, em que
-$SS_{\text{fator}}$ é a soma de quadrados entre os níveis do fator, com as
+níveis: as seis janelas fixas e a Kaiser no mesmo $\beta_K$ do bloco) e por
+$\beta_K$ dentro da Kaiser (40 níveis), sobre as ordens pares, o suporte comum
+aos quatro tipos. Como os níveis diferem, usa-se o $\eta^2$ parcial
+($\eta^2_{\mathrm{p}}$) com blocos,
+$\eta^2_{\mathrm{p}}=SS_{\text{fator}}/(SS_{\text{fator}}+SS_{\text{erro}})$,
+em que $SS_{\text{fator}}$ é a soma de quadrados entre níveis do fator, com as
 demais combinações como blocos, e $SS_{\text{erro}}$ é a soma de quadrados
-residual, sem modelar interações entre os fatores.
+residual, sem interações entre fatores.
 
 \subsection{Projeto da varredura de parâmetros}
 \label{sub:varredura}
@@ -998,8 +1003,9 @@ Rejeita-faixa & Retangular & 118 & 5,9 \\
 \end{tabela}
 
 O tipo de filtro é o fator de maior efeito sobre a fração caótica quando os
-demais fatores são mantidos fixos ($\eta^2=0{,}731$, contra $0{,}495$ para
-$\beta_K$ dentro da janela de Kaiser e $0{,}321$ para a janela). A cobertura
+demais fatores são mantidos fixos (pelo $\eta^2$ parcial, $\eta^2_{\mathrm{p}}=0{,}731$,
+contra $0{,}495$ para $\beta_K$ dentro da janela de Kaiser e $0{,}321$ para a
+janela). A cobertura
 média, definida na Seção~\ref{sub:modelagem}, vai de 2,5\% no rejeita-faixa a
 10,3\% no passa-baixas, e o modo de falha
 muda com o tipo: nos passa-baixas e rejeita-faixa, 69,7\% e 92,6\% dos pontos
@@ -1059,16 +1065,14 @@ pelos autores (2026)}
   \label{fig:beta_pfc}
 \end{figura}
 
-Os resultados indicam quais parâmetros um filtro FIR precisa ter para funcionar
+Os resultados indicam os parâmetros que um filtro FIR precisa ter para funcionar
 no sistema. O tipo mais favorável é o passa-baixas, que tem a maior região
-caótica. Entre as janelas, as de maior cobertura são a Blackman-Harris e a Kaiser
-com $\beta_K$ entre 13,5 e 17,5, que nas ordens baixas produzem filtros menos
-seletivos (atenuação e seletividade não se separam nesta grade). A ordem e o corte devem ser escolhidos dentro da região caótica do mapa
-da configuração adotada, que, para ordens a partir de 8, se concentra nos cortes
-baixos. A banda que o filtro deixa passar precisa caber na banda do canal, o que
-é uma condição de projeto e não um resultado medido aqui. Cada projeto escolhido
-deve ser verificado individualmente, porque os mapas são locais no espaço de
-estados.
+caótica, e entre as janelas a Blackman-Harris e a Kaiser com $\beta_K$ entre
+13,5 e 17,5 dão a maior cobertura. A ordem e o corte devem ser escolhidos dentro
+da região caótica do mapa da configuração adotada, que, para ordens a partir de
+8, se concentra nos cortes baixos. A banda do filtro precisa caber na do canal,
+uma condição de projeto e não um resultado medido aqui. Cada projeto deve ser
+verificado individualmente, porque os mapas são locais no espaço de estados.
 
 % ----------------------------------------------------------------------------
 \subsection{Estabilidade da classificação}
@@ -1100,7 +1104,9 @@ a verificação individual descrita na Seção~\ref{sub:caos_pfc}. No mapa dessa
 (Figura~\ref{fig:hamming_pfc}), o ponto mais próximo da grade, com
 $\omega_c/\pi=0{,}5152$, tem $\bar\lambda_1=0{,}0788$, e o expoente do próprio
 projeto é 0,0786, cerca de dezesseis vezes o limiar $\theta$
-de~\eqref{eq:criterio_pfc}.
+de~\eqref{eq:criterio_pfc}. A escolha demonstra a viabilidade do enlace, e não
+um projeto robusto a variações do corte
+(Seção~\ref{sub:limitacoes_pfc}).
 
 Com esse filtro no transmissor e no receptor, o mesmo canal passa a permitir a
 comunicação (Figura~\ref{fig:filtro_pfc}). O espectro transmitido fica confinado
@@ -1251,6 +1257,8 @@ resposta ao impulso infinita, explorar outras larguras de banda e outros
 parâmetros do mapa e implementar o gerador e o receptor em hardware, como passo
 para o TRL 4.
 
+% 12 bp entre referências: recupera a página 24 sem tocar no template.
+\setlength{\bibitemsep}{12bp}
 \imprimirreferencias
 
 \end{document}

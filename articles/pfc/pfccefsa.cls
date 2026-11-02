@@ -146,6 +146,7 @@
   indent=false,                % sem recuo pendente (NBR 6023: sem deslocamento)
   oldspacing,                  % o espaço entre referências é definido abaixo
   repeatfields=false,
+  extradate=true,              % 2022a/2022b também na lista de referências
 ]{biblatex}
 \RequirePackage{hyperref}
 \hypersetup{hidelinks}
@@ -298,10 +299,10 @@
 \newcommand{\pfc@autores}{}
 \newcommand{\pfc@orientador}{}
 \newcommand{\pfc@curso}{\textless{}nome do curso\textgreater{}}
-\newcommand{\pfc@diainicial}{[DIA INICIAL]}
-\newcommand{\pfc@diafinal}{[DIA FINAL]}
-\newcommand{\pfc@mes}{[MÊS]}
-\newcommand{\pfc@ano}{2026}
+\newcommand{\pfc@diainicial}{\textless{}incluir o dia inicial da defesa\textgreater{}}
+\newcommand{\pfc@diafinal}{\textless{}incluir o dia final da defesa\textgreater{}}
+\newcommand{\pfc@mes}{\textless{}incluir o mês\textgreater{}}
+\newcommand{\pfc@ano}{\textless{}incluir o ano\textgreater{}}
 \newcommand{\pfc@versao}{V-05}
 
 \newcommand{\titulo}[1]{\gdef\pfc@titulo{#1}\hypersetup{pdftitle={#1}}}
@@ -311,6 +312,7 @@
 \newcommand{\diainicial}[1]{\gdef\pfc@diainicial{#1}}
 \newcommand{\diafinal}[1]{\gdef\pfc@diafinal{#1}}
 \newcommand{\mes}[1]{\gdef\pfc@mes{#1}}
+\newcommand{\mesdefesa}[1]{\gdef\pfc@mes{#1}}
 \newcommand{\ano}[1]{\gdef\pfc@ano{#1}}
 \newcommand{\versaomodelo}[1]{\gdef\pfc@versao{#1}}
 
