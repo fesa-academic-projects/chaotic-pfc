@@ -75,6 +75,9 @@
 %%      10 bp -> 11,5 bp   nota de rodapé e número de página
 %%       8 bp -> 9,2 bp    "V-05" do rodapé (Century Gothic)
 %% ---------------------------------------------------------------------------
+% Termos estrangeiros nao incorporados ao portugues (orientacao da coordenacao).
+\newcommand{\estr}[1]{\textit{#1}}
+
 \newcommand{\corpo}   {\fontsize{12bp}{13.8bp}\selectfont}
 \newcommand{\tamonze} {\fontsize{11bp}{12.65bp}\selectfont}
 \newcommand{\tamdez}  {\fontsize{10bp}{11.5bp}\selectfont}
@@ -142,10 +145,12 @@
 \RequirePackage[
   backend=biber,
   style=\ifpfc@autorano abnt\else abnt-numeric\fi,
+  sorting=nyt,                 % nome, ano, título: cronologia dentro do autor
   justify=false,               % referências alinhadas à esquerda (como no Word)
   indent=false,                % sem recuo pendente (NBR 6023: sem deslocamento)
   oldspacing,                  % o espaço entre referências é definido abaixo
   repeatfields=false,
+  giveninits=true,             % prenomes sempre abreviados na lista
   extradate=true,              % 2022a/2022b também na lista de referências
 ]{biblatex}
 \RequirePackage{hyperref}
@@ -304,6 +309,7 @@
 \newcommand{\pfc@diafinal}{\textless{}incluir o dia final da defesa\textgreater{}}
 \newcommand{\pfc@mes}{\textless{}incluir o mês\textgreater{}}
 \newcommand{\pfc@ano}{\textless{}incluir o ano\textgreater{}}
+\newcommand{\pfc@data}{}
 \newcommand{\pfc@versao}{V-05}
 
 \newcommand{\titulo}[1]{\gdef\pfc@titulo{#1}\hypersetup{pdftitle={#1}}}
@@ -314,6 +320,7 @@
 \newcommand{\diafinal}[1]{\gdef\pfc@diafinal{#1}}
 \newcommand{\mes}[1]{\gdef\pfc@mes{#1}}
 \newcommand{\mesdefesa}[1]{\gdef\pfc@mes{#1}}
+\newcommand{\datadefesa}[1]{\gdef\pfc@data{#1}}
 \newcommand{\ano}[1]{\gdef\pfc@ano{#1}}
 \newcommand{\versaomodelo}[1]{\gdef\pfc@versao{#1}}
 
@@ -343,7 +350,7 @@
       {\centering\corpo\spaceskip=0pt
        Curso Superior de Bacharelado em \pfc@curso{} -
        São Bernardo do Campo - SP - Brasil -
-       \pfc@diainicial{} a \pfc@diafinal{} de \pfc@mes{} de \pfc@ano{}\par};
+       \ifdefempty{\pfc@data}{\pfc@diainicial{} a \pfc@diafinal{} de \pfc@mes{} de \pfc@ano{}}{\pfc@data}\par};
     % caixa branca + versão do modelo (Century Gothic 8 bp), base em y=822,00
     \fill[white] ([xshift=548.25bp,yshift=-810.00bp]current page.north west)
       rectangle ([xshift=584.25bp,yshift=-829.50bp]current page.north west);

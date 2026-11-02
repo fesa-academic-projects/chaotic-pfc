@@ -221,14 +221,31 @@
       ]
     },
     "hierarquia": {
-      "source": "articles/pfc/revisao/hierarquia.md (medida de tamanho de efeito por fator)",
+      "source": "articles/pfc/revisao/scripts/hierarquia_balanceada.py (desenho balanceado; 24 janelas fixas e 160 da Kaiser)",
       "values": [
-        0.731,
+        0.588,
+        0.759,
         0.495,
-        0.321,
+        0.387,
+        32.7,
         4,
         7,
         40
+      ]
+    },
+    "bordas": {
+      "source": "src/chaotic_pfc/analysis/sweep/_orchestration.py (low=max(1e-5,wc-0.025); high=min(1-1e-5,wc+0.025)); grade de 100 cortes",
+      "values": [
+        360,
+        6,
+        552000
+      ]
+    },
+    "ponto_fixo": {
+      "source": "sqrt(beta) com beta=0.3; equacao do ponto fixo da Secao 2.4",
+      "values": [
+        0.55,
+        1.2
       ]
     }
   },
