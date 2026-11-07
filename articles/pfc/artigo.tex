@@ -7,12 +7,28 @@
 \documentclass{pfccefsa}
 
 \usepackage{amsmath,amssymb}
+\usepackage{tabularx}
+\usepackage{needspace}
 \usepackage{csquotes}
 \usetikzlibrary{positioning,arrows.meta,calc,fit,backgrounds,shapes.geometric}
 \addbibresource{referencias.bib}
 % NBR 10520: as citações de um mesmo parêntese seguem a ordem cronológica do
 % texto, não a ordem alfabética do estilo.
-\ExecuteBibliographyOptions{sortcites=false}
+\ExecuteBibliographyOptions{sortcites=false,maxbibnames=3,giveninits=true,extradate=true,sorting=nyt}
+
+% Termos estrangeiros não incorporados ao português (orientação da coordenação).
+\newcommand{\estr}[1]{\textit{#1}}
+
+% A classe original imprime o intervalo do rodapé. Para a data única da banca,
+% o artigo substitui apenas o texto do rodapé, sem alterar a classe.
+\makeatletter
+\newcommand{\pfc@data}{}
+\newcommand{\datadefesa}[1]{\gdef\pfc@data{#1}}
+\patchcmd{\cabecalhoerodape}
+  {\pfc@diainicial{} a \pfc@diafinal{} de \pfc@mes{} de \pfc@ano{}}
+  {\ifdefempty{\pfc@data}{\pfc@diainicial{} a \pfc@diafinal{} de \pfc@mes{} de \pfc@ano{}}{\pfc@data}}
+  {}{\PackageError{pfc}{Nao foi possivel aplicar a data unica no rodape}{}}
+\makeatother
 
 % Estilo único dos diagramas (setas apenas ortogonais).
 \tikzset{
@@ -41,19 +57,18 @@
 \titulo{Análise da preservação do regime caótico no mapa de Hénon com filtros FIR}
 
 \autores{Roger Freitas Pereira, Kauê de Souza Silva, Marcos Felipe Correa
-Soares, Guilherme Rodrigues dos~Santos\\[2pt]
-{\normalfont\footnotesize Faculdade Engenheiro Salvador Arena, Centro
-Educacional da Fundação Salvador Arena, Estrada dos Alvarengas, 4001, São
-Bernardo do Campo, SP, Brasil}}
+Soares, Guilherme Rodrigues dos~Santos\footnote{\textnormal{Faculdade Engenheiro Salvador
+Arena, Centro Educacional da Fundação Salvador Arena, Estrada dos Alvarengas,
+4001 - São Bernardo do Campo - SP}}}
 
-\orientador{Prof. Dr. Vinícius da Silva Borges}
+\orientador{Dr. Vinícius da Silva Borges}
 
 \curso{Engenharia de Computação}
 % Data da banca: trocar os três valores abaixo quando a data for definida.
 \datadefesa{1º de dezembro de 2026}
 \diainicial{\textless{}incluir o dia inicial da defesa\textgreater{}}
 \diafinal{\textless{}incluir o dia final da defesa\textgreater{}}
-\mesdefesa{\textless{}incluir o mês\textgreater{}}
+\mes{\textless{}incluir o mês\textgreater{}}
 \ano{2026}
 
 \begin{document}
@@ -77,6 +92,7 @@ Inserting a finite impulse response (FIR) filter in the feedback loop of a chaot
 Scientific software engineering.}
 
 % ============================================================================
+\needspace{6\baselineskip}
 \section{Introdução}
 \label{sec:introducao}
 
@@ -217,7 +233,7 @@ periódica.
 
 \begin{figura}{Sinais $x_1(n)$ do mapa de Hénon para duas condições iniciais
 próximas: (a) $\alpha=1{,}4$, comportamento caótico; (b) $\alpha=0{,}9$, órbita
-periódica.}{Fonte: Elaborada pelos autores (2026)}
+periódica.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=\textwidth]{figures/fig_henon_signals_h}
   \label{fig:henon_pfc}
 \end{figura}
@@ -273,8 +289,7 @@ alvo do projeto, e não a resposta obtida.
 
 \begin{tabela}{Janelas de projeto consideradas e nível do maior lóbulo lateral
 da transformada de cada janela.}{Fonte: Adaptada de \textcite{Harris1978}}
-\makebox[\textwidth][c]{%
-\begin{tabular}[t]{lc}
+\begin{tabularx}{\dimexpr\textwidth-3bp\relax}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
 \hline
 \textbf{Janela} & \textbf{Maior lóbulo lateral (dB)} \\
 \hline
@@ -286,14 +301,13 @@ Blackman & $-58$ \\
 Blackman-Harris & $-92$ \\
 Kaiser & variável com $\beta_K$ \\
 \hline
-\end{tabular}}%
+\end{tabularx}
 \label{tab:janelas_pfc}
 \end{tabela}
 
 \begin{figura}{Resposta em frequência de filtros passa-baixas com corte
 $\omega_c=0{,}4\pi$ projetados pelo método da janela: (a) quatro janelas com a
-mesma ordem; (b) janela de Hamming em quatro ordens.}{Fonte: Elaborada pelos
-autores (2026)}
+mesma ordem; (b) janela de Hamming em quatro ordens.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=\textwidth]{figures/fig_fir_respostas}
   \label{fig:fir_pfc}
 \end{figura}
@@ -306,7 +320,7 @@ da~\eqref{eq:fir_pfc}, que produz a saída $x_3(n)$
 mapa, como mostra a Figura~\ref{fig:gerador_pfc}.
 
 \begin{figura}{Gerador estudado: mapa de Hénon com filtro FIR na malha de
-realimentação.}{Fonte: Elaborada pelos autores (2026)}
+realimentação.}{Fonte: Autoria própria (2026)}
 \begin{tikzpicture}
 \node[bloco] (henon) at (0,0) {Mapa de Hénon};
 \node[bloco] (fir) at (4.2,0) {Filtro FIR\\$H(z)$};
@@ -475,8 +489,7 @@ sinal recebido $r(n)$, evolui sob a mesma dinâmica. Depois da sincronização, 
 cópia reproduz $x_1(n)$, e a mensagem é estimada por
 $\hat m(n)=\bigl(r(n)-\hat x_1(n)\bigr)/\mu$.
 
-\begin{figura}{Enlace com o mapa de Hénon, sem filtro.}{Fonte: Elaborada
-pelos autores (2026)}
+\begin{figura}{Enlace com o mapa de Hénon, sem filtro.}{Fonte: Autoria própria (2026)}
 \begin{tikzpicture}
 \node[bloco, minimum width=17mm] (mapa)  at (0,0)     {Mapa de\\Hénon};
 \node[soma]  (soma)  at (2.5,0)   {$\Sigma$};
@@ -604,7 +617,7 @@ Para comparar configurações, usa-se a cobertura caótica
 $\rho_c=N_c/N_{\text{grade}}$, em que $N_c$ é o número de pontos caóticos e
 $N_{\text{grade}}$ é o número de pontos da configuração. A cobertura média de um
 tipo de filtro é a média de $\rho_c$ sobre as configurações daquele tipo, que é
-a mesma fração calculada sobre todas as células do tipo; é essa a quantidade
+a mesma fração calculada sobre todos os pontos do tipo; é essa a quantidade
 comparada na Seção~\ref{sub:caos_pfc}. No desenho balanceado das janelas fixas,
 os fatores são o tipo (quatro níveis) e a janela (seis níveis), sem a Kaiser;
 na Kaiser, o fator $\beta_K$ (40 níveis) é avaliado com o tipo como bloco, sobre
@@ -634,8 +647,9 @@ $\omega_c/\pi$ igualmente espaçados entre $10^{-5}$ e $1-10^{-5}$, o que dá 4.
 pontos por configuração, produto de 40 ordens por 100 cortes. No passa-faixa e
 no rejeita-faixa, a faixa de $0{,}05\pi$ é truncada nas bordas: o código limita a
 borda inferior a $10^{-5}$ e a superior a $1-10^{-5}$, em vez de excluir o ponto.
-Isso afeta três valores de corte em cada borda, seis por ordem e 360 dos 552.000
-pontos no total. Os filtros
+Isso afeta três valores de corte em cada borda, seis por ordem: 240 pontos no
+passa-faixa e 120 no rejeita-faixa, 360 por par de configurações da mesma janela.
+Na grade inteira, os 46 pares somam 16.560 dos 552.000 pontos. Os filtros
 passa-altas e rejeita-faixa admitem apenas ordens pares no método da janela
 \cite{Oppenheim2009}, com 2.000 pontos, produto de 20 ordens por 100 cortes;
 a restrição vem de que um filtro FIR de fase linear com ordem ímpar tem,
@@ -672,7 +686,7 @@ e 31,1~GiB de memória. O código está no repositório
 10.5281/zenodo.22740317.
 
 \begin{figura}{Componentes da ferramenta e fluxo de dados entre eles.}{Fonte:
-Elaborada pelos autores (2026)}
+Autoria própria (2026)}
 \begin{tikzpicture}
 \node[comp] (cfg) at (0,0)      {\comp{Configuração}{parâmetros do mapa, do filtro e da grade}};
 \node[comp] (cli) at (0,-2.1)   {\comp{Interface}{coordena as execuções}};
@@ -715,7 +729,7 @@ completo pelo processo de Gram-Schmidt modificado; foram 23.000 dos 552.000
 pontos.
 
 \begin{figura}{Fluxograma da estimativa do maior expoente de Lyapunov e da
-classificação de cada ponto da grade.}{Fonte: Elaborada pelos autores (2026)}
+classificação de cada ponto da grade.}{Fonte: Autoria própria (2026)}
 \begin{tikzpicture}[node distance=6mm]
 \node[passo] (ic) {Sortear 25 condições iniciais perto do ponto fixo};
 \node[passo, below=of ic] (bi) {Iterar 500 vezes e descartar o\ transitório da órbita};
@@ -797,7 +811,7 @@ dependências é consultiva, porque uma vulnerabilidade nova pode surgir em uma
 dependência sem relação com a mudança avaliada.
 
 \begin{quadro}{Categorias de verificação da integração contínua, com o número de
-verificações de cada uma.}{Fonte: Elaborado pelos autores (2026)}
+verificações de cada uma.}{Fonte: Autoria própria (2026)}
 \setlength{\tabcolsep}{3bp}%
 \begin{tabular}[t]{|>{\raggedright\arraybackslash}p{170bp}|>{\raggedright\arraybackslash}p{230bp}|>{\centering\arraybackslash}p{80bp}|}
 \hline
@@ -868,7 +882,7 @@ mesmo sinal, e a matriz acima reproduz a jacobiana do mapa filtrado sem o termo
 em $x_3$.
 
 \begin{figura}{Enlace com o mapa de Hénon filtrado: o mesmo filtro FIR no
-transmissor e no receptor.}{Fonte: Elaborada pelos autores (2026)}
+transmissor e no receptor.}{Fonte: Autoria própria (2026)}
 \begin{tikzpicture}
 \node[bloco, minimum width=17mm] (mapa)  at (0,0)     {Mapa de\\Hénon};
 \node[bloco, minimum width=17mm] (fir)   at (2.4,0)   {Filtro FIR\\$H(z)$};
@@ -971,8 +985,7 @@ mensagem recuperada não acompanha a enviada.
 (b) sinal transmitido, (c) sinal recebido e (d) mensagem recuperada, com as
 respectivas densidades espectrais de potência. Os sinais recebidos estão
 alinhados pelo atraso de grupo do canal (100 amostras). O sinal estimado
-$\hat m(n)$ é limitado a $\pm3$ para exibição; a mensagem não é recuperada.}{Fonte: Elaborada
-pelos autores (2026)}
+$\hat m(n)$ é limitado a $\pm3$ para exibição; a mensagem não é recuperada.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=\textwidth]{figures/fig_comm_falha}
   \label{fig:falha_pfc}
 \end{figura}
@@ -1004,8 +1017,7 @@ converge para o ponto fixo definido em~\eqref{eq:ponto_fixo_pfc}, e a saída fic
 constante. Com $G=0$, esse ponto fixo tem autovalores $\pm\sqrt{\beta}$ no bloco
 de $x_1$ e $x_2$ e nulos nos demais; como $\sqrt{\beta}<1$, ele é estável para
 quaisquer coeficientes, o que concorda com o ponto fixo estável para ganho
-pequeno observado por \textcite{BorgesCNSNS2024}. Por isso, a maior parte dos
-pontos não caóticos desses tipos é ponto fixo, e não órbita periódica. No rejeita-faixa, a divergência domina, e somente $N_z=2$ não tem
+pequeno observado por \textcite{BorgesCNSNS2024}. No rejeita-faixa, a divergência domina, e somente $N_z=2$ não tem
 pontos divergentes.
 
 \begin{figura}{Mapas de classificação no plano $(N_z,\omega_c/\pi)$ da
@@ -1015,7 +1027,7 @@ $\beta_K=15{,}5$; (c) passa-faixa, Kaiser com $\beta_K=15{,}5$; (d)
 rejeita-faixa, janela retangular. Divergente em cinza claro, caótico em
 vermelho e não caótico em azul, na mesma ordem da~\eqref{eq:criterio_pfc}; as
 três cores se distinguem em escala de cinza. No passa-faixa e no rejeita-faixa,
-$\omega_c/\pi$ é a frequência central.}{Fonte: Elaborada pelos autores (2026)}
+$\omega_c/\pi$ é a frequência central.}{Fonte: Autoria própria (2026)}
 \begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=\textwidth]{figures/legenda_classificacao}\\[-2pt]
@@ -1040,10 +1052,9 @@ $\omega_c/\pi$ é a frequência central.}{Fonte: Elaborada pelos autores (2026)}
 \end{figura}
 
 \begin{tabela}{Maior cobertura caótica de cada tipo de filtro: $N_c$ (contagem) e
-$\rho_c$ (fração, usada nas comparações).}{Fonte: Elaborada pelos autores
+$\rho_c$ (fração, usada nas comparações).}{Fonte: Autoria própria
 (2026)}
-\makebox[\textwidth][c]{%
-\begin{tabular}[t]{lccc}
+\begin{tabular*}{\dimexpr\textwidth-3bp\relax}{@{\extracolsep{\fill}}lccc@{}}
 \hline
 \textbf{Tipo} & \textbf{Janela} & \textbf{$N_c$} & \textbf{$\rho_c$ (\%)} \\
 \hline
@@ -1052,15 +1063,17 @@ Passa-altas & Kaiser, $\beta_K=15{,}5$ & 102 & 5,1 \\
 Passa-faixa & Kaiser, $\beta_K=15{,}5$ & 310 & 7,8 \\
 Rejeita-faixa & Retangular & 118 & 5,9 \\
 \hline
-\end{tabular}}%
+\end{tabular*}
 \label{tab:melhores_pfc}
 \end{tabela}
 
-O tipo de filtro é o fator de maior efeito nos dois desenhos balanceados
-($\eta^2_{\mathrm{p}}=0{,}588$ nas janelas fixas e $0{,}759$ na Kaiser),
-seguido por $\beta_K$ dentro da Kaiser ($0{,}495$) e pela janela ($0{,}387$); a
-interação tipo $\times$ janela explica $32{,}7\%$ da variação nas janelas fixas
-e não foi modelada. A cobertura
+O tipo de filtro é o fator de maior efeito ($\eta^2_{\mathrm{p}}=0{,}588$ nas
+janelas fixas e $0{,}759$ na Kaiser); como há uma configuração por combinação de tipo e janela, o
+resíduo do modelo aditivo é a própria interação, e os $32{,}7\%$ são a variação
+que ele não explica, igual à interação tipo $\times$ janela. O $\beta_K$
+($0{,}495$) e a janela ($0{,}387$) vêm depois, mas os $\eta^2_{\mathrm{p}}$ do
+tipo são de dois desenhos e a comparação com $\beta_K$ e janela é de ordem, não
+de valor. A cobertura
 média, definida na Seção~\ref{sub:modelagem}, vai de 2,5\% no rejeita-faixa a
 10,3\% no passa-baixas, e o modo de falha
 muda com o tipo: nos passa-baixas e rejeita-faixa, 69,7\% e 92,6\% dos pontos
@@ -1081,11 +1094,10 @@ médias são 4,8\%, 9,8\%, 11,7\% e 15,4\%. O máximo, 56,5\%, ocorre em $N_z=9$
 $\omega_c/\pi\approx0{,}12$.
 
 \begin{figura}{Todos os pontos caóticos das 184 configurações, de forma agregada:
-cada célula do plano $(N_z,\omega_c/\pi)$ mostra a porcentagem das configurações em
+cada ponto do plano $(N_z,\omega_c/\pi)$ mostra a porcentagem das configurações em
 que o ponto é caótico (184 configurações para $N_z$ par e 92 para $N_z$ ímpar, que
 só existe nos filtros passa-baixas e passa-faixa). No passa-faixa e no
-rejeita-faixa, $\omega_c/\pi$ é a frequência central.}{Fonte: Elaborada pelos
-autores (2026)}
+rejeita-faixa, $\omega_c/\pi$ é a frequência central.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=0.70\textwidth]{figures/fig_chaotic_density_norm}
   \label{fig:densidade_pfc}
 \end{figura}
@@ -1115,8 +1127,7 @@ fixas, que no passa-baixas move a fração caótica de 3,5\% (retangular) a
 14,3\% (Blackman-Harris), contra 16,4\% no melhor $\beta_K$. O efeito de $\beta_K$ depende da máscara espectral imposta.
 
 \begin{figura}{Cobertura caótica $\rho_c$ em função do parâmetro de forma
-$\beta_K$ da janela de Kaiser para os quatro tipos de filtro.}{Fonte: Elaborada
-pelos autores (2026)}
+$\beta_K$ da janela de Kaiser para os quatro tipos de filtro.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=0.8\textwidth]{figures/fig_kaiser_beta}
   \label{fig:beta_pfc}
 \end{figura}
@@ -1175,8 +1186,7 @@ $10^{-1}$, os três cenários têm o mesmo resultado.
 \begin{figura}{Mapa de classificação do passa-baixas com janela de Hamming. O
 círculo marca o filtro escolhido para o enlace, com $N_z=8$ e
 $\omega_c/\pi=0{,}52$; nesta figura, $\omega_c/\pi$ é a frequência de corte. No
-passa-faixa e no rejeita-faixa, ela é a frequência central.}{Fonte: Elaborada
-pelos autores (2026)}
+passa-faixa e no rejeita-faixa, ela é a frequência central.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=0.70\textwidth]{figures/hamming_lowpass_classification}
   \label{fig:hamming_pfc}
 \end{figura}
@@ -1184,8 +1194,7 @@ pelos autores (2026)}
 
 \begin{figura}{Mesmo arranjo da Figura~\ref{fig:falha_pfc}, com o filtro escolhido
 no transmissor e no receptor: a mensagem é recuperada. Os sinais recebidos estão
-alinhados pelo atraso de grupo do canal (100 amostras).}{Fonte: Elaborada pelos
-autores (2026)}
+alinhados pelo atraso de grupo do canal (100 amostras).}{Fonte: Autoria própria (2026)}
   \includegraphics[width=\textwidth]{figures/fig_comm_filtro}
   \label{fig:filtro_pfc}
 \end{figura}
@@ -1194,7 +1203,7 @@ autores (2026)}
 sinal pelas frequências) do sinal gerado, normalizada pelo pico do sinal sem
 filtro: sinal sem filtro e sinal com o filtro do enlace (passa-baixas,
 janela de Hamming, ordem 8, corte $0{,}52\pi$). A linha pontilhada marca o limite
-do canal, em $0{,}99\pi$.}{Fonte: Elaborada pelos autores (2026)}
+do canal, em $0{,}99\pi$.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=0.62\textwidth]{figures/fig_psd_laco}
   \label{fig:psd_pfc}
 \end{figura}
@@ -1213,15 +1222,12 @@ satura em quatro, porque a máquina tem quatro núcleos físicos; com duas e qua
 parada adaptativa interrompe a acumulação quando a estimativa se estabiliza e
 reduz a mediana de 3.000 para 708 iterações, mantendo a classe em 3.992 dos
 4.000 pontos. O vetor único substitui o espectro completo, que fica reservado às
-células de fronteira: no sistema de dimensão 41 a diferença passa de uma ordem de
+pontos de fronteira: no sistema de dimensão 41 a diferença passa de uma ordem de
 grandeza, e é isso que torna a grade de 184 configurações viável em um computador
 pessoal.
 
-\begin{tabela}{Otimizações do desempenho no Intel Core i7-8550U.}{Fonte: Elaborada
-pelos autores (2026). Medianas de 5 repetições no Intel Core i7-8550U
-(Seção~\ref{sub:implementacao}).}
-\makebox[\textwidth][c]{%
-\begin{tabular}[t]{llllc}
+\begin{tabela}{Otimizações do desempenho no Intel Core i7-8550U.}{Fonte: Autoria própria (2026).}
+\begin{tabular*}{\dimexpr\textwidth-3bp\relax}{@{\extracolsep{\fill}}llllc@{}}
 \hline
 \textbf{Otimização} & \textbf{Condição} & \textbf{Referência} & \textbf{Otimizado} & \textbf{Ganho} \\
 \hline
@@ -1230,9 +1236,10 @@ Paralelismo & 4.000 pontos, sem parada & 7,72 s (1 \estr{thread}) & 2,94 s (8 \e
 Parada adaptativa & 4.000 pontos, 8 \estr{threads} & 2,94 s (sem) & 1,36 s (com) & $\times$ 2,2 \\
 Vetor único & $N_z=40$, 3.000 iterações, por ponto & 24,05 ms (espectro) & 0,60 ms (vetor) & $\times$ 40,1 \\
 \hline
-\end{tabular}}%
+\end{tabular*}
 \label{tab:desempenho_pfc}
 \end{tabela}
+\begin{center}\tamonze Nota: Medianas de 5 repetições no Intel Core i7-8550U (Seção~\ref{sub:implementacao}).\end{center}
 
 O caminho dos dados ao texto é determinístico: as classes dos 4.000 pontos de
 uma varredura são idênticas com uma, duas, quatro e oito \estr{threads}, porque as
