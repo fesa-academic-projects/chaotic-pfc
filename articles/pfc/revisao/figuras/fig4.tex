@@ -1,0 +1,45 @@
+%% Figura 4: enlace sem filtro; mesma geometria da Figura 7, sem os filtros.
+\begin{tikzpicture}
+% ---------- transmissor
+\node[enlbloco] (mapa) at (0,0) {Mapa de\\Hénon};
+\node[soma]  (soma) at (2.4,0) {$\Sigma$};
+\node[enlbloco, minimum width=8mm] (mu) at (2.4,1.2) {$\mu$};
+\node[enlrotulo, anchor=east] (m) at (1.4,1.2) {$m(n)$};
+\coordinate (fb)  at (2.95,0);
+\coordinate (fbb) at (2.95,-1.15);
+\coordinate (gtr) at (3.05,0);
+% ---------- canal (fora dos dois grupos)
+\node[enlbloco, minimum width=13mm] (canal) at (4.8,0) {Canal};
+% ---------- receptor
+\coordinate (rc) at (6.55,0);
+\node[enlbloco] (copia) at (7.95,-1.55) {Mapa de\\Hénon};
+\node[soma]  (sub)   at (9.8,0) {$\Sigma$};
+\node[enlbloco, minimum width=10mm] (inv) at (11.1,0) {$1/\mu$};
+\coordinate (gre)  at (11.65,0);
+\coordinate (topr) at (9.8,1.0);
+% ---------- ligações do transmissor
+\draw[seta] (mapa) -- node[above, enlrotulo]{$x_1(n)$} (soma);
+\draw[seta] (m) -- (mu);
+\draw[seta] (mu) -- (soma);
+\draw[seta] (soma) -- (canal);
+\node[enlrotulo, above] at ($(gtr)!0.5!(canal.west)+(0.1,0)$) {$s(n)$};
+\fill (fb) circle (1.3pt);
+\draw[seta] (fb) -- (fbb) -| (mapa.south);
+% ---------- ligações do receptor
+\draw[seta] (canal) -- (sub);
+\node[enlrotulo, above] at ($(canal.east)!0.5!(rc)-(0.1,0)$) {$r(n)$};
+\fill (rc) circle (1.3pt);
+\draw[seta] (rc) |- (copia.west);
+\draw[seta] (copia.east) -| node[pos=0.75, right, enlrotulo]{$\hat x_1(n)$} (sub.south);
+\draw[seta] (sub) -- (inv);
+\draw[seta] (inv) -- ++(0.95,0) node[right, enlrotulo]{$\hat m(n)$};
+\node[enlsinal, anchor=south east] at ($(sub.west)+(-0.14,0.06)$) {$+$};
+\node[enlsinal, anchor=north east] at ($(sub.south)+(-0.09,-0.06)$) {$-$};
+% ---------- grupos
+\begin{scope}[on background layer]
+\node[enlgrupo, fit=(mapa)(mu)(m)(fbb)(gtr)] (gt) {};
+\node[enlgrupo, fit=(rc)(copia)(sub)(inv)(gre)(topr)] (gr) {};
+\end{scope}
+\node[enltitulo] at (gt.north) {Transmissor};
+\node[enltitulo] at (gr.north) {Receptor};
+\end{tikzpicture}

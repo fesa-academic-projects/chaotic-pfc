@@ -398,11 +398,27 @@ def _panel(
     reference_label: str = "",
     solid_label: str = "mensagem recuperada",
     ylim: tuple[float, float] | None = None,
+    title_side: str = "left",
+    title_outside: bool = False,
 ) -> None:
     if reference is not None:
         ax.plot(x, reference, color="black", ls="--", lw=1.0, label=reference_label)
     ax.plot(x, y, color=color, lw=1.2, label=solid_label if reference is not None else None)
-    ax.set_title(title, loc="left", pad=2)
+    if title_outside:
+        ax.set_title(title, loc="left", pad=1.5, fontsize=st.caption_pt)
+    else:
+        x_title = {"left": 0.01, "right": 0.99, "center": 0.5}[title_side]
+        ha_title = {"left": "left", "right": "right", "center": "center"}[title_side]
+        ax.text(
+            x_title,
+            0.98,
+            title,
+            transform=ax.transAxes,
+            ha=ha_title,
+            va="top",
+            fontsize=st.caption_pt,
+            bbox={"facecolor": "white", "alpha": 0.55, "edgecolor": "none", "pad": 1.0},
+        )
     if ylim is not None:
         ax.set_ylim(*ylim)
     ax.xaxis.set_major_formatter(FuncFormatter(st.number))
@@ -488,6 +504,7 @@ def _comm_figure(
             reference=reference,
             reference_label="mensagem enviada",
             ylim=ylim,
+            title_outside=True,
         )
         omega, values = _psd(psd_signal)
         _panel(
@@ -497,6 +514,7 @@ def _comm_figure(
             values,
             title=f"{panel_labels[row + 4]} espectro: {label}",
             color=spec_color,
+            title_side="center",
         )
     for row in (1, 2):
         axes[row, 0].set_yticks([-1, 1])
@@ -505,7 +523,7 @@ def _comm_figure(
     axes[-1, 1].set_xlabel(r"$\omega/\pi$")
     handles, _ = axes[3, 0].get_legend_handles_labels()
     legend_above(fig, handles, ncol=2, pad=0.995)
-    fig.subplots_adjust(left=0.10, right=0.995, top=0.80, bottom=0.14, hspace=0.82, wspace=0.28)
+    fig.subplots_adjust(left=0.10, right=0.995, top=0.80, bottom=0.14, hspace=0.45, wspace=0.28)
     # One y label per column, centred on the four rows and clear of the tick
     # labels of both columns.
     y_mid = 0.5 * (axes[0, 0].get_position().y1 + axes[-1, 0].get_position().y0)

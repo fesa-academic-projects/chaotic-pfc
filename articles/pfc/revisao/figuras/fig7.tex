@@ -1,0 +1,49 @@
+%% Figura 7: enlace com o mesmo filtro FIR no transmissor e no receptor.
+\begin{tikzpicture}
+% ---------- transmissor
+\node[enlbloco] (mapa) at (0,0) {Mapa de\\Hénon};
+\node[enlbloco] (fir)  at (2.85,0) {Filtro FIR\\$H(z)$};
+\node[soma]  (soma) at (5.25,0) {$\Sigma$};
+\node[enlbloco, minimum width=8mm] (mu) at (5.25,1.2) {$\mu$};
+\node[enlrotulo, anchor=east] (m) at (4.25,1.2) {$m(n)$};
+\coordinate (fb)  at (5.8,0);
+\coordinate (fbb) at (5.8,-1.15);
+\coordinate (gtr) at (5.9,0);
+% ---------- canal (fora dos dois grupos)
+\node[enlbloco, minimum width=13mm] (canal) at (7.65,0) {Canal};
+% ---------- receptor
+\coordinate (rc) at (9.4,0);
+\node[enlbloco] (copia) at (10.8,-1.55) {Mapa de\\Hénon};
+\node[enlbloco] (firr)  at (13.7,-1.55) {Filtro FIR\\$H(z)$};
+\node[soma]  (sub)   at (13.7,0) {$\Sigma$};
+\node[enlbloco, minimum width=10mm] (inv) at (15.0,0) {$1/\mu$};
+\coordinate (gre)  at (15.55,0);
+\coordinate (topr) at (13.7,1.0);
+% ---------- ligações do transmissor
+\draw[seta] (mapa) -- node[above, enlrotulo]{$x_1(n)$} (fir);
+\draw[seta] (fir)  -- node[above, enlrotulo]{$x_3(n)$} (soma);
+\draw[seta] (m) -- (mu);
+\draw[seta] (mu) -- (soma);
+\draw[seta] (soma) -- (canal);
+\node[enlrotulo, above] at ($(gtr)!0.5!(canal.west)+(0.1,0)$) {$s(n)$};
+\fill (fb) circle (1.3pt);
+\draw[seta] (fb) -- (fbb) -| (mapa.south);
+% ---------- ligações do receptor
+\draw[seta] (canal) -- (sub);
+\node[enlrotulo, above] at ($(canal.east)!0.5!(rc)-(0.1,0)$) {$r(n)$};
+\fill (rc) circle (1.3pt);
+\draw[seta] (rc) |- (copia.west);
+\draw[seta] (copia) -- node[above, enlrotulo]{$\hat x_1(n)$} (firr);
+\draw[seta] (firr) -- node[right, enlrotulo]{$\hat x_3(n)$} (sub);
+\draw[seta] (sub) -- (inv);
+\draw[seta] (inv) -- ++(0.95,0) node[right, enlrotulo]{$\hat m(n)$};
+\node[enlsinal, anchor=south east] at ($(sub.west)+(-0.14,0.06)$) {$+$};
+\node[enlsinal, anchor=north east] at ($(sub.south)+(-0.09,-0.06)$) {$-$};
+% ---------- grupos
+\begin{scope}[on background layer]
+\node[enlgrupo, fit=(mapa)(fir)(mu)(m)(fbb)(gtr)] (gt) {};
+\node[enlgrupo, fit=(rc)(copia)(firr)(sub)(inv)(gre)(topr)] (gr) {};
+\end{scope}
+\node[enltitulo] at (gt.north) {Transmissor};
+\node[enltitulo] at (gr.north) {Receptor};
+\end{tikzpicture}
