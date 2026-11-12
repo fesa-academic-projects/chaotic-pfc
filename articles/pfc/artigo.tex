@@ -14,7 +14,7 @@
 \addbibresource{referencias.bib}
 % NBR 10520: as citações de um mesmo parêntese seguem a ordem cronológica do
 % texto, não a ordem alfabética do estilo.
-\ExecuteBibliographyOptions{sortcites=false,maxbibnames=3,giveninits=true,extradate=true,sorting=nyt}
+\ExecuteBibliographyOptions{sortcites=false,giveninits=true,extradate=true,sorting=nyt,maxbibnames=3,minbibnames=1}
 
 % Termos estrangeiros não incorporados ao português (orientação da coordenação).
 \newcommand{\estr}[1]{\textit{#1}}
@@ -79,14 +79,14 @@ Arena, Centro Educacional da Fundação Salvador Arena, Estrada dos Alvarengas,
 \imprimirorientador
 
 \begin{resumo}
-A inserção de um filtro de resposta ao impulso finita (FIR) na realimentação de um gerador caótico limita a banda do sinal transmitido e permite a comunicação em canais de banda limitada, mas pode destruir o comportamento caótico do gerador. Este trabalho investiga, por meio de uma pesquisa quantitativa e experimental com simulações numéricas, quais filtros preservam o caos no mapa de Hénon, considerando quatro tipos de filtro (passa-baixas, passa-altas, passa-faixa e rejeita-faixa) e sete janelas de projeto. Para cada filtro, a ordem e a frequência de corte são variadas, e cada ponto da grade é classificado como caótico, não caótico ou divergente pelo maior expoente de Lyapunov, calculado por uma ferramenta de código aberto desenvolvida neste trabalho. Os resultados mostram que o passa-baixas apresenta a maior região caótica e que a preservação do caos precisa ser verificada em cada ponto. Em simulação, um filtro escolhido nessa região permite recuperar a mensagem em um canal no qual o sistema sem filtro perde a sincronização. A solução é uma prova de conceito, no nível 3 de maturidade tecnológica (TRL 3).
+A inserção de um filtro de resposta ao impulso finita (FIR) na realimentação de um gerador caótico limita a banda do sinal transmitido e permite a comunicação em canais de banda limitada, mas pode destruir o comportamento caótico do gerador. Este trabalho investiga, por meio de uma pesquisa quantitativa e experimental com simulações numéricas, quais filtros preservam o caos no mapa de Hénon, considerando quatro tipos de filtro (passa-baixas, passa-altas, passa-faixa e rejeita-faixa) e sete janelas de projeto. Para cada filtro, a ordem e a frequência de corte são variadas, formando uma grade, e cada combinação (ponto da grade) é classificada como caótica, não caótica ou divergente pelo maior expoente de Lyapunov, calculado por uma ferramenta de código aberto desenvolvida neste trabalho. Os resultados mostram que o passa-baixas apresenta a maior região caótica e que a preservação do caos precisa ser verificada para cada filtro projetado. Em simulação, um filtro escolhido nessa região permite recuperar a mensagem em um canal no qual o sistema sem filtro perde a sincronização. A solução é uma prova de conceito, no nível 3 de maturidade tecnológica (TRL 3).
 \end{resumo}
 
 \palavraschave{Comunicação baseada em caos. Mapa de Hénon. Filtros FIR. Expoente
 de Lyapunov. Engenharia de software científico.}
 
 \begin{abstract}
-Inserting a finite impulse response (FIR) filter in the feedback loop of a chaotic generator limits the bandwidth of the transmitted signal and enables communication over band-limited channels, but it may destroy the chaotic behaviour of the generator. This work investigates, through a quantitative experimental study based on numerical simulations, which filters preserve chaos in the Hénon map, considering four filter types (lowpass, highpass, bandpass and bandstop) and seven design windows. For each filter, the order and the cutoff frequency are varied, and each grid point is classified as chaotic, non-chaotic or divergent by the largest Lyapunov exponent, calculated by an open-source tool developed in this work. The results show that the lowpass filter has the largest chaotic region and that chaos preservation must be verified for each grid point. In simulation, a filter chosen in this region recovers the message over a channel in which the unfiltered system loses synchronisation. The solution is a proof of concept at technology readiness level 3 (TRL 3).
+Inserting a finite impulse response (FIR) filter in the feedback loop of a chaotic generator limits the bandwidth of the transmitted signal and enables communication over band-limited channels, but it may destroy the chaotic behaviour of the generator. This work investigates, through a quantitative experimental study based on numerical simulations, which filters preserve chaos in the Hénon map, considering four filter types (lowpass, highpass, bandpass and bandstop) and seven design windows. For each filter, the order and the cutoff frequency are varied, forming a grid, and each combination (grid point) is classified as chaotic, non-chaotic or divergent by the largest Lyapunov exponent, calculated by an open-source tool developed in this work. The results show that the lowpass filter has the largest chaotic region and that chaos preservation must be verified for each designed filter. In simulation, a filter chosen in this region recovers the message over a channel in which the unfiltered system loses synchronisation. The solution is a proof of concept at technology readiness level 3 (TRL 3).
 \end{abstract}
 
 \keywords{Chaos-based communication. Hénon map. FIR filters. Lyapunov exponent.
@@ -100,10 +100,10 @@ Scientific software engineering.}
 \subsection{Contexto e relevância}
 
 Os sistemas de comunicação baseados em caos (SCBC) usam sinais caóticos como
-portadoras; o espectro de banda larga e a aparência de ruído espalham o sinal e
-reduzem a probabilidade de interceptação por um receptor não autorizado,
-propriedade chamada de baixa probabilidade de interceptação
-\cite{Kaddoum2016,Baptista2021}. Um sinal caótico de tempo discreto é limitado
+portadoras. O espectro de banda larga e a aparência de ruído desses sinais
+espalham o sinal transmitido e reduzem a probabilidade de interceptação por um
+receptor não autorizado, propriedade chamada de baixa probabilidade de
+interceptação \cite{Kaddoum2016,Baptista2021}. Um sinal caótico de tempo discreto é limitado
 em amplitude, aperiódico e apresenta dependência sensível às condições iniciais
 (DSCI), isto é, duas órbitas que começam muito próximas se afastam rapidamente
 \cite{Alligood1996}.
@@ -128,21 +128,21 @@ custo de associar cada símbolo a um trecho do sinal
 O espectro largo que torna o sinal caótico atrativo é também o seu principal
 obstáculo prático, porque todo canal físico tem largura de banda finita. Um
 canal que trunca o espectro da portadora altera o sinal que aciona o receptor,
-e a sincronização se perde. \textcite{Eisencraft2009} propuseram limitar a
-banda dentro do próprio gerador, inserindo um filtro digital na sua malha de
-realimentação, e \textcite{Fontes2016} mostraram que essa filtragem não impede
-a sincronização; com filtros de resposta ao impulso finita (FIR), ela é preservada
-\cite{BorgesTese2026}. O filtro, porém, limita o espectro e reduz parte do atrativo do caos, porque a
+e a sincronização se perde. \textcite{Eisencraft2009} propuseram limitar a banda dentro do próprio gerador,
+inserindo um filtro digital na sua malha de realimentação. \textcite{Fontes2016}
+mostraram que a sincronização se mantém com o filtro na malha, e
+\textcite{BorgesTese2026} mostrou que, com filtros de resposta ao impulso finita
+(FIR), ela é preservada para quaisquer coeficientes. O filtro, porém, limita o espectro e reduz parte do atrativo do caos, porque a
 portadora deixa de ocupar a banda larga que motivou o seu uso.
 
 Além disso, a filtragem altera a dinâmica do gerador, e o sinal produzido pode
 deixar de ser caótico. \textcite{Candido2015} questionaram se os SCBC de fato
-transmitem sinais caóticos. Com filtros de dois coeficientes, o gerador já
-apresenta cascatas de bifurcação, coexistência de atratores e crises
-\cite{BorgesCSF2022}; com filtros passa-baixas, o regime muda com a ordem e a
-frequência de corte \cite{Borges2022sbrt,CNMAC2023}; e, para filtros com mais
-coeficientes, depende da posição dos zeros \cite{BorgesCNSNS2024} e da própria
-mensagem \cite{Fontes2017,FontesSAI}. Esses trabalhos estabelecem que o caos precisa ser verificado ponto a ponto,
+transmitem sinais caóticos. Com filtros de dois coeficientes, o gerador já apresenta cascatas de bifurcação,
+coexistência de atratores e crises \cite{BorgesCSF2022}. Com filtros passa-baixas,
+o regime muda com a ordem e a frequência de corte
+\cite{Borges2022sbrt,CNMAC2023}, e, para filtros com mais coeficientes, depende da
+posição dos zeros \cite{BorgesCNSNS2024} e da própria mensagem
+\cite{Fontes2017,FontesSAI}. Esses trabalhos estabelecem que o caos precisa ser verificado ponto a ponto,
 mas não oferecem um mapa sistemático para os quatro tipos de filtro e as janelas
 de projeto, nem uma ferramenta que o produza de forma rápida, reprodutível e
 confiável. A contribuição é um estudo numérico que acrescenta esse mapa à linha
@@ -225,11 +225,11 @@ em que $x_1(n)$ e $x_2(n)$ são as variáveis de estado, reunidas no vetor
 $\mathbf{x}(n)=[x_1(n)\ x_2(n)]^{\mathsf T}$, $\alpha$ e $\beta$ são parâmetros
 reais e $n$ é o índice de tempo. A sequência $\mathbf{x}(0),\mathbf{x}(1),\ldots$
 é chamada de órbita. Para $\alpha=1{,}4$ e $\beta=0{,}3$, o mapa é caótico, isto
-é, a órbita não se repete e duas órbitas vizinhas se separam \cite{Henon1976};
-outros valores dos parâmetros produzem órbitas periódicas ou divergência
+é, a órbita não se repete e duas órbitas vizinhas se separam \cite{Henon1976}.
+Outros valores dos parâmetros produzem órbitas periódicas ou divergência
 \cite{Gallas1993}. A
 Figura~\ref{fig:henon_pfc} ilustra os dois comportamentos para duas condições
-iniciais que diferem em $10^{-3}$: em (a), as trajetórias se separam depois de
+iniciais que diferem em $10^{-3}$: em (a), as órbitas se separam depois de
 poucas iterações; em (b), com $\alpha=0{,}9$, convergem para a mesma órbita
 periódica.
 
@@ -240,7 +240,7 @@ periódica.}{Fonte: Autoria própria (2026)}
   \label{fig:henon_pfc}
 \end{figura}
 
-O gerador caótico não precisa ser o mapa de Hénon; a escolha é deliberada, para
+O gerador caótico não precisa ser o mapa de Hénon. A escolha é deliberada, para
 manter paridade com os trabalhos anteriores da linha de pesquisa e permitir
 comparar os resultados lado a lado
 \cite{BorgesCSF2022,Borges2022sbrt,CNMAC2023,BorgesCNSNS2024}.
@@ -259,29 +259,34 @@ e a função de transferência $H(z)$ são dadas por
 em que $N_z$ é a ordem do filtro, igual ao número de zeros de $H(z)$
 \cite{Oppenheim2009}. Avaliada no círculo unitário, $z=e^{j\omega}$, a função de
 transferência dá a resposta em frequência $H(e^{j\omega})$, que indica quanto o
-filtro atenua cada frequência $\omega\in[0,\pi]$. O valor em $\omega=0$ é o ganho DC (do inglês direct current, o ganho na
-frequência zero), $G=H(e^{j0})=\sum_{j=0}^{N_z}c_j$, o fator que o filtro aplica
-ao valor médio do sinal. Os filtros passa-baixas e rejeita-faixa têm $G=1$, e os
-passa-altas e passa-faixa têm $G\approx0$ \cite{BorgesCNSNS2024}. Como a resposta ao impulso
-tem duração finita, todo filtro FIR é estável: toda entrada limitada produz uma
-saída limitada \cite{Oppenheim2009}.
+filtro atenua cada frequência $\omega\in[0,\pi]$, a frequência angular normalizada
+em radianos por amostra, em que $\pi$ corresponde à metade da frequência de
+amostragem. Nas figuras, as frequências aparecem divididas por $\pi$, de 0 a 1.
+Como a resposta ao impulso tem duração finita, todo filtro FIR é estável: toda
+entrada limitada produz uma saída limitada \cite{Oppenheim2009}.
 
 Os quatro tipos de filtro considerados diferem pela faixa de frequências que
 deixam passar: o passa-baixas conserva as frequências abaixo da frequência de
 corte $\omega_c$, o passa-altas as acima dela, o passa-faixa apenas uma faixa em
 torno de uma frequência central e o rejeita-faixa todas as frequências, exceto
-essa faixa. Os coeficientes são obtidos pelo método da janela: a resposta ao
+essa faixa. O valor em $\omega=0$ é o ganho DC (do inglês \textit{direct
+current}, o ganho na frequência zero), $G=H(e^{j0})=\sum_{j=0}^{N_z}c_j$, o
+fator que o filtro aplica ao valor médio do sinal. Os filtros passa-baixas e
+rejeita-faixa têm $G=1$, e os passa-altas e passa-faixa têm $G\approx0$
+\cite{BorgesCNSNS2024}, porque o passa-baixas e o rejeita-faixa deixam passar a
+frequência zero, e o passa-altas e o passa-faixa a eliminam. Os coeficientes são
+obtidos pelo método da janela: a resposta ao
 impulso do filtro ideal, que é infinita, é atrasada de $N_z/2$ amostras e
 truncada por uma janela de $N_z+1$ amostras \cite{Oppenheim2009}.
 
 A forma da janela define um compromisso entre a largura da faixa de transição
 (o intervalo entre a banda passante e a banda atenuada) e a atenuação fora da
-banda: janelas com lóbulos laterais mais baixos (os máximos secundários do
+banda. Janelas com lóbulos laterais mais baixos (os máximos secundários do
 espectro da janela) atenuam mais, ao custo de uma transição mais larga
 \cite{Harris1978}. A
 Tabela~\ref{tab:janelas_pfc} lista as sete janelas consideradas. A janela de
 Kaiser tem um parâmetro de forma $\beta_K\ge0$ que percorre esse compromisso de
-modo contínuo, sem alterar a ordem do filtro; com $\beta_K=0$, ela se reduz à
+modo contínuo, sem alterar a ordem do filtro. Com $\beta_K=0$, ela se reduz à
 retangular \cite{Kaiser1980}. A Figura~\ref{fig:fir_pfc}(a) mostra o efeito da
 janela em filtros passa-baixas de mesma ordem, e a
 Figura~\ref{fig:fir_pfc}(b), o efeito da ordem: em ordens baixas, o filtro
@@ -340,8 +345,8 @@ realimentação.}{Fonte: Autoria própria (2026)}
 Como $x_3(n)$ depende de amostras passadas de $x_1$, o par $(x_1,x_2)$ deixa de
 ser o estado completo do sistema. As amostras passadas são guardadas em
 variáveis de estado auxiliares, $x_2(n)=x_1(n-1)$ e
-$x_j(n)=x_1(n-j+2)$, $j=4,\ldots,N_z+1$, cada uma com o atraso indicado pelo
-índice. O estado completo é
+$x_j(n)=x_1(n-j+2)$, $j=4,\ldots,N_z+1$, de modo que $x_j(n)$ guarda a
+amostra de $x_1$ de $j-2$ instantes atrás. O estado completo é
 $\mathbf{x}(n)=[x_1(n)\ \cdots\ x_{N_z+1}(n)]^{\mathsf T}$. Para $N_z\ge2$, o mapa de Hénon filtrado
 é o sistema de equações \cite{Borges2022sbrt,BorgesCNSNS2024}
 \begin{equation}
@@ -357,7 +362,7 @@ $\mathbf{x}(n)=[x_1(n)\ \cdots\ x_{N_z+1}(n)]^{\mathsf T}$. Para $N_z\ge2$, o ma
   \label{eq:filtrado_pfc}
 \end{equation}
 de dimensão (número de variáveis de estado) $K=N_z+1$, contra as duas variáveis
-do mapa original; para $N_z=2$, os termos em $x_4,\ldots,x_{N_z+1}$ não existem.
+do mapa original. Para $N_z=2$, os termos em $x_4,\ldots,x_{N_z+1}$ não existem.
 Para $N_z\le1$, a saída $x_3(n)=c_0\,x_1(n)+c_1\,x_2(n)$ é função do estado
 atual, e o sistema mantém a dimensão 2, com $x_3(n)$ no lugar de $x_1(n)$ no
 termo quadrático. Para $N_z=0$ e $c_0=1$, o filtro é a identidade e o
@@ -366,7 +371,8 @@ mapa~\eqref{eq:henon_pfc} é recuperado.
 Um ponto fixo é um estado $\mathbf{x}^*$ que não muda de uma iteração para a
 seguinte, $\mathbf{x}(n+1)=\mathbf{x}(n)=\mathbf{x}^*$. No mapa filtrado, todas
 as amostras atrasadas são iguais no ponto fixo, $x_1=x_2=x_4=\cdots=p$ e
-$x_3=Gp$, o que dá
+$x_3=Gp$. Substituindo esses valores na primeira equação
+de~\eqref{eq:filtrado_pfc}, $p=\alpha-G^2p^2+\beta p$, o que dá
 \begin{equation}
   G^2p^2+(1-\beta)p-\alpha=0,
   \label{eq:ponto_fixo_pfc}
@@ -384,19 +390,19 @@ cuja raiz positiva é
 A DSCI é medida pelos expoentes de Lyapunov, que dão a taxa exponencial média
 com que órbitas vizinhas se afastam \cite{Alligood1996}. Um expoente igual a
 $\ln 2$ em uma direção, por exemplo, indica que a distância entre as órbitas
-dobra, em média, a cada iteração nessa direção; um expoente negativo indica que
+dobra, em média, a cada iteração nessa direção. Um expoente negativo indica que
 as órbitas se aproximam. Um sistema de dimensão $K$ tem $K$ expoentes,
 $\lambda_1\ge\lambda_2\ge\cdots\ge\lambda_K$. Uma órbita é limitada quando
 $\|\mathbf{x}(n)\|$ não cresce sem limite à medida que $n$ aumenta, e divergente
-caso contrário; um sinal limitado, aperiódico e com $\lambda_1>0$ é caótico
+caso contrário. Um sinal limitado, aperiódico e com $\lambda_1>0$ é caótico
 \cite{Alligood1996}.
 
-Os expoentes são calculados a partir da matriz jacobiana $\mathbf{J}(n)$, a
+Os expoentes são calculados a partir da matriz jacobiana $\mathbf{J}_H(n)$, a
 matriz das derivadas parciais do lado direito do mapa em relação ao estado, que
 descreve como uma pequena perturbação do estado é transformada em uma iteração.
 Para o mapa~\eqref{eq:henon_pfc}, ela é
 \begin{equation}
-  \mathbf{J}(n) = \begin{pmatrix}
+  \mathbf{J}_H(n) = \begin{pmatrix}
     -2x_1(n) & \beta\\
     1 & 0
   \end{pmatrix},
@@ -418,12 +424,13 @@ $K\times K$, ela é \cite{Borges2022sbrt,BorgesCNSNS2024}
 em que apenas a terceira linha depende dos coeficientes do filtro.
 
 O cálculo segue o método do mapa tangente \cite{Benettin1980a,Benettin1980b,Alligood1996}.
-Uma base ortonormal de $K$ vetores é propagada pela jacobiana; a cada iteração,
-os vetores são ortogonalizados pelo processo de Gram-Schmidt (a ortogonalização
-sucessiva de cada vetor contra os anteriores) e normalizados, e o
-logaritmo das normas é acumulado. Como as direções que se esticam e as que se
-comprimem produzem números muito grandes e muito pequenos, a reortogonalização é
-feita a cada iteração, nos passos abaixo \cite{Alligood1996}.
+Uma base ortonormal de $K$ vetores é propagada pela jacobiana. Os vetores são
+ortogonalizados pelo processo de Gram-Schmidt (a ortogonalização sucessiva de
+cada vetor contra os anteriores) \cite{Trefethen1997} e normalizados, e o logaritmo das normas é
+acumulado. Como as direções que se esticam e as que se comprimem produzem
+números muito grandes e muito pequenos, a reortogonalização a cada iteração
+evita estouros numéricos (valores grandes ou pequenos demais para a representação
+em ponto flutuante). Os passos são os seguintes \cite{Alligood1996}.
 \begin{enumerate}
 \item Escolher uma base ortonormal $\{\mathbf{w}_1(0),\ldots,\mathbf{w}_K(0)\}$ e
 calcular $\mathbf{z}_k(0)=\mathbf{J}(0)\,\mathbf{w}_k(0)$, $1\le k\le K$.
@@ -446,10 +453,10 @@ Depois de $n$ repetições, o expoente na $k$-ésima direção é
 \end{equation}
 Na varredura, descrita na Seção~\ref{sub:implementacao}, o maior expoente é
 estimado com um único vetor tangente \cite{Wolf1985}, que é o caso de interesse
-na classificação; perto da fronteira de classe, o espectro completo é
+na classificação. Perto da fronteira de classe, o espectro completo é
 recalculado. Para o mapa~\eqref{eq:henon_pfc} com $\alpha=1{,}4$ e
 $\beta=0{,}3$,
-$\lambda_1\approx0{,}42$ \cite{Sprott2003}, e, como $\det\mathbf{J}(n)=-\beta$ em
+$\lambda_1\approx0{,}42$ \cite{Sprott2003}, e, como $\det\mathbf{J}_H(n)=-\beta$ em
 toda a órbita, os dois expoentes satisfazem $\lambda_1+\lambda_2=\ln|\beta|$
 \cite{Alligood1996}, identidade usada para validar a implementação. Na prática,
 o limite é substituído por um número finito de iterações, depois de descartar o
@@ -461,7 +468,13 @@ considerado na classificação.
 
 No esquema de \textcite{Pecora1990}, o transmissor gera o sinal caótico, e o
 receptor, que contém uma cópia do gerador, é acionado pelo sinal transmitido em
-vez de evoluir de forma independente. No transmissor sem filtro,
+vez de evoluir de forma independente. No enlace da
+Figura~\ref{fig:enlace_sem_pfc}, a mensagem $m(n)$ é somada à portadora,
+\begin{equation}
+  s(n)=x_1(n)+\mu\,m(n),
+  \label{eq:tx_sem_pfc}
+\end{equation}
+em que $\mu$ é a profundidade de modulação. No transmissor sem filtro,
 \begin{equation}
   x_1(n+1)=\alpha-s^2(n)+\beta x_2(n),\qquad x_2(n+1)=x_1(n),
   \label{eq:tx_estado_sem_pfc}
@@ -479,16 +492,8 @@ $e_1=x_1-\hat x_1$ e $e_2=x_2-\hat x_2$:
   \label{eq:erro_sem_pfc}
 \end{equation}
 cujos autovalores $\pm\sqrt{\beta}\approx\pm0{,}55$ estão dentro do círculo
-unitário; o erro tende a zero e os dois sistemas sincronizam. No enlace da
-Figura~\ref{fig:enlace_sem_pfc}, a mensagem $m(n)$ é somada à portadora,
-\begin{equation}
-  s(n)=x_1(n)+\mu\,m(n),
-  \label{eq:tx_sem_pfc}
-\end{equation}
-em que $\mu$ é a profundidade de modulação. O sinal $s(n)$ é transmitido e
-também realimenta o mapa do transmissor, de modo que o receptor, acionado pelo
-sinal recebido $r(n)$, evolui sob a mesma dinâmica. Depois da sincronização, a
-cópia reproduz $x_1(n)$, e a mensagem é estimada por
+unitário. O erro tende a zero e os dois sistemas sincronizam. Depois da
+sincronização, a cópia reproduz $x_1(n)$, e a mensagem é estimada por
 $\hat m(n)=\bigl(r(n)-\hat x_1(n)\bigr)/\mu$.
 
 \begin{figura}{Enlace com o mapa de Hénon, sem filtro.}{Fonte: Autoria própria (2026)}
@@ -498,8 +503,8 @@ $\hat m(n)=\bigl(r(n)-\hat x_1(n)\bigr)/\mu$.
 % ---------- transmissor
 \node[enlbloco] (mapa) at (0,0) {Mapa de\\Hénon};
 \node[soma]  (soma) at (2.4,0) {$\Sigma$};
-\node[enlbloco, minimum width=8mm] (mu) at (2.4,1.2) {$\mu$};
-\node[enlrotulo, anchor=east] (m) at (1.4,1.2) {$m(n)$};
+\node[enlbloco, minimum width=8mm] (mu) at (2.4,1.35) {$\mu$};
+\node[enlrotulo, anchor=east] (m) at (1.4,1.35) {$m(n)$};
 \coordinate (fb)  at (2.95,0);
 \coordinate (fbb) at (2.95,-1.15);
 \coordinate (gtr) at (3.05,0);
@@ -507,7 +512,7 @@ $\hat m(n)=\bigl(r(n)-\hat x_1(n)\bigr)/\mu$.
 \node[enlbloco, minimum width=13mm] (canal) at (4.8,0) {Canal};
 % ---------- receptor
 \coordinate (rc) at (6.55,0);
-\node[enlbloco] (copia) at (7.95,-1.55) {Mapa de\\Hénon};
+\node[enlbloco] (copia) at (7.95,-1.75) {Mapa de\\Hénon};
 \node[soma]  (sub)   at (9.8,0) {$\Sigma$};
 \node[enlbloco, minimum width=10mm] (inv) at (11.1,0) {$1/\mu$};
 \coordinate (gre)  at (11.65,0);
@@ -542,8 +547,9 @@ $\hat m(n)=\bigl(r(n)-\hat x_1(n)\bigr)/\mu$.
 \end{figura}
 
 Quando o mesmo filtro FIR é inserido no transmissor e no receptor, o bloco de
-$x_1$ e $x_2$ da matriz do erro mantém os autovalores $\pm\sqrt{\beta}$ e os
-demais são nulos, de modo que a condição de sincronização do sistema sem filtro
+$x_1$ e $x_2$ da matriz do erro (equação~\eqref{eq:erro_filtrado},
+Seção~\ref{sub:cenarios}) mantém os autovalores $\pm\sqrt{\beta}$ e os
+demais são nulos. Assim, a condição de sincronização do sistema sem filtro
 continua suficiente, qualquer que seja a escolha dos coeficientes
 \cite{BorgesTese2026}. Essa
 garantia, porém, diz respeito somente à sincronização: ela nada afirma sobre o
@@ -554,12 +560,11 @@ de~\eqref{eq:filtrado_pfc} \cite{Candido2015,BorgesCNSNS2024}.
 \label{sub:modulacao}
 
 O esquema da Figura~\ref{fig:enlace_sem_pfc} é o mascaramento caótico, em que a
-mensagem é somada diretamente à portadora. Outros esquemas codificam os bits
-na escolha entre sinais caóticos distintos, como o chaveamento por
-deslocamento caótico, ou na correlação entre dois trechos do mesmo sinal, como o
-chaveamento diferencial por deslocamento caótico \cite{Kolumban1996DCSK}, que
-dispensa a sincronização e, por isso, é menos sensível às imperfeições do canal
-\cite{Kaddoum2016}. O desempenho desses
+mensagem é somada diretamente à portadora. Outros esquemas codificam os bits na escolha entre sinais caóticos distintos,
+como o chaveamento por deslocamento caótico, ou na correlação entre dois trechos
+do mesmo sinal, como o chaveamento diferencial por deslocamento caótico
+\cite{Kolumban1996DCSK}. O chaveamento diferencial dispensa a sincronização e,
+por isso, é menos sensível às imperfeições do canal \cite{Kaddoum2016}. O desempenho desses
 esquemas costuma ser expresso pela taxa de erro de bit, a fração de bits
 recuperados incorretamente, em função da relação sinal-ruído, a razão
 entre a potência do sinal e a do ruído no canal \cite{Kaddoum2016}. O canal não tem ruído, e o enlace é avaliado pelo erro entre os estados do
@@ -595,8 +600,9 @@ e em medidas numéricas. Quanto aos objetivos, é descritiva, pois caracteriza o
 regime em função dos parâmetros e mede a influência de cada fator. Quanto aos
 procedimentos, é experimental por simulação computacional, com variáveis
 manipuladas (tipo de filtro, janela, $\beta_K$, ordem e frequência de corte),
-variável observada (a classe dada por $\lambda_1$) e condições controladas
-($\alpha$, $\beta$, condições iniciais e sementes).
+variável observada (a classe dada por $\bar\lambda_1$) e condições controladas
+($\alpha$, $\beta$, condições iniciais e sementes, isto é, os valores iniciais
+do gerador de números aleatórios que sorteia as condições iniciais).
 
 A metodologia cobre a modelagem do mapa de Hénon filtrado, a grade de filtros,
 a ferramenta computacional e os cenários de comunicação. O enlace da
@@ -614,18 +620,20 @@ sistema~\eqref{eq:filtrado_pfc}, com $\alpha=1{,}4$ e $\beta=0{,}3$ em todos os
 experimentos, e as simulações partem de condições iniciais próximas do ponto fixo
 positivo do mapa de Hénon filtrado, definido por~\eqref{eq:ponto_fixo_pfc}
 e~\eqref{eq:ponto_fixo_raiz_pfc}. Cada ponto da
-grade é classificado pelo maior expoente de Lyapunov $\lambda_1$:
+grade é classificado pela estimativa $\bar\lambda_1$ do maior expoente de
+Lyapunov:
 \begin{equation}
   \text{classe}=
   \begin{cases}
     \text{divergente}, & \text{se a órbita não é limitada},\\
-    \text{caótica},    & \text{se a órbita é limitada e } \lambda_1>\theta,\\
-    \text{não caótica}, & \text{se a órbita é limitada e } \mbox{$\lambda_1\le\theta$},
+    \text{caótica},    & \text{se a órbita é limitada e } \bar\lambda_1>\theta,\\
+    \text{não caótica}, & \text{se a órbita é limitada e } \mbox{$\bar\lambda_1\le\theta$},
   \end{cases}
   \label{eq:criterio_pfc}
 \end{equation}
-em que $\theta=5\times10^{-3}$. O limiar é necessário porque a estimativa de
-tempo finito de $\lambda_1$ fica ligeiramente positiva em órbitas
+em que $\bar\lambda_1$ é a estimativa de $\lambda_1$, média sobre as condições
+iniciais (Seção~\ref{sub:implementacao}), e $\theta=5\times10^{-3}$. O limiar
+$\theta$ é necessário porque a estimativa de tempo finito de $\lambda_1$ fica ligeiramente positiva em órbitas
 quase-periódicas (que repetem o padrão sem fechar um ciclo), cujo expoente
 verdadeiro é nulo. Nas 184 configurações, 13.068
 dos 54.470 pontos com estimativa positiva estão em $(0,10^{-3}]$, e a contagem
@@ -641,15 +649,16 @@ $\rho_c=N_c/N_{\text{grade}}$, em que $N_c$ é o número de pontos caóticos e
 $N_{\text{grade}}$ é o número de pontos da configuração. A cobertura média de um
 tipo de filtro é a média de $\rho_c$ sobre as configurações daquele tipo, que é
 a mesma fração calculada sobre todos os pontos do tipo, e é essa a quantidade
-comparada na Seção~\ref{sub:caos_pfc}. No desenho balanceado das janelas fixas,
-os fatores são o tipo (quatro níveis) e a janela (seis níveis), sem a Kaiser;
-na Kaiser, o fator $\beta_K$ (40 níveis) é avaliado com o tipo como bloco, sobre
-as ordens pares. Usa-se o $\eta^2$ parcial ($\eta^2_{\mathrm{p}}$), medida descritiva do tamanho
-do efeito, sem teste de significância, que dá a fração da variação de $\rho_c$
+comparada na Seção~\ref{sub:caos_pfc}. No delineamento balanceado das janelas fixas,
+os fatores são o tipo (quatro níveis) e a janela (seis níveis), sem a Kaiser.
+Na Kaiser, o fator $\beta_K$ (40 níveis) é avaliado com o tipo como bloco, sobre
+as ordens pares (o suporte comum aos quatro tipos, Seção~\ref{sub:varredura}). Usa-se o $\eta^2$ parcial ($\eta^2_{\mathrm{p}}$), medida descritiva do tamanho
+do efeito, sem teste de significância. Ele dá a fração da variação de $\rho_c$
 explicada por um fator quando os demais são mantidos fixos, de 0 (o fator não
 altera $\rho_c$) a 1 (explica toda a variação):
 $\eta^2_{\mathrm{p}}=SS_{\text{fator}}/(SS_{\text{fator}}+SS_{\text{erro}})$,
-em que $SS_{\text{fator}}$ é a soma de quadrados entre níveis do fator, com as
+em que $SS$ (do inglês \textit{sum of squares}) indica soma de quadrados.
+$SS_{\text{fator}}$ é a soma entre níveis do fator, com as
 demais combinações como blocos, e $SS_{\text{erro}}$ é a soma de quadrados
 residual; as interações não foram modeladas.
 
@@ -657,11 +666,10 @@ residual; as interações não foram modeladas.
 \label{sub:varredura}
 
 Os filtros são projetados pela rotina \texttt{firwin} da biblioteca SciPy
-\cite{Virtanen2020}. Para os filtros passa-baixas e passa-altas, $\omega_c$ é a
-frequência de corte; para os filtros passa-faixa e rejeita-faixa, é a frequência
-central de uma faixa nominal de largura $0{,}05\pi$; nas figuras, $\omega_c/\pi$
-mantém o mesmo nome e, no passa-faixa e no rejeita-faixa, representa essa
-frequência central. Nas ordens da grade, a faixa realizada é
+\cite{Virtanen2020}. Para os filtros passa-baixas e passa-altas, $\omega_c$ é a frequência de corte.
+Para os filtros passa-faixa e rejeita-faixa, é a frequência central de uma faixa
+nominal de largura $0{,}05\pi$, e as figuras mantêm o mesmo símbolo
+$\omega_c/\pi$ para essa frequência. Nas ordens da grade, a faixa realizada é
 bem mais larga no passa-faixa, e o rejeita-faixa quase não rejeita a faixa. As
 variáveis de varredura são a ordem
 $N_z$ e a frequência $\omega_c$, porque é a resposta em frequência, e
@@ -674,13 +682,13 @@ borda inferior a $10^{-5}$ e a superior a $1-10^{-5}$, em vez de excluir o ponto
 Isso afeta três valores de corte em cada borda: 240 pontos no passa-faixa e 120
 no rejeita-faixa, 360 por par de configurações da mesma janela.
 Na grade inteira, os 46 pares somam 16.560 dos 552.000 pontos. Os filtros
-passa-altas e rejeita-faixa admitem apenas ordens pares no método da janela
-\cite{Oppenheim2009}, com 2.000 pontos, produto de 20 ordens por 100 cortes,
+passa-altas e rejeita-faixa admitem apenas ordens pares no método da janela,
 porque um filtro FIR de fase linear com ordem ímpar tem ganho nulo em
-$\omega=\pi$, incompatível com essas respostas. Nas
+$\omega=\pi$, incompatível com essas respostas \cite{Oppenheim2009}. Esses
+tipos têm, portanto, 2.000 pontos, produto de 20 ordens por 100 cortes. Nas
 janelas de Hann e Bartlett, com $N_z=1$, a rotina \texttt{firwin} devolve
-coeficientes não finitos, porque as janelas simétricas de duas amostras são nulas;
-esses pontos aparecem como divergentes por causa do projeto do filtro, e não da
+coeficientes não finitos, porque as janelas simétricas de duas amostras são nulas.
+Esses pontos aparecem como divergentes por causa do projeto do filtro, e não da
 dinâmica, e ficam fora das comparações entre janelas (Seção~\ref{sub:caos_pfc}).
 
 As seis janelas fixas da Tabela~\ref{tab:janelas_pfc} dão 24 configurações, e a
@@ -693,21 +701,24 @@ de 0,5, para os quatro tipos, o que acrescenta 160 configurações. O total é d
 
 A ferramenta é o pacote de software livre
 \texttt{chaotic-pfc} \cite{chaoticPFC2026}, organizado nos componentes da
-Figura~\ref{fig:arquitetura_pfc}. O laço que estima o expoente em cada ponto é
-compilado com Numba \cite{Lam2015} e executado em paralelo sobre os pontos da
-grade; as demais operações usam NumPy e SciPy \cite{Harris2020,Virtanen2020}.
+Figura~\ref{fig:arquitetura_pfc}. O laço que estima o expoente em cada ponto é compilado com Numba
+\cite{Lam2015}, isto é, traduzido para código de máquina na primeira execução, o
+que o torna muito mais rápido. Esse laço é executado em paralelo sobre os pontos
+da grade, e as demais operações usam NumPy e SciPy
+\cite{Harris2020,Virtanen2020}.
 A arquitetura separa a etapa cara, a simulação da grade, feita uma vez e
 gravada em arquivos, da etapa barata, que lê esses arquivos para classificar,
 contar, desenhar os mapas e calcular os números do texto. Para que
-o resultado não dependa do número de \estr{threads}, as perturbações das condições
+o resultado não dependa do número de \estr{threads} (fluxos de execução que rodam
+ao mesmo tempo em núcleos diferentes do processador), as perturbações das
+condições
 iniciais são geradas antes do trecho paralelo, com semente fixa igual a 42.
 
 As simulações usam Python 3.14, com NumPy 2.5.4, SciPy 1.18.1 e Numba 0.68.0,
 versões fixadas em \texttt{requirements-lock.txt}. As medições de desempenho
 foram feitas em um Intel Core i7-8550U, com quatro núcleos físicos, oito \estr{threads}
-e 31,1~GiB de memória. O código está no repositório
-\texttt{fesa-academic-projects/chaotic-pfc}, e o DOI de conceito é
-10.5281/zenodo.22740317.
+e 31,1~GiB de memória. O código e os dados estão disponíveis no repositório da ferramenta
+\cite{chaoticPFC2026}.
 
 \begin{figura}{Componentes da ferramenta e fluxo de dados entre eles.}{Fonte:
 Autoria própria (2026)}
@@ -737,9 +748,9 @@ O cálculo do espectro completo pelos passos da
 Seção~\ref{sub:lyapunov} custa $\mathcal{O}(K^3)$ operações por iteração. Para
 reduzir o custo, a varredura propaga um único vetor tangente
 \cite{Benettin1980a,Wolf1985}, como mostra a Figura~\ref{fig:estimador_pfc}.
-Para cada ponto da grade, são sorteadas 25 condições iniciais em um hipercubo
-de lado 0,1 com um vértice no ponto fixo positivo. Cada condição é iterada 500
-vezes para descartar o transitório da órbita; se alguma deixar de ser finita
+Para cada ponto da grade, são sorteadas 25 condições iniciais, cada coordenada
+entre a coordenada correspondente do ponto fixo positivo e esse valor mais 0,1. Cada condição é iterada 500
+vezes para descartar o transitório da órbita. Se alguma deixar de ser finita
 nesse intervalo, o ponto é divergente. Em seguida, o vetor tangente $\mathbf{w}$
 é multiplicado por $\mathbf{J}(n)$ a cada iteração e, a cada 10 iterações, o
 logaritmo da sua norma é somado e o vetor é normalizado. O acúmulo dura até
@@ -747,9 +758,11 @@ logaritmo da sua norma é somado e o vetor é normalizado. O acúmulo dura até
 $10^{-3}$ em duas verificações consecutivas, feitas a cada 100 iterações. Uma
 condição inicial que deixa de ser finita somente depois do transitório da
 órbita é descartada, e o valor do ponto é a média $\bar\lambda_1$ sobre as
-demais. Os pontos com $|\bar\lambda_1-\theta|<5\times10^{-3}$, cuja classe
-poderia mudar por pequenas diferenças numéricas, são recalculados com o espectro
-completo pelo processo de Gram-Schmidt modificado; foram 23.000 dos 552.000
+demais. Os pontos com $0<\bar\lambda_1<10^{-2}$, a menos de $\theta$ do limiar, podem
+mudar de classe por pequenas diferenças numéricas. Por isso, são recalculados com
+o espectro completo pelo processo de Gram-Schmidt modificado, variante
+numericamente mais estável do processo da Seção~\ref{sub:lyapunov}, que subtrai
+as projeções uma de cada vez \cite{Trefethen1997}. Foram 23.000 dos 552.000
 pontos.
 
 \begin{figura}{Fluxograma da estimativa do maior expoente de Lyapunov e da
@@ -762,7 +775,7 @@ classificação de cada ponto da grade.}{Fonte: Autoria própria (2026)}
 \node[passo, below=of nf] (vt) {Propagar o vetor tangente, $\mathbf{w}\leftarrow\mathbf{J}(n)\,\mathbf{w}$; a cada 10 iterações, somar $\ln\|\mathbf{w}\|$ e normalizar $\mathbf{w}$};
 \node[decisao, below=of vt] (st) {Estimativa estável\\ou 3.000 iterações};
 \node[passo, below=of st] (md) {Calcular a média $\bar\lambda_1$ sobre as condições iniciais};
-\node[decisao, below=of md] (pr) {$|\bar\lambda_1-\theta|<5\times10^{-3}$};
+\node[decisao, below=of md] (pr) {$0<\bar\lambda_1<10^{-2}$};
 \node[passo, right=10mm of pr, text width=40mm] (ec) {Recalcular com o espectro completo (Gram-Schmidt)};
 \coordinate[below=7mm of pr] (j);
 \node[decisao, below=4mm of j] (cl) {$\bar\lambda_1>\theta$};
@@ -790,10 +803,10 @@ classificação de cada ponto da grade.}{Fonte: Autoria própria (2026)}
 \label{sub:confiabilidade}
 
 A confiabilidade do resultado é tratada em três frentes. A primeira frente
-reúne os testes automatizados, que somam 1.517 casos: testes de contrato cobrem
-as funções
-públicas; testes baseados em propriedades geram
-entradas e verificam invariantes \cite{MacIver2019}; testes contra a identidade
+reúne os testes automatizados, que somam 1.527 casos: testes de contrato verificam se
+cada função pública respeita as condições declaradas de entrada e saída; testes baseados em propriedades geram
+entradas aleatórias e verificam invariantes, propriedades que devem valer para
+qualquer entrada válida \cite{MacIver2019}; testes contra a identidade
 $\lambda_1+\lambda_2=\ln|\beta|$ validam o estimador; e testes de regressão
 comparam os arquivos de resultados, bit a bit, com versões de referência.
 
@@ -802,13 +815,14 @@ reproduzem (tipo de filtro, janela, ordem, corte, semente, horizonte e regra de
 classificação), e os números citados no texto são calculados a partir desses
 arquivos e conferidos automaticamente. A terceira frente é a tolerância a falhas: o
 caminho que leva dos dados ao texto falha de forma segura, isto é, uma
-verificação que levanta exceção ou um arquivo corrompido interrompem o
+verificação que lança exceção ou um arquivo corrompido interrompem o
 processamento com erro, em vez de produzir um resultado parcial. Um \estr{checkpoint}
 truncado (um arquivo com o estado de uma varredura gravado pela metade), por
 exemplo, faz o carregamento terminar com a mensagem
 \texttt{invalid or corrupted checkpoint} e a ferramenta de linha de comando
 retornar código de erro. A integração contínua (a execução automática das
-verificações a cada mudança) exige cobertura mínima de 75\%.
+verificações a cada mudança) exige cobertura de código (a fração do código
+executada pelos testes) de no mínimo 75\%.
 
 \subsection{Segurança de código e boas práticas}
 \label{sub:seguranca}
@@ -817,31 +831,35 @@ Como os resultados são a fonte de todos os números publicados, eles
 são gravados no formato \texttt{.npz}, com os metadados em texto, e lidos com a
 desserialização de objetos (a reconstrução de objetos a partir do arquivo)
 desativada, de modo que o carregamento não executa código. Arquivos de versões antigas só são aceitos depois de terem a integridade
-verificada contra referências embutidas no pacote. Parâmetros inválidos geram
-exceções de domínio explícitas. A interface pública da biblioteca foi projetada para dificultar o uso incorreto: os parâmetros de entrada são validados na fronteira de cada
+verificada contra referências embutidas no pacote. Parâmetros inválidos geram exceções de domínio explícitas (erros próprios do
+problema, como ordem negativa ou corte fora da faixa). A interface pública da biblioteca foi projetada para dificultar o uso incorreto: os parâmetros de entrada são validados na entrada de cada
 função pública, antes de qualquer alocação ou simulação, e a hierarquia de
 exceções separa erro de parâmetro, dado não confiável e divergência. Os tipos
 das funções públicas são verificados estaticamente, e a integração contínua
 recusa a mudança que quebre essa verificação. A prática segue a programação
-defensiva de \textcite{McConnell2004}: validar os dados que atravessam a
-fronteira do módulo e falhar cedo, em vez de propagar um valor inválido até o
+defensiva de \textcite{McConnell2004}: validar os dados na entrada do
+módulo e falhar cedo, em vez de propagar um valor inválido até o
 resultado. A integração contínua executa 23 verificações a
 cada mudança. O Quadro~\ref{qua:ci_pfc} agrupa em oito categorias as 14 que conferem o
-método e o texto, com o número de verificações de cada uma entre parênteses; as
-outras 9 cuidam da distribuição e da documentação. As verificações obrigatórias impedem a
+método e o texto, com o número de verificações de cada uma entre parênteses. As
+outras 9 cuidam da distribuição, do \estr{notebook}, dos \estr{benchmarks} de
+desempenho, das licenças, da documentação, do \estr{lockfile} (a lista de versões
+exatas das dependências) e da publicação. As verificações obrigatórias impedem a
 incorporação da mudança quando falham. A auditoria de vulnerabilidades das
 dependências, por sua vez, é consultiva, porque uma vulnerabilidade nova pode
 surgir em uma dependência sem relação com a mudança avaliada.
 
 Esses mecanismos correspondem aos pilares de segurança da informação
-\cite{ISO27000}: a verificação de integridade dos arquivos de resultados, a
-leitura sem execução de
-código, a validação de entradas e os testes protegem a integridade (I); a falha
-segura e a execução sem compilador, a disponibilidade (D); a detecção de segredos
-expostos, a confidencialidade (C) do repositório; e a regra de commits assinados,
-com os metadados gravados em cada varredura, a autenticidade (A) e o não repúdio
-(N) do histórico. No enlace de comunicação, confidencialidade, autenticidade e
-não repúdio não foram tratados (Seção~\ref{sub:limitacoes_pfc}).
+\cite{ISO27000}. A verificação de integridade dos arquivos de resultados, a
+leitura sem execução de código, a validação de entradas e os testes protegem a
+integridade (I). A falha segura e a execução sem compilador (o código roda em
+modo interpretado se o Numba não estiver disponível) protegem a disponibilidade
+(D), e a detecção de segredos expostos protege a confidencialidade (C) do
+repositório. A regra de commits assinados (cada alteração do código é assinada
+digitalmente pelo autor), com os metadados gravados em cada varredura, protege a
+autenticidade (A) e o não repúdio (N) do histórico. No enlace de comunicação,
+confidencialidade, autenticidade e não repúdio não foram tratados
+(Seção~\ref{sub:limitacoes_pfc}).
 
 \begin{quadro}{Categorias de verificação da integração contínua, com o número de
 verificações de cada uma. C = confidencialidade, I = integridade,
@@ -875,7 +893,7 @@ Auditoria de dependências (1) & dependências com vulnerabilidades conhecidas &
 \label{sub:cenarios}
 
 O estimador é validado no mapa~\eqref{eq:henon_pfc} sem filtro, comparando
-$\lambda_1$ com o valor de referência \cite{Sprott2003} e verificando a
+$\bar\lambda_1$ com o valor de referência \cite{Sprott2003} e verificando a
 identidade $\lambda_1+\lambda_2=\ln|\beta|$. A robustez da classificação é
 avaliada repetindo as melhores configurações com dez sementes, alterando o
 limiar e recalculando amostras de pontos caóticos com $3\times10^5$ iterações.
@@ -883,9 +901,8 @@ limiar e recalculando amostras de pontos caóticos com $3\times10^5$ iterações
 Os cenários de comunicação usam o enlace da Figura~\ref{fig:enlace_pfc}, com o
 mesmo filtro no transmissor e no receptor. Com o filtro na realimentação, a mensagem é
 somada à saída do filtro, $s(n)=x_3(n)+\mu\,m(n)$, e estimada por
-$\hat m(n)=\bigl(r(n)-\hat x_3(n)\bigr)/\mu$. Usa-se $\mu=0{,}01$, uma mensagem
-de texto codificada em bits, com $m(n)=\pm1$ e 20 amostras por bit, e
-$10^6$ amostras.
+$\hat m(n)=\bigl(r(n)-\hat x_3(n)\bigr)/\mu$. Usam-se $\mu=0{,}01$ e $10^6$ amostras; a mensagem é um texto codificado em
+bits, com $m(n)=\pm1$ e 20 amostras por bit.
 
 No transmissor filtrado, o estado evolui como
 \begin{equation}
@@ -912,8 +929,8 @@ se cancelam e o erro $e_i=x_i-\hat x_i$ obedece a
 A matriz dessa recursão tem os autovalores $\pm\sqrt{\beta}$ no bloco de
 $x_1$ e $x_2$ e $K-2$ autovalores nulos nos demais, como no enlace sem filtro.
 A derivação foi conferida contra o código: os dois mapas são acionados pelo
-mesmo sinal, e a matriz acima reproduz a jacobiana do mapa filtrado sem o termo
-em $x_3$.
+mesmo sinal, e a matriz da recursão~\eqref{eq:erro_filtrado} reproduz a jacobiana do mapa
+filtrado sem o termo em $x_3$.
 
 \begin{figura}{Enlace com o mapa de Hénon filtrado: o mesmo filtro FIR no
 transmissor e no receptor.}{Fonte: Autoria própria (2026)}
@@ -924,8 +941,8 @@ transmissor e no receptor.}{Fonte: Autoria própria (2026)}
 \node[enlbloco] (mapa) at (0,0) {Mapa de\\Hénon};
 \node[enlbloco] (fir)  at (2.85,0) {Filtro FIR\\$H(z)$};
 \node[soma]  (soma) at (5.25,0) {$\Sigma$};
-\node[enlbloco, minimum width=8mm] (mu) at (5.25,1.2) {$\mu$};
-\node[enlrotulo, anchor=east] (m) at (4.25,1.2) {$m(n)$};
+\node[enlbloco, minimum width=8mm] (mu) at (5.25,1.35) {$\mu$};
+\node[enlrotulo, anchor=east] (m) at (4.25,1.35) {$m(n)$};
 \coordinate (fb)  at (5.8,0);
 \coordinate (fbb) at (5.8,-1.15);
 \coordinate (gtr) at (5.9,0);
@@ -933,8 +950,8 @@ transmissor e no receptor.}{Fonte: Autoria própria (2026)}
 \node[enlbloco, minimum width=13mm] (canal) at (7.65,0) {Canal};
 % ---------- receptor
 \coordinate (rc) at (9.4,0);
-\node[enlbloco] (copia) at (10.8,-1.55) {Mapa de\\Hénon};
-\node[enlbloco] (firr)  at (13.7,-1.55) {Filtro FIR\\$H(z)$};
+\node[enlbloco] (copia) at (10.8,-1.75) {Mapa de\\Hénon};
+\node[enlbloco] (firr)  at (13.7,-1.75) {Filtro FIR\\$H(z)$};
 \node[soma]  (sub)   at (13.7,0) {$\Sigma$};
 \node[enlbloco, minimum width=10mm] (inv) at (15.0,0) {$1/\mu$};
 \coordinate (gre)  at (15.55,0);
@@ -972,12 +989,13 @@ transmissor e no receptor.}{Fonte: Autoria própria (2026)}
 
 O canal de banda limitada é um filtro FIR de fase linear (em que todas as
 frequências sofrem o mesmo atraso), com 201 coeficientes, janela de Hamming e
-corte $0{,}99\pi$; o seu atraso de grupo (o atraso efetivo aplicado ao sinal),
+corte $0{,}99\pi$. O seu atraso de grupo (o atraso efetivo aplicado ao sinal),
 de 100 amostras, é compensado na comparação entre a mensagem enviada e a recuperada. São avaliados
 três cenários: o enlace sem limitação de banda, o enlace sem filtro no canal de
 banda limitada e o enlace com o filtro escolhido no mesmo canal de banda
-limitada. O controle de atraso puro repete o enlace sem filtro com um
-canal que apenas atrasa a portadora em 100 amostras, sem limitar a banda.
+limitada. Para separar o efeito do atraso do efeito da banda, um cenário de controle
+repete o enlace sem filtro com um canal que apenas atrasa a portadora em 100
+amostras, sem limitar a banda.
 
 O critério de sincronização é o erro de estado entre transmissor e receptor,
 com os estados alinhados pelo atraso de 100 amostras do canal:
@@ -1000,13 +1018,13 @@ tecnológica.
 \subsection{Validação do estimador}
 \label{sub:validacao_pfc}
 
-Como toda a classificação depende de $\lambda_1$, o estimador foi validado no
+Como toda a classificação depende de $\bar\lambda_1$, o estimador foi validado no
 mapa sem filtro antes da varredura (Seção~\ref{sub:cenarios}). Com o espectro completo, obteve-se
-$\bar\lambda_1=0{,}4185$, 0,18\% abaixo da referência de $0{,}4192$
+$\bar\lambda_1=0{,}4185$, 0,17\% abaixo da referência de $0{,}41922$
 \cite{Sprott2003}, e a identidade $\lambda_1+\lambda_2=\ln|\beta|$ foi
 satisfeita com erro máximo de $5{,}4\times10^{-9}$. O caminho de vetor único,
 usado na varredura, resultou em $\bar\lambda_1=0{,}4194$, a 0,21\% do espectro
-completo e a 0,03\% da referência. Essa precisão separa as classes
+completo e a 0,04\% da referência. Essa precisão separa as classes
 de~\eqref{eq:criterio_pfc}, o que permite usar o caminho rápido na varredura.
 
 % ----------------------------------------------------------------------------
@@ -1015,12 +1033,13 @@ de~\eqref{eq:criterio_pfc}, o que permite usar o caminho rápido na varredura.
 
 Sem limitação de banda, o enlace da Figura~\ref{fig:enlace_sem_pfc} recupera a
 mensagem: pelo critério da Seção~\ref{sub:cenarios}, o erro de estado fica abaixo
-do limiar depois do transitório de sincronização e cai para
+de $\varepsilon_s$ depois do transitório de sincronização e cai para
 $1{,}0\times10^{-16}$ no regime permanente.
 
 No canal de banda limitada, o mesmo enlace perde a sincronização
 (Figura~\ref{fig:falha_pfc}). O erro de estado chega a 1,88 depois do
-transitório de sincronização, mais de três ordens de grandeza acima do limiar, e a
+transitório de sincronização, mais de três ordens de grandeza acima de
+$\varepsilon_s$, e a
 mensagem recuperada não acompanha a enviada.
 
 
@@ -1038,7 +1057,8 @@ banda, mantém o enlace sincronizado, com erro máximo de $1{,}0\times10^{-16}$.
 \begin{minipage}{\textwidth}
 \begin{figura}{Enlace sem filtro no canal FIR de banda limitada: (a) mensagem,
 (b) sinal transmitido, (c) sinal recebido e (d) mensagem recuperada, com as
-respectivas densidades espectrais de potência. Os sinais recebidos estão
+respectivas densidades espectrais de potência (a distribuição da potência do
+sinal pelas frequências). Os sinais recebidos estão
 alinhados pelo atraso de grupo do canal (100 amostras). O sinal estimado
 $\hat m(n)$ é limitado a $\pm3$ para exibição; a mensagem não é recuperada.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=\textwidth]{figures/fig_comm_falha}
@@ -1060,7 +1080,7 @@ configurações. Em cada painel, cada ponto corresponde a um filtro com tipo,
 janela, ordem e corte definidos, e não ao tipo de filtro em geral. No passa-baixas, o caos ocupa os cortes abaixo
 de uma fronteira. Essa fronteira sobe com a ordem até $N_z=7$
 ($\omega_c/\pi=0{,}66$ em $N_z=4$, $0{,}96$ em $N_z=6$ e $1{,}00$ em $N_z=7$) e
-depois desce, até $\omega_c/\pi=0{,}03$ em $N_z=40$; as órbitas divergem acima
+depois desce, até $\omega_c/\pi=0{,}03$ em $N_z=40$. As órbitas divergem acima
 dela e, para $N_z\le3$ e $N_z=5$, nenhum ponto é caótico. No passa-altas, o caos ocorre em $\omega_c/\pi\le0{,}23$ para $N_z\ge6$
 e, apenas para $N_z=4$, em $0{,}67\le\omega_c/\pi\le1$. No passa-faixa, a região
 caótica é fragmentada, com até seis faixas ao longo de $\omega_c$ em ordens
@@ -1124,11 +1144,13 @@ Rejeita-faixa & Retangular & 118 & 5,9 \\
 \label{tab:melhores_pfc}
 \end{tabela}
 
-O tipo de filtro explica $0{,}588$ da variação de $\rho_c$ nas 24 configurações
-de janelas fixas e $0{,}759$ nas 160 da Kaiser. Nesses dois desenhos, o $\beta_K$
-dentro da Kaiser vem em seguida, com $0{,}495$, e a janela, com $0{,}387$. Como
-os valores vêm de desenhos diferentes, a comparação é de ordem, não de valor. No
-desenho das janelas fixas, $32{,}7\%$ da variação não é explicada pelo modelo
+O tipo de filtro tem $\eta^2_{\mathrm{p}}=0{,}588$ nas 24 configurações de
+janelas fixas e $0{,}759$ nas 160 da Kaiser, isto é, explica 58,8\% e 75,9\% da
+variação de $\rho_c$. Nesses dois delineamentos, o $\beta_K$ dentro da Kaiser vem
+em seguida, com $\eta^2_{\mathrm{p}}=0{,}495$, e a janela, com
+$\eta^2_{\mathrm{p}}=0{,}387$. Como
+os valores vêm de delineamentos diferentes, a comparação é de ordem, não de valor. No
+delineamento das janelas fixas, $32{,}7\%$ da variação não é explicada pelo modelo
 aditivo e corresponde à interação entre tipo e janela, que muda de sinal no
 rejeita-faixa. A cobertura
 média, definida na Seção~\ref{sub:modelagem}, vai de 2,5\% no rejeita-faixa a
@@ -1164,19 +1186,20 @@ rejeita-faixa, $\omega_c/\pi$ é a frequência central.}{Fonte: Autoria própria
 \end{minipage}
 \end{figure}
 
-A janela de projeto altera a fração caótica menos que o tipo, e o efeito se
+A janela de projeto altera a fração caótica menos que o tipo. O efeito se
 concentra nas ordens baixas e moderadas: as seis janelas fixas dão a mesma
-classe em 61,6\% dos pontos do passa-baixas com $N_z\le10$ e em 88,9\% dos pontos
-com $N_z>20$, porque os filtros projetados se aproximam do ideal à medida que a
+classe em 61,6\% dos pontos do passa-baixas com $N_z\le10$ e em 88,9\% dos
+pontos do passa-baixas com $N_z>20$, porque os filtros projetados se aproximam do ideal à medida que a
 ordem cresce \cite{Oppenheim2009}. Entre as janelas fixas, a Blackman-Harris dá
 o maior número de pontos caóticos nos filtros passa-baixas, passa-altas e
 passa-faixa, e a retangular no rejeita-faixa. Nas ordens baixas, as janelas que
 deram maior fração caótica são as que produzem filtros menos seletivos: com corte
 nominal de $0{,}2\pi$ e $N_z=4$, o ganho cai 6~dB em $0{,}26\pi$ na retangular,
 $0{,}44\pi$ na Hamming e $0{,}76\pi$ na Blackman-Harris, e o efeito da atenuação
-não se separa da seletividade nesta grade. No rejeita-faixa, o efeito da janela muda de sinal, porque a retangular é, nas ordens da grade, a única janela que chega a formar o
-entalhe: com $N_z=40$, a atenuação no centro da faixa é de 20~dB nela e 6~dB na
-Hamming.
+não se separa da seletividade nesta grade. No rejeita-faixa, o efeito da janela
+muda de sinal, porque a retangular é, nas ordens da grade, a única janela que
+chega a formar o entalhe. Com $N_z=40$, a atenuação no centro da faixa é de
+20~dB nela e 6~dB na Hamming.
 
 A Figura~\ref{fig:beta_pfc} mostra a cobertura em função do parâmetro de forma da
 janela de Kaiser. No passa-baixas, ela cresce de 3,5\% em $\beta_K=0{,}5$ para
@@ -1199,8 +1222,9 @@ caótica, e entre as janelas a Blackman-Harris e a Kaiser com $\beta_K$ entre
 13,5 e 17,5 dão a maior cobertura. A ordem e o corte devem ser escolhidos dentro
 da região caótica do mapa da janela adotada, cuja forma muda com a janela
 (Figuras~\ref{fig:mapas_pfc}a e~\ref{fig:hamming_pfc}). A banda do filtro precisa caber na do canal,
-uma condição de projeto e não um resultado medido aqui. Cada ponto deve ser
-verificado individualmente, porque os mapas são locais no espaço de estados.
+uma condição de projeto e não um resultado medido aqui. Cada filtro projetado
+deve ser verificado individualmente, porque os mapas são locais no espaço de
+estados.
 
 % ----------------------------------------------------------------------------
 \subsection{Estabilidade da classificação}
@@ -1208,17 +1232,19 @@ verificado individualmente, porque os mapas são locais no espaço de estados.
 
 A classificação muda pouco com o procedimento. Repetidas com dez sementes, as
 melhores configurações tiveram desvio padrão de no máximo 3,3 pontos na contagem
-de pontos caóticos; o maior desvio ocorre no passa-baixas com janela de Kaiser
+de pontos caóticos. O maior desvio ocorre no passa-baixas com janela de Kaiser
 em $\beta_K=16$, cuja contagem média é 645 pontos em 4.000, e 3,3 pontos
 correspondem a 0,5\% dessa contagem. Elevar $\theta$ para $10^{-2}$ reduz
 essa contagem em 2,9\% no passa-baixas, 15,7\% no passa-altas, 2,3\% no
-passa-faixa e 2,5\% no rejeita-faixa. No teste de horizonte longo,
-mantiveram $\lambda_1>\theta$ 89,0\% dos pontos caóticos amostrados do
-passa-baixas, 83,3\% do passa-altas, 89,5\% do passa-faixa e 69,8\% do
-rejeita-faixa; os transitórios caóticos mais longos que o horizonte da varredura
-foram 3,0\%, 11,3\%, 3,0\% e 26,0\%, respectivamente. A parada adaptativa
-acumula uma mediana de 708 iterações contra 3.000 e mantém a classe em 3.992 dos
-4.000 pontos. As classificações do passa-baixas e do passa-faixa são, portanto,
+passa-faixa e 2,5\% no rejeita-faixa. No teste de horizonte longo, com $3\times10^5$ iterações
+(Seção~\ref{sub:cenarios}), 89,0\% dos pontos caóticos amostrados do passa-baixas
+mantiveram $\bar\lambda_1>\theta$, contra 83,3\% do passa-altas, 89,5\% do
+passa-faixa e 69,8\% do rejeita-faixa. Os transitórios caóticos (órbitas que
+parecem caóticas durante um tempo e depois convergem para outro comportamento)
+mais longos que o horizonte da varredura foram 3,0\%, 11,3\%, 3,0\% e 26,0\%,
+respectivamente. A parada adaptativa
+faz a mediana, sobre os pontos da grade, do número de iterações acumuladas cair
+de 3.000 para 708, mantendo a classe em 3.992 dos 4.000 pontos. As classificações do passa-baixas e do passa-faixa são, portanto,
 as mais estáveis.
 
 \subsection{Enlace com filtro}
@@ -1227,12 +1253,13 @@ as mais estáveis.
 O filtro do enlace é o passa-baixas com janela de Hamming já usado na linha de
 pesquisa \cite{Borges2022sbrt,BorgesCNSNS2024},
 mantido por comparabilidade. Ele tem $N_z=8$ e o corte deslocado até a região
-caótica com margem, isto é, com $\lambda_1>0{,}05$, dez vezes o limiar
+caótica com margem, isto é, com $\bar\lambda_1>0{,}05$, dez vezes o limiar
 $\theta$. Não é a configuração de maior cobertura. O critério é
 a verificação individual descrita na Seção~\ref{sub:caos_pfc}. No mapa dessa configuração
 (Figura~\ref{fig:hamming_pfc}), o ponto mais próximo da grade, com
-$\omega_c/\pi=0{,}5152$, tem $\bar\lambda_1=0{,}0788$, e o expoente do próprio
-ponto é 0,0786, cerca de dezesseis vezes o limiar $\theta$
+$\omega_c/\pi=0{,}5152$, tem $\bar\lambda_1=0{,}0788$, e o $\bar\lambda_1$ do filtro
+escolhido, com $\omega_c/\pi=0{,}52$, é 0,0786, cerca de dezesseis vezes o limiar
+$\theta$
 de~\eqref{eq:criterio_pfc}. A escolha demonstra a viabilidade do enlace, e não
 um filtro robusto a variações do corte
 (Seção~\ref{sub:limitacoes_pfc}).
@@ -1242,13 +1269,13 @@ comunicação (Figura~\ref{fig:filtro_pfc}). O espectro transmitido fica confina
 pela resposta do filtro (Figura~\ref{fig:psd_pfc}). Com isso, o erro de estado
 depois do transitório de sincronização fica abaixo de $10^{-4}$, e a mensagem
 recuperada coincide com a enviada. A conclusão
-não depende do limiar de sincronização: com $\varepsilon_s$ entre $10^{-3}$ e
+não depende do limiar de sincronização $\varepsilon_s$: com $\varepsilon_s$ entre $10^{-3}$ e
 $10^{-1}$, os três cenários se classificam da mesma forma.
 
 \begin{figura}{Mapa de classificação do passa-baixas com janela de Hamming. O
 círculo marca o filtro escolhido para o enlace, com $N_z=8$ e
-$\omega_c/\pi=0{,}52$; nesta figura, $\omega_c/\pi$ é a frequência de corte. No
-passa-faixa e no rejeita-faixa, ela é a frequência central.}{Fonte: Autoria própria (2026)}
+$\omega_c/\pi=0{,}52$; nesta figura, $\omega_c/\pi$ é a frequência de
+corte.}{Fonte: Autoria própria (2026)}
   \includegraphics[width=0.70\textwidth]{figures/hamming_lowpass_classification}
   \label{fig:hamming_pfc}
 \end{figura}
@@ -1261,8 +1288,8 @@ alinhados pelo atraso de grupo do canal (100 amostras).}{Fonte: Autoria própria
   \label{fig:filtro_pfc}
 \end{figura}
 
-\begin{figura}{Densidade espectral de potência (a distribuição da potência do
-sinal pelas frequências) do sinal gerado, normalizada pelo pico do sinal sem
+\begin{figura}{Densidade espectral de potência do sinal gerado, normalizada pelo
+pico do sinal sem
 filtro: sinal sem filtro e sinal com o filtro do enlace (passa-baixas,
 janela de Hamming, ordem 8, corte $0{,}52\pi$). A linha pontilhada marca o limite
 do canal, em $0{,}99\pi$.}{Fonte: Autoria própria (2026)}
@@ -1280,9 +1307,9 @@ compilação do núcleo é a que mais rende: o mesmo cálculo, interpretado, lev
 segundos, e compilado leva milissegundos, o que viabiliza repetir a varredura. O paralelismo distribui os pontos da grade entre as \estr{threads} e
 satura em quatro, porque a máquina tem quatro núcleos físicos. Com duas e quatro
 \estr{threads}, os tempos ficam em 4,56~s e 3,24~s, entre os extremos da tabela. A
-parada adaptativa interrompe a acumulação quando a estimativa se estabiliza e
-reduz a mediana de 3.000 para 708 iterações, mantendo a classe em 3.992 dos
-4.000 pontos. O vetor único substitui o espectro completo, que fica reservado aos
+parada adaptativa interrompe a acumulação quando a estimativa se estabiliza, com
+a redução de iterações descrita na Seção~\ref{sub:robustez_pfc}. O vetor único
+substitui o espectro completo, que fica reservado aos
 pontos de fronteira: no sistema de dimensão 41 a diferença passa de uma ordem de
 grandeza, e é isso que torna a grade de 184 configurações viável em um computador
 pessoal.
@@ -1311,8 +1338,8 @@ perturbações são geradas antes do trecho paralelo (Seção~\ref{sub:implement
 \subsection{Limitações e maturidade tecnológica}
 \label{sub:limitacoes_pfc}
 
-A classificação usa um limiar sobre uma estimativa de tempo finito: órbitas
-fracamente caóticas, com expoente positivo abaixo do limiar, contam como não
+A classificação usa um limiar $\theta$ sobre uma estimativa de tempo finito:
+órbitas fracamente caóticas, com expoente positivo abaixo de $\theta$, contam como não
 caóticas, e transitórios mais longos que o horizonte contam como caóticos. A classificação é local no espaço de estados. A grade cobre ordens até
 40 (Seção~\ref{sub:varredura}), uma única largura de banda nominal para os
 filtros passa-faixa e rejeita-faixa e um único par de parâmetros do mapa. Além disso, nas
@@ -1350,7 +1377,7 @@ deve ser verificada, não presumida.
 
 O objetivo geral foi atingido, e os resultados confirmam a hipótese. Quanto ao
 primeiro objetivo específico, os pontos caóticos foram determinados para os
-quatro tipos de filtro e as sete janelas propostas, o que amplia o escopo dos
+quatro tipos de filtro e as sete janelas propostas. Isso amplia o escopo dos
 trabalhos anteriores da linha, centrados em filtros de dois coeficientes, em
 famílias de filtros definidas pela posição dos zeros e no passa-baixas com
 janelas de Hamming e Blackman. Entre os fatores, o tipo de filtro é o que mais
@@ -1360,7 +1387,7 @@ filtro escolhido na região caótica recuperou a mensagem no canal em que o sist
 sem filtro perde a sincronização. Quanto ao quarto, a solução foi situada no
 TRL 3, como prova de conceito em simulação.
 
-A leitura do regime depende de um limiar aplicado a uma estimativa de
+A leitura do regime depende do limiar $\theta$ aplicado a uma estimativa de
 horizonte finito, e a grade cobre ordens até 40, com uma única largura de banda
 nominal nos passa-faixa e rejeita-faixa. O filtro do
 enlace fica perto da borda da região caótica, com pouca folga para variações de

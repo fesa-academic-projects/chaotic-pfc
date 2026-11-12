@@ -158,7 +158,7 @@ def _response(numtaps: int, window: str | tuple[str, float]) -> tuple[np.ndarray
 
 def fir(st: Style) -> None:
     """Write the two-panel frequency response of Fig. 2."""
-    fig, axes = st.subplots(1, 2, height_in=2.55, sharey=True)
+    fig, axes = st.subplots(1, 2, height_in=3.05, sharey=True)
     panels = (
         (
             "(a) janelas diferentes, $N_z=20$",
@@ -280,7 +280,7 @@ def density(st: Style) -> None:
 
 def kaiser(st: Style) -> None:
     """Write the chaotic coverage as a function of the Kaiser beta."""
-    fig, ax = st.subplots(1, 1, fraction=0.8, aspect=0.50)
+    fig, ax = st.subplots(1, 1, fraction=0.8, aspect=0.60)
     styles = (
         ("#1B4F9C", "-", "o"),
         ("#B2182B", "--", "s"),
@@ -449,7 +449,7 @@ def _comm_figure(
     message_window = message[n]
     sent_window = sent[n]
 
-    aspect = 0.48
+    aspect = 0.68
     fig, axes = st.subplots(4, 2, fraction=fraction, aspect=aspect, sharex="col")
     panel_labels = ("(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)")
     rows = (
@@ -523,7 +523,7 @@ def _comm_figure(
     axes[-1, 1].set_xlabel(r"$\omega/\pi$")
     handles, _ = axes[3, 0].get_legend_handles_labels()
     legend_above(fig, handles, ncol=2, pad=0.995)
-    fig.subplots_adjust(left=0.10, right=0.995, top=0.80, bottom=0.14, hspace=0.45, wspace=0.28)
+    fig.subplots_adjust(left=0.10, right=0.995, top=0.86, bottom=0.09, hspace=0.45, wspace=0.28)
     # One y label per column, centred on the four rows and clear of the tick
     # labels of both columns.
     y_mid = 0.5 * (axes[0, 0].get_position().y1 + axes[-1, 0].get_position().y0)
