@@ -121,7 +121,7 @@ idênticos podem ser sincronizados, e essa sincronização é a base do esquema
 analisado. A sincronização supõe o sinal sem ruído. Na prática, porém, o esquema é
 sensível ao ruído do canal, e os esquemas não coerentes toleram melhor esse ruído, ao
 custo de associar cada símbolo a um trecho do sinal
-(Kaddoum, 2016; ver Seções~\ref{sub:seguranca_caos} e~\ref{sub:modulacao}).
+\cite{Kaddoum2016}, como detalham as Seções~\ref{sub:seguranca_caos} e~\ref{sub:modulacao}.
 
 \subsection{Problema e lacuna}
 
@@ -130,18 +130,17 @@ obstáculo prático, porque todo canal físico tem largura de banda finita. Um
 canal que trunca o espectro da portadora altera o sinal que aciona o receptor,
 e a sincronização se perde. \textcite{Eisencraft2009} propuseram limitar a banda dentro do próprio gerador,
 inserindo um filtro digital na sua malha de realimentação. \textcite{Fontes2016}
-mostraram que a sincronização se mantém com o filtro na malha, e
-\textcite{BorgesTese2026} mostrou que, com filtros de resposta ao impulso finita
-(FIR), ela é preservada para quaisquer coeficientes. O filtro, porém, limita o espectro e reduz parte do atrativo do caos, porque a
+mostraram que, com filtros de resposta ao impulso finita (FIR), a sincronização
+se mantém para quaisquer coeficientes \cite{Fontes2017}. O filtro, porém, limita o espectro e reduz parte do atrativo do caos, porque a
 portadora deixa de ocupar a banda larga que motivou o seu uso.
 
 Além disso, a filtragem altera a dinâmica do gerador, e o sinal produzido pode
 deixar de ser caótico. \textcite{Candido2015} questionaram se os SCBC de fato
 transmitem sinais caóticos. Com filtros de dois coeficientes, o gerador já apresenta cascatas de bifurcação,
-coexistência de atratores e crises \cite{BorgesCSF2022}. Com filtros passa-baixas,
+coexistência de atratores e crises \cite{Grebogi1983,BorgesCSF2022}. Com filtros passa-baixas,
 o regime muda com a ordem e a frequência de corte
 \cite{Borges2022sbrt,CNMAC2023}, e, para filtros com mais coeficientes, depende da
-posição dos zeros \cite{BorgesCNSNS2024} e da própria mensagem
+posição dos zeros \cite{BorgesCNSNS2024,BorgesTese2026} e da própria mensagem
 \cite{Fontes2017,FontesSAI}. Esses trabalhos estabelecem que o caos precisa ser verificado ponto a ponto,
 mas não oferecem um mapa sistemático para os quatro tipos de filtro e as janelas
 de projeto, nem uma ferramenta que o produza de forma rápida, reprodutível e
@@ -452,7 +451,7 @@ Depois de $n$ repetições, o expoente na $k$-ésima direção é
   \label{eq:lyap_pfc}
 \end{equation}
 Na varredura, descrita na Seção~\ref{sub:implementacao}, o maior expoente é
-estimado com um único vetor tangente \cite{Wolf1985}, que é o caso de interesse
+estimado com um único vetor tangente \cite{Benettin1980a,Wolf1985}, que é o caso de interesse
 na classificação. Perto da fronteira de classe, o espectro completo é
 recalculado. Para o mapa~\eqref{eq:henon_pfc} com $\alpha=1{,}4$ e
 $\beta=0{,}3$,
@@ -551,20 +550,20 @@ $x_1$ e $x_2$ da matriz do erro (equação~\eqref{eq:erro_filtrado},
 Seção~\ref{sub:cenarios}) mantém os autovalores $\pm\sqrt{\beta}$ e os
 demais são nulos. Assim, a condição de sincronização do sistema sem filtro
 continua suficiente, qualquer que seja a escolha dos coeficientes
-\cite{BorgesTese2026}. Essa
+\cite{Fontes2016,Fontes2017}. Essa
 garantia, porém, diz respeito somente à sincronização: ela nada afirma sobre o
 caos do gerador, que depende dos mesmos coeficientes por meio
-de~\eqref{eq:filtrado_pfc} \cite{Candido2015,BorgesCNSNS2024}.
+de~\eqref{eq:filtrado_pfc} \cite{BorgesCNSNS2024,BorgesTese2026}.
 
 \subsection{Esquemas de modulação e métricas}
 \label{sub:modulacao}
 
-O esquema da Figura~\ref{fig:enlace_sem_pfc} é o mascaramento caótico, em que a
+O esquema da Figura~\ref{fig:enlace_sem_pfc} é o mascaramento caótico \cite{Cuomo1993}, em que a
 mensagem é somada diretamente à portadora. Outros esquemas codificam os bits na escolha entre sinais caóticos distintos,
-como o chaveamento por deslocamento caótico, ou na correlação entre dois trechos
+como o chaveamento por deslocamento caótico \cite{Dedieu1993}, ou na correlação entre dois trechos
 do mesmo sinal, como o chaveamento diferencial por deslocamento caótico
 \cite{Kolumban1996DCSK}. O chaveamento diferencial dispensa a sincronização e,
-por isso, é menos sensível às imperfeições do canal \cite{Kaddoum2016}. O desempenho desses
+por isso, é menos sensível às imperfeições do canal \cite{Kolumban1996DCSK,Kaddoum2016}. O desempenho desses
 esquemas costuma ser expresso pela taxa de erro de bit, a fração de bits
 recuperados incorretamente, em função da relação sinal-ruído, a razão
 entre a potência do sinal e a do ruído no canal \cite{Kaddoum2016}. O canal não tem ruído, e o enlace é avaliado pelo erro entre os estados do
@@ -653,7 +652,7 @@ comparada na Seção~\ref{sub:caos_pfc}. No delineamento balanceado das janelas 
 os fatores são o tipo (quatro níveis) e a janela (seis níveis), sem a Kaiser.
 Na Kaiser, o fator $\beta_K$ (40 níveis) é avaliado com o tipo como bloco, sobre
 as ordens pares (o suporte comum aos quatro tipos, Seção~\ref{sub:varredura}). Usa-se o $\eta^2$ parcial ($\eta^2_{\mathrm{p}}$), medida descritiva do tamanho
-do efeito, sem teste de significância. Ele dá a fração da variação de $\rho_c$
+do efeito, sem teste de significância \cite{Richardson2011}. Ele dá a fração da variação de $\rho_c$
 explicada por um fator quando os demais são mantidos fixos, de 0 (o fator não
 altera $\rho_c$) a 1 (explica toda a variação):
 $\eta^2_{\mathrm{p}}=SS_{\text{fator}}/(SS_{\text{fator}}+SS_{\text{erro}})$,
@@ -1240,7 +1239,8 @@ passa-faixa e 2,5\% no rejeita-faixa. No teste de horizonte longo, com $3\times1
 (Seção~\ref{sub:cenarios}), 89,0\% dos pontos caóticos amostrados do passa-baixas
 mantiveram $\bar\lambda_1>\theta$, contra 83,3\% do passa-altas, 89,5\% do
 passa-faixa e 69,8\% do rejeita-faixa. Os transitórios caóticos (órbitas que
-parecem caóticas durante um tempo e depois convergem para outro comportamento)
+parecem caóticas durante um tempo e depois convergem para outro comportamento,
+conforme \textcite{Grebogi1983})
 mais longos que o horizonte da varredura foram 3,0\%, 11,3\%, 3,0\% e 26,0\%,
 respectivamente. A parada adaptativa
 faz a mediana, sobre os pontos da grade, do número de iterações acumuladas cair
